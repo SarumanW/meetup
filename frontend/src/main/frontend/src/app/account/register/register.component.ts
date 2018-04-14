@@ -7,6 +7,7 @@ import {AccountService} from "../account.service";
   selector: 'app-register',
   templateUrl: './register.component.html'
 })
+
 export class RegisterComponent implements OnInit {
   confirmPassword: string;
   doNotMatch: string;

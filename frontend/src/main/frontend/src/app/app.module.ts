@@ -8,19 +8,22 @@ import { AppComponent } from './app.component';
 import {RegisterComponent} from "./account/register/register.component";
 import {AccountService} from "./account/account.service";
 import {LoginComponent} from "./account/login/login.component";
+import {SuccessComponent} from "./account/success/success.component";
+import {AppRoutingModule} from "./app-routing.module";
 
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    SuccessComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
-
+    AppRoutingModule
   ],
   providers: [AccountService],
   bootstrap: [AppComponent]
