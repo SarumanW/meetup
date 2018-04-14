@@ -5,7 +5,7 @@
       <form name="form" role="form" (ngSubmit)="register()" #registerForm="ngForm" *ngIf="!success">
         <div class="form-group">
           <label class="form-control-label" for="login">Username</label>
-          <input type="text" class="form-control" [(ngModel)]="registerAccount.username" id="login" name="login"
+          <input type="text" class="form-control" [(ngModel)]="account.username" id="login" name="login"
                  #login="ngModel" placeholder="username"
                  minlength="1" maxlength="50" pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="login.dirty && login.invalid">
@@ -26,7 +26,7 @@
         <div class="form-group">
           <label class="form-control-label" for="email">Email</label>
           <input type="email" class="form-control" id="email" name="email" #email="ngModel" placeholder="email@mail.com"
-                 [(ngModel)]="registerAccount.email" minlength=5 maxlength=254 email required>
+                 [(ngModel)]="account.email" minlength=5 maxlength=254 email required>
           <div *ngIf="email.dirty && email.invalid">
             <small class="form-text text-danger" *ngIf="email.errors.required">
               Your email is required.
@@ -45,7 +45,7 @@
         <div class="form-group">
           <label class="form-control-label" for="password">Password</label>
           <input type="password" class="form-control" id="password" name="password" #password="ngModel" placeholder="password"
-                 [(ngModel)]="registerAccount.password" minlength=4 maxlength=50 required>
+                 [(ngModel)]="account.password" minlength=4 maxlength=50 required>
           <div *ngIf="password.dirty && password.invalid">
             <small class="form-text text-danger" *ngIf="password.errors.required">
               Your password is required.

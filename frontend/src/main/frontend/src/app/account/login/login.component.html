@@ -1,0 +1,23 @@
+<div>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h1>LogIn</h1>
+      <form name="form" role="form" (ngSubmit)="logIn()" #loginForm="ngForm" *ngIf="!success">
+
+        <div class="form-group">
+          <label class="form-control-label" for="login">Username</label>
+          <input type="text" class="form-control" [(ngModel)]="account.username" id="login" name="login"
+                 #login="ngModel" placeholder="username">
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="password">Password</label>
+          <input type="password" class="form-control" id="password" name="password" #password="ngModel" placeholder="password"
+                 [(ngModel)]="account.password">
+        </div>
+
+        <button type="submit" [disabled]="loginForm.form.invalid" class="btn btn-primary">LogIn</button>
+      </form>
+    </div>
+  </div>
+</div>

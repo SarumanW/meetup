@@ -4,7 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class RegisterAccount {
+public class User {
 
     @NotBlank
     @Size(min = 1, max = 50)
@@ -17,7 +17,13 @@ public class RegisterAccount {
     @Size(min = 4, max = 100)
     private String password;
 
-    public RegisterAccount() { }
+    public User() { }
+
+    public User(@NotBlank @Size(min = 1, max = 50) String username, @Email @Size(min = 5, max = 254) String email, @Size(min = 4, max = 100) String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 
     public String getUsername() {
         return username;

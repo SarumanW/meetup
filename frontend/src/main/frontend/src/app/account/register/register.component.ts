@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
-import {AccountRegister} from "../account";
+import {Account} from "../account";
 import {AccountService} from "../account.service";
 
 @Component({
@@ -11,22 +11,22 @@ export class RegisterComponent implements OnInit {
   confirmPassword: string;
   doNotMatch: string;
   success: boolean;
-  registerAccount: AccountRegister;
+  account: Account;
 
   constructor(private accountService: AccountService) {
   }
 
   ngOnInit() {
     this.success = false;
-    this.registerAccount = new AccountRegister();
+    this.account = new Account();
   }
 
   register() {
-    if (this.registerAccount.password !== this.confirmPassword) {
+    if (this.account.password !== this.confirmPassword) {
       this.doNotMatch = 'ERROR';
     } else {
       this.doNotMatch = null;
-      this.accountService.save(this.registerAccount).subscribe(
+      this.accountService.save(this.account).subscribe(
         () => {
           this.success = true;
         },
