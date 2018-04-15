@@ -17,6 +17,10 @@ public class UserDaoImpl implements UserDao<User> {
         return jdbcTemplate;
     }
 
+    public String testMethod(){
+        return "configuration passed";
+    }
+
     @Autowired
     @Qualifier("jdbcTemplate")
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
