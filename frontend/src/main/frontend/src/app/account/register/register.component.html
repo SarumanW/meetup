@@ -88,7 +88,7 @@
             </small>
           </div>
         </div>
-        <button type="submit" [disabled]="registerForm.form.invalid" class="btn btn-primary" routerLink="/login">
+        <button type="button" (click)="register()" [disabled]="registerForm.form.invalid" class="btn btn-primary" routerLink="/login">
           Register
         </button>
       </form>
