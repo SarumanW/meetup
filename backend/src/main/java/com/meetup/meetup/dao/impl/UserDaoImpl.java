@@ -27,8 +27,14 @@ public class UserDaoImpl implements UserDao<User> {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
     @Override
     public User findByLogin(String login) {
+        return null;
+    }
+
+    @Override
+    public User findByEmail(String email) {
         return null;
     }
 
@@ -38,17 +44,17 @@ public class UserDaoImpl implements UserDao<User> {
     }
 
     @Override
-    public void save(User model) {
-
+    public int save(User model) {
+        return 0;
     }
 
     @Override
-    public void update(User model) {
-
+    public int update(User model) {
+        return 0;
     }
 
     @Override
-    public void delete(User model) {
-
+    public int delete(User model) {
+        return 0;
     }
 }

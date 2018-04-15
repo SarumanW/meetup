@@ -8,4 +8,6 @@ package com.meetup.meetup.dao;
 public interface UserDao<User> extends Dao<User> {
 
     User findByLogin(String login);
+
+    User findByEmail(String email);
 }
