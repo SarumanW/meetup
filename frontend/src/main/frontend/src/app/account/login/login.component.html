@@ -43,7 +43,8 @@
                  [(ngModel)]="account.password">
         </div>
 
-        <button type="submit" [disabled]="loginForm.form.invalid" class="btn btn-primary" routerLink="/success">
+        <button type="button" (click)="logIn()" [disabled]="loginForm.form.invalid" class="btn btn-primary"
+                routerLink="/success">
           LogIn
         </button>
       </form>

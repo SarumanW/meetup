@@ -18,7 +18,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public String registerAccount(@Valid @RequestBody User user) {
         UserDaoImpl userDaoImpl = new UserDaoImpl();
-
+        System.out.println(user);
         if (null == userDaoImpl.findByLogin(user.getLogin())) { //checking if user exist in system
             return Json.createObjectBuilder().add("error", "This username is busy").build().toString();
         }
