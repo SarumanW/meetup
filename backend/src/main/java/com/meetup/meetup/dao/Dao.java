@@ -9,7 +9,7 @@ public interface Dao<T> {
 
     T findById(int id);
 
-    int save(T model);
+    int insert(T model);
 
     int update(T model);
 
