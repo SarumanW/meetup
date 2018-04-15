@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
   }
 
   logIn() {
-      this.accountService.save(this.account).subscribe(
+      this.accountService.login(this.account).subscribe(
         () => {
           this.success = true;
         },
