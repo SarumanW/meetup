@@ -1,5 +1,7 @@
 export class Account {
-  public username: string;
+  public login: string;
   public email: string;
   public password: string;
+  public name : string;
+  public lastName : string;
 }

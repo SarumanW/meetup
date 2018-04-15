@@ -4,9 +4,9 @@
       <h1>Registration</h1>
       <form name="form" role="form" (ngSubmit)="register()" #registerForm="ngForm" *ngIf="!success">
         <div class="form-group">
-          <label class="form-control-label" for="login">Username</label>
-          <input type="text" class="form-control" [(ngModel)]="account.username" id="login" name="login"
-                 #login="ngModel" placeholder="username"
+          <label class="form-control-label" for="login">Login</label>
+          <input type="text" class="form-control" [(ngModel)]="account.login" id="login" name="login"
+                 #login="ngModel" placeholder="login"
                  minlength="1" maxlength="50" pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="login.dirty && login.invalid">
             <small class="form-text text-danger" *ngIf="login.errors.required">
@@ -22,6 +22,18 @@
               Your username can only contain letters and digits.
             </small>
           </div>
+        </div>
+        <div class="form-group">
+          <label class="form-control-label" for="name">Name</label>
+          <input type="text" class="form-control" [(ngModel)]="account.name" id="name" name="name"
+                 #login="ngModel" placeholder="name"
+                 minlength="1" maxlength="50" pattern="^[_.@A-Za-z0-9-]*$" required>
+        </div>
+        <div class="form-group">
+          <label class="form-control-label" for="lastName">Last name</label>
+          <input type="text" class="form-control" [(ngModel)]="account.lastName" id="lastName" name="lastName"
+                 #login="ngModel" placeholder="lastName"
+                 minlength="1" maxlength="50" pattern="^[_.@A-Za-z0-9-]*$" required>
         </div>
         <div class="form-group">
           <label class="form-control-label" for="email">Email</label>
@@ -44,7 +56,8 @@
         </div>
         <div class="form-group">
           <label class="form-control-label" for="password">Password</label>
-          <input type="password" class="form-control" id="password" name="password" #password="ngModel" placeholder="password"
+          <input type="password" class="form-control" id="password" name="password" #password="ngModel"
+                 placeholder="password"
                  [(ngModel)]="account.password" minlength=4 maxlength=50 required>
           <div *ngIf="password.dirty && password.invalid">
             <small class="form-text text-danger" *ngIf="password.errors.required">
@@ -59,8 +72,9 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="form-control-label" for="confirmPassword" >Password confirmation</label>
-          <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" #confirmPasswordInput="ngModel" placeholder="confirm"
+          <label class="form-control-label" for="confirmPassword">Password confirmation</label>
+          <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                 #confirmPasswordInput="ngModel" placeholder="confirm"
                  [(ngModel)]="confirmPassword" minlength=4 maxlength=50 required>
           <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">
             <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.required">
@@ -74,7 +88,9 @@
             </small>
           </div>
         </div>
-        <button type="submit" [disabled]="registerForm.form.invalid" class="btn btn-primary" routerLink="/login">Register</button>
+        <button type="submit" [disabled]="registerForm.form.invalid" class="btn btn-primary" routerLink="/login">
+          Register
+        </button>
       </form>
     </div>
   </div>
