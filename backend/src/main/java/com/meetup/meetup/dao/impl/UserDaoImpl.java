@@ -27,6 +27,7 @@ public class UserDaoImpl implements UserDao<User> {
 
     public String testMethod(){
         return "configuration passed";
+
     }
 
     @Autowired
