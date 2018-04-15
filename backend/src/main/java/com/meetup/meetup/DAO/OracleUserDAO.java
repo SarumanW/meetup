@@ -36,4 +36,12 @@ public class OracleUserDAO implements UserDAO {
         // null или ошибку, если клиент не найден.
         return null;
     }
+
+    public User findUserById(String byUserId){
+        // Реализовать здесь операцию поиска клиента по почте, используя
+        // предоставленные значения аргументов в качестве критерия поиска.
+        // Возвратить объект Transfer Object при успешном поиске,
+        // null или ошибку, если клиент не найден.
+        return null;
+    }
 }

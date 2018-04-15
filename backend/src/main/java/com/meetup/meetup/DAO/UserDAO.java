@@ -8,5 +8,6 @@ public interface UserDAO {
         boolean deleteUser(User user);
         User findUserByUserName(String byUserName);
         User findUserByMail(String byMail);
+        User findUserById(String byUserId);
     }
 }

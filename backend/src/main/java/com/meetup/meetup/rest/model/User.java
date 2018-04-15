@@ -5,24 +5,58 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class User {
+    private String userId;
 
     @NotBlank
     @Size(min = 1, max = 50)
     private String username;
 
+    @Size(min = 4, max = 100)
+    private String password;
+
+    @Size(min = 2, max = 100)
+    private String firstName;
+
+    @Size(min = 2, max = 100)
+    private String lastName;
+
     @Email
     @Size(min = 5, max = 254)
     private String email;
 
-    @Size(min = 4, max = 100)
-    private String password;
-
     public User() { }
 
-    public User(@NotBlank @Size(min = 1, max = 50) String username, @Email @Size(min = 5, max = 254) String email, @Size(min = 4, max = 100) String password) {
+    public User(String userId, @NotBlank @Size(min = 1, max = 50) String username, @Size(min = 4, max = 100) String password, @Size(min = 2, max = 100) String firstName, @Size(min = 2, max = 100) String lastName, @Email @Size(min = 5, max = 254) String email) {
+        this.userId = userId;
         this.username = username;
-        this.email = email;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getUsername() {
@@ -51,10 +85,13 @@ public class User {
 
     @Override
     public String toString() {
-        return "ManagedUserVM{" +
-                "username='" + username + '\'' +
-                ", email='" + email + '\'' +
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }
