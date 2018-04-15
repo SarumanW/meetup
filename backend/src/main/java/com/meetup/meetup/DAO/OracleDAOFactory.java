@@ -10,8 +10,8 @@ import java.sql.*;
                 "COM.cloudscape.core.RmiJdbcDriver";
         private static final String DBURL =
                 "jdbc:cloudscape:rmi://localhost:1099/CoreJ2EEDB";
-        private static final String DBUSERNAME = "artem_chernousov";
-        private static final String DBPASS = "d38IrflsjVbou124Ec";
+        private static final String DBUSERNAME = "";
+        private static final String DBPASS = "";
 
         // метод для создания соединений к Cloudscape
         public static Connection createConnection() {
