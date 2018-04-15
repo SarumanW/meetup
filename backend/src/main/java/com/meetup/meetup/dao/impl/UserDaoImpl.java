@@ -6,6 +6,7 @@ import com.meetup.meetup.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -24,7 +25,7 @@ public class UserDaoImpl implements UserDao<User> {
         return jdbcTemplate;
     }
 
-    public String testMethod(){
+    public String testMethod() {
         return "configuration passed";
     }
 
@@ -45,6 +46,8 @@ public class UserDaoImpl implements UserDao<User> {
                     new Object[]{login}, new UserRowMapper() {
                     }
             );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
@@ -64,6 +67,8 @@ public class UserDaoImpl implements UserDao<User> {
                     new Object[]{email}, new UserRowMapper() {
                     }
             );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
@@ -82,6 +87,8 @@ public class UserDaoImpl implements UserDao<User> {
                     new Object[]{id}, new UserRowMapper() {
                     }
             );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
@@ -107,7 +114,7 @@ public class UserDaoImpl implements UserDao<User> {
         parameters.put("email", model.getEmail());
         parameters.put("timezone", model.getTimeZone());
         parameters.put("image_filepath", model.getImgPath());
-        parameters.put("bday", Date.valueOf(model.getBirthDay()));
+        parameters.put("bday", (model.getBirthDay() != null ? Date.valueOf(model.getBirthDay()) : null));
         parameters.put("phone", model.getPhone());
 
         try {
@@ -126,7 +133,7 @@ public class UserDaoImpl implements UserDao<User> {
         try {
             jdbcTemplate.update("UPDATE USER_S SET LOGIN = ?, PASSWORD = ?, NAME = ?, SURNAME = ?, EMAIL = ?," +
                             "TIMEZONE = ?, IMAGE_FILEPATH = ?, BDAY = ?, PHONE = ? WHERE USER_ID = ?",
-                    model.getId(), model.getPassword(),  model.getName(), model.getLastName(), model.getEmail(), model.getTimeZone(),
+                    model.getId(), model.getPassword(), model.getName(), model.getLastName(), model.getEmail(), model.getTimeZone(),
                     model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
         } catch (DataAccessException e) {
             e.printStackTrace();

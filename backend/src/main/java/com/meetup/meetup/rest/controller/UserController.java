@@ -2,6 +2,7 @@ package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.dao.impl.UserDaoImpl;
 import com.meetup.meetup.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,17 +13,19 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api")
 public class UserController {
-//    private static final int TABLE_NUMBER = 5;
+    //    private static final int TABLE_NUMBER = 5;
+    @Autowired
+    private UserDaoImpl userDaoImpl;
 
     @PostMapping(path = "/register", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public String registerAccount(@Valid @RequestBody User user) {
-        UserDaoImpl userDaoImpl = new UserDaoImpl();
+//        UserDaoImpl userDaoImpl = new UserDaoImpl();
         System.out.println(user);
-        if (null == userDaoImpl.findByLogin(user.getLogin())) { //checking if user exist in system
+        if (null != userDaoImpl.findByLogin(user.getLogin())) { //checking if user exist in system
             return Json.createObjectBuilder().add("error", "This username is busy").build().toString();
         }
-        if (null == userDaoImpl.findByEmail(user.getEmail())) { //checking if email exist in system
+        if (null != userDaoImpl.findByEmail(user.getEmail())) { //checking if email exist in system
             return Json.createObjectBuilder().add("error", "This email is busy").build().toString();
         }
         //user.setUserId("" + System.currentTimeMillis() + TABLE_NUMBER + (int) (Math.random() * 100));
@@ -39,7 +42,7 @@ public class UserController {
 
         String value = Json.createObjectBuilder().add("error", "Login or password incorrect").build().toString();
 
-        UserDaoImpl userDaoImpl = new UserDaoImpl();
+//        UserDaoImpl userDaoImpl = new UserDaoImpl();
         User requestedUser = userDaoImpl.findByLogin(user.getLogin());
         if (null == requestedUser) { //checking existence of user in system
             return value;
