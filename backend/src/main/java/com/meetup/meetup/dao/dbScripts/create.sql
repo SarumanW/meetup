@@ -1,0 +1,32 @@
+CREATE TABLE user_s (
+user_id NUMBER(11) PRIMARY KEY,
+login VARCHAR2(100) NOT NULL UNIQUE,
+password VARCHAR2(50) NOT NULL,
+name VARCHAR2(100) NOT NULL,
+surname VARCHAR2(100) NOT NULL,
+email VARCHAR2(100) NOT NULL UNIQUE,
+timezone NUMBER(3),
+image_filepath VARCHAR2(200),
+bday DATE,
+phone VARCHAR2(25)
+);
+
+CREATE SEQUENCE user_seq
+ START WITH     1
+ INCREMENT BY   1
+ NOCACHE
+ NOCYCLE;
+ 
+CREATE OR REPLACE TRIGGER user_bir 
+BEFORE INSERT ON user_s 
+FOR EACH ROW
+
+BEGIN
+  SELECT user_seq.NEXTVAL
+  INTO   :new.user_id
+  FROM   dual;
+END;
+
+
+
+
