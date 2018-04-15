@@ -9,9 +9,9 @@ public interface Dao<T> {
 
     T findById(int id);
 
-    int save(T model);
+    int insert(T model);
 
-    int update(T model);
+    void update(T model);
 
-    int delete(T model);
+    void delete(T model);
 }
