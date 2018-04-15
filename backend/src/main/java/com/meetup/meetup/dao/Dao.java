@@ -11,7 +11,7 @@ public interface Dao<T> {
 
     int insert(T model);
 
-    void update(T model);
+    int update(T model);
 
-    void delete(T model);
+    int delete(T model);
 }

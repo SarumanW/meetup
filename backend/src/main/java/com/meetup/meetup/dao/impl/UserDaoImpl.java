@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
@@ -123,7 +122,7 @@ public class UserDaoImpl implements UserDao<User> {
     }
 
     @Override
-    public void update(User model) {
+    public int update(User model) {
         try {
             jdbcTemplate.update("UPDATE USER_S SET LOGIN = ?, PASSWORD = ?, NAME = ?, SURNAME = ?, EMAIL = ?," +
                             "TIMEZONE = ?, IMAGE_FILEPATH = ?, BDAY = ?, PHONE = ? WHERE USER_ID = ?",
@@ -132,14 +131,18 @@ public class UserDaoImpl implements UserDao<User> {
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
+
+        return model.getId();
     }
 
     @Override
-    public void delete(User model) {
+    public int delete(User model) {
         try {
             jdbcTemplate.update("DELETE FROM USER_S WHERE USER_ID = ?", model.getId());
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
+
+        return model.getId();
     }
 }
