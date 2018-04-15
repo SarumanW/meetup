@@ -1,6 +1,7 @@
 package com.meetup.meetup.rest.controller;
 
-import com.meetup.meetup.rest.model.User;
+import com.meetup.meetup.dao.impl.UserDaoImpl;
+import com.meetup.meetup.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
