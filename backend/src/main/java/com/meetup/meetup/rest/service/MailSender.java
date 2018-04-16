@@ -2,14 +2,20 @@ package com.meetup.meetup.rest.service;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.util.Properties;
 
 public class MailSender {
 
-    private static final String username = "";
-    private static final String password = "";
+    private static final String username = "nc.meetup4@gmail.com";
+    private static final String password = "kd234cdEa@q4AeRl40";
     private Session session;
+    public static final String templateRegister = "Hello, <b>%s! </b> " +
+            "<br>Your nickname: %s" +
+            "<br>Your password: %s" +
+            "<br>Use this data to <a href=\"/login\">login</a> in your account";
 
     public MailSender() {
         Properties props = new Properties();
@@ -32,11 +38,18 @@ public class MailSender {
         try {
 
             Message message = new MimeMessage(session);
+            Multipart multipart = new MimeMultipart(" alternative");
             message.setFrom(new InternetAddress());
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(address));
             message.setSubject(subject);
-            message.setText(mail);
+
+            MimeBodyPart htmlPart = new MimeBodyPart();
+            htmlPart.setContent(mail, "text/html; charset=utf-8");
+            multipart.addBodyPart(htmlPart);
+            message.setContent(multipart);
+            message.saveChanges();
+
             Transport.send(message);
 
             return true;
