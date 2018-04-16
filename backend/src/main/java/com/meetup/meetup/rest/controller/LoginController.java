@@ -34,6 +34,7 @@ public class LoginController {
         String token = null;
         try {
             token = jwtService.tokenFor(minimalProfile);
+            minimalProfile.setToken(token);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (URISyntaxException e) {

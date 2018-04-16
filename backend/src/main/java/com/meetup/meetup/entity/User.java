@@ -1,5 +1,9 @@
 package com.meetup.meetup.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.meetup.meetup.service.vm.FictUser;
+
 import java.time.LocalDate;
 
 public class User {
@@ -16,6 +20,20 @@ public class User {
     private String imgPath;
 
     public User() {
+    }
+
+    @Deprecated
+    public User(FictUser fictUser) {
+        id = fictUser.getId();
+        login = fictUser.getLogin();
+        password = fictUser.getPassword();
+        email = fictUser.getEmail();
+        phone = fictUser.getPhone();
+        name = fictUser.getName();
+        lastName = fictUser.getLastName();
+        birthDay = LocalDate.now();
+        timeZone = fictUser.getTimeZone();
+        imgPath = fictUser.getImgPath();
     }
 
     public int getId() {

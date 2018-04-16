@@ -6,6 +6,7 @@ public class MinimalProfile {
     private String login;
     private String name;
     private String lastname;
+    private String token;
 
     public MinimalProfile(User user) {
         name = user.getName();
@@ -35,5 +36,13 @@ public class MinimalProfile {
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
