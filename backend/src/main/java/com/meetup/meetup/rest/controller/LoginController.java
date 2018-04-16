@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/login")
+@RequestMapping(path = "account/login")
 public class LoginController {
     @Autowired
     private LoginService loginService;
