@@ -1,4 +1,6 @@
-package com.meetup.meetup.rest.service;
+package com.meetup.meetup.service;
+
+import org.springframework.stereotype.Component;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -7,7 +9,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.util.Properties;
 
-public class MailSender {
+@Component
+public class MailService {
 
     private static final String username = "nc.meetup4@gmail.com";
     private static final String password = "kd234cdEa@q4AeRl40";
@@ -17,7 +20,7 @@ public class MailSender {
             "<br>Your password: %s" +
             "<br>Use this data to <a href=\"/login\">login</a> in your account";
 
-    public MailSender() {
+    public MailService() {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.socketFactory.port", "465");
