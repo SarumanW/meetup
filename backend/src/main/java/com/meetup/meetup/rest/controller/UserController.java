@@ -2,7 +2,7 @@ package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.dao.impl.UserDaoImpl;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.rest.service.MailSender;
+import com.meetup.meetup.service.MailService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
@@ -25,6 +25,8 @@ public class UserController {
 
     @Autowired
     private UserDaoImpl userDaoImpl;
+    @Autowired
+    private MailService mailService;
 
 
     private static String getMd5Hash(String line){ //function for get MD5 Hash
@@ -57,8 +59,7 @@ public class UserController {
             return Json.createObjectBuilder().add("error", "Something went wrong").build().toString();
         }
 
-        MailSender mailSender = new MailSender();
-        mailSender.sendMail(user.getEmail(), "Registration successfully", String.format(MailSender.templateRegister, user.getName(), user.getLogin(), user.getPassword()));
+        mailService.sendMail(user.getEmail(), "Registration successfully", String.format(MailService.templateRegister, user.getName(), user.getLogin(), user.getPassword()));
         return Json.createObjectBuilder().add("success", "Success").build().toString();
     }
 

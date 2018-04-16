@@ -1,47 +1,39 @@
 package com.meetup.meetup.service.vm;
 
+import com.meetup.meetup.entity.User;
+
 public class MinimalProfile {
-    private String username;
-    private String title;
-    private String first;
-    private String last;
+    private String login;
+    private String name;
+    private String lastname;
 
-    public MinimalProfile(Profile profile) {
-        title = profile.getTitle();
-        first = profile.getFirst();
-        last = profile.getLast();
-        username = profile.getUsername();
+    public MinimalProfile(User user) {
+        name = user.getName();
+        lastname = user.getLastName();
+        login = user.getLogin();
     }
 
-    public String getUsername() {
-        return username;
+    public String getLogin() {
+        return login;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getFirst() {
-        return first;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setFirst(String first) {
-        this.first = first;
-    }
-
-    public String getLast() {
-        return last;
-    }
-
-    public void setLast(String last) {
-        this.last = last;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 }

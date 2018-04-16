@@ -17,7 +17,7 @@ import java.util.Map;
 
 
 @Repository
-public class UserDaoImpl implements UserDao<User> {
+public class UserDaoImpl implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
 

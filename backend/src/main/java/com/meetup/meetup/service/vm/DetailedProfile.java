@@ -1,42 +1,24 @@
 package com.meetup.meetup.service.vm;
 
+import com.meetup.meetup.entity.User;
+
+import java.time.LocalDate;
+
 public class DetailedProfile {
-    private String title;
-    private String first;
-    private String last;
     private String email;
-    private String username;
+    private String login;
+    private String name;
+    private String lastname;
+    private LocalDate birthDay;
+    private String imgPath;
 
-    public DetailedProfile(Profile profile) {
-        title = profile.getTitle();
-        first = profile.getFirst();
-        last = profile.getLast();
-        email = profile.getEmail();
-        username = profile.getUsername();
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getFirst() {
-        return first;
-    }
-
-    public void setFirst(String first) {
-        this.first = first;
-    }
-
-    public String getLast() {
-        return last;
-    }
-
-    public void setLast(String last) {
-        this.last = last;
+    public DetailedProfile(User user) {
+        name = user.getName();
+        lastname = user.getLastName();
+        email = user.getEmail();
+        login = user.getLogin();
+        birthDay = user.getBirthDay();
+        imgPath = user.getImgPath();
     }
 
     public String getEmail() {
@@ -47,11 +29,43 @@ public class DetailedProfile {
         this.email = email;
     }
 
-    public String getUsername() {
-        return username;
+    public String getLogin() {
+        return login;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public LocalDate getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(LocalDate birthDay) {
+        this.birthDay = birthDay;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 }

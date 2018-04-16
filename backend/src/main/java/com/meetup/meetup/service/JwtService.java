@@ -43,7 +43,7 @@ public class JwtService {
                 .setSubject("jwt-demo")
                 .setExpiration(expiration)
                 .setIssuer(ISSUER)
-                .claim(USERNAME, minimalProfile.getUsername())
+                .claim(USERNAME, minimalProfile.getLogin())
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }

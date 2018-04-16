@@ -4,7 +4,6 @@ import com.meetup.meetup.exception.ProfileNotFoundException;
 import com.meetup.meetup.service.ProfileService;
 import com.meetup.meetup.service.vm.DetailedProfile;
 import com.meetup.meetup.service.vm.MinimalProfile;
-import com.meetup.meetup.service.vm.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

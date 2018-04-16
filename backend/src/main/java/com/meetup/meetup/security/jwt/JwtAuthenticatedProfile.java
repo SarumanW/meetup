@@ -47,6 +47,6 @@ public class JwtAuthenticatedProfile implements Authentication {
 
     @Override
     public String getName() {
-        return minimalProfile.getUsername();
+        return minimalProfile.getLogin();
     }
 }
