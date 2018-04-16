@@ -1,7 +1,8 @@
 import {Component, OnInit} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Account} from "../account";
 import {AccountService} from "../account.service";
+import {LoginAccount} from "../login.account";
+import {Router, ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -10,20 +11,28 @@ import {AccountService} from "../account.service";
 })
 export class LoginComponent implements OnInit {
   success: boolean;
-  account: Account;
+  account: LoginAccount;
+  returnUrl: string;
 
-  constructor(private accountService: AccountService) {
+  constructor(private accountService: AccountService,
+              private router: Router,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit() {
     this.success = false;
-    this.account = new Account();
+    this.account = new LoginAccount();
+
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/success';
   }
 
   logIn() {
       this.accountService.login(this.account).subscribe(
-        () => {
+        (data) => {
+          console.log("login component working")
           this.success = true;
+          console.log(data);
+          this.router.navigate([this.returnUrl])
         },
         response => this.processError(response)
       );

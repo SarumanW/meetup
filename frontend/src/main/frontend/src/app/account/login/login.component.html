@@ -32,7 +32,7 @@
 
         <div class="form-group">
           <label class="form-control-label" for="login">Username</label>
-          <input type="text" class="form-control" [(ngModel)]="account.username" id="login" name="login"
+          <input type="text" class="form-control" [(ngModel)]="account.login" id="login" name="login"
                  #login="ngModel" placeholder="username">
         </div>
 
@@ -43,11 +43,10 @@
                  [(ngModel)]="account.password">
         </div>
 
-        <button type="button" (click)="logIn()" [disabled]="loginForm.form.invalid" class="btn btn-primary"
-                routerLink="/success">
+        <button type="button" (click)="logIn()" [disabled]="loginForm.form.invalid" class="btn btn-primary">
           LogIn
         </button>
-        <button type="button" class="btn btn-primary" routerLink="/register">
+        <button type="button" class="btn btn-primary" [routerLink]="['/register']">
           Register
         </button>
       </form>
