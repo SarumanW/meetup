@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Account} from "../account";
+import {RegisterAccount} from "../register.account";
 import {AccountService} from "../account.service";
 
 @Component({
@@ -12,14 +12,14 @@ export class RegisterComponent implements OnInit {
   confirmPassword: string;
   doNotMatch: string;
   success: boolean;
-  account: Account;
+  account: RegisterAccount;
 
   constructor(private accountService: AccountService) {
   }
 
   ngOnInit() {
     this.success = false;
-    this.account = new Account();
+    this.account = new RegisterAccount();
   }
 
   register() {
