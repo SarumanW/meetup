@@ -47,7 +47,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         return user;
@@ -66,7 +66,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         return user;
@@ -84,7 +84,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         return user;
@@ -104,7 +104,7 @@ public class UserDaoImpl implements UserDao {
         parameters.put("login", model.getLogin());
         parameters.put("password", model.getPassword());
         parameters.put("name", model.getName());
-        parameters.put("surname", model.getLastName());
+        parameters.put("surname", model.getLastname());
         parameters.put("email", model.getEmail());
         parameters.put("timezone", model.getTimeZone());
         parameters.put("image_filepath", model.getImgPath());
@@ -115,7 +115,7 @@ public class UserDaoImpl implements UserDao {
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
             model.setId(id);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
 
@@ -127,10 +127,10 @@ public class UserDaoImpl implements UserDao {
         try {
             jdbcTemplate.update("UPDATE USER_S SET LOGIN = ?, PASSWORD = ?, NAME = ?, SURNAME = ?, EMAIL = ?," +
                             "TIMEZONE = ?, IMAGE_FILEPATH = ?, BDAY = ?, PHONE = ? WHERE USER_ID = ?",
-                    model.getId(), model.getPassword(), model.getName(), model.getLastName(), model.getEmail(), model.getTimeZone(),
+                    model.getId(), model.getPassword(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
                     model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
         } catch (DataAccessException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         return model.getId();
@@ -141,7 +141,7 @@ public class UserDaoImpl implements UserDao {
         try {
             jdbcTemplate.update("DELETE FROM USER_S WHERE USER_ID = ?", model.getId());
         } catch (DataAccessException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         return model.getId();

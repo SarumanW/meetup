@@ -38,7 +38,7 @@ export class AccountService {
           console.log("check section");
           if(err.status === 500){
             console.log(err.status)
-            this.messageService.message = err.message;
+            this.messageService.message = 'Wrong user/password';
           }
           if(err.status === 400){
             console.log(err.status)

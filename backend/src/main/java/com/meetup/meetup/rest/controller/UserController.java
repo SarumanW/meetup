@@ -38,6 +38,7 @@ public class UserController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public String registerAccount(@Valid @RequestBody User user) {
+        System.out.println("Controller"+user);
         if (null != userDao.findByLogin(user.getLogin()))  //checking if user exist in system
             throw new LoginAlreadyUsedException();
 

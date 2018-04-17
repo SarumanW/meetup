@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
         },
         response => {
           this.processError(response)
-          this.router.navigate(['/register']);}
+          this.router.navigate(['/login']);}
       );
     }
 
