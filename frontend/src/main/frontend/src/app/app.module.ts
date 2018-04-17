@@ -8,9 +8,10 @@ import { AppComponent } from './app.component';
 import {RegisterComponent} from "./account/register/register.component";
 import {AccountService} from "./account/account.service";
 import {LoginComponent} from "./account/login/login.component";
-import {ProfileComponent} from "./account/success/profile.component";
+import {ProfileComponent} from "./account/profile/profile.component";
 import {AppRoutingModule} from "./app-routing.module";
 import {AuthGuard} from "./account/auth.guard";
+import {MessageService} from "./account/message.service";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {AuthGuard} from "./account/auth.guard";
     AppRoutingModule
   ],
   providers: [AccountService,
-              AuthGuard,],
+              AuthGuard,
+              MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
