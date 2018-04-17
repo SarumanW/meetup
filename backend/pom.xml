@@ -148,7 +148,7 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.1</version>
 				<configuration>
-					<url>http://[address]/manager/text</url>
+					<url>[address]/manager/text</url>
 					<path>/</path>
 					<username>[username]</username>
 					<password>[password]</password>
