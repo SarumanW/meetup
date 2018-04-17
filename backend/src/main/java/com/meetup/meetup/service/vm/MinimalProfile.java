@@ -10,7 +10,7 @@ public class MinimalProfile {
 
     public MinimalProfile(User user) {
         name = user.getName();
-        lastname = user.getLastName();
+        lastname = user.getLastname();
         login = user.getLogin();
     }
 

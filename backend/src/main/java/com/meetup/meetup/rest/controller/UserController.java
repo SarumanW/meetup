@@ -34,6 +34,7 @@ public class UserController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public String registerAccount(@Valid @RequestBody User user) {
+        System.out.println("Controller"+user);
         if (null != userDao.findByLogin(user.getLogin()))  //checking if user exist in system
             return Json.createObjectBuilder().add("error", "This username is busy").build().toString();
 
@@ -47,7 +48,6 @@ public class UserController {
 
         if (userDao.insert(user) == -1) //checking adding to DB
             return Json.createObjectBuilder().add("error", "Something went wrong").build().toString();
-
         mailService.sendMail(user.getEmail(), "Registration successfully", String.format(MailService.templateRegister, user.getName(), user.getLogin(), user.getPassword()));
         return Json.createObjectBuilder().add("success", "Success").build().toString();
     }

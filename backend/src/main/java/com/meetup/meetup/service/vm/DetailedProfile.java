@@ -14,7 +14,7 @@ public class DetailedProfile {
 
     public DetailedProfile(User user) {
         name = user.getName();
-        lastname = user.getLastName();
+        lastname = user.getLastname();
         email = user.getEmail();
         login = user.getLogin();
         birthDay = user.getBirthDay();
