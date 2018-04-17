@@ -46,8 +46,6 @@ public class UserDaoImpl implements UserDao {
                     new Object[]{login}, new UserRowMapper() {
                     }
             );
-        } catch (EmptyResultDataAccessException e) {
-            return null;
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
@@ -67,8 +65,6 @@ public class UserDaoImpl implements UserDao {
                     new Object[]{email}, new UserRowMapper() {
                     }
             );
-        } catch (EmptyResultDataAccessException e) {
-            return null;
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
@@ -87,8 +83,6 @@ public class UserDaoImpl implements UserDao {
                     new Object[]{id}, new UserRowMapper() {
                     }
             );
-        } catch (EmptyResultDataAccessException e) {
-            return null;
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
