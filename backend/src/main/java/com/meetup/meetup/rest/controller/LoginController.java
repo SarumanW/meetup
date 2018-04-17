@@ -1,6 +1,7 @@
 package com.meetup.meetup.rest.controller;
 
-import com.meetup.meetup.exception.FailedToLoginException;
+import com.meetup.meetup.rest.controller.errors.FailedToLoginException;
+import com.meetup.meetup.rest.controller.errors.MD5EncodingException;
 import com.meetup.meetup.security.utils.HashMD5;
 import com.meetup.meetup.service.JwtService;
 import com.meetup.meetup.service.LoginService;
@@ -16,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api/login")
@@ -31,15 +31,13 @@ public class LoginController {
                                 HttpServletResponse response) {
         String md5Pass = HashMD5.hash(credentials.getPassword());
 
-        if(md5Pass == null)
-            throw new FailedToLoginException(credentials.getLogin());
+        if(md5Pass == null) throw new FailedToLoginException(credentials.getLogin());
 
         credentials.setPassword(md5Pass);
 
         MinimalProfile minimalProfile = loginService.login(credentials);
 
-        if (minimalProfile == null)
-            throw new FailedToLoginException(credentials.getLogin());
+        if (minimalProfile == null) throw new FailedToLoginException(credentials.getLogin());
 
         String token = null;
 

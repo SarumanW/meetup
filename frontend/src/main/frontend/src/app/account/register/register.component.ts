@@ -11,6 +11,9 @@ import {AccountService} from "../account.service";
 export class RegisterComponent implements OnInit {
   confirmPassword: string;
   doNotMatch: string;
+  error: string;
+  errorEmailExists: string;
+  errorLoginExists: string;
   success: boolean;
   account: RegisterAccount;
 
@@ -38,5 +41,12 @@ export class RegisterComponent implements OnInit {
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
+    if (response.message === 'Login already used') {
+      this.errorLoginExists = 'ERROR';
+    } else if (response.message === 'Email already used') {
+      this.errorEmailExists = 'ERROR';
+    } else {
+      this.error = 'ERROR';
+    }
   }
 }

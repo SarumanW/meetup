@@ -3,6 +3,10 @@ package com.meetup.meetup.rest.controller;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.impl.UserDaoImpl;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.rest.controller.errors.DatabaseWorkException;
+import com.meetup.meetup.rest.controller.errors.EmailAlreadyUsedException;
+import com.meetup.meetup.rest.controller.errors.LoginAlreadyUsedException;
+import com.meetup.meetup.rest.controller.errors.MD5EncodingException;
 import com.meetup.meetup.security.utils.HashMD5;
 import com.meetup.meetup.service.MailService;
 import io.jsonwebtoken.Jwts;
@@ -35,18 +39,18 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public String registerAccount(@Valid @RequestBody User user) {
         if (null != userDao.findByLogin(user.getLogin()))  //checking if user exist in system
-            return Json.createObjectBuilder().add("error", "This username is busy").build().toString();
+            throw new LoginAlreadyUsedException();
 
         if (null != userDao.findByEmail(user.getEmail())) //checking if email exist in system
-            return Json.createObjectBuilder().add("error", "This email is busy").build().toString();
+            throw new EmailAlreadyUsedException();
 
         String md5Pass = HashMD5.hash(user.getPassword());
 
         if(null == md5Pass)
-            return Json.createObjectBuilder().add("error", "Bad password").toString();
+            throw new MD5EncodingException();
 
         if (userDao.insert(user) == -1) //checking adding to DB
-            return Json.createObjectBuilder().add("error", "Something went wrong").build().toString();
+            throw new DatabaseWorkException();
 
         mailService.sendMail(user.getEmail(), "Registration successfully", String.format(MailService.templateRegister, user.getName(), user.getLogin(), user.getPassword()));
         return Json.createObjectBuilder().add("success", "Success").build().toString();
