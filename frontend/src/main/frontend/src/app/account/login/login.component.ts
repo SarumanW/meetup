@@ -23,16 +23,17 @@ export class LoginComponent implements OnInit {
     this.success = false;
     this.account = new LoginAccount();
 
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/success';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/profile/details';
   }
 
   logIn() {
       this.accountService.login(this.account).subscribe(
-        (data) => {
+        (user) => {
           console.log("login component working")
           this.success = true;
-          console.log(data);
-          this.router.navigate([this.returnUrl])
+          this.account = user;
+          console.log("login data taken" + this.account.login);
+          this.router.navigate(['/profile/details/beautifulmeercat336']);
         },
         response => this.processError(response)
       );

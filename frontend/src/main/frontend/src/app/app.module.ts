@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import {RegisterComponent} from "./account/register/register.component";
 import {AccountService} from "./account/account.service";
 import {LoginComponent} from "./account/login/login.component";
-import {SuccessComponent} from "./account/success/success.component";
+import {ProfileComponent} from "./account/success/profile.component";
 import {AppRoutingModule} from "./app-routing.module";
 import {AuthGuard} from "./account/auth.guard";
 
@@ -17,7 +17,7 @@ import {AuthGuard} from "./account/auth.guard";
     AppComponent,
     RegisterComponent,
     LoginComponent,
-    SuccessComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -27,7 +27,6 @@ import {AuthGuard} from "./account/auth.guard";
   ],
   providers: [AccountService,
               AuthGuard,],
-
   bootstrap: [AppComponent]
 })
 export class AppModule { }
