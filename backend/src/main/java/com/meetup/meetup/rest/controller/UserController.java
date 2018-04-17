@@ -7,6 +7,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +31,7 @@ public class UserController {
     private MailService mailService;
 
 
-    private static String getMd5Hash(String line){ //function for get MD5 Hash
+    private static String getMd5Hash(String line) { //function for get MD5 Hash
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(line.getBytes());
@@ -45,22 +47,27 @@ public class UserController {
     @PostMapping(path = "/register", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public String registerAccount(@Valid @RequestBody User user) {
-        if (null != userDaoImpl.findByLogin(user.getLogin())) { //checking if user exist in system
-            return Json.createObjectBuilder().add("error", "This username is busy").build().toString();
-        }
-        if (null != userDaoImpl.findByEmail(user.getEmail())) { //checking if email exist in system
-            return Json.createObjectBuilder().add("error", "This email is busy").build().toString();
-        }
+        try {
+            if (null != userDaoImpl.findByLogin(user.getLogin())) { //checking if user exist in system
+                return Json.createObjectBuilder().add("error", "This username is busy").build().toString();
+            }
 
-        String notHashedPass = user.getPassword(); //hashing password
-        user.setPassword(getMd5Hash(notHashedPass));
+            if (null != userDaoImpl.findByEmail(user.getEmail())) { //checking if email exist in system
+                return Json.createObjectBuilder().add("error", "This email is busy").build().toString();
+            }
 
-        if (userDaoImpl.insert(user) == -1) { //checking adding to DB
-            return Json.createObjectBuilder().add("error", "Something went wrong").build().toString();
+            String notHashedPass = user.getPassword(); //hashing password
+            user.setPassword(getMd5Hash(notHashedPass));
+
+            if (userDaoImpl.insert(user) == -1) { //checking adding to DB
+                return Json.createObjectBuilder().add("error", "Something went wrong").build().toString();
+            }
+
+            mailService.sendMail(user.getEmail(), "Registration successfully", String.format(MailService.templateRegister, user.getName(), user.getLogin(), user.getPassword()));
+            return Json.createObjectBuilder().add("success", "Success").build().toString();
+        }catch (Exception e){
+            return Json.createObjectBuilder().add("error", e.toString()).build().toString();
         }
-
-        mailService.sendMail(user.getEmail(), "Registration successfully", String.format(MailService.templateRegister, user.getName(), user.getLogin(), user.getPassword()));
-        return Json.createObjectBuilder().add("success", "Success").build().toString();
     }
 
     @PostMapping("/login")
@@ -78,6 +85,6 @@ public class UserController {
         }
 
         Key key = MacProvider.generateKey();
-        return Jwts.builder().setSubject(user.getLogin()).signWith(SignatureAlgorithm.HS256,key).compact();
+        return Jwts.builder().setSubject(user.getLogin()).signWith(SignatureAlgorithm.HS256, key).compact();
     }
 }

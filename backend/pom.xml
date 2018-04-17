@@ -21,6 +21,13 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-tomcat -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<version>2.0.1.RELEASE</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -117,7 +124,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-
+<!--
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
@@ -127,7 +134,7 @@
 						</resource>
 					</webResources>
 				</configuration>
-			</plugin>
+			</plugin>-->
 
 			<!-- Deploy wars to Tomcat 7 with mvn tomcat7:deploy or tomcat7:redeploy -->
 			<plugin>
@@ -135,10 +142,10 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.1</version>
 				<configuration>
-					<url>http://35.196.1.189:80/manager/text</url>
+					<url>http://[address]/manager/text</url>
 					<path>/</path>
-					<username>meetup</username>
-					<password>oSd27kjwm04W1viTwz</password>
+					<username>[username]</username>
+					<password>[password]</password>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -10,7 +10,9 @@ export class AccountService {
   constructor(private http: HttpClient) {}
 
   save(account: any): Observable<any> {
-    return this.http.post('api/register', account);
+    var out : Observable<any> = this.http.post('api/register', account);
+    out.subscribe(message => console.log(message));
+    return out;
   }
 
   login(account: any): Observable<any> {
