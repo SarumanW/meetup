@@ -1,7 +1,9 @@
 package com.meetup.meetup.rest.controller;
 
+import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.impl.UserDaoImpl;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.security.utils.HashMD5;
 import com.meetup.meetup.service.MailService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -24,60 +26,29 @@ import java.security.NoSuchAlgorithmException;
 public class UserController {
 
     @Autowired
-    private UserDaoImpl userDaoImpl;
+    private UserDao userDao;
     @Autowired
     private MailService mailService;
 
 
-    private static String getMd5Hash(String line){ //function for get MD5 Hash
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(line.getBytes());
-            byte[] digest = md.digest();
-            return DatatypeConverter.printHexBinary(digest).toUpperCase();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return "something went wrong";
-    }
-
-
-    @PostMapping(path = "/register", consumes = "application/json", produces = "application/json")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public String registerAccount(@Valid @RequestBody User user) {
-        if (null != userDaoImpl.findByLogin(user.getLogin())) { //checking if user exist in system
+        if (null != userDao.findByLogin(user.getLogin()))  //checking if user exist in system
             return Json.createObjectBuilder().add("error", "This username is busy").build().toString();
-        }
-        if (null != userDaoImpl.findByEmail(user.getEmail())) { //checking if email exist in system
+
+        if (null != userDao.findByEmail(user.getEmail())) //checking if email exist in system
             return Json.createObjectBuilder().add("error", "This email is busy").build().toString();
-        }
 
-        String notHashedPass = user.getPassword(); //hashing password
-        user.setPassword(getMd5Hash(notHashedPass));
+        String md5Pass = HashMD5.hash(user.getPassword());
 
-        if (userDaoImpl.insert(user) == -1) { //checking adding to DB
+        if(null == md5Pass)
+            return Json.createObjectBuilder().add("error", "Bad password").toString();
+
+        if (userDao.insert(user) == -1) //checking adding to DB
             return Json.createObjectBuilder().add("error", "Something went wrong").build().toString();
-        }
 
         mailService.sendMail(user.getEmail(), "Registration successfully", String.format(MailService.templateRegister, user.getName(), user.getLogin(), user.getPassword()));
         return Json.createObjectBuilder().add("success", "Success").build().toString();
-    }
-
-    @PostMapping("/login")
-    @ResponseStatus(HttpStatus.CREATED)
-    public String loginAccount(@Valid @RequestBody User user) {
-
-        String value = Json.createObjectBuilder().add("error", "Login or password incorrect").build().toString();
-
-        User requestedUser = userDaoImpl.findByLogin(user.getLogin());
-        if (null == requestedUser) { //checking existence of user in system
-            return value;
-        }
-        if (!requestedUser.getPassword().equals(getMd5Hash(user.getPassword()))) { //checking equals hash of password
-            return value;
-        }
-
-        Key key = MacProvider.generateKey();
-        return Jwts.builder().setSubject(user.getLogin()).signWith(SignatureAlgorithm.HS256,key).compact();
     }
 }

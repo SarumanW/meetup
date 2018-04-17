@@ -2,21 +2,46 @@ package com.meetup.meetup.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.meetup.meetup.service.vm.FictUser;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class User {
 
+    @JsonIgnore
     private int id;
+
+    @NotBlank
+    @Size(min = 4, max = 50)
     private String login;
+
+    @Size(min = 6, max = 50)
     private String password;
+
+    @Email
+    @Size(min = 5, max = 100)
     private String email;
-    private String phone;
+
+    @Size(min = 4, max = 254)
     private String name;
-    private String lastName;
+
+    @Size(min = 4, max = 254)
+    private String lastname;
+
+    @JsonIgnore
+    private String phone;
+
+    @JsonIgnore
     private LocalDate birthDay;
+
+    @JsonIgnore
     private int timeZone;
+
+    @JsonIgnore
     private String imgPath;
 
     public User() {
@@ -30,7 +55,7 @@ public class User {
         email = fictUser.getEmail();
         phone = fictUser.getPhone();
         name = fictUser.getName();
-        lastName = fictUser.getLastName();
+        lastname = fictUser.getLastName();
         birthDay = LocalDate.now();
         timeZone = fictUser.getTimeZone();
         imgPath = fictUser.getImgPath();
@@ -85,11 +110,11 @@ public class User {
     }
 
     public String getLastName() {
-        return lastName;
+        return lastname;
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastname = lastName;
     }
 
     public LocalDate getBirthDay() {
@@ -125,7 +150,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", lastName='" + lastname + '\'' +
                 ", birthDay=" + birthDay +
                 ", timeZone=" + timeZone +
                 ", imgPath='" + imgPath + '\'' +
@@ -143,7 +168,7 @@ public class User {
         if (!login.equals(user.login)) return false;
         if (!email.equals(user.email)) return false;
         if (!name.equals(user.name)) return false;
-        if (!lastName.equals(user.lastName)) return false;
+        if (!lastname.equals(user.lastname)) return false;
         return birthDay != null ? birthDay.equals(user.birthDay) : user.birthDay == null;
     }
 
@@ -153,7 +178,7 @@ public class User {
         result = 31 * result + login.hashCode();
         result = 31 * result + email.hashCode();
         result = 31 * result + name.hashCode();
-        result = 31 * result + lastName.hashCode();
+        result = 31 * result + lastname.hashCode();
         result = 31 * result + (birthDay != null ? birthDay.hashCode() : 0);
         return result;
     }

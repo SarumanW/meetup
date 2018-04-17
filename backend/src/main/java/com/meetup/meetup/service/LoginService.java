@@ -13,7 +13,7 @@ public class LoginService {
     private ProfileService profileService;
 
     public MinimalProfile login(LoginProfile credentials) {
-        User user = profileService.get(credentials.getUsername());
+        User user = profileService.get(credentials.getLogin());
         if (user != null && user.getPassword().equals(credentials.getPassword()))
             return new MinimalProfile(user);
 

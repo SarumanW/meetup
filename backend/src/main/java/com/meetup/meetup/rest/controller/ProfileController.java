@@ -11,29 +11,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "account/profile")
+@RequestMapping(path = "/api/profile")
 public class ProfileController {
 
     @Autowired
     private ProfileService profileService;
 
-    @GetMapping("/{username}")
-    public MinimalProfile minimal(@PathVariable String username) {
+    @GetMapping("/{login}")
+    public MinimalProfile minimal(@PathVariable String login) {
 
-        MinimalProfile minProfile =  profileService.minimal(username);
+        MinimalProfile minProfile =  profileService.minimal(login);
 
         if (minProfile == null)
-            throw new ProfileNotFoundException(username);
+            throw new ProfileNotFoundException(login);
 
         return minProfile;
     }
 
-    @GetMapping("/details/{username}")
-    public DetailedProfile details(@PathVariable String username) {
-        DetailedProfile detailedProfile = profileService.detailed(username);
+    @GetMapping("/details/{login}")
+    public DetailedProfile details(@PathVariable String login) {
+        DetailedProfile detailedProfile = profileService.detailed(login);
 
         if (detailedProfile == null)
-            throw new ProfileNotFoundException(username);
+            throw new ProfileNotFoundException(login);
 
         return detailedProfile;
     }

@@ -20,9 +20,11 @@ import static java.time.ZoneOffset.UTC;
 @Component
 public class JwtService {
 
+    private static final String SUBJECT = "meetup";
+
     private static final String ISSUER = "in.sdqali.jwt";
 
-    public static final String USERNAME = "username";
+    public static final String LOGIN = "login";
 
     @Autowired
     private SecretKeyProvider secretKeyProvider;
@@ -38,12 +40,12 @@ public class JwtService {
 
     public String tokenFor(MinimalProfile minimalProfile) throws IOException, URISyntaxException {
         byte[] secretKey = secretKeyProvider.getKey();
-        Date expiration = Date.from(LocalDateTime.now(UTC).plusHours(2).toInstant(UTC));
+        Date expiration = Date.from(LocalDateTime.now(UTC).plusMinutes(2).toInstant(UTC));
         return Jwts.builder()
-                .setSubject("jwt-demo")
+                .setSubject(SUBJECT)
                 .setExpiration(expiration)
                 .setIssuer(ISSUER)
-                .claim(USERNAME, minimalProfile.getLogin())
+                .claim(LOGIN, minimalProfile.getLogin())
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }

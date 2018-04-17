@@ -1,15 +1,23 @@
 package com.meetup.meetup.service.vm;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 public class LoginProfile {
-    private String username;
+
+    @NotBlank
+    @Size(min = 4, max = 50)
+    private String login;
+
+    @Size(min = 6, max = 50)
     private String password;
 
-    public String getUsername() {
-        return username;
+    public String getLogin() {
+        return login;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getPassword() {

@@ -1,6 +1,7 @@
 package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.exception.FailedToLoginException;
+import com.meetup.meetup.security.utils.HashMD5;
 import com.meetup.meetup.service.JwtService;
 import com.meetup.meetup.service.LoginService;
 import com.meetup.meetup.service.vm.LoginProfile;
@@ -12,12 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "account/login")
+@RequestMapping(path = "/api/login")
 public class LoginController {
     @Autowired
     private LoginService loginService;
@@ -25,13 +27,22 @@ public class LoginController {
     private JwtService jwtService;
 
     @PostMapping
-    public MinimalProfile login(@RequestBody LoginProfile credentials,
+    public MinimalProfile login(@Valid @RequestBody LoginProfile credentials,
                                 HttpServletResponse response) {
+        String md5Pass = HashMD5.hash(credentials.getPassword());
+
+        if(md5Pass == null)
+            throw new FailedToLoginException(credentials.getLogin());
+
+        credentials.setPassword(md5Pass);
+
         MinimalProfile minimalProfile = loginService.login(credentials);
+
         if (minimalProfile == null)
-            throw new FailedToLoginException(credentials.getUsername());
+            throw new FailedToLoginException(credentials.getLogin());
 
         String token = null;
+
         try {
             token = jwtService.tokenFor(minimalProfile);
             minimalProfile.setToken(token);
@@ -40,6 +51,7 @@ public class LoginController {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+
         response.setHeader("Token", token);
         return minimalProfile;
     }

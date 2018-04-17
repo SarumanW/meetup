@@ -42,7 +42,7 @@ public class ProfileService {
             if (login.equals(user.getLogin()))
                 return user;
         return null;
-        //return userDao.findByLogin(login);
+//        return userDao.findByLogin(login);
     }
 
     public MinimalProfile minimal(String username) {
