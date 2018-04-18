@@ -49,7 +49,7 @@
         <div class="form-group">
           <label class="form-control-label" for="name">Name</label>
           <input type="text" class="form-control" [(ngModel)]="account.name" id="name" name="name"
-                 #login="ngModel" placeholder="name"
+                 #name="ngModel" placeholder="name"
                  minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="name.dirty && name.invalid">
             <small class="form-text text-danger" *ngIf="name.errors.required">
@@ -69,7 +69,7 @@
         <div class="form-group">
           <label class="form-control-label" for="lastName">Last name</label>
           <input type="text" class="form-control" [(ngModel)]="account.lastname" id="lastName" name="lastName"
-                 #login="ngModel" placeholder="lastName"
+                 #lastName="ngModel" placeholder="lastName"
                  minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="lastName.dirty && lastName.invalid">
             <small class="form-text text-danger" *ngIf="lastName.errors.required">
@@ -124,7 +124,7 @@
         </div>
         <div class="form-group">
           <label class="form-control-label" for="confirmPassword">Password confirmation</label>
-          <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+          <input type="password" class="form-control" id="confirmPassword" name="confirmPasswordInput"
                  #confirmPasswordInput="ngModel" placeholder="confirm"
                  [(ngModel)]="confirmPassword" minlength=6 maxlength=50 required>
           <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">

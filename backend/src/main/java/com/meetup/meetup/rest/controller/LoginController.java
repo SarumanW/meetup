@@ -33,7 +33,7 @@ public class LoginController {
 
         if(md5Pass == null) throw new FailedToLoginException(credentials.getLogin());
 
-        //credentials.setPassword(md5Pass);
+        credentials.setPassword(md5Pass);
 
         MinimalProfile minimalProfile = loginService.login(credentials);
 
