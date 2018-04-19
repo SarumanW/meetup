@@ -5,7 +5,8 @@ import {LoginAccount} from "../login.account";
 
 @Component({
   selector: 'app-success',
-  templateUrl: './profile.component.html'
+  templateUrl: './profile.component.html',
+  styleUrls: [ './profile.component.css' ]
 })
 
 export class ProfileComponent {
@@ -18,15 +19,15 @@ export class ProfileComponent {
   }
 
   ngOnInit() {
-    this.account = JSON.parse(localStorage.getItem('currentUser'));
-
-    console.log("profile service working");
-
-    this.accountService.profile(this.account).subscribe(
-      (data) => {
-        this.profile = data;
-      }
-    )
+    // this.account = JSON.parse(localStorage.getItem('currentUser'));
+    //
+    // console.log("profile service working");
+    //
+    // this.accountService.profile(this.account).subscribe(
+    //   (data) => {
+    //     this.profile = data;
+    //   }
+    // )
   }
 
   logout(){
