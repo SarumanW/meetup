@@ -5,6 +5,8 @@ import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,7 +19,10 @@ import java.util.Map;
 
 
 @Repository
+@PropertySource("classpath:sqlUserDao.properties")
 public class UserDaoImpl implements UserDao {
+
+    private Environment env;
 
     private JdbcTemplate jdbcTemplate;
 
@@ -35,19 +40,23 @@ public class UserDaoImpl implements UserDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Autowired
+    public void setEnvironment(Environment env) {
+        this.env = env;
+    }
+
     @Override
     public User findByLogin(String login) {
         User user = null;
 
         try {
             user = jdbcTemplate.queryForObject(
-                    "SELECT USER_ID,login, password, name, surname, email, timezone, image_filepath, bday, phone " +
-                            "FROM USER_S WHERE LOGIN = ?",
+                    env.getProperty("user.findByLogin"),
                     new Object[]{login}, new UserRowMapper() {
                     }
             );
         } catch (DataAccessException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
 
         return user;
@@ -60,13 +69,12 @@ public class UserDaoImpl implements UserDao {
 
         try {
             user = jdbcTemplate.queryForObject(
-                    "SELECT USER_ID,login, password, name, surname, email, timezone, image_filepath, bday, phone " +
-                            "FROM USER_S WHERE EMAIL = ?",
+                    env.getProperty("user.findByEmail"),
                     new Object[]{email}, new UserRowMapper() {
                     }
             );
         } catch (DataAccessException e) {
-//            e.printStackTrace();
+           e.printStackTrace();
         }
 
         return user;
@@ -78,13 +86,12 @@ public class UserDaoImpl implements UserDao {
 
         try {
             user = jdbcTemplate.queryForObject(
-                    "SELECT USER_ID,login, password, name, surname, email, timezone, image_filepath, bday, phone " +
-                            "FROM USER_S WHERE USER_ID = ?",
+                    env.getProperty("user.findById"),
                     new Object[]{id}, new UserRowMapper() {
                     }
             );
         } catch (DataAccessException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
 
         return user;
@@ -115,7 +122,7 @@ public class UserDaoImpl implements UserDao {
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
             model.setId(id);
         } catch (DataAccessException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
 
 
@@ -125,12 +132,11 @@ public class UserDaoImpl implements UserDao {
     @Override
     public int update(User model) {
         try {
-            jdbcTemplate.update("UPDATE USER_S SET LOGIN = ?, PASSWORD = ?, NAME = ?, SURNAME = ?, EMAIL = ?," +
-                            "TIMEZONE = ?, IMAGE_FILEPATH = ?, BDAY = ?, PHONE = ? WHERE USER_ID = ?",
-                    model.getId(), model.getPassword(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
+            jdbcTemplate.update(env.getProperty("user.update"),
+                    model.getLogin(), model.getPassword(),  model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
                     model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
         } catch (DataAccessException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
 
         return model.getId();
@@ -139,9 +145,9 @@ public class UserDaoImpl implements UserDao {
     @Override
     public int delete(User model) {
         try {
-            jdbcTemplate.update("DELETE FROM USER_S WHERE USER_ID = ?", model.getId());
+            jdbcTemplate.update(env.getProperty("user.delete"), model.getId());
         } catch (DataAccessException e) {
-//            e.printStackTrace();
+           e.printStackTrace();
         }
 
         return model.getId();
