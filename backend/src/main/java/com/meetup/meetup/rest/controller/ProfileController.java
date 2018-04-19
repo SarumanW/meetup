@@ -2,8 +2,7 @@ package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.exception.ProfileNotFoundException;
 import com.meetup.meetup.service.ProfileService;
-import com.meetup.meetup.service.vm.DetailedProfile;
-import com.meetup.meetup.service.vm.MinimalProfile;
+import com.meetup.meetup.service.vm.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,13 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/api/profile")
 public class ProfileController {
 
+    // TODO: 4/19/2018 Remove deprecated methods. Use only Profile class. Add new methods. All logic to service
+
     @Autowired
     private ProfileService profileService;
 
+    @Deprecated
     @GetMapping("/{login}")
-    public MinimalProfile minimal(@PathVariable String login) {
+    public Profile minimal(@PathVariable String login) {
 
-        MinimalProfile minProfile =  profileService.minimal(login);
+        Profile minProfile =  profileService.minimal(login);
 
         if (minProfile == null)
             throw new ProfileNotFoundException(login);
@@ -28,9 +30,10 @@ public class ProfileController {
         return minProfile;
     }
 
+    @Deprecated
     @GetMapping("/details/{login}")
-    public DetailedProfile details(@PathVariable String login) {
-        DetailedProfile detailedProfile = profileService.detailed(login);
+    public Profile details(@PathVariable String login) {
+        Profile detailedProfile = profileService.detailed(login);
 
         if (detailedProfile == null)
             throw new ProfileNotFoundException(login);

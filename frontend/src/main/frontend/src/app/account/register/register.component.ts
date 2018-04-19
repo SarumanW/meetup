@@ -41,16 +41,13 @@ export class RegisterComponent implements OnInit {
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
-    if (response.error.message === 'Login already used') {
+    if (response.error === 'Login already used') {
       this.errorLoginExists = 'ERROR';
-    } else if (response.error.message === 'Email already used') {
+    } else if (response.error === 'Email already used') {
       this.errorEmailExists = 'ERROR';
     } else {
       this.error = 'ERROR';
     }
-    console.log(response);
-    console.log(response.error);
-    console.log(response.message);
-    console.log(response.error.message);
+
   }
 }

@@ -13,6 +13,7 @@ import {MessageService} from "../message.service";
 export class LoginComponent implements OnInit {
   success: boolean;
   account: LoginAccount;
+  errorMessage: string;
 
   constructor(private accountService: AccountService,
               private router: Router,
@@ -43,5 +44,6 @@ export class LoginComponent implements OnInit {
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
+    this.errorMessage = response.error;
   }
 }

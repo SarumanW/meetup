@@ -37,9 +37,7 @@ public class MailService {
                 });
     }
 
-    public boolean sendMail(String address, String subject, String mail) {
-        try {
-
+    public void sendMail(String address, String subject, String mail) throws MessagingException {
             Message message = new MimeMessage(session);
             Multipart multipart = new MimeMultipart(" alternative");
             message.setFrom(new InternetAddress());
@@ -55,11 +53,6 @@ public class MailService {
 
             Transport.send(message);
 
-            return true;
-
-        } catch (MessagingException e) {
-            return false;
-        }
     }
 
 }

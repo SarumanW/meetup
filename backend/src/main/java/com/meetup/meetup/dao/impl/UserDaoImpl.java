@@ -3,23 +3,24 @@ package com.meetup.meetup.dao.impl;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.rest.controller.errors.FailedToLoginException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 @Repository
-@PropertySource("classpath:sqlUserDao.properties")
+@PropertySource("classpath:sqlDao.properties")
 public class UserDaoImpl implements UserDao {
 
     private Environment env;
@@ -48,7 +49,6 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findByLogin(String login) {
         User user = null;
-
         try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findByLogin"),
@@ -56,7 +56,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         return user;
@@ -66,7 +66,6 @@ public class UserDaoImpl implements UserDao {
     public User findByEmail(String email) {
 
         User user = null;
-
         try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findByEmail"),
@@ -74,16 +73,21 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-           e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         return user;
     }
 
     @Override
+    public List<Integer> friendsIds(String id) {
+        // TODO: 4/19/2018 Implement method get list friends ids
+        return null;
+    }
+
+    @Override
     public User findById(int id) {
         User user = null;
-
         try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findById"),
@@ -91,9 +95,8 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
-
         return user;
     }
 
@@ -117,15 +120,12 @@ public class UserDaoImpl implements UserDao {
         parameters.put("image_filepath", model.getImgPath());
         parameters.put("bday", (model.getBirthDay() != null ? Date.valueOf(model.getBirthDay()) : null));
         parameters.put("phone", model.getPhone());
-
         try {
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
             model.setId(id);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
-
-
         return id;
     }
 
@@ -133,12 +133,11 @@ public class UserDaoImpl implements UserDao {
     public int update(User model) {
         try {
             jdbcTemplate.update(env.getProperty("user.update"),
-                    model.getLogin(), model.getPassword(),  model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
+                    model.getLogin(), model.getPassword(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
                     model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
-
         return model.getId();
     }
 
@@ -147,9 +146,8 @@ public class UserDaoImpl implements UserDao {
         try {
             jdbcTemplate.update(env.getProperty("user.delete"), model.getId());
         } catch (DataAccessException e) {
-           e.printStackTrace();
+            System.out.println(e.getMessage());
         }
-
         return model.getId();
     }
 }
