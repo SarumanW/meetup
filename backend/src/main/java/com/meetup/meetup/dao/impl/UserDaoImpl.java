@@ -1,0 +1,155 @@
+package com.meetup.meetup.dao.impl;
+
+import com.meetup.meetup.dao.UserDao;
+import com.meetup.meetup.dao.rowMappers.UserRowMapper;
+import com.meetup.meetup.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
+
+import java.sql.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+
+@Repository
+@PropertySource("classpath:sqlUserDao.properties")
+public class UserDaoImpl implements UserDao {
+
+    private Environment env;
+
+    private JdbcTemplate jdbcTemplate;
+
+    public JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
+    }
+
+    public String testMethod() {
+        return "configuration passed";
+    }
+
+    @Autowired
+    @Qualifier("jdbcTemplate")
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Autowired
+    public void setEnvironment(Environment env) {
+        this.env = env;
+    }
+
+    @Override
+    public User findByLogin(String login) {
+        User user = null;
+
+        try {
+            user = jdbcTemplate.queryForObject(
+                    env.getProperty("user.findByLogin"),
+                    new Object[]{login}, new UserRowMapper() {
+                    }
+            );
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
+    @Override
+    public User findByEmail(String email) {
+
+        User user = null;
+
+        try {
+            user = jdbcTemplate.queryForObject(
+                    env.getProperty("user.findByEmail"),
+                    new Object[]{email}, new UserRowMapper() {
+                    }
+            );
+        } catch (DataAccessException e) {
+           e.printStackTrace();
+        }
+
+        return user;
+    }
+
+    @Override
+    public User findById(int id) {
+        User user = null;
+
+        try {
+            user = jdbcTemplate.queryForObject(
+                    env.getProperty("user.findById"),
+                    new Object[]{id}, new UserRowMapper() {
+                    }
+            );
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
+    @Override
+    public int insert(User model) {
+
+        int id = -1;
+
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
+                .withTableName("USER_S")
+                .usingGeneratedKeyColumns("USER_ID");
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("USER_ID", model.getId());
+        parameters.put("login", model.getLogin());
+        parameters.put("password", model.getPassword());
+        parameters.put("name", model.getName());
+        parameters.put("surname", model.getLastname());
+        parameters.put("email", model.getEmail());
+        parameters.put("timezone", model.getTimeZone());
+        parameters.put("image_filepath", model.getImgPath());
+        parameters.put("bday", (model.getBirthDay() != null ? Date.valueOf(model.getBirthDay()) : null));
+        parameters.put("phone", model.getPhone());
+
+        try {
+            id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
+            model.setId(id);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+
+
+        return id;
+    }
+
+    @Override
+    public int update(User model) {
+        try {
+            jdbcTemplate.update(env.getProperty("user.update"),
+                    model.getLogin(), model.getPassword(),  model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
+                    model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+
+        return model.getId();
+    }
+
+    @Override
+    public int delete(User model) {
+        try {
+            jdbcTemplate.update(env.getProperty("user.delete"), model.getId());
+        } catch (DataAccessException e) {
+           e.printStackTrace();
+        }
+
+        return model.getId();
+    }
+}

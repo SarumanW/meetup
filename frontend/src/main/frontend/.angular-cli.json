@@ -8,8 +8,7 @@
       "root": "src",
       "outDir": "../../../target/frontend",
       "assets": [
-        "assets",
-        "favicon.ico"
+        "assets"
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -19,6 +18,7 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
+        "bootstrap.css",
         "styles.css"
       ],
       "scripts": [],
@@ -55,6 +55,9 @@
   },
   "defaults": {
     "styleExt": "css",
-    "component": {}
+    "component": {},
+    "serve": {
+      "port": 8099
+    }
   }
 }
