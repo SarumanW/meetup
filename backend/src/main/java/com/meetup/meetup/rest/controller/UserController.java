@@ -46,7 +46,7 @@ public class UserController {
 
         String md5Pass = HashMD5.hash(user.getPassword());
 
-        if(null == md5Pass)
+        if (null == md5Pass)
             throw new MD5EncodingException();
 
         if (userDao.insert(user) == -1) //checking adding to DB

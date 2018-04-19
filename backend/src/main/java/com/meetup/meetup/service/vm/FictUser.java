@@ -1,5 +1,6 @@
 package com.meetup.meetup.service.vm;
 
+
 public class FictUser {
     private int id;
     private String login;

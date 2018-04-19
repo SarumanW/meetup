@@ -40,7 +40,7 @@ public class JwtService {
 
     public String tokenFor(MinimalProfile minimalProfile) throws IOException, URISyntaxException {
         byte[] secretKey = secretKeyProvider.getKey();
-        Date expiration = Date.from(LocalDateTime.now(UTC).plusMinutes(2).toInstant(UTC));
+        Date expiration = Date.from(LocalDateTime.now(UTC).plusHours(2).toInstant(UTC));
         return Jwts.builder()
                 .setSubject(SUBJECT)
                 .setExpiration(expiration)

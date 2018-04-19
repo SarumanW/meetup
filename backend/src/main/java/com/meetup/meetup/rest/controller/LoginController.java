@@ -33,7 +33,7 @@ public class LoginController {
 
         if(md5Pass == null) throw new FailedToLoginException(credentials.getLogin());
 
-        credentials.setPassword(md5Pass);
+        //credentials.setPassword(md5Pass);
 
         MinimalProfile minimalProfile = loginService.login(credentials);
 
@@ -44,9 +44,9 @@ public class LoginController {
         try {
             token = jwtService.tokenFor(minimalProfile);
             minimalProfile.setToken(token);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
