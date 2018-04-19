@@ -46,7 +46,6 @@ DROP TRIGGER message_tr;
 
 
 
-
 CREATE SEQUENCE tag_seq
  START WITH     1
  INCREMENT BY   1

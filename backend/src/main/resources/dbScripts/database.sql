@@ -83,8 +83,6 @@ CREATE TABLE tag (
 
 
 
-
-
 CREATE TABLE friend (
   sender_id number,
   receiver_id number,

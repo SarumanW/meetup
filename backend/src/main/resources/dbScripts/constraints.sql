@@ -26,7 +26,6 @@ ALTER TABLE chat DROP CONSTRAINT chat_fk_event;
 
 
 
-
 ALTER TABLE tag ADD CONSTRAINT tag_fk_item FOREIGN KEY(item_id) REFERENCES item;
 
 ALTER TABLE item ADD CONSTRAINT item_fk_user FOREIGN KEY(id_who_booked) REFERENCES uuser(user_id);
