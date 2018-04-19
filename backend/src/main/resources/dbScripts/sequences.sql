@@ -5,238 +5,238 @@ in each table.
 
 
 
-DROP SEQUENCE tags_seq;
-DROP TRIGGER tags_tr;
+DROP SEQUENCE tag_seq;
+DROP TRIGGER tag_tr;
 
-DROP SEQUENCE items_seq;
-DROP TRIGGER items_tr;
+DROP SEQUENCE item_seq;
+DROP TRIGGER item_tr;
 
-DROP SEQUENCE priorities_seq;
-DROP TRIGGER priorities_tr;
+DROP SEQUENCE priority_seq;
+DROP TRIGGER priority_tr;
 
-DROP SEQUENCE likes_seq;
-DROP TRIGGER likes_tr;
+DROP SEQUENCE like_seq;
+DROP TRIGGER like_tr;
 
-DROP SEQUENCE users_seq;
-DROP TRIGGER users_tr;
+DROP SEQUENCE user_seq;
+DROP TRIGGER user_tr;
 
-DROP SEQUENCE roles_seq;
-DROP TRIGGER roles_tr;
+DROP SEQUENCE role_seq;
+DROP TRIGGER role_tr;
 
-DROP SEQUENCE folders_seq;
-DROP TRIGGER folders_tr;
+DROP SEQUENCE folder_seq;
+DROP TRIGGER folder_tr;
 
-DROP SEQUENCE events_seq;
-DROP TRIGGER events_tr;
+DROP SEQUENCE event_seq;
+DROP TRIGGER event_tr;
 
-DROP SEQUENCE periodicities_seq;
-DROP TRIGGER periodicities_tr;
+DROP SEQUENCE periodicity_seq;
+DROP TRIGGER periodicity_tr;
 
-DROP SEQUENCE e_types_seq;
-DROP TRIGGER e_types_tr;
+DROP SEQUENCE e_type_seq;
+DROP TRIGGER e_type_tr;
 
-DROP SEQUENCE chats_seq;
-DROP TRIGGER chats_tr;
+DROP SEQUENCE chat_seq;
+DROP TRIGGER chat_tr;
 
-DROP SEQUENCE c_types_seq;
-DROP TRIGGER c_types_tr;
+DROP SEQUENCE c_type_seq;
+DROP TRIGGER c_type_tr;
 
-DROP SEQUENCE messages_seq;
-DROP TRIGGER messages_tr;
-
-
+DROP SEQUENCE message_seq;
+DROP TRIGGER message_tr;
 
 
-CREATE SEQUENCE tags_seq
+
+
+CREATE SEQUENCE tag_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER tags_tr
-BEFORE INSERT ON tags
+CREATE OR REPLACE TRIGGER tag_tr
+BEFORE INSERT ON tag
 FOR EACH ROW
 BEGIN
-  SELECT tags_seq.NEXTVAL
+  SELECT tag_seq.NEXTVAL
   INTO   :new.tag_id
   FROM   dual;
 END;
 /
 
-CREATE SEQUENCE items_seq
+CREATE SEQUENCE item_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER items_tr
-BEFORE INSERT ON items
+CREATE OR REPLACE TRIGGER item_tr
+BEFORE INSERT ON item
 FOR EACH ROW
 BEGIN
-  SELECT items_seq.NEXTVAL
+  SELECT item_seq.NEXTVAL
   INTO   :new.item_id
   FROM   dual;
 END;
 /
 
-CREATE SEQUENCE priorities_seq
+CREATE SEQUENCE priority_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER priorities_tr
-BEFORE INSERT ON priorities
+CREATE OR REPLACE TRIGGER priority_tr
+BEFORE INSERT ON priority
 FOR EACH ROW
 BEGIN
-  SELECT priorities_seq.NEXTVAL
+  SELECT priority_seq.NEXTVAL
   INTO   :new.priority_id
   FROM   dual;
 END;
 /
 
-CREATE SEQUENCE likes_seq
+CREATE SEQUENCE like_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER likes_tr
-BEFORE INSERT ON likes
+CREATE OR REPLACE TRIGGER like_tr
+BEFORE INSERT ON llike
 FOR EACH ROW
 BEGIN
-  SELECT likes_seq.NEXTVAL
+  SELECT like_seq.NEXTVAL
   INTO   :new.like_id
   FROM   dual;
 END;
 /
 
-CREATE SEQUENCE users_seq
+CREATE SEQUENCE user_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER users_tr
-BEFORE INSERT ON users
+CREATE OR REPLACE TRIGGER user_tr
+BEFORE INSERT ON uuser
 FOR EACH ROW
 BEGIN
-  SELECT users_seq.NEXTVAL
+  SELECT user_seq.NEXTVAL
   INTO   :new.user_id
   FROM   dual;
 END;
 /
 
-CREATE SEQUENCE roles_seq
+CREATE SEQUENCE role_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER roles_tr
-BEFORE INSERT ON roles
+CREATE OR REPLACE TRIGGER role_tr
+BEFORE INSERT ON rrole
 FOR EACH ROW
 BEGIN
-  SELECT roles_seq.NEXTVAL
+  SELECT role_seq.NEXTVAL
   INTO   :new.role_id
   FROM   dual;
 END;
 /
 
-CREATE SEQUENCE folders_seq
+CREATE SEQUENCE folder_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER folders_tr
-BEFORE INSERT ON folders
+CREATE OR REPLACE TRIGGER folder_tr
+BEFORE INSERT ON folder
 FOR EACH ROW
 BEGIN
-  SELECT folders_seq.NEXTVAL
+  SELECT folder_seq.NEXTVAL
   INTO   :new.folder_id
   FROM   dual;
 END;
 /
 
-CREATE SEQUENCE events_seq
+CREATE SEQUENCE event_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER events_tr
-BEFORE INSERT ON events
+CREATE OR REPLACE TRIGGER event_tr
+BEFORE INSERT ON event
 FOR EACH ROW
 BEGIN
-  SELECT events_seq.NEXTVAL
+  SELECT event_seq.NEXTVAL
   INTO   :new.event_id
   FROM   dual;
 END;
 /
 
-CREATE SEQUENCE periodicities_seq
+CREATE SEQUENCE periodicity_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER periodicities_tr
-BEFORE INSERT ON periodicities
+CREATE OR REPLACE TRIGGER periodicity_tr
+BEFORE INSERT ON periodicity
 FOR EACH ROW
 BEGIN
-  SELECT periodicities_seq.NEXTVAL
+  SELECT periodicity_seq.NEXTVAL
   INTO   :new.periodicity_id
   FROM   dual;
 END;
 /
 
-CREATE SEQUENCE e_types_seq
+CREATE SEQUENCE e_type_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER e_types_tr
-BEFORE INSERT ON event_types
+CREATE OR REPLACE TRIGGER e_type_tr
+BEFORE INSERT ON event_type
 FOR EACH ROW
 BEGIN
-  SELECT e_types_seq.NEXTVAL
+  SELECT e_type_seq.NEXTVAL
   INTO   :new.event_type_id
   FROM   dual;
 END;
 /
 
-CREATE SEQUENCE chats_seq
+CREATE SEQUENCE chat_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER chats_tr
-BEFORE INSERT ON chats
+CREATE OR REPLACE TRIGGER chat_tr
+BEFORE INSERT ON chat
 FOR EACH ROW
 BEGIN
-  SELECT chats_seq.NEXTVAL
+  SELECT chat_seq.NEXTVAL
   INTO   :new.chat_id
   FROM   dual;
 END;
 /
 
-CREATE SEQUENCE c_types_seq
+CREATE SEQUENCE c_type_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER c_types_tr
-BEFORE INSERT ON chat_types
+CREATE OR REPLACE TRIGGER c_type_tr
+BEFORE INSERT ON chat_type
 FOR EACH ROW
 BEGIN
-  SELECT c_types_seq.NEXTVAL
+  SELECT c_type_seq.NEXTVAL
   INTO   :new.chat_type_id
   FROM   dual;
 END;
 /
 
-CREATE SEQUENCE messages_seq
+CREATE SEQUENCE message_seq
  START WITH     1
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-CREATE OR REPLACE TRIGGER messages_tr
-BEFORE INSERT ON messages
+CREATE OR REPLACE TRIGGER message_tr
+BEFORE INSERT ON message
 FOR EACH ROW
 BEGIN
-  SELECT messages_seq.NEXTVAL
+  SELECT message_seq.NEXTVAL
   INTO   :new.message_id
   FROM   dual;
 END;

@@ -3,26 +3,26 @@ with  PRIMARY KEY and UNIQUE constraints.
  */
 
 
-DROP TABLE tags;
-DROP TABLE likes;
-DROP TABLE user_items;
-DROP TABLE items;
-DROP TABLE priorities;
-DROP TABLE messages;
-DROP TABLE chats;
-DROP TABLE chat_types;
-DROP TABLE user_events;
-DROP TABLE roles;
-DROP TABLE friends;
-DROP TABLE events;
-DROP TABLE folders;
-DROP TABLE periodicities;
-DROP TABLE event_types;
-DROP TABLE users;
+DROP TABLE tag;
+DROP TABLE llike;
+DROP TABLE user_item;
+DROP TABLE item;
+DROP TABLE priority;
+DROP TABLE message;
+DROP TABLE chat;
+DROP TABLE chat_type;
+DROP TABLE user_event;
+DROP TABLE rrole;
+DROP TABLE friend;
+DROP TABLE event;
+DROP TABLE folder;
+DROP TABLE periodicity;
+DROP TABLE event_type;
+DROP TABLE uuser;
 
 
 
-CREATE TABLE users (
+CREATE TABLE uuser (
   user_id number,
   Login varchar2(50) NOT NULL UNIQUE,
   password varchar2(50) NOT NULL,
@@ -36,20 +36,20 @@ CREATE TABLE users (
   PRIMARY KEY (user_id)
 );
 
-CREATE TABLE user_items (
+CREATE TABLE user_item (
   user_id number,
   item_id number,
   priority_id number,
   UNIQUE (user_id, item_id)
 );
 
-CREATE TABLE priorities (
+CREATE TABLE priority (
   priority_id number,
   name varchar2(50) NOT NULL,
   PRIMARY KEY (priority_id)
 );
 
-CREATE TABLE likes (
+CREATE TABLE llike (
   like_id number,
   item_id number,
   user_id number,
@@ -57,7 +57,7 @@ CREATE TABLE likes (
   UNIQUE (item_id, user_id)
 );
 
-CREATE TABLE items (
+CREATE TABLE item (
   item_id number,
   name varchar2(50) NOT NULL,
   description varchar2(200),
@@ -68,7 +68,7 @@ CREATE TABLE items (
   PRIMARY KEY (item_id)
 );
 
-CREATE TABLE tags (
+CREATE TABLE tag (
   tag_id number,
   item_id number,
   name varchar2(20),
@@ -85,34 +85,34 @@ CREATE TABLE tags (
 
 
 
-CREATE TABLE friends (
+CREATE TABLE friend (
   sender_id number,
   receiver_id number,
   is_Confirmed number(1) NOT NULL,
   UNIQUE (sender_id, receiver_id)
 );
 
-CREATE TABLE user_events (
+CREATE TABLE user_event (
   user_id number,
   event_id number,
   role_id number,
   UNIQUE (user_id, event_id)
 );
 
-CREATE TABLE roles (
+CREATE TABLE rrole (
   role_id number,
   name varchar2(10) NOT NULL,
   PRIMARY KEY (role_id)
 );
 
-CREATE TABLE folders (
+CREATE TABLE folder (
   folder_id number,
   name varchar2(100) NOT NULL,
   user_id number,
   PRIMARY KEY (folder_id)
 );
 
-CREATE TABLE events (
+CREATE TABLE event (
   event_id number,
   name varchar2(50) NOT NULL,
   event_date timestamp,
@@ -125,7 +125,7 @@ CREATE TABLE events (
   PRIMARY KEY (event_id)
 );
 
-CREATE TABLE messages (
+CREATE TABLE message (
   message_id number,
   sender_id number,
   text varchar2(250) NOT NULL,
@@ -134,26 +134,26 @@ CREATE TABLE messages (
   PRIMARY KEY (message_id)
 );
 
-CREATE TABLE periodicities (
+CREATE TABLE periodicity (
   periodicity_id number,
   periodicity_name varchar2(20) NOT NULL,
   PRIMARY KEY (periodicity_id)
 );
 
-CREATE TABLE event_types (
+CREATE TABLE event_type (
   event_type_id number,
   type varchar(50) NOT NULL,
   PRIMARY KEY (event_type_id)
 );
 
-CREATE TABLE chats (
+CREATE TABLE chat (
   chat_id number,
   chat_type_id number,
   event_id number,
   PRIMARY KEY (chat_id)
 );
 
-CREATE TABLE chat_types (
+CREATE TABLE chat_type (
   chat_type_id number,
   type varchar2(10) NOT NULL,
   PRIMARY KEY (chat_type_id)
