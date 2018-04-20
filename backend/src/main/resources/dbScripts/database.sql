@@ -20,17 +20,16 @@ DROP TABLE event_type;
 DROP TABLE uuser;
 
 CREATE TABLE uuser (
-  user_id number,
-  Login varchar2(50) NOT NULL UNIQUE,
-  password varchar2(50) NOT NULL,
-  name varchar2(254) NOT NULL,
-  surname varchar2(254) NOT NULL,
-  email varchar2(100) NOT NULL UNIQUE,
-  time_zone timestamp,
-  image_filepath varchar2(200),
-  birthday Date,
-  phone varchar2(50),
-  PRIMARY KEY (user_id)
+  user_id NUMBER(11) PRIMARY KEY,
+  login VARCHAR2(50) NOT NULL UNIQUE,
+  password VARCHAR2(50) NOT NULL,
+  name VARCHAR2(254) NOT NULL,
+  surname VARCHAR2(254) NOT NULL,
+  email VARCHAR2(100) NOT NULL UNIQUE,
+  timezone NUMBER(3),
+  image_filepath VARCHAR2(200),
+  bday DATE,
+  phone VARCHAR2(25)
 );
 
 CREATE TABLE user_item (

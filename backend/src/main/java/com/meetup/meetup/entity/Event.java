@@ -11,11 +11,13 @@ public class Event {
 
     private int eventId;
     private String name;
-    private Calendar eventDate;
+    private String eventDate;
     private String description;
+    private int periodicityId;
     private EventPeriodicity periodicity;
     private String place;
-    private boolean isEvent;
+    private int eventTypeId;
+    private EventType eventType;
     private boolean isDraft;
     private int folderId;
 

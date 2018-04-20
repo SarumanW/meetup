@@ -22,7 +22,7 @@ public class UserRowMapper implements RowMapper<User> {
         user.setPhone(resultSet.getString("phone"));
         user.setName(resultSet.getString("name"));
         user.setLastname(resultSet.getString("surname"));
-        user.setBirthDay("bday");
+        user.setBirthDay(resultSet.getDate("bday").toString());
         user.setTimeZone(resultSet.getInt("timezone"));
         user.setImgPath(resultSet.getString("image_filepath"));
 

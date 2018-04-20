@@ -82,7 +82,7 @@ public class FolderDaoImpl implements FolderDao {
         int id;
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName("FOLDERS")
+                .withTableName("FOLDER")
                 .usingGeneratedKeyColumns("FOLDER_ID");
 
         Map<String, Object> parameters = new HashMap<String, Object>();

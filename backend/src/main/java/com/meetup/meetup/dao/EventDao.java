@@ -9,7 +9,5 @@ import java.util.List;
 
 public interface EventDao extends Dao<Event> {
 
-    Event findByFolder(Folder folder);
-
     List<User> getParticipants(Event event);
 }
