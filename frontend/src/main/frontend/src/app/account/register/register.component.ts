@@ -1,24 +1,28 @@
 import {Component, OnInit} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Account} from "../account";
+import {RegisterAccount} from "../register.account";
 import {AccountService} from "../account.service";
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html'
 })
+
 export class RegisterComponent implements OnInit {
   confirmPassword: string;
   doNotMatch: string;
+  error: string;
+  errorEmailExists: string;
+  errorLoginExists: string;
   success: boolean;
-  account: Account;
+  account: RegisterAccount;
 
   constructor(private accountService: AccountService) {
   }
 
   ngOnInit() {
     this.success = false;
-    this.account = new Account();
+    this.account = new RegisterAccount();
   }
 
   register() {
@@ -37,5 +41,13 @@ export class RegisterComponent implements OnInit {
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
+    if (response.error === 'Login already used') {
+      this.errorLoginExists = 'ERROR';
+    } else if (response.error === 'Email already used') {
+      this.errorEmailExists = 'ERROR';
+    } else {
+      this.error = 'ERROR';
+    }
+
   }
 }
