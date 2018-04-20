@@ -88,7 +88,7 @@ CREATE TABLE user_event (
 
 CREATE TABLE rrole (
   role_id number,
-  name varchar2(10) NOT NULL,
+  name varchar2(50) NOT NULL,
   PRIMARY KEY (role_id)
 );
 
