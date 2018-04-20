@@ -6,7 +6,7 @@ import com.meetup.meetup.dao.rowMappers.FolderRowMapper;
 import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.rest.controller.errors.DatabaseWorkException;
+import com.meetup.meetup.exception.DatabaseWorkException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;

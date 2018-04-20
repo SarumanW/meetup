@@ -2,7 +2,9 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.rest.controller.errors.*;
+import com.meetup.meetup.exception.EmailAlreadyUsedException;
+import com.meetup.meetup.exception.FailedToLoginException;
+import com.meetup.meetup.exception.LoginAlreadyUsedException;
 import com.meetup.meetup.security.utils.HashMD5;
 import com.meetup.meetup.service.vm.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,6 @@ import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
 
 import javax.json.Json;
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 
 @Component
@@ -33,7 +32,7 @@ public class AccountService {
     public Profile login(Profile credentials) throws Exception {
         try {
             String md5Pass = HashMD5.hash(credentials.getPassword());
-            credentials.setPassword(md5Pass);
+            //credentials.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
             throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
         }
@@ -76,10 +75,7 @@ public class AccountService {
             throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
         }
 
-
-        if (userDao.insert(user) == -1) { //checking adding to DB
-            throw new DatabaseWorkException();
-        }
+        userDao.insert(user);
 
         try {
             mailService.sendMailRegistration(user);
