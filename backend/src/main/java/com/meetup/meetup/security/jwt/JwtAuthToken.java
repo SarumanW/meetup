@@ -12,6 +12,10 @@ public class JwtAuthToken implements Authentication {
         this.token = token;
     }
 
+    public String getToken() {
+        return token;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

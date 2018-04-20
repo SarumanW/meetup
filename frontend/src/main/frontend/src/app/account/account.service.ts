@@ -15,9 +15,7 @@ export class AccountService {
 
   save(account: any): Observable<any> {
     console.log(account);
-    var out : Observable<any> = this.http.post('api/register', account);
-    out.subscribe(message => console.log(message));
-    return out;
+    return this.http.post('api/register', account);
   }
 
   login(account: any): Observable<any> {
