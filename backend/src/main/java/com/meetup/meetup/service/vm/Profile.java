@@ -6,6 +6,8 @@ import javax.validation.constraints.Size;
 
 public class Profile {
 
+    private int id;
+
     @Size(min = 4, max = 50)
     private String login;
 
@@ -35,12 +37,22 @@ public class Profile {
     }
 
     public Profile(User user) {
+        id = user.getId();
         name = user.getName();
         lastname = user.getLastname();
         email = user.getEmail();
         login = user.getLogin();
         birthDay = user.getBirthDay();
         imgPath = user.getImgPath();
+    }
+
+    public User getUser(User user){
+        user.setName(this.name);
+        user.setLastname(this.lastname);
+        user.setEmail(this.email);
+        user.setLogin(this.login);
+        user.setBirthDay(this.birthDay);
+        return user;
     }
 
     public String getLogin() {
@@ -105,5 +117,13 @@ public class Profile {
 
     public void setImgPath(String imgPath) {
         this.imgPath = imgPath;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

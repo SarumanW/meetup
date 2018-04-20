@@ -8,6 +8,6 @@ public interface UserDao extends Dao<User> {
 
     User findByLogin(String login);
     User findByEmail(String email);
-    List<Integer> friendsIds(String id);
+    List<Integer> friendsIds(int id);
 
 }

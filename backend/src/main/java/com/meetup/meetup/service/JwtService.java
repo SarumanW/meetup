@@ -34,7 +34,7 @@ public class JwtService {
     public Profile verify(String token) throws IOException, URISyntaxException {
         byte[] secretKey = secretKeyProvider.getKey();
         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-        return profileService.minimal(claims.getBody().getSubject());
+        return profileService.getProfile(claims.getBody().getSubject());
     }
 
     public String tokenFor(Profile minimalProfile) throws IOException, URISyntaxException {

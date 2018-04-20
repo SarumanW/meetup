@@ -64,7 +64,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<Integer> friendsIds(String id) {
+    public List<Integer> friendsIds(int id) {
         // TODO: 4/19/2018 Implement method get list friends ids
         return null;
     }
