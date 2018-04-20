@@ -7,11 +7,10 @@ import com.meetup.meetup.entity.User;
 import java.util.List;
 
 
-interface FolderDao extends Dao<Folder> {
+public interface FolderDao extends Dao<Folder> {
 
     List<Event> getEvents(Folder folder);
 
     List<Folder> getUserFolders(User user);
-
 
 }

@@ -3,6 +3,7 @@ package com.meetup.meetup.dao.impl;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.rest.controller.errors.DatabaseWorkException;
 import com.meetup.meetup.rest.controller.errors.FailedToLoginException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -85,12 +86,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public int insert(User model) {
+    public User insert(User model) {
 
-        int id = -1;
+        int id;
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName("USER_S")
+                .withTableName("UUSER")
                 .usingGeneratedKeyColumns("USER_ID");
 
         Map<String, Object> parameters = new HashMap<String, Object>();
@@ -109,29 +110,32 @@ public class UserDaoImpl implements UserDao {
             model.setId(id);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
+            throw new DatabaseWorkException();
         }
-        return id;
+        return model;
     }
 
     @Override
-    public int update(User model) {
+    public User update(User model) {
         try {
             jdbcTemplate.update(env.getProperty("user.update"),
                     model.getLogin(), model.getPassword(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
                     model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
+            throw new DatabaseWorkException();
         }
-        return model.getId();
+        return model;
     }
 
     @Override
-    public int delete(User model) {
+    public User delete(User model) {
         try {
             jdbcTemplate.update(env.getProperty("user.delete"), model.getId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
+            throw new DatabaseWorkException();
         }
-        return model.getId();
+        return model;
     }
 }
