@@ -2,6 +2,7 @@ package com.meetup.meetup.dao.impl;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
+import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.DatabaseWorkException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class UserDaoImpl implements UserDao {
     @Autowired
     @Qualifier("jdbcTemplate")
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private FolderDaoImpl folderDao;
 
     @Override
     public User findByLogin(String login) {
@@ -88,12 +92,13 @@ public class UserDaoImpl implements UserDao {
     public User insert(User model) {
 
         int id;
+        Folder folder;
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("UUSER")
                 .usingGeneratedKeyColumns("USER_ID");
 
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("USER_ID", model.getId());
         parameters.put("login", model.getLogin());
         parameters.put("password", model.getPassword());
@@ -111,6 +116,13 @@ public class UserDaoImpl implements UserDao {
             System.out.println(e.getMessage());
             throw new DatabaseWorkException();
         }
+
+        folder = new Folder();
+        folder.setName("general");
+        folder.setUserId(id);
+
+        folderDao.insert(folder);
+
         return model;
     }
 
