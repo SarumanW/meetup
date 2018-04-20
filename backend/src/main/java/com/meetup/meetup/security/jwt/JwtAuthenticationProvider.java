@@ -2,7 +2,7 @@ package com.meetup.meetup.security.jwt;
 
 import com.meetup.meetup.exception.JwtAuthenticationException;
 import com.meetup.meetup.service.JwtService;
-import com.meetup.meetup.service.vm.MinimalProfile;
+import com.meetup.meetup.service.vm.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -20,7 +20,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         try {
-            MinimalProfile possibleProfile = jwtService.verify((String) authentication.getCredentials());
+            Profile possibleProfile = jwtService.verify((String) authentication.getCredentials());
             return new JwtAuthenticatedProfile(possibleProfile);
         } catch (Exception e) {
             throw new JwtAuthenticationException("Failed to verify token", e);

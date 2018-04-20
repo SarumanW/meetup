@@ -15,9 +15,7 @@ export class AccountService {
 
   save(account: any): Observable<any> {
     console.log(account);
-    var out : Observable<any> = this.http.post('api/register', account);
-    out.subscribe(message => console.log(message));
-    return out;
+    return this.http.post('api/register', account);
   }
 
   login(account: any): Observable<any> {
@@ -34,18 +32,7 @@ export class AccountService {
           localStorage.setItem('currentUser', JSON.stringify(user));
         }
         return user;
-      }).catch(
-        (err: any) : any => {
-          console.log("check section");
-          if(err.status === 500){
-            console.log(err.status)
-            this.messageService.message = 'Wrong user/password';
-          }
-          if(err.status === 400){
-            console.log(err.status)
-          }
-        }
-      )
+      })
   }
 
   profile(account: any):Observable<any>{

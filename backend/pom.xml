@@ -25,12 +25,21 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<version>2.0.1.RELEASE</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
 		<dependency>
@@ -130,7 +139,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-<!--
+
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
@@ -140,7 +149,7 @@
 						</resource>
 					</webResources>
 				</configuration>
-			</plugin>-->
+			</plugin>
 
 			<!-- Deploy wars to Tomcat 7 with mvn tomcat7:deploy or tomcat7:redeploy -->
 			<plugin>

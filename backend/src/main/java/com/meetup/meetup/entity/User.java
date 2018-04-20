@@ -3,7 +3,6 @@ package com.meetup.meetup.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.meetup.meetup.service.vm.FictUser;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -36,7 +35,7 @@ public class User {
     private String phone;
 
     @JsonIgnore
-    private LocalDate birthDay;
+    private String birthDay;
 
     @JsonIgnore
     private int timeZone;
@@ -45,20 +44,6 @@ public class User {
     private String imgPath;
 
     public User() {
-    }
-
-    @Deprecated
-    public User(FictUser fictUser) {
-        id = fictUser.getId();
-        login = fictUser.getLogin();
-        password = fictUser.getPassword();
-        email = fictUser.getEmail();
-        phone = fictUser.getPhone();
-        name = fictUser.getName();
-        lastname = fictUser.getLastName();
-        birthDay = LocalDate.now();
-        timeZone = fictUser.getTimeZone();
-        imgPath = fictUser.getImgPath();
     }
 
     public int getId() {
@@ -117,11 +102,11 @@ public class User {
         this.lastname = lastname;
     }
 
-    public LocalDate getBirthDay() {
+    public String getBirthDay() {
         return birthDay;
     }
 
-    public void setBirthDay(LocalDate birthDay) {
+    public void setBirthDay(String birthDay) {
         this.birthDay = birthDay;
     }
 
