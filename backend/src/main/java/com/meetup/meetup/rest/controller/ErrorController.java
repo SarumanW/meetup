@@ -25,10 +25,8 @@ public class ErrorController {
         // Send like server error to frontend or write log to console
         if (e.getMessage().startsWith("SendCustomError")) {
             response.setStatus(500);
-            response.addHeader("Error", e.getMessage().replace("SendCustomError",""));
             response.getWriter().print(e.getMessage().replace("SendCustomError",""));
         } else {
-            response.addHeader("Error", e.getMessage().replace("SendCustomError",""));
             System.out.println("Exception: " + e.getMessage());
         }
     }

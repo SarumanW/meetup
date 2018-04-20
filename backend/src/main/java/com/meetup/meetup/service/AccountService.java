@@ -83,11 +83,10 @@ public class AccountService {
 
         try {
             mailService.sendMailRegistration(user);
-            //mailService.sendMail(user.getEmail(), "Registration successfully", String.format(MailService.templateRegister, user.getName(), user.getLogin(), user.getPassword()));
         } catch (MailException e) {
-            e.printStackTrace();
             userDao.delete(user);
-            //throw new Exception("SendCustomErrorSend mail exception");
+            e.printStackTrace();
+            throw new Exception("SendCustomErrorSend mail exception");
         }
 
         return Json.createObjectBuilder().add("success", "Success").build().toString();
