@@ -19,8 +19,7 @@ public class ProfileService {
     public Profile minimal(String login) {
         User user = get(login);
         if (user != null) {
-            Profile p = new Profile(user.getName(), user.getLastname(), user.getLogin());
-            return p;
+            return new Profile(user.getName(), user.getLastname(), user.getLogin());
         } else {
             return null;
         }

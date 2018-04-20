@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
   logIn() {
       this.accountService.login(this.account).subscribe(
         (user) => {
-            console.log("login component working")
+            console.log("login component working");
             this.success = true;
             this.account = user;
             this.messageService.clear();
@@ -36,8 +36,9 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['/profile/details', this.account.login]);
         },
         response => {
-          this.processError(response)
-          this.router.navigate(['/login']);}
+          this.processError(response);
+          //this.router.navigate(['/login']);}
+        }
       );
     }
 
