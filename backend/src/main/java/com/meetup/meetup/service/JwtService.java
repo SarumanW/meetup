@@ -1,5 +1,6 @@
 package com.meetup.meetup.service;
 
+import com.meetup.meetup.entity.User;
 import com.meetup.meetup.security.jwt.SecretKeyProvider;
 import com.meetup.meetup.service.vm.Profile;
 import io.jsonwebtoken.Claims;
@@ -34,17 +35,35 @@ public class JwtService {
     public Profile verify(String token) throws IOException, URISyntaxException {
         byte[] secretKey = secretKeyProvider.getKey();
         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-        return profileService.minimal(claims.getBody().getSubject());
+        return profileService.minimal(claims.getBody().get(LOGIN).toString());
+    }
+
+    public String verifyLogin(String token) throws IOException, URISyntaxException {
+        byte[] secretKey = secretKeyProvider.getKey();
+        Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+        return claims.getBody().get(LOGIN).toString();
     }
 
     public String tokenFor(Profile minimalProfile) throws IOException, URISyntaxException {
         byte[] secretKey = secretKeyProvider.getKey();
-        Date expiration = Date.from(LocalDateTime.now(UTC).plusMinutes(2).toInstant(UTC));
+        Date expiration = Date.from(LocalDateTime.now(UTC).plusMinutes(20).toInstant(UTC));
         return Jwts.builder()
                 .setSubject(SUBJECT)
                 .setExpiration(expiration)
                 .setIssuer(ISSUER)
                 .claim(LOGIN, minimalProfile.getLogin())
+                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .compact();
+    }
+
+    public String tokenForRecoveryPassword(User user) throws IOException, URISyntaxException {
+        byte[] secretKey = secretKeyProvider.getKey();
+        Date expiration = Date.from(LocalDateTime.now(UTC).plusMinutes(5).toInstant(UTC));
+        return Jwts.builder()
+                .setSubject(SUBJECT)
+                .setExpiration(expiration)
+                .setIssuer(ISSUER)
+                .claim(LOGIN, user.getLogin())
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }

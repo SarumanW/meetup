@@ -19,6 +19,7 @@ import java.util.Map;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MailBuilder {
     public static final String REGISTER_MAIL_TEMPLATE = "registerMailTemplate";
+    public static final String RECOVERY_PASSWORD_TEMPLATE = "recoveryPasswordTemplate";
 
     @Autowired
     private TemplateEngine templateEngine;

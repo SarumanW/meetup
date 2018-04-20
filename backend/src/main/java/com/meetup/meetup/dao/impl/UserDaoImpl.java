@@ -126,6 +126,17 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public boolean updatePassword(User user) {
+        try {
+            jdbcTemplate.update(env.getProperty("user.updatePassword"), user.getPassword(), user.getId());
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public int delete(User model) {
         try {
             jdbcTemplate.update(env.getProperty("user.delete"), model.getId());

@@ -3,10 +3,12 @@ package com.meetup.meetup.rest.controller;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.service.AccountService;
 import com.meetup.meetup.service.vm.Profile;
+import com.meetup.meetup.service.vm.RecoveryPasswordProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +23,7 @@ import java.security.NoSuchAlgorithmException;
 public class AccountController {
 
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
 
     @PostMapping("/login")
     public Profile login(@Valid @RequestBody Profile credentials,
@@ -38,4 +40,13 @@ public class AccountController {
     }
 
     // TODO: 4/19/2018 Implement password restore
+    @GetMapping("/recovery/{login}")
+    public ResponseEntity<String> mailRecoveryPassword(@PathVariable String login) throws Exception {
+        return accountService.recoveryPasswordMail(login);
+    }
+
+    @PostMapping("/recovery")
+    public ResponseEntity<String> passwordRecovery(@Valid @RequestBody RecoveryPasswordProfile profile) throws Exception{
+        return accountService.recoveryPassword(profile);
+    }
 }

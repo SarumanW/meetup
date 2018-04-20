@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -15,9 +16,12 @@ public class User {
     private int id;
 
     @NotBlank
+    @Pattern(regexp = "^[_.@A-Za-z0-9-]*$")
     @Size(min = 4, max = 50)
     private String login;
 
+
+    @Pattern(regexp = "^[_.@A-Za-z0-9-]*$")
     @Size(min = 6, max = 50)
     private String password;
 

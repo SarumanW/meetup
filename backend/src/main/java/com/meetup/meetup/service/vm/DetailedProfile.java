@@ -9,7 +9,7 @@ public class DetailedProfile {
     private String login;
     private String name;
     private String lastname;
-    private LocalDate birthDay;
+    private String birthDay;
     private String imgPath;
 
     public DetailedProfile(User user) {
@@ -53,11 +53,11 @@ public class DetailedProfile {
         this.lastname = lastname;
     }
 
-    public LocalDate getBirthDay() {
+    public String getBirthDay() {
         return birthDay;
     }
 
-    public void setBirthDay(LocalDate birthDay) {
+    public void setBirthDay(String birthDay) {
         this.birthDay = birthDay;
     }
 

@@ -5,7 +5,10 @@ import com.meetup.meetup.entity.User;
 import com.meetup.meetup.rest.controller.errors.*;
 import com.meetup.meetup.security.utils.HashMD5;
 import com.meetup.meetup.service.vm.Profile;
+import com.meetup.meetup.service.vm.RecoveryPasswordProfile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
 
@@ -48,9 +51,7 @@ public class AccountService {
             throw new FailedToLoginException(credentials.getLogin());
         }
 
-        String token;
-
-        token = jwtService.tokenFor(minimalProfile);
+        String token = jwtService.tokenFor(minimalProfile);
 
         if (token == null) {
             throw new Exception("SendCustomErrorEnable to login. Server Error");
@@ -90,5 +91,50 @@ public class AccountService {
         }
 
         return Json.createObjectBuilder().add("success", "Success").build().toString();
+    }
+
+    public ResponseEntity<String> recoveryPasswordMail(String login) throws Exception{
+        User user = userDao.findByLogin(login);
+        if (user == null) {
+            throw new LoginNotFoundException();
+        }
+
+        String token = jwtService.tokenForRecoveryPassword(user);
+
+        if (token == null) {
+            throw new Exception("Token creating error");
+        }
+
+        try {
+            mailService.sendMailRecoveryPassword(user, token);
+        } catch (MailException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>("{ \"success\" : \"Success\" }", HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> recoveryPassword(RecoveryPasswordProfile profile) throws Exception{
+        String login = jwtService.verifyLogin(profile.getToken());
+        if (login == null) {
+            throw new BadTokenException();
+        }
+
+        User user = profileService.get(login);
+        if (user == null) {
+            throw new LoginNotFoundException();
+        }
+
+        try {
+            String md5Pass = HashMD5.hash(profile.getPassword());
+            user.setPassword(md5Pass);
+        } catch (NoSuchAlgorithmException e) {
+            throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
+        }
+
+        if (!userDao.updatePassword(user)) {
+            throw new DatabaseWorkException();
+        }
+        return new ResponseEntity<>("{ \"success\" : \"Success\" }", HttpStatus.ACCEPTED);
     }
 }
