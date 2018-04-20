@@ -19,9 +19,6 @@ import java.security.NoSuchAlgorithmException;
 public class AccountService {
 
     @Autowired
-    private ProfileService profileService;
-
-    @Autowired
     private JwtService jwtService;
 
     @Autowired
