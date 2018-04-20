@@ -2,7 +2,10 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.rest.controller.errors.*;
+import com.meetup.meetup.rest.controller.errors.DatabaseWorkException;
+import com.meetup.meetup.rest.controller.errors.EmailAlreadyUsedException;
+import com.meetup.meetup.rest.controller.errors.FailedToLoginException;
+import com.meetup.meetup.rest.controller.errors.LoginAlreadyUsedException;
 import com.meetup.meetup.security.utils.HashMD5;
 import com.meetup.meetup.service.vm.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +13,6 @@ import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
 
 import javax.json.Json;
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 
 @Component
@@ -38,7 +38,7 @@ public class AccountService {
             throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
         }
 
-        User user = profileService.get(credentials.getLogin());
+        User user = userDao.findByLogin(credentials.getLogin());
 
         Profile minimalProfile;
 

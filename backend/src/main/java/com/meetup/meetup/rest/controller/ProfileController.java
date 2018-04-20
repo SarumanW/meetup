@@ -1,21 +1,13 @@
 package com.meetup.meetup.rest.controller;
 
 
-import com.meetup.meetup.exception.ProfileNotFoundException;
-import com.meetup.meetup.security.jwt.JwtAuthToken;
 import com.meetup.meetup.service.ProfileService;
 import com.meetup.meetup.service.vm.Profile;
-import oracle.jdbc.proxy.annotation.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api/profile")
