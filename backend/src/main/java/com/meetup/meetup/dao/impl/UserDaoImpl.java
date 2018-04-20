@@ -23,28 +23,12 @@ import java.util.Map;
 @PropertySource("classpath:sqlDao.properties")
 public class UserDaoImpl implements UserDao {
 
+    @Autowired
     private Environment env;
-
-    private JdbcTemplate jdbcTemplate;
-
-    public JdbcTemplate getJdbcTemplate() {
-        return jdbcTemplate;
-    }
-
-    public String testMethod() {
-        return "configuration passed";
-    }
 
     @Autowired
     @Qualifier("jdbcTemplate")
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    @Autowired
-    public void setEnvironment(Environment env) {
-        this.env = env;
-    }
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public User findByLogin(String login) {
