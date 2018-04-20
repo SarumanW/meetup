@@ -3,7 +3,6 @@ package com.meetup.meetup.dao.impl;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.rest.controller.errors.FailedToLoginException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
@@ -64,7 +63,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<Integer> friendsIds(int id) {
+    public List<Integer> getFriendsIds(int id) {
         // TODO: 4/19/2018 Implement method get list friends ids
         return null;
     }
