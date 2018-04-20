@@ -2,7 +2,6 @@
 with  PRIMARY KEY and UNIQUE constraints.
  */
 
-
 DROP TABLE tag;
 DROP TABLE llike;
 DROP TABLE user_item;
@@ -20,8 +19,6 @@ DROP TABLE periodicity;
 DROP TABLE event_type;
 DROP TABLE uuser;
 
-
-
 CREATE TABLE uuser (
   user_id number,
   Login varchar2(50) NOT NULL UNIQUE,
@@ -37,8 +34,8 @@ CREATE TABLE uuser (
 );
 
 CREATE TABLE user_item (
-  user_id number,
-  item_id number,
+  user_id number NOT NULL,
+  item_id number NOT NULL,
   priority_id number,
   UNIQUE (user_id, item_id)
 );
@@ -75,14 +72,6 @@ CREATE TABLE tag (
   PRIMARY KEY (tag_id)
 );
 
-
-
-
-
-
-
-
-
 CREATE TABLE friend (
   sender_id number,
   receiver_id number,
@@ -91,9 +80,9 @@ CREATE TABLE friend (
 );
 
 CREATE TABLE user_event (
-  user_id number,
-  event_id number,
-  role_id number,
+  user_id number NOT NULL,
+  event_id number NOT NULL,
+  role_id number NOT NULL,
   UNIQUE (user_id, event_id)
 );
 
