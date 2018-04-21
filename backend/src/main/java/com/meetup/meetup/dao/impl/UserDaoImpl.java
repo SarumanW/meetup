@@ -5,6 +5,7 @@ import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.DatabaseWorkException;
+import com.meetup.meetup.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
@@ -44,7 +45,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            System.out.println(e.getMessage());
+            throw new UserNotFoundException("login", login);
         }
 
         return user;
@@ -61,7 +62,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            System.out.println(e.getMessage());
+            throw new UserNotFoundException("email", email);
         }
 
         return user;
@@ -83,7 +84,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            System.out.println(e.getMessage());
+            throw new UserNotFoundException("id", id + "");
         }
         return user;
     }
@@ -137,6 +138,17 @@ public class UserDaoImpl implements UserDao {
             throw new DatabaseWorkException();
         }
         return model;
+    }
+
+    @Override
+    public boolean updatePassword(User user) {
+        try {
+            jdbcTemplate.update(env.getProperty("user.updatePassword"), user.getPassword(), user.getId());
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     @Override

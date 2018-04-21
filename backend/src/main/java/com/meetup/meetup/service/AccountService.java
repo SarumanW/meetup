@@ -2,12 +2,14 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.EmailAlreadyUsedException;
-import com.meetup.meetup.exception.FailedToLoginException;
-import com.meetup.meetup.exception.LoginAlreadyUsedException;
+import com.meetup.meetup.exception.*;
 import com.meetup.meetup.security.utils.HashMD5;
-import com.meetup.meetup.service.vm.Profile;
+import com.meetup.meetup.service.vm.LoginVM;
+import com.meetup.meetup.service.vm.RecoveryPasswordVM;
+import com.meetup.meetup.service.vm.UserAndTokenVM;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +31,7 @@ public class AccountService {
     @Autowired
     private MailService mailService;
 
-    public Profile login(Profile credentials) throws Exception {
+    public User login(LoginVM credentials) throws Exception {
         try {
             String md5Pass = HashMD5.hash(credentials.getPassword());
             //credentials.setPassword(md5Pass);
@@ -39,24 +41,19 @@ public class AccountService {
 
         User user = profileService.get(credentials.getLogin());
 
-        Profile minimalProfile;
-
-        if (user != null && user.getPassword().equals(credentials.getPassword())) {
-            minimalProfile = new Profile(user.getLogin(), user.getName(), user.getLastname(), user.getPassword());
-        } else {
+        if (user == null || !user.getPassword().equals(credentials.getPassword())) {
             throw new FailedToLoginException(credentials.getLogin());
         }
 
-        String token;
-
-        token = jwtService.tokenFor(minimalProfile);
+        String token = jwtService.tokenFor(user);
 
         if (token == null) {
             throw new Exception("SendCustomErrorEnable to login. Server Error");
         }
-        minimalProfile.setToken(token);
 
-        return minimalProfile;
+        UserAndTokenVM userAndToken = new UserAndTokenVM(user);
+        userAndToken.setToken(token);
+        return userAndToken;
     }
 
     public String register(User user) throws Exception {
@@ -86,5 +83,50 @@ public class AccountService {
         }
 
         return Json.createObjectBuilder().add("success", "Success").build().toString();
+    }
+
+    public ResponseEntity<String> recoveryPasswordMail(String login) throws Exception{
+        User user = userDao.findByLogin(login);
+        if (user == null) {
+            throw new LoginNotFoundException();
+        }
+
+        String token = jwtService.tokenForRecoveryPassword(user);
+
+        if (token == null) {
+            throw new Exception("Token creating error");
+        }
+
+        try {
+            mailService.sendMailRecoveryPassword(user, token);
+        } catch (MailException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>("{ \"success\" : \"Success\" }", HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> recoveryPassword(RecoveryPasswordVM model) throws Exception{
+        String login = jwtService.verifyLogin(model.getToken());
+        if (login == null) {
+            throw new BadTokenException();
+        }
+
+        User user = profileService.get(login);
+        if (user == null) {
+            throw new LoginNotFoundException();
+        }
+
+        try {
+            String md5Pass = HashMD5.hash(model.getPassword());
+            user.setPassword(md5Pass);
+        } catch (NoSuchAlgorithmException e) {
+            throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
+        }
+
+        if (!userDao.updatePassword(user)) {
+            throw new DatabaseWorkException();
+        }
+        return new ResponseEntity<>("{ \"success\" : \"Success\" }", HttpStatus.ACCEPTED);
     }
 }
