@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHandler, HttpRequest, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import {Headers, RequestOptions} from '@angular/http';
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch';
-import {Router} from "@angular/router";
 import {MessageService} from "./message.service";
 
 @Injectable()
@@ -41,5 +39,9 @@ export class AccountService {
 
     return this.http
       .get<any>('api/profile/details/' + account.login, {headers: headers});
+  }
+
+  recovery(data: any):Observable<any>{
+    return this.http.post('api/recovery/',data);
   }
 }

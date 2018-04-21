@@ -2,21 +2,26 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.rest.controller.errors.DatabaseWorkException;
-import com.meetup.meetup.rest.controller.errors.EmailAlreadyUsedException;
-import com.meetup.meetup.rest.controller.errors.FailedToLoginException;
-import com.meetup.meetup.rest.controller.errors.LoginAlreadyUsedException;
+import com.meetup.meetup.exception.*;
 import com.meetup.meetup.security.utils.HashMD5;
-import com.meetup.meetup.service.vm.Profile;
+import com.meetup.meetup.service.vm.LoginVM;
+import com.meetup.meetup.service.vm.RecoveryPasswordVM;
+import com.meetup.meetup.service.vm.UserAndTokenVM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
 
 import javax.json.Json;
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 
 @Component
 public class AccountService {
+
+    @Autowired
+    private ProfileService profileService;
 
     @Autowired
     private JwtService jwtService;
@@ -27,7 +32,7 @@ public class AccountService {
     @Autowired
     private MailService mailService;
 
-    public Profile login(Profile credentials) throws Exception {
+    public User login(LoginVM credentials) throws Exception {
         try {
             String md5Pass = HashMD5.hash(credentials.getPassword());
             credentials.setPassword(md5Pass);
@@ -35,26 +40,21 @@ public class AccountService {
             throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
         }
 
-        User user = userDao.findByLogin(credentials.getLogin());
+        User user = profileService.get(credentials.getLogin());
 
-        Profile minimalProfile;
-
-        if (user != null && user.getPassword().equals(credentials.getPassword())) {
-            minimalProfile = new Profile(user.getLogin(), user.getName(), user.getLastname(), user.getPassword());
-        } else {
+        if (user == null || !user.getPassword().equals(credentials.getPassword())) {
             throw new FailedToLoginException(credentials.getLogin());
         }
 
-        String token;
-
-        token = jwtService.tokenFor(minimalProfile);
+        String token = jwtService.tokenFor(user);
 
         if (token == null) {
             throw new Exception("SendCustomErrorEnable to login. Server Error");
         }
-        minimalProfile.setToken(token);
 
-        return minimalProfile;
+        UserAndTokenVM userAndToken = new UserAndTokenVM(user);
+        userAndToken.setToken(token);
+        return userAndToken;
     }
 
     public String register(User user) throws Exception {

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MailService {
-
+    private static final String RECOVERY_LINK = "http://localhost:8000/#/recovery/";
     @Autowired
     private JavaMailSender mailSender;
     @Autowired
@@ -28,4 +28,14 @@ public class MailService {
         mailSender.send(messagePreparator);
     }
 
+    @Async
+    public void sendMailRecoveryPassword(User user, String token) throws MailException {
+        MimeMessagePreparator messagePreparator = mailBuilder.setTo(user.getEmail())
+                .setSubject("Password recovery")
+                .setVariable("name", user.getName())
+                .setVariable("link", RECOVERY_LINK + token)
+                .setTemplate(MailBuilder.RECOVERY_PASSWORD_TEMPLATE)
+                .build();
+        mailSender.send(messagePreparator);
+    }
 }

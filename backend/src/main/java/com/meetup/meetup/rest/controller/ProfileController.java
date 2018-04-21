@@ -1,8 +1,7 @@
 package com.meetup.meetup.rest.controller;
 
-
+import com.meetup.meetup.entity.User;
 import com.meetup.meetup.service.ProfileService;
-import com.meetup.meetup.service.vm.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,16 +12,18 @@ import java.util.List;
 @RequestMapping(path = "/api/profile")
 public class ProfileController {
 
+    // TODO: 4/19/2018 Remove deprecated methods. Use only Profile class. Add new methods. All logic to service
+
     @Autowired
     private ProfileService profileService;
 
-    @GetMapping("/{login}")
-    public Profile getProfile(@PathVariable String login){
-        return profileService.getProfile(login);
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable int id) {
+        return profileService.getById(id);
     }
 
     @PostMapping("/update")
-    public String updateProfile(@RequestBody Profile updatedProfile){
+    public String updateProfile(@RequestBody User updatedProfile){
         if(profileService.updateProfile(updatedProfile)){
             return "Success";
         }
@@ -30,9 +31,9 @@ public class ProfileController {
     }
 
     @PostMapping("/friends")
-    public List<Profile> getFriends(HttpServletRequest request){
+    public List<User> getFriends(HttpServletRequest request){
         // TODO: 20.04.2018 make logic getting token
-        Profile profile = profileService.getProfileFromToken(request.getHeader("Authorization"));
+        User profile = profileService.getProfileFromToken(request.getHeader("Authorization"));
         return profileService.getFriends(profile.getId());
     }
 }
