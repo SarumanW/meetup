@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Folder} from "../folder";
 import {FolderService} from "../folder.service";
 import {Evento} from "../../events/event";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
   selector: 'app-folder',
@@ -11,17 +12,23 @@ import {Evento} from "../../events/event";
 })
 export class FolderComponent implements OnInit {
   events : Evento[];
+  folderId : number;
 
-  constructor(private eventService : FolderService) {
+  constructor(private folderService : FolderService,
+              private route: ActivatedRoute) {
 
   }
 
   ngOnInit() {
+    this.route.params.subscribe(params => {
+      this.folderId = params['folderId'];
+    });
     this.getEvents();
   }
 
   getEvents(){
-    this.eventService.getEvents(1).subscribe(events =>{
+    this.folderService.getEvents(this.folderId).
+    subscribe(events =>{
       this.events = events;
     })
   }

@@ -3,9 +3,7 @@ package com.meetup.meetup.dao.impl;
 import com.meetup.meetup.dao.FolderDao;
 import com.meetup.meetup.dao.rowMappers.EventRowMapper;
 import com.meetup.meetup.dao.rowMappers.FolderRowMapper;
-import com.meetup.meetup.entity.Event;
-import com.meetup.meetup.entity.Folder;
-import com.meetup.meetup.entity.User;
+import com.meetup.meetup.entity.*;
 import com.meetup.meetup.exception.DatabaseWorkException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,9 +11,12 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,12 +34,13 @@ public class FolderDaoImpl implements FolderDao {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Event> getEvents(Folder folder) {
+    public List<Event> getEvents(int folderId) {
         List<Event> events = new ArrayList<>();
 
         try {
             events = jdbcTemplate.query(env.getProperty("folder.getEvents"),
-                    new Object[]{folder.getFolderId()}, new EventRowMapper());
+                    new Object[]{folderId}, new EventRowMapper());
+            System.out.println(events);
         } catch (DataAccessException e){
             System.out.println(e.getMessage());
         }

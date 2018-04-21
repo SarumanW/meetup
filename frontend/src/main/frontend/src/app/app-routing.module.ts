@@ -12,9 +12,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'profile/:id', component: ProfileComponent, canActivate: [AuthGuard]},
-  { path: 'profile/:id/folders', component: FolderListComponent}, //try with 'profile/:id/folders'
-  { path: 'profile/:id/folders/:folderId', component: FolderComponent} //delete later
-  // { path: 'profile/details/:login', component: ProfileComponent, canActivate: [AuthGuard] },
+  { path: 'profile/:id/folders', component: FolderListComponent},
+  { path: 'profile/:id/folders/:folderId', component: FolderComponent}
 ];
 
 @NgModule({

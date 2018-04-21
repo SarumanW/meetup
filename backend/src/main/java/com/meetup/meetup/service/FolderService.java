@@ -19,8 +19,8 @@ public class FolderService {
         return folderDao.getUserFolders(userId);
     }
 
-    public List<Event> getEvents(Folder folder){
-        return folderDao.getEvents(folder);
+    public List<Event> getEvents(int folderID){
+        return folderDao.getEvents(folderID);
     }
 
     public Folder addFolder(Folder folder){
