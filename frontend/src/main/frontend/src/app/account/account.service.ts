@@ -1,17 +1,14 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHandler, HttpRequest, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import {Headers, RequestOptions} from '@angular/http';
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch';
 import {Profile} from "./profile";
-import {MessageService} from "./message.service";
 
 @Injectable()
 export class AccountService {
 
-  constructor(private http: HttpClient,
-              public messageService : MessageService) {}
+  constructor(private http: HttpClient) {}
 
   save(account: any): Observable<any> {
     console.log(account);

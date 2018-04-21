@@ -17,7 +17,6 @@ import {FolderListComponent} from "./folders/folder.list/folder.list.component";
 import {FolderListService} from "./folders/folder.list.service";
 import {FolderComponent} from "./folders/folder/folder.component";
 import {FolderService} from "./folders/folder.service";
-import {MessageService} from "./account/message.service";
 
 @NgModule({
   declarations: [
@@ -38,7 +37,6 @@ import {MessageService} from "./account/message.service";
   ],
   providers: [AccountService,
               AuthGuard,
-              MessageService,
               FolderListService,
               FolderService],
   bootstrap: [AppComponent]

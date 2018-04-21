@@ -90,7 +90,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User insert(User model) {
 
-        int id;
+        int id = -1;
         Folder folder;
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
