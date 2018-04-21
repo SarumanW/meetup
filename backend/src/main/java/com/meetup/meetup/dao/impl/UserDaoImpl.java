@@ -40,7 +40,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            throw new UserNotFoundException("login", login);
+            System.out.println(e.getMessage());
         }
 
         return user;
@@ -57,7 +57,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            throw new UserNotFoundException("email", email);
+            System.out.println(e.getMessage());
         }
 
         return user;
@@ -79,7 +79,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            throw new UserNotFoundException("id", id + "");
+            System.out.println(e.getMessage());
         }
         return user;
     }
