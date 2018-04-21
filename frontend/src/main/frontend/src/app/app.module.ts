@@ -12,6 +12,9 @@ import {ProfileComponent} from "./account/profile/profile.component";
 import {AppRoutingModule} from "./app-routing.module";
 import {AuthGuard} from "./account/auth.guard";
 import {MessageService} from "./account/message.service";
+import {FriendsListComponent} from "./account/profile/friends/friends-list.component";
+import {FriendComponent} from "./account/profile/friends/friend/friend.component";
+import {FriendService} from "./account/profile/friends/friend.service";
 
 @NgModule({
   declarations: [
@@ -19,6 +22,8 @@ import {MessageService} from "./account/message.service";
     RegisterComponent,
     LoginComponent,
     ProfileComponent,
+    FriendsListComponent,
+    FriendComponent,
   ],
   imports: [
     BrowserModule,
@@ -28,7 +33,8 @@ import {MessageService} from "./account/message.service";
   ],
   providers: [AccountService,
               AuthGuard,
-              MessageService],
+              MessageService,
+              FriendService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
