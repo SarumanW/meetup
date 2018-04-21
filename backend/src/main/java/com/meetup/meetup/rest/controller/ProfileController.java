@@ -2,6 +2,7 @@ package com.meetup.meetup.rest.controller;
 
 
 import com.meetup.meetup.service.ProfileService;
+import com.meetup.meetup.service.vm.Friend;
 import com.meetup.meetup.service.vm.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +31,23 @@ public class ProfileController {
     }
 
     @PostMapping("/friends")
-    public List<Profile> getFriends(HttpServletRequest request){
+    public List<Friend> getFriends(HttpServletRequest request){
         // TODO: 20.04.2018 make logic getting token
         Profile profile = profileService.getProfileFromToken(request.getHeader("Authorization"));
-        return profileService.getFriends(profile.getId());
+        return null;
+    }
+
+    @PostMapping("/addFriend")
+    public String addFriend(@RequestBody String newFriend){
+        // TODO: 21.04.2018 tests - receiving friend name from frontend
+        System.out.println(newFriend);
+        return newFriend;
+    }
+
+    @PostMapping("/deleteFriend")
+    public String deleteFriend(@RequestBody String deletedFriend){
+        // TODO: 21.04.2018 tests - receiving deleted friend name from frontend
+        System.out.println(deletedFriend);
+        return deletedFriend;
     }
 }
