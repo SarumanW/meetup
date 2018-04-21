@@ -13,6 +13,7 @@ public class UserRowMapper implements RowMapper<User> {
     @Override
     public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         User user = new User();
+        Date date;
 
         user.setId(resultSet.getInt("USER_ID"));
         user.setLogin(resultSet.getString("login"));
@@ -21,7 +22,8 @@ public class UserRowMapper implements RowMapper<User> {
         user.setPhone(resultSet.getString("phone"));
         user.setName(resultSet.getString("name"));
         user.setLastname(resultSet.getString("surname"));
-        user.setBirthDay(resultSet.getDate("bday").toString());
+        date = resultSet.getDate("bday");
+        user.setBirthDay(date == null ? null : date.toString());
         user.setTimeZone(resultSet.getInt("timezone"));
         user.setImgPath(resultSet.getString("image_filepath"));
 
