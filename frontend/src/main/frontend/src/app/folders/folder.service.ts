@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
 import {Evento} from "../events/event";
-import {EVENTS} from "../events/mock-events";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Injectable()
 export class FolderService {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
-  getEvents(id : number) :  Observable<Evento[]>{
-    let events : Evento[];
+  getEvents(folderId : number) :  Observable<Evento[]>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    events = EVENTS.filter(event => event.folderId === id);
-
-    return of(events);
+    return this.http
+      .get<any>('api/profile/' +
+        JSON.parse(localStorage.currentUser).id + '/folders/' + folderId, {headers: headers});
 
   }
 }

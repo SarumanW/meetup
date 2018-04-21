@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
 import {Folder} from "../folder";
 import {FolderListService} from "../folder.list.service";
+import {FolderService} from "../folder.service";
 
 @Component({
   selector: 'app-folder',
@@ -13,17 +14,18 @@ export class FolderListComponent implements OnInit {
   folders: Folder[];
   selectedFolder: Folder;
 
-  constructor(private folderService: FolderListService,
+  constructor(private folderListService: FolderListService,
               private router : Router) {
     this.selectedFolder = new Folder;
   }
 
   ngOnInit() {
-    this.getFoldersList();
+    this.folderListService.getFoldersList(JSON.parse(localStorage.getItem("currentUser")).id).
+    subscribe(folders => this.folders = folders);
   }
 
   getFoldersList():void{
-    this.folderService.getFoldersList(JSON.parse(localStorage.getItem("currentUser")).id).
+    this.folderListService.getFoldersList(JSON.parse(localStorage.getItem("currentUser")).id).
       subscribe(folders => this.folders = folders)
   }
 

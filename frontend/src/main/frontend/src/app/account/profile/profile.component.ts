@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {Profile} from "../profile";
 import {AccountService} from "../account.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-success',
@@ -12,7 +13,8 @@ export class ProfileComponent {
 
   profile : Profile;
 
-  constructor(private accountService: AccountService){
+  constructor(private accountService: AccountService,
+              private router : Router){
     this.profile = new Profile();
   }
 
@@ -30,5 +32,9 @@ export class ProfileComponent {
 
   logout(){
     localStorage.clear();
+  }
+
+  openFolders(){
+    this.router.navigate(["/profile/" + this.profile.id + "/folders"]);
   }
 }
