@@ -6,6 +6,8 @@ import {HttpClientModule} from "@angular/common/http";
 
 import { AppComponent } from './app.component';
 import {RegisterComponent} from "./account/register/register.component";
+import {RecoveryComponent} from "./account/recovery/recovery.component";
+import {SendRecoveryComponent} from "./account/recovery/sendrecovery.component";
 import {AccountService} from "./account/account.service";
 import {LoginComponent} from "./account/login/login.component";
 import {ProfileComponent} from "./account/profile/profile.component";
@@ -15,6 +17,7 @@ import {FolderListComponent} from "./folders/folder.list/folder.list.component";
 import {FolderListService} from "./folders/folder.list.service";
 import {FolderComponent} from "./folders/folder/folder.component";
 import {FolderService} from "./folders/folder.service";
+import {MessageService} from "./account/message.service";
 
 @NgModule({
   declarations: [
@@ -23,7 +26,9 @@ import {FolderService} from "./folders/folder.service";
     LoginComponent,
     ProfileComponent,
     FolderListComponent,
-    FolderComponent
+    FolderComponent,
+    RecoveryComponent,
+    SendRecoveryComponent
   ],
   imports: [
     BrowserModule,
@@ -33,6 +38,7 @@ import {FolderService} from "./folders/folder.service";
   ],
   providers: [AccountService,
               AuthGuard,
+              MessageService,
               FolderListService,
               FolderService],
   bootstrap: [AppComponent]

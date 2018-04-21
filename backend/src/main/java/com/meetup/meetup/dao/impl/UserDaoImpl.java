@@ -4,8 +4,6 @@ import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.DatabaseWorkException;
-import com.meetup.meetup.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
@@ -38,16 +36,15 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findByLogin(String login) {
         User user = null;
-
+        try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findByLogin"),
                     new Object[]{login}, new UserRowMapper() {
                     }
             );
-
-//        catch (DataAccessException e) {
-//            throw new UserNotFoundException("login", login);
-//        }
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
 
         return user;
     }
@@ -56,16 +53,15 @@ public class UserDaoImpl implements UserDao {
     public User findByEmail(String email) {
 
         User user = null;
-//        try {
+        try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findByEmail"),
                     new Object[]{email}, new UserRowMapper() {
                     }
             );
-//        }
-//        catch (DataAccessException e) {
-//            throw new UserNotFoundException("email", email);
-//        }
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
 
         return user;
     }
@@ -86,7 +82,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            throw new UserNotFoundException("id", id + "");
+            System.out.println(e.getMessage());
         }
         return user;
     }
@@ -117,7 +113,6 @@ public class UserDaoImpl implements UserDao {
             model.setId(id);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
         }
 
         folder = new Folder();
@@ -137,7 +132,6 @@ public class UserDaoImpl implements UserDao {
                     model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
         }
         return model;
     }
@@ -159,7 +153,6 @@ public class UserDaoImpl implements UserDao {
             jdbcTemplate.update(env.getProperty("user.delete"), model.getId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
         }
         return model;
     }

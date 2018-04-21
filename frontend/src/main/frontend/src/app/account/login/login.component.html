@@ -47,13 +47,15 @@
                  placeholder="password"
                  [(ngModel)]="account.password">
         </div>
-
-        <button type="button" (click)="logIn()" [disabled]="loginForm.form.invalid" class="btn btn-primary">
-          LogIn
-        </button>
-        <button type="button" class="btn btn-primary" [routerLink]="['/register']">
-          Register
-        </button>
+        <a [routerLink]="['/recovery']">Forgot password?</a>
+        <div>
+          <button type="button" (click)="logIn()" [disabled]="loginForm.form.invalid" class="btn btn-primary">
+            LogIn
+          </button>
+          <button type="button" class="btn btn-primary" [routerLink]="['/register']">
+            Register
+          </button>
+        </div>
       </form>
     </div>
   </div>

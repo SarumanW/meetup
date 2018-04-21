@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHandler, HttpRequest, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
+import {Headers, RequestOptions} from '@angular/http';
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch';
 import {Profile} from "./profile";
+import {MessageService} from "./message.service";
 
 @Injectable()
 export class AccountService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+              public messageService : MessageService) {}
 
   save(account: any): Observable<any> {
     console.log(account);
@@ -36,5 +39,9 @@ export class AccountService {
 
     return this.http
       .get<any>('api/profile/' + account.id, {headers: headers});
+  }
+
+  recovery(data: any):Observable<any>{
+    return this.http.post('api/recovery/',data);
   }
 }

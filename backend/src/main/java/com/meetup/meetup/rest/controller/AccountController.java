@@ -6,7 +6,6 @@ import com.meetup.meetup.service.vm.LoginVM;
 import com.meetup.meetup.service.vm.RecoveryPasswordVM;
 import com.meetup.meetup.service.vm.UserAndTokenVM;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +27,6 @@ public class AccountController {
                          HttpServletResponse response) throws Exception {
         UserAndTokenVM userAndTokenVM = (UserAndTokenVM) accountService.login(loginModel);
         response.setHeader("Token", userAndTokenVM.getToken());
-
         return userAndTokenVM;
     }
 
@@ -38,10 +36,9 @@ public class AccountController {
         return accountService.register(user);
     }
 
-    // TODO: 4/19/2018 Implement password restore
-    @GetMapping("/recovery/{login}")
-    public ResponseEntity<String> mailRecoveryPassword(@PathVariable String login) throws Exception {
-        return accountService.recoveryPasswordMail(login);
+    @GetMapping("/recovery/{email}")
+    public ResponseEntity<String> mailRecoveryPassword(@PathVariable String email) throws Exception {
+        return accountService.recoveryPasswordMail(email);
     }
 
     @PostMapping("/recovery")

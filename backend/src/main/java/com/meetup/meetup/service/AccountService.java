@@ -14,6 +14,9 @@ import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
 
 import javax.json.Json;
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 
 @Component
@@ -53,7 +56,6 @@ public class AccountService {
 
         UserAndTokenVM userAndToken = new UserAndTokenVM(user);
         userAndToken.setToken(token);
-
         return userAndToken;
     }
 
@@ -73,22 +75,24 @@ public class AccountService {
             throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
         }
 
-        userDao.insert(user);
 
-        // TODO: 21.04.2018 Delete folder before deleting user
-//        try {
-//            mailService.sendMailRegistration(user);
-//        } catch (MailException e) {
-//            userDao.delete(user);
-//            e.printStackTrace();
-//            throw new Exception("SendCustomErrorSend mail exception");
-//        }
+        if (userDao.insert(user).getId() == 0) { //checking adding to DB
+            throw new DatabaseWorkException();
+        }
+
+        try {
+            mailService.sendMailRegistration(user);
+        } catch (MailException e) {
+            userDao.delete(user);
+            e.printStackTrace();
+            throw new Exception("SendCustomErrorSend mail exception");
+        }
 
         return Json.createObjectBuilder().add("success", "Success").build().toString();
     }
 
-    public ResponseEntity<String> recoveryPasswordMail(String login) throws Exception{
-        User user = userDao.findByLogin(login);
+    public ResponseEntity<String> recoveryPasswordMail(String email) throws Exception{
+        User user = userDao.findByEmail(email);
         if (user == null) {
             throw new LoginNotFoundException();
         }
