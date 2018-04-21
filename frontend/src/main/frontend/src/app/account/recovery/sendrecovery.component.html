@@ -1,0 +1,43 @@
+<div>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h1>Recovery</h1>
+      <div class="alert alert-success" *ngIf="success">
+        <strong>Please check your email for confirmation.</strong>
+      </div>
+
+      <div class="alert alert-danger" *ngIf="error">
+        There is no user with such <strong>email!</strong>
+      </div>
+
+    </div>
+  </div>
+  <div class="row justify-content-center" *ngIf="!success">
+    <div class="col-md-8">
+      <form name="form" role="form" #registerForm="ngForm" *ngIf="!success">
+        <div class="form-group">
+          <label class="form-control-label" for="email">Email</label>
+          <input type="email" class="form-control" id="email" name="email" #email="ngModel" placeholder="email@mail.com"
+                 [(ngModel)]="emailAddr" minlength=5 maxlength=100 email required>
+          <div *ngIf="email.dirty && email.invalid">
+            <small class="form-text text-danger" *ngIf="email.errors.required">
+              Your email is required.
+            </small>
+            <small class="form-text text-danger" *ngIf="email.errors.invalid">
+              Your email is invalid.
+            </small>
+            <small class="form-text text-danger" *ngIf="email.errors.minlength">
+              Your email is required to be at least 5 characters.
+            </small>
+            <small class="form-text text-danger" *ngIf="email.errors.maxlength">
+              Your email cannot be longer than 100 characters.
+            </small>
+          </div>
+        </div>
+        <button type="button" (click)="sendRecovery()" class="btn btn-primary">
+          Send
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -40,9 +40,9 @@ public class AccountController {
     }
 
     // TODO: 4/19/2018 Implement password restore
-    @GetMapping("/recovery/{login}")
-    public ResponseEntity<String> mailRecoveryPassword(@PathVariable String login) throws Exception {
-        return accountService.recoveryPasswordMail(login);
+    @GetMapping("/recovery/{email}")
+    public ResponseEntity<String> mailRecoveryPassword(@PathVariable String email) throws Exception {
+        return accountService.recoveryPasswordMail(email);
     }
 
     @PostMapping("/recovery")

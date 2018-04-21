@@ -93,8 +93,8 @@ public class AccountService {
         return Json.createObjectBuilder().add("success", "Success").build().toString();
     }
 
-    public ResponseEntity<String> recoveryPasswordMail(String login) throws Exception{
-        User user = userDao.findByLogin(login);
+    public ResponseEntity<String> recoveryPasswordMail(String email) throws Exception{
+        User user = userDao.findByEmail(email);
         if (user == null) {
             throw new LoginNotFoundException();
         }
