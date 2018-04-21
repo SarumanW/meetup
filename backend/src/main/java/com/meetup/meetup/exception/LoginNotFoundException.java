@@ -1,4 +1,4 @@
-package com.meetup.meetup.rest.controller.errors;
+package com.meetup.meetup.exception;
 
 public class LoginNotFoundException extends RuntimeException{
     public LoginNotFoundException() {
