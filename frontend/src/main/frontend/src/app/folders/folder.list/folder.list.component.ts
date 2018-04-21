@@ -20,13 +20,15 @@ export class FolderListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.folderListService.getFoldersList(JSON.parse(localStorage.getItem("currentUser")).id).
-    subscribe(folders => this.folders = folders);
+    this.getFoldersList()
   }
 
   getFoldersList():void{
     this.folderListService.getFoldersList(JSON.parse(localStorage.getItem("currentUser")).id).
-      subscribe(folders => this.folders = folders)
+      subscribe(
+        folders => {
+          this.folders = folders
+        })
   }
 
 }

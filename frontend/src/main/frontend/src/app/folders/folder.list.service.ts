@@ -8,7 +8,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 @Injectable()
 export class FolderListService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getFoldersList(userId: any):Observable<any>{
     let headers = new HttpHeaders()
