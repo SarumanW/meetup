@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import {DetailProfile} from "../detail.profile";
+import {Profile} from "../profile";
 import {AccountService} from "../account.service";
-import {LoginAccount} from "../login.account";
 
 @Component({
   selector: 'app-success',
@@ -11,23 +10,22 @@ import {LoginAccount} from "../login.account";
 
 export class ProfileComponent {
 
-  profile : DetailProfile;
-  account : LoginAccount;
+  profile : Profile;
 
   constructor(private accountService: AccountService){
-    this.profile = new DetailProfile();
+    this.profile = new Profile();
   }
 
   ngOnInit() {
-    // this.account = JSON.parse(localStorage.getItem('currentUser'));
-    //
-    // console.log("profile service working");
-    //
-    // this.accountService.profile(this.account).subscribe(
-    //   (data) => {
-    //     this.profile = data;
-    //   }
-    // )
+    this.profile = JSON.parse(localStorage.getItem('currentUser'));
+
+    console.log("profile service working");
+
+    this.accountService.profile(this.profile).subscribe(
+      (data) => {
+        this.profile = data;
+      }
+    )
   }
 
   logout(){

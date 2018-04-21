@@ -34,7 +34,7 @@ public class AccountService {
     public User login(LoginVM credentials) throws Exception {
         try {
             String md5Pass = HashMD5.hash(credentials.getPassword());
-            //credentials.setPassword(md5Pass);
+            credentials.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
             throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
         }
@@ -53,6 +53,7 @@ public class AccountService {
 
         UserAndTokenVM userAndToken = new UserAndTokenVM(user);
         userAndToken.setToken(token);
+
         return userAndToken;
     }
 
@@ -74,13 +75,14 @@ public class AccountService {
 
         userDao.insert(user);
 
-        try {
-            mailService.sendMailRegistration(user);
-        } catch (MailException e) {
-            userDao.delete(user);
-            e.printStackTrace();
-            throw new Exception("SendCustomErrorSend mail exception");
-        }
+        // TODO: 21.04.2018 Delete folder before deleting user
+//        try {
+//            mailService.sendMailRegistration(user);
+//        } catch (MailException e) {
+//            userDao.delete(user);
+//            e.printStackTrace();
+//            throw new Exception("SendCustomErrorSend mail exception");
+//        }
 
         return Json.createObjectBuilder().add("success", "Success").build().toString();
     }

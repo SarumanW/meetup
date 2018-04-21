@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-@Configuration
 @RestController
 @PropertySource("classpath:strings.properties")
 @RequestMapping("/api")
@@ -29,6 +28,7 @@ public class AccountController {
                          HttpServletResponse response) throws Exception {
         UserAndTokenVM userAndTokenVM = (UserAndTokenVM) accountService.login(loginModel);
         response.setHeader("Token", userAndTokenVM.getToken());
+
         return userAndTokenVM;
     }
 

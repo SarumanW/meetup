@@ -119,7 +119,7 @@
             <small class="form-text text-danger" *ngIf="password.errors.maxlength">
               Your password cannot be longer than 50 characters.
             </small>
-            <small class="form-text text-danger" *ngIf="lastName.errors.pattern">
+            <small class="form-text text-danger" *ngIf="password.errors.pattern">
               Your username can only contain letters and digits.
             </small>
           </div>
@@ -139,7 +139,7 @@
             <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.maxlength">
               Your confirmation password cannot be longer than 50 characters.
             </small>
-            <small class="form-text text-danger" *ngIf="lastName.errors.pattern">
+            <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.pattern">
               Your username can only contain letters and digits.
             </small>
           </div>

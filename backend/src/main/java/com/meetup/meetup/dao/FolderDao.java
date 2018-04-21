@@ -11,6 +11,6 @@ public interface FolderDao extends Dao<Folder> {
 
     List<Event> getEvents(Folder folder);
 
-    List<Folder> getUserFolders(User user);
+    List<Folder> getUserFolders(int id);
 
 }

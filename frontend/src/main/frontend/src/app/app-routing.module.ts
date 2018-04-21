@@ -10,10 +10,10 @@ import {FolderComponent} from "./folders/folder/folder.component";
 const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: '/profile/details', pathMatch: 'full' },
-  { path: 'profile/details/login', component: ProfileComponent}, //delete later
-  { path: 'profile/details/login/folder', component: FolderListComponent}, //delete later
-  { path: 'profile/details/login/folder/:event', component: FolderComponent} //delete later
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'profile/:id', component: ProfileComponent, canActivate: [AuthGuard]},
+  { path: 'profile/:id/folders', component: FolderListComponent}, //try with 'profile/:id/folders'
+  { path: 'profile/:id/folders/:folderId', component: FolderComponent} //delete later
   // { path: 'profile/details/:login', component: ProfileComponent, canActivate: [AuthGuard] },
 ];
 

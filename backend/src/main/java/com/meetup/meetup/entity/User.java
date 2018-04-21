@@ -13,7 +13,8 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    @Setter(onMethod = @__(@JsonIgnore))
+    @Getter
+    @Setter
     private int id;
 
     @NotBlank

@@ -38,15 +38,16 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findByLogin(String login) {
         User user = null;
-        try {
+
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findByLogin"),
                     new Object[]{login}, new UserRowMapper() {
                     }
             );
-        } catch (DataAccessException e) {
-            throw new UserNotFoundException("login", login);
-        }
+
+//        catch (DataAccessException e) {
+//            throw new UserNotFoundException("login", login);
+//        }
 
         return user;
     }
@@ -55,15 +56,16 @@ public class UserDaoImpl implements UserDao {
     public User findByEmail(String email) {
 
         User user = null;
-        try {
+//        try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findByEmail"),
                     new Object[]{email}, new UserRowMapper() {
                     }
             );
-        } catch (DataAccessException e) {
-            throw new UserNotFoundException("email", email);
-        }
+//        }
+//        catch (DataAccessException e) {
+//            throw new UserNotFoundException("email", email);
+//        }
 
         return user;
     }

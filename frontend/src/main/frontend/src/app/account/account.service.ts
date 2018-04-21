@@ -1,31 +1,26 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHandler, HttpRequest, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import {Headers, RequestOptions} from '@angular/http';
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch';
-import {Router} from "@angular/router";
-import {MessageService} from "./message.service";
+import {Profile} from "./profile";
 
 @Injectable()
 export class AccountService {
 
-  constructor(private http: HttpClient,
-              public messageService : MessageService) {}
+  constructor(private http: HttpClient) {}
 
   save(account: any): Observable<any> {
     console.log(account);
     return this.http.post('api/register', account);
   }
 
-  login(account: any): Observable<any> {
-    console.log("acc service - user -" + localStorage.getItem("currentUser"))
+  login(account: any): Observable<Profile> {
     console.log("login " + account.login);
     console.log("password " + account.password);
 
     return this.http.post<any>('api/login', account)
       .map(user => {
-        // login successful if there's a jwt token in the response
         console.log("account service working")
         console.log("token" + user.token);
         if(user && user.token){
@@ -40,6 +35,6 @@ export class AccountService {
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
     return this.http
-      .get<any>('api/profile/details/' + account.login, {headers: headers});
+      .get<any>('api/profile/' + account.id, {headers: headers});
   }
 }

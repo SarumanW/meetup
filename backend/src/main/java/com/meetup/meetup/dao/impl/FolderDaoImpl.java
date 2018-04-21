@@ -47,12 +47,12 @@ public class FolderDaoImpl implements FolderDao {
     }
 
     @Override
-    public List<Folder> getUserFolders(User user) {
+    public List<Folder> getUserFolders(int id) {
         List<Folder> userFolders = new ArrayList<>();
 
         try{
             userFolders = jdbcTemplate.query(env.getProperty("folder.getUserFolders"),
-                    new Object[]{user.getId()}, new FolderRowMapper());
+                    new Object[]{id}, new FolderRowMapper());
         } catch (DataAccessException e){
             System.out.println(e.getMessage());
         }

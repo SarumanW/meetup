@@ -11,7 +11,6 @@ import {LoginComponent} from "./account/login/login.component";
 import {ProfileComponent} from "./account/profile/profile.component";
 import {AppRoutingModule} from "./app-routing.module";
 import {AuthGuard} from "./account/auth.guard";
-import {MessageService} from "./account/message.service";
 import {FolderListComponent} from "./folders/folder.list/folder.list.component";
 import {FolderListService} from "./folders/folder.list.service";
 import {FolderComponent} from "./folders/folder/folder.component";
@@ -34,7 +33,6 @@ import {FolderService} from "./folders/folder.service";
   ],
   providers: [AccountService,
               AuthGuard,
-              MessageService,
               FolderListService,
               FolderService],
   bootstrap: [AppComponent]

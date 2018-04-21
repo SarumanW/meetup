@@ -3,7 +3,6 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {AccountService} from "../account.service";
 import {LoginAccount} from "../login.account";
 import {Router, ActivatedRoute} from "@angular/router";
-import {MessageService} from "../message.service";
 
 @Component({
   selector: 'app-login',
@@ -16,8 +15,7 @@ export class LoginComponent implements OnInit {
   errorMessage: string;
 
   constructor(private accountService: AccountService,
-              private router: Router,
-              public messageService : MessageService) {
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -30,10 +28,8 @@ export class LoginComponent implements OnInit {
         (user) => {
             console.log("login component working");
             this.success = true;
-            this.account = user;
-            this.messageService.clear();
-            console.log("login data taken" + this.account.login);
-            this.router.navigate(['/profile/details', this.account.login]);
+            this.router.navigate(
+              ['/profile', JSON.parse(localStorage.currentUser).id]);
         },
         response => {
           this.processError(response);

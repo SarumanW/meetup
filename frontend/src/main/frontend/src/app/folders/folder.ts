@@ -1,5 +1,5 @@
 export class Folder{
-  id : number;
+  folderId : number;
   name : string;
   userId: number;
 }

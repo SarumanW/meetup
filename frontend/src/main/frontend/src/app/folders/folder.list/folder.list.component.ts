@@ -19,16 +19,12 @@ export class FolderListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getFolders();
+    this.getFoldersList();
   }
 
-  getFolders(): void {
-    this.folderService.getFolders()
-      .subscribe(folders => this.folders = folders)
-  }
-
-  openEvents(folder : Folder): void {
-    this.router.navigate(['/profile/details/login/folder', folder.id])
+  getFoldersList():void{
+    this.folderService.getFoldersList(JSON.parse(localStorage.getItem("currentUser")).id).
+      subscribe(folders => this.folders = folders)
   }
 
 }
