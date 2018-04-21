@@ -108,8 +108,7 @@
         <div class="form-group">
           <label class="form-control-label" for="password">Password</label>
           <input type="password" class="form-control" id="password" name="password" #password="ngModel"
-                 placeholder="password"
-                 [(ngModel)]="account.password" minlength=6 maxlength=50 required>
+                 placeholder="password" [(ngModel)]="account.password" minlength=6 maxlength=50  pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="password.dirty && password.invalid">
             <small class="form-text text-danger" *ngIf="password.errors.required">
               Your password is required.
@@ -120,13 +119,16 @@
             <small class="form-text text-danger" *ngIf="password.errors.maxlength">
               Your password cannot be longer than 50 characters.
             </small>
+            <small class="form-text text-danger" *ngIf="lastName.errors.pattern">
+              Your username can only contain letters and digits.
+            </small>
           </div>
         </div>
         <div class="form-group">
           <label class="form-control-label" for="confirmPassword">Password confirmation</label>
           <input type="password" class="form-control" id="confirmPassword" name="confirmPasswordInput"
                  #confirmPasswordInput="ngModel" placeholder="confirm"
-                 [(ngModel)]="confirmPassword" minlength=6 maxlength=50 required>
+                 [(ngModel)]="confirmPassword" minlength=6 maxlength=50 pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">
             <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.required">
               Your confirmation password is required.
@@ -136,6 +138,9 @@
             </small>
             <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.maxlength">
               Your confirmation password cannot be longer than 50 characters.
+            </small>
+            <small class="form-text text-danger" *ngIf="lastName.errors.pattern">
+              Your username can only contain letters and digits.
             </small>
           </div>
         </div>

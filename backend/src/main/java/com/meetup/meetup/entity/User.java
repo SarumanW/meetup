@@ -2,23 +2,30 @@ package com.meetup.meetup.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
-
-    @JsonIgnore
+    @Getter
+    @Setter(onMethod = @__(@JsonIgnore))
     private int id;
 
     @NotBlank
+    @Pattern(regexp = "^[_.@A-Za-z0-9-]*$")
     @Size(min = 4, max = 50)
     private String login;
 
-    @Size(min = 6, max = 50)
+    @Getter(onMethod = @__(@JsonIgnore))
+    @Setter(onMethod = @__({
+            @Pattern(regexp = "^[_.@A-Za-z0-9-]*$"),
+            @Size(min = 6, max = 50)}))
     private String password;
 
     @Email

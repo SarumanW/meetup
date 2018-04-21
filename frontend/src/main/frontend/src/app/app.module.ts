@@ -6,6 +6,8 @@ import {HttpClientModule} from "@angular/common/http";
 
 import { AppComponent } from './app.component';
 import {RegisterComponent} from "./account/register/register.component";
+import {RecoveryComponent} from "./account/recovery/recovery.component";
+import {SendRecoveryComponent} from "./account/recovery/sendrecovery.component";
 import {AccountService} from "./account/account.service";
 import {LoginComponent} from "./account/login/login.component";
 import {ProfileComponent} from "./account/profile/profile.component";
@@ -22,6 +24,8 @@ import {FriendService} from "./account/profile/friends/friend.service";
     RegisterComponent,
     LoginComponent,
     ProfileComponent,
+    RecoveryComponent,
+    SendRecoveryComponent
     FriendsListComponent,
     FriendComponent,
   ],

@@ -1,6 +1,6 @@
 package com.meetup.meetup.security.jwt;
 
-import com.meetup.meetup.service.vm.Profile;
+import com.meetup.meetup.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,10 +9,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class JwtAuthenticatedProfile implements Authentication {
-    private final Profile minimalProfile;
+    private final User user;
 
-    public JwtAuthenticatedProfile(Profile minimalProfile) {
-        this.minimalProfile = minimalProfile;
+    public JwtAuthenticatedProfile(User user) {
+        this.user = user;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class JwtAuthenticatedProfile implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return null;
+        return user;
     }
 
     @Override
@@ -47,6 +47,6 @@ public class JwtAuthenticatedProfile implements Authentication {
 
     @Override
     public String getName() {
-        return minimalProfile.getLogin();
+        return user.getLogin();
     }
 }

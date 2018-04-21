@@ -1,9 +1,8 @@
 package com.meetup.meetup.rest.controller;
 
-
+import com.meetup.meetup.entity.User;
 import com.meetup.meetup.service.ProfileService;
 import com.meetup.meetup.service.vm.Friend;
-import com.meetup.meetup.service.vm.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,13 +16,13 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
-    @GetMapping("/{login}")
-    public Profile getProfile(@PathVariable String login){
-        return profileService.getProfile(login);
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable int id) {
+        return profileService.getById(id);
     }
 
     @PostMapping("/update")
-    public String updateProfile(@RequestBody Profile updatedProfile){
+    public String updateProfile(@RequestBody User updatedProfile){
         if(profileService.updateProfile(updatedProfile)){
             return "Success";
         }
