@@ -24,7 +24,7 @@ export class FolderListComponent implements OnInit {
   }
 
   getFoldersList():void{
-    this.folderListService.getFoldersList(JSON.parse(localStorage.getItem("currentUser")).id).
+    this.folderListService.getFoldersList().
       subscribe(
         folders => {
           this.folders = folders

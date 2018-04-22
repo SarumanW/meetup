@@ -10,11 +10,11 @@ export class FolderListService {
 
   constructor(private http: HttpClient) {}
 
-  getFoldersList(userId: any):Observable<any>{
+  getFoldersList():Observable<any>{
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
     return this.http
-      .get<any>('api/profile/' + userId + '/folders', {headers: headers});
+      .get<any>('api/folders/', {headers: headers});
   }
 }

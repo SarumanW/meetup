@@ -14,8 +14,7 @@ export class FolderService {
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
     return this.http
-      .get<any>('api/profile/' +
-        JSON.parse(localStorage.currentUser).id + '/folders/' + folderId, {headers: headers});
+      .get<any>('api/events/folder/' + folderId, {headers: headers});
 
   }
 }

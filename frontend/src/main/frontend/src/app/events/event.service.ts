@@ -8,13 +8,12 @@ export class EventService {
 
   constructor(private http: HttpClient) { }
 
-  getEvent(eventId : number, folderId : number) :  Observable<Evento>{
+  getEvent(eventId : number) :  Observable<Evento>{
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
     return this.http
-      .get<any>('api/profile/' +
-        JSON.parse(localStorage.currentUser).id + '/folders/' + folderId + '/events/' + eventId, {headers: headers});
+      .get<any>('api/events/' + eventId, {headers: headers});
 
   }
 

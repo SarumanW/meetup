@@ -27,7 +27,7 @@ export class EventComponent implements OnInit {
   }
 
   getEvent() {
-    this.eventService.getEvent(this.eventId, this.folderId).
+    this.eventService.getEvent(this.eventId).
     subscribe(eventt =>{
       this.eventt = eventt;
     })
