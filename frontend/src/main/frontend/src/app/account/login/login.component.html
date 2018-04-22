@@ -38,13 +38,13 @@
         <div class="form-group">
           <label class="form-control-label" for="login">Username</label>
           <input type="text" class="form-control" [(ngModel)]="account.login" id="login" name="login"
-                 #login="ngModel" placeholder="username">
+                 #login="ngModel" placeholder="Enter username">
         </div>
 
         <div class="form-group">
           <label class="form-control-label" for="password">Password</label>
           <input type="password" class="form-control" id="password" name="password" #password="ngModel"
-                 placeholder="password"
+                 placeholder="Enter password"
                  [(ngModel)]="account.password">
         </div>
         <a [routerLink]="['/recovery']">Forgot password?</a>

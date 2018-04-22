@@ -1,0 +1,24 @@
+<div class="container-fluid">
+
+  <dl class="row" *ngIf="states.profile">
+
+    <dt class="col-sm-3">Username</dt>
+    <dd class="col-sm-9">Your username</dd>
+
+    <dt class="col-sm-3">First name</dt>
+    <dd class="col-sm-9">Your first name</dd>
+
+    <dt class="col-sm-3">Last name</dt>
+    <dd class="col-sm-9">Your last name</dd>
+
+    <dt class="col-sm-3">Phone number</dt>
+    <dd class="col-sm-9">Your phonenumber</dd>
+    <a class="btn btn-primary" (click)="switchStates('edit')" role="button">Edit profile</a>
+
+  </dl>
+
+
+  <div *ngIf="states.edit"><edit></edit>
+    <a class="btn btn-primary" (click)="switchStates('profile')" role="button">Edit profile</a>
+  </div>
+</div>

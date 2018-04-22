@@ -1,0 +1,32 @@
+<div class="container-fluid" style="margin-top:20px">
+  <div class="row">
+    <div class="col-3">
+      <div class="list-group" id="myList" role="tablist">
+        <img src="http://tuzikgreet.ru/i/files/stati/9-veshhey-kotorye-hochet-skazat-vam-vasha-sobaka-1.jpg"
+             class="img-thumbnail rounded-circle" style="margin-bottom: 10px">
+        <a class="list-group-item list-group-item-action" [ngClass]="{'active':states.profile}" data-toggle="list"
+           (click)="switchStates('profile')" role="tab">Profile</a>
+        <a class="list-group-item list-group-item-action" [ngClass]="{'active':states.events}" data-toggle="list"
+           (click)="switchStates('events')" role="tab">Events</a>
+        <a class="list-group-item list-group-item-action" [ngClass]="{'active':states.friends}" data-toggle="list"
+           (click)="switchStates('friends')" role="tab">Friends</a>
+        <a class="list-group-item list-group-item-action" [ngClass]="{'active':states.wishList}" data-toggle="list"
+           (click)="switchStates('wishList')" role="tab">Wish List</a>
+        <a class="list-group-item list-group-item-action" data-toggle="list" (click)="logout()" role="tab"
+           routerLink="/login"> Log Out</a>
+      </div>
+    </div>
+    <div class="col-9">
+      <div class="tab-content">
+        <div class="tab-pane" [ngClass]="{'active':states.profile}" *ngIf="states.profile">
+          <profile-app></profile-app>
+        </div>
+        <div class="tab-pane" [ngClass]="{'active':states.events}" *ngIf="states.events">Event component</div>
+        <div class="tab-pane" [ngClass]="{'active':states.friends}" *ngIf="states.friends">
+          <friend></friend>
+        </div>
+        <div class="tab-pane" [ngClass]="{'active':states.wishList}" *ngIf="states.wishList">Wish List component</div>
+      </div>
+    </div>
+  </div>
+</div>

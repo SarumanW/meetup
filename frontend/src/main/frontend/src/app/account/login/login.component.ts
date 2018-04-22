@@ -30,10 +30,7 @@ export class LoginComponent implements OnInit {
         (user) => {
             console.log("login component working");
             this.success = true;
-            this.account = user;
-            this.messageService.clear();
-            console.log("login data taken" + this.account.login);
-            this.router.navigate(['/profile/details', this.account.login]);
+            this.router.navigate(['/home', JSON.parse(localStorage.currentUser).id]);
         },
         response => {
           this.processError(response);

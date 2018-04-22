@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {DetailProfile} from "../detail.profile";
-import {AccountService} from "../account.service";
+import {DetailProfile} from "../../detail.profile";
+import {AccountService} from "../../account.service";
 import {ActivatedRoute, Router} from "@angular/router"
 
 @Component({
@@ -16,10 +16,10 @@ export class EditComponent implements OnInit {
   success: boolean;
   login: string;
   email: string;
-  name : string;
-  wishList : string;
-  lastname : string;
-  imgPath=null;
+  name: string;
+  wishList: string;
+  lastname: string;
+  imgPath = null;
   confirmPassword: string;
   birthDay: string;
   doNotMatch: string;
@@ -74,20 +74,20 @@ export class EditComponent implements OnInit {
         this.success = true;
       },
       response => this.processError(response)
-        );
+    );
   }
 
-    formatDate(date: Date){
+  formatDate(date: Date) {
     const day = date.getDate();
-    const month = date.getMonth()+1;
+    const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    this.birthDay=`${day}-${month}-${year}`;
+    this.birthDay = `${day}-${month}-${year}`;
     this.accountService.save(this.account).subscribe(
-        () => {
-          this.success = true;
-        },
-        response => this.processError(response)
-      );
+      () => {
+        this.success = true;
+      },
+      response => this.processError(response)
+    );
   }
 
   private processError(response: HttpErrorResponse) {
