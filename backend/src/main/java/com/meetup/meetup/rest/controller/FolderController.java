@@ -3,30 +3,46 @@ package com.meetup.meetup.rest.controller;
 import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.service.FolderService;
+import oracle.jdbc.proxy.annotation.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @PropertySource("classpath:strings.properties")
-@RequestMapping("/api/profile/{id}")
+@RequestMapping("/api/folders")
 public class FolderController {
 
     @Autowired
     private FolderService folderService;
 
-    @GetMapping("/folders")
-    public List<Folder> getAllFolders(@PathVariable int id){
-        List<Folder> userFolders = folderService.getUserFolders(id);
-        return userFolders;
+    @GetMapping("/")
+    public List<Folder> getAllFolders(){
+        return folderService.getUserFolders();
     }
 
-    @GetMapping("/folders/{folderId}")
-    public List<Event> getFolderEvents(@PathVariable int id, @PathVariable int folderId){
-        List<Event> folderEvents = folderService.getEvents(folderId);
-        System.out.println(folderEvents);
-        return folderEvents;
+    @GetMapping("/{folderId}")
+    public Folder getFolderById(@PathVariable int folderId){
+        return folderService.getFolder(folderId);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Folder> addFolder(@Valid @RequestBody Folder folder) {
+        return new ResponseEntity<>(folderService.addFolder(folder), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<Folder> updateEvent(@Valid @RequestBody Folder folder) {
+        return new ResponseEntity<>(folderService.updateFolder(folder), HttpStatus.OK);
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Folder> deleteFolder(@Valid @RequestBody Folder folder) {
+        return new ResponseEntity<>(folderService.deleteFolder(folder), HttpStatus.OK);
     }
 }

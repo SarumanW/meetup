@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface FolderDao extends Dao<Folder> {
 
-    List<Event> getEvents(int folderId);
+    Folder findById(int id, int userId);
 
     List<Folder> getUserFolders(int id);
 

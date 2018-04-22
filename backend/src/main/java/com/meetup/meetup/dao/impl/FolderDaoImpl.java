@@ -34,21 +34,6 @@ public class FolderDaoImpl implements FolderDao {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Event> getEvents(int folderId) {
-        List<Event> events = new ArrayList<>();
-
-        try {
-            events = jdbcTemplate.query(env.getProperty("folder.getEvents"),
-                    new Object[]{folderId}, new EventRowMapper());
-            System.out.println(events);
-        } catch (DataAccessException e){
-            System.out.println(e.getMessage());
-        }
-
-        return events;
-    }
-
-    @Override
     public List<Folder> getUserFolders(int id) {
         List<Folder> userFolders = new ArrayList<>();
 
@@ -70,6 +55,22 @@ public class FolderDaoImpl implements FolderDao {
             folder = jdbcTemplate.queryForObject(
                     env.getProperty("folder.getById"),
                     new Object[]{id}, new FolderRowMapper()
+            );
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return folder;
+    }
+
+    @Override
+    public Folder findById(int id, int userId) {
+        Folder folder = null;
+
+        try{
+            folder = jdbcTemplate.queryForObject(
+                    env.getProperty("folder.getById"),
+                    new Object[]{id, userId}, new FolderRowMapper()
             );
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());

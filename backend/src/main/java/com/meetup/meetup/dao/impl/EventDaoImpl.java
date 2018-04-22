@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +100,20 @@ public class EventDaoImpl implements EventDao {
         return model;
     }
 
+    @Override
+    public List<Event> findByFolderId(int folderId) {
+        List<Event> events = new ArrayList<>();
+
+        try {
+            events = jdbcTemplate.query(env.getProperty("event.findByFolderId"),
+                    new Object[]{folderId}, new EventRowMapper());
+            System.out.println(events);
+        } catch (DataAccessException e){
+            System.out.println(e.getMessage());
+        }
+
+        return events;
+    }
 
     @Override
     public List<User> getParticipants(Event event) {
