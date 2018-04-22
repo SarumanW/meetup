@@ -17,10 +17,13 @@ public class JwtAuthFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String authorization = request.getHeader("Authorization");
-        if (authorization != null) {
-            JwtAuthToken jwtAuthToken = new JwtAuthToken(authorization.replaceAll("Bearer ", ""));
-            SecurityContextHolder.getContext().setAuthentication(jwtAuthToken);
+
+        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof JwtAuthenticatedProfile)){
+            String authorization = request.getHeader("Authorization");
+            if (authorization != null) {
+                JwtAuthToken jwtAuthToken = new JwtAuthToken(authorization.replaceAll("Bearer ", ""));
+                SecurityContextHolder.getContext().setAuthentication(jwtAuthToken);
+            }
         }
 
         filterChain.doFilter(servletRequest, servletResponse);

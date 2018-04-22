@@ -1,9 +1,7 @@
 package com.meetup.meetup.rest.controller;
 
-import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.service.FolderService;
-import oracle.jdbc.proxy.annotation.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
