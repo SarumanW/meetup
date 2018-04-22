@@ -6,6 +6,8 @@ import com.meetup.meetup.security.AuthenticationFacade;
 import com.meetup.meetup.service.vm.Friend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,7 +23,6 @@ public class ProfileService {
         return userDao.findById(id);
     }
 
-    // TODO: 20.04.2018 logic with -1
     public boolean updateUser(User newUser) {
         User updatedUser = userDao.findById(newUser.getId()).setState(newUser);
         if(userDao.update(updatedUser) != -1){
@@ -30,10 +31,17 @@ public class ProfileService {
         return false;
     }
 
+//    TODO method require testing!
+
     public List<Friend> getFriends() {
         User user = authenticationFacade.getAuthentication();
-        // TODO: 21.04.2018 getFriendsIds(id) must to return friends list
-//        List<Friend> listFriends = userDao.getFriendsIds(user.getId());
-        return null;
+
+        List<Integer> IDs = userDao.getFriendsIds(user.getId());
+
+        List<Friend> friends = new ArrayList<>();
+
+        IDs.forEach((id) -> new Friend(true,userDao.findById(id)));
+
+        return friends;
     }
 }

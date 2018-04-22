@@ -32,7 +32,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findByLogin(String login) {
-        User user = null;
+        User user;
         try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findByLogin"),
@@ -49,7 +49,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findByEmail(String email) {
 
-        User user = null;
+        User user;
         try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findByEmail"),
@@ -68,7 +68,7 @@ public class UserDaoImpl implements UserDao {
 
         List<Integer> resultList;
 
-        resultList= jdbcTemplate.queryForList(env.getProperty("user.getFriendsIds"),new Object[]{id},Integer.class);
+        resultList = jdbcTemplate.queryForList(env.getProperty("user.getFriendsIds"), new Object[]{id}, Integer.class);
 
         return resultList;
 
@@ -77,7 +77,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findById(int id) {
-        User user = null;
+        User user;
         try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findById"),
@@ -99,7 +99,7 @@ public class UserDaoImpl implements UserDao {
                 .withTableName("uuser")
                 .usingGeneratedKeyColumns("USER_ID");
 
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("USER_ID", model.getId());
         parameters.put("login", model.getLogin());
         parameters.put("password", model.getPassword());
