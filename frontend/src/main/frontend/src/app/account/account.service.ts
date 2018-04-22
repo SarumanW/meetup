@@ -24,7 +24,7 @@ export class AccountService {
     return this.http.post<any>('api/login', account)
       .map(user => {
         // login successful if there's a jwt token in the response
-        console.log("account service working")
+        console.log("account service working");
         console.log("token" + user.token);
         if(user && user.token){
           localStorage.setItem('currentUser', JSON.stringify(user));

@@ -31,6 +31,7 @@ export class RegisterComponent implements OnInit {
       this.doNotMatch = 'ERROR';
     } else {
       this.doNotMatch = null;
+      console.log(this.account);
       this.accountService.save(this.account).subscribe(
         () => {
           this.success = true;

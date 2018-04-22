@@ -8,13 +8,12 @@ import com.meetup.meetup.service.vm.LoginVM;
 import com.meetup.meetup.service.vm.RecoveryPasswordVM;
 import com.meetup.meetup.service.vm.UserAndTokenVM;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
 
 import javax.json.Json;
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 
 @Component
@@ -87,5 +86,50 @@ public class AccountService {
         }
 
         return Json.createObjectBuilder().add("success", "Success").build().toString();
+    }
+
+    public ResponseEntity<String> recoveryPasswordMail(String email) throws Exception{
+        User user = userDao.findByEmail(email);
+        if (user == null) {
+            throw new LoginNotFoundException();
+        }
+
+        String token = jwtService.tokenForRecoveryPassword(user);
+
+        if (token == null) {
+            throw new Exception("Token creating error");
+        }
+
+        try {
+            mailService.sendMailRecoveryPassword(user, token);
+        } catch (MailException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>("{ \"success\" : \"Success\" }", HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> recoveryPassword(RecoveryPasswordVM model) throws Exception{
+        String login = jwtService.verifyLogin(model.getToken());
+        if (login == null) {
+            throw new BadTokenException();
+        }
+
+        User user = profileService.get(login);
+        if (user == null) {
+            throw new LoginNotFoundException();
+        }
+
+        try {
+            String md5Pass = HashMD5.hash(model.getPassword());
+            user.setPassword(md5Pass);
+        } catch (NoSuchAlgorithmException e) {
+            throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
+        }
+
+        if (!userDao.updatePassword(user)) {
+            throw new DatabaseWorkException();
+        }
+        return new ResponseEntity<>("{ \"success\" : \"Success\" }", HttpStatus.ACCEPTED);
     }
 }

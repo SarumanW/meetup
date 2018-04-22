@@ -29,8 +29,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         http.authorizeRequests()
-                .antMatchers(env.getProperty("api.loginFull")).not().hasAuthority("ROLE_USER")
-                .antMatchers(env.getProperty("api.registerFull")).not().hasAuthority("ROLE_USER")
+                .antMatchers(env.getProperty("api.loginFull")).permitAll()
+                .antMatchers(env.getProperty("api.registerFull")).permitAll()
+                .antMatchers(env.getProperty("api.recoveryFull")).permitAll()
                 .antMatchers(env.getProperty("api.profileFull")).hasAuthority("ROLE_USER")
                 .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
