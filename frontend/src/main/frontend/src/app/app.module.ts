@@ -17,9 +17,9 @@ import {HomeComponent} from "./account/home/home.component";
 import {ProfileComponent} from "./account/home/profile/profile.component";
 import {EditComponent} from "./account/home/edit/edit.component";
 import {ContinueRegComponent} from "./account/continueReg/continueReg"
-import {FriendsListComponent} from "./account/profile/friends/friends-list.component";
-import {FriendComponent} from "./account/profile/friends/friend/friend.component";
-import {FriendService} from "./account/profile/friends/friend.service";
+import {FriendsListComponent} from "./account/home/friends/friends-list.component";
+import {FriendComponent} from "./account/home/friends/friend/friend.component";
+import {FriendService} from "./account/home/friends/friend.service";
 
 @NgModule({
   declarations: [
