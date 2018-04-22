@@ -21,7 +21,7 @@ export class ProfileComponent {
   }
 
   ngOnInit() {
-    this.account = JSON.parse(localStorage.currentUser).id;
+    this.account = JSON.parse(localStorage.getItem('currentUser'));
 
     console.log("profile service working");
 
