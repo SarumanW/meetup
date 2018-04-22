@@ -15,7 +15,8 @@ export class FolderComponent implements OnInit {
   folderId : number;
 
   constructor(private folderService : FolderService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private router: Router) {
 
   }
 
@@ -31,6 +32,11 @@ export class FolderComponent implements OnInit {
     subscribe(events =>{
       this.events = events;
     })
+  }
+
+  openEvent(event : Evento) {
+    this.router.navigate(["/profile/" + JSON.parse(localStorage.currentUser).id +
+    "/folders/"+ event.folderId +"/events/" + event.eventId])
   }
 
 }
