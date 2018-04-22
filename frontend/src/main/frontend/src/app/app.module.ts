@@ -14,6 +14,8 @@ import {ProfileComponent} from "./account/profile/profile.component";
 import {AppRoutingModule} from "./app-routing.module";
 import {AuthGuard} from "./account/auth.guard";
 import {MessageService} from "./account/message.service";
+import {EditComponent} from "./account/edit/edit.component";
+import {ContinueRegComponent} from "./account/continueReg/continueReg"
 import {FriendsListComponent} from "./account/profile/friends/friends-list.component";
 import {FriendComponent} from "./account/profile/friends/friend/friend.component";
 import {FriendService} from "./account/profile/friends/friend.service";
@@ -24,7 +26,10 @@ import {FriendService} from "./account/profile/friends/friend.service";
     RegisterComponent,
     LoginComponent,
     ProfileComponent,
+    EditComponent,
     RecoveryComponent,
+    SendRecoveryComponent,
+    ContinueRegComponent,
     SendRecoveryComponent,
     FriendsListComponent,
     FriendComponent,

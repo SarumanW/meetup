@@ -14,9 +14,6 @@ import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
 
 import javax.json.Json;
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 
 @Component
@@ -37,7 +34,7 @@ public class AccountService {
     public User login(LoginVM credentials) throws Exception {
         try {
             String md5Pass = HashMD5.hash(credentials.getPassword());
-            //credentials.setPassword(md5Pass);
+            credentials.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
             throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
         }
@@ -75,7 +72,10 @@ public class AccountService {
             throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
         }
 
-        userDao.insert(user);
+
+        if (userDao.insert(user) == -1) { //checking adding to DB
+            throw new DatabaseWorkException();
+        }
 
         try {
             mailService.sendMailRegistration(user);
@@ -88,8 +88,8 @@ public class AccountService {
         return Json.createObjectBuilder().add("success", "Success").build().toString();
     }
 
-    public ResponseEntity<String> recoveryPasswordMail(String login) throws Exception{
-        User user = userDao.findByLogin(login);
+    public ResponseEntity<String> recoveryPasswordMail(String email) throws Exception{
+        User user = userDao.findByEmail(email);
         if (user == null) {
             throw new LoginNotFoundException();
         }
@@ -115,7 +115,7 @@ public class AccountService {
             throw new BadTokenException();
         }
 
-        User user = userDao.findByLogin(login);
+        User user = profileService.get(login);
         if (user == null) {
             throw new LoginNotFoundException();
         }

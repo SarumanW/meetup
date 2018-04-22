@@ -1,0 +1,77 @@
+<div>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="form-group">
+        <h1>Let`s fill your profile!</h1>
+
+        </div>
+      </div>
+    </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <form name="form" role="form" #egitForm="ngForm" *ngIf="!success">
+        <div class="form-group">
+          <label>Choose your profile photo:</label>
+          <input type="file" (change)="onFileSelected($event)">
+          <button type="button" (click)="onUpload()">Upload </button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="birthDay" >Choose the day of your birth: </label>
+          <input type="date" class="form" id="birthDay" name="birthDay" #birthDay="ngModel"
+                 [(ngModel)]="account.birthDay" (click)="formatDate()">
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" (click)="changeWishList()">Add first note to your Wishlist: </label>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="name">Name</label>
+          <input type="text" class="form-control" [(ngModel)]="account.name" id="name" name="name"
+                 #name="ngModel" placeholder="Enter your name"
+                 minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$" >
+          <div *ngIf="name.dirty && name.invalid">
+
+            <small class="form-text text-danger" *ngIf="name.errors.minlength">
+              Your username is required to be at least 4 character.
+            </small>
+            <small class="form-text text-danger" *ngIf="name.errors.maxlength">
+              Your username cannot be longer than 50 characters.
+            </small>
+            <small class="form-text text-danger" *ngIf="name.errors.pattern">
+              Your username can only contain letters and digits.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="lastName">Last name</label>
+          <input type="text" class="form-control" [(ngModel)]="account.lastname" id="lastName" name="lastName"
+                 #lastName="ngModel" placeholder="Enter your last name"
+                 minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$" >
+          <div *ngIf="lastName.dirty && lastName.invalid">
+            <small class="form-text text-danger" *ngIf="lastName.errors.minlength">
+              Your last name is required to be at least 4 character.
+            </small>
+            <small class="form-text text-danger" *ngIf="lastName.errors.maxlength">
+              Your last name cannot be longer than 50 characters.
+            </small>
+            <small class="form-text text-danger" *ngIf="lastName.errors.pattern">
+              Your last name can only contain letters and digits.
+            </small>
+          </div>
+        </div>
+
+
+        <button type="button" class="btn btn-primary"  (click)="passwordConfirm()" [routerLink]="['/profile']" >
+          Save changes
+        </button>
+        <button type="button" class="btn btn-primary"  (click)="passwordConfirm()" [routerLink]="['/profile']" >
+          Skip
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
