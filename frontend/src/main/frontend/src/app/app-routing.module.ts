@@ -15,9 +15,9 @@ const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'profile/:id', component: ProfileComponent, canActivate: [AuthGuard]},
   { path: 'profile/:id/folders', component: FolderListComponent},
-  { path: 'profile/:id/folders/:folderId', component: FolderComponent}
+  { path: 'profile/:id/folders/:folderId', component: FolderComponent},
   { path: 'recovery/:token', component: RecoveryComponent },
-  { path: 'recovery', component: SendRecoveryComponent },
+  { path: 'recovery', component: SendRecoveryComponent }
 ];
 
 @NgModule({

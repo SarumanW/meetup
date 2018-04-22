@@ -3,6 +3,8 @@ package com.meetup.meetup.service;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.service.mail.MailBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
