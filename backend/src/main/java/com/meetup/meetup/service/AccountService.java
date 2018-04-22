@@ -8,6 +8,8 @@ import com.meetup.meetup.service.vm.LoginVM;
 import com.meetup.meetup.service.vm.RecoveryPasswordVM;
 import com.meetup.meetup.service.vm.UserAndTokenVM;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
 
@@ -35,12 +37,12 @@ public class AccountService {
     public User login(LoginVM credentials) throws Exception {
         try {
             String md5Pass = HashMD5.hash(credentials.getPassword());
-            credentials.setPassword(md5Pass);
+            //credentials.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
             throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
         }
 
-        User user = profileService.get(credentials.getLogin());
+        User user = userDao.findByLogin(credentials.getLogin());
 
         if (user == null || !user.getPassword().equals(credentials.getPassword())) {
             throw new FailedToLoginException(credentials.getLogin());
@@ -73,10 +75,7 @@ public class AccountService {
             throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
         }
 
-
-        if (userDao.insert(user) == -1) { //checking adding to DB
-            throw new DatabaseWorkException();
-        }
+        userDao.insert(user);
 
         try {
             mailService.sendMailRegistration(user);
@@ -87,5 +86,50 @@ public class AccountService {
         }
 
         return Json.createObjectBuilder().add("success", "Success").build().toString();
+    }
+
+    public ResponseEntity<String> recoveryPasswordMail(String login) throws Exception{
+        User user = userDao.findByLogin(login);
+        if (user == null) {
+            throw new LoginNotFoundException();
+        }
+
+        String token = jwtService.tokenForRecoveryPassword(user);
+
+        if (token == null) {
+            throw new Exception("Token creating error");
+        }
+
+        try {
+            mailService.sendMailRecoveryPassword(user, token);
+        } catch (MailException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>("{ \"success\" : \"Success\" }", HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> recoveryPassword(RecoveryPasswordVM model) throws Exception{
+        String login = jwtService.verifyLogin(model.getToken());
+        if (login == null) {
+            throw new BadTokenException();
+        }
+
+        User user = userDao.findByLogin(login);
+        if (user == null) {
+            throw new LoginNotFoundException();
+        }
+
+        try {
+            String md5Pass = HashMD5.hash(model.getPassword());
+            user.setPassword(md5Pass);
+        } catch (NoSuchAlgorithmException e) {
+            throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
+        }
+
+        if (!userDao.updatePassword(user)) {
+            throw new DatabaseWorkException();
+        }
+        return new ResponseEntity<>("{ \"success\" : \"Success\" }", HttpStatus.ACCEPTED);
     }
 }

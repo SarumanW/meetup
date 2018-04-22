@@ -14,7 +14,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class User {
     @Getter
-    @Setter(onMethod = @__(@JsonIgnore))
     private int id;
 
     @NotBlank
@@ -41,7 +40,6 @@ public class User {
     @JsonIgnore
     private String phone;
 
-    @JsonIgnore
     private String birthDay;
 
     @JsonIgnore
@@ -50,4 +48,25 @@ public class User {
     @JsonIgnore
     private String imgPath;
 
+    public User setState(User newState){
+        if(newState.getLogin() != null){
+            this.login = newState.getLogin();
+        }
+        if(newState.getEmail() != null){
+            this.email = newState.getEmail();
+        }
+        if(newState.getName() != null){
+            this.name = newState.getName();
+        }
+        if(newState.getLastname() != null){
+            this.lastname= newState.getLastname();
+        }
+        if(newState.getPhone() != null){
+            this.phone= newState.getPhone();
+        }
+        if(newState.getBirthDay() != null){
+            this.birthDay= newState.getBirthDay();
+        }
+        return this;
+    }
 }

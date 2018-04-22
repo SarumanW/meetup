@@ -25,7 +25,7 @@ import {FriendService} from "./account/profile/friends/friend.service";
     LoginComponent,
     ProfileComponent,
     RecoveryComponent,
-    SendRecoveryComponent
+    SendRecoveryComponent,
     FriendsListComponent,
     FriendComponent,
   ],
