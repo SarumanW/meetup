@@ -115,7 +115,7 @@ public class AccountService {
             throw new BadTokenException();
         }
 
-        User user = profileService.get(login);
+        User user = userDao.findByLogin(login);
         if (user == null) {
             throw new LoginNotFoundException();
         }

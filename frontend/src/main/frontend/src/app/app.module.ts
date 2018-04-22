@@ -33,6 +33,8 @@ import {FriendService} from "./account/profile/friends/friend.service";
     SendRecoveryComponent,
     FriendsListComponent,
     FriendComponent,
+    SendRecoveryComponent,
+    ContinueRegComponent
   ],
   imports: [
     BrowserModule,
