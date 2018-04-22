@@ -34,7 +34,14 @@ header{
   text-decoration: none;
 }
 
-.addFolder:hover{
+.add-folder-button:hover{
   cursor: pointer;
   transform: scale(1.25);
 }
+
+.add-folder-button{
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+}
+

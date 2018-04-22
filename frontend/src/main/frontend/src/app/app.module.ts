@@ -19,6 +19,7 @@ import {FolderComponent} from "./folders/folder/folder.component";
 import {FolderService} from "./folders/folder.service";
 import { EventComponent } from './events/event/event.component';
 import { EventService } from './events/event.service';
+import {ModalWindow} from "./modal.window/modal.window.component";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { EventService } from './events/event.service';
     FolderComponent,
     RecoveryComponent,
     SendRecoveryComponent,
-    EventComponent
+    EventComponent,
+    ModalWindow
   ],
   imports: [
     BrowserModule,

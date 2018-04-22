@@ -31,4 +31,15 @@ export class FolderListComponent implements OnInit {
         })
   }
 
+  addFolder(folderName){
+    let folder : Folder = new Folder();
+    folder.name = folderName.value;
+    folder.userId = JSON.parse(localStorage.currentUser).id;
+
+    console.log(folder);
+
+    this.folderListService.addFolder(folder).subscribe();
+    this.getFoldersList();
+  }
+
 }

@@ -17,4 +17,13 @@ export class FolderListService {
     return this.http
       .get<any>('api/folders/', {headers: headers});
   }
+
+  addFolder(folder : any):Observable<any>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    console.log("into add folder service")
+
+    return this.http.post('api/folders/add', folder);
+  }
 }
