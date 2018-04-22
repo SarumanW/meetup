@@ -2,13 +2,12 @@ package com.meetup.meetup.dao;
 
 import com.meetup.meetup.entity.User;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.List;
 
 public interface UserDao extends Dao<User> {
 
     User findByLogin(String login);
     User findByEmail(String email);
-    List<Integer> friendsIds(String id);
+    List<Integer> getFriendsIds(int id);
     boolean updatePassword(User user);
 }

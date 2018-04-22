@@ -65,9 +65,15 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<Integer> getFriendsIds(int id) {
-        // TODO: 4/19/2018 Implement method get list friends ids
-        return null;
+
+        List<Integer> resultList;
+
+        resultList= jdbcTemplate.queryForList(env.getProperty("user.getFriendsIds"),new Object[]{id},Integer.class);
+
+        return resultList;
+
     }
+
 
     @Override
     public User findById(int id) {
@@ -90,7 +96,7 @@ public class UserDaoImpl implements UserDao {
         int id = -1;
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName("USER_S")
+                .withTableName("uuser")
                 .usingGeneratedKeyColumns("USER_ID");
 
         Map<String, Object> parameters = new HashMap<String, Object>();
