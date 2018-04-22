@@ -14,6 +14,8 @@ import {ProfileComponent} from "./account/profile/profile.component";
 import {AppRoutingModule} from "./app-routing.module";
 import {AuthGuard} from "./account/auth.guard";
 import {MessageService} from "./account/message.service";
+import {EditComponent} from "./account/edit/edit.component";
+import {ContinueRegComponent} from "./account/continueReg/continueReg"
 
 @NgModule({
   declarations: [
@@ -21,8 +23,10 @@ import {MessageService} from "./account/message.service";
     RegisterComponent,
     LoginComponent,
     ProfileComponent,
+    EditComponent,
     RecoveryComponent,
-    SendRecoveryComponent
+    SendRecoveryComponent,
+    ContinueRegComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +36,8 @@ import {MessageService} from "./account/message.service";
   ],
   providers: [AccountService,
               AuthGuard,
-              MessageService],
+              MessageService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
