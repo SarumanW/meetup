@@ -1,0 +1,21 @@
+<header>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-0">
+        <img width="160" alt="Meetup Logo" src="assets\logomeetup.svg">
+      </div>
+    </div>
+  </div>
+</header>
+
+<div *ngIf="eventt !== undefined">
+  <h1>{{eventt.name}}</h1><br>
+  <ul class="event">
+    <li><span class="names">id: </span>{{eventt.eventId}}</li>
+    <li><span class="names">Event Date: </span>{{eventt.eventDate}}</li>
+    <li><span class="names">Description: </span>{{eventt.description}}</li>
+    <li><span class="names">Periodicity: </span>{{eventt.periodicity}}</li>
+    <li><span class="names">Place: </span>{{eventt.place}}</li>
+  </ul>
+</div>
+

@@ -17,6 +17,8 @@ import {FolderListComponent} from "./folders/folder.list/folder.list.component";
 import {FolderListService} from "./folders/folder.list.service";
 import {FolderComponent} from "./folders/folder/folder.component";
 import {FolderService} from "./folders/folder.service";
+import { EventComponent } from './events/event/event.component';
+import { EventService } from './events/event.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import {FolderService} from "./folders/folder.service";
     FolderListComponent,
     FolderComponent,
     RecoveryComponent,
-    SendRecoveryComponent
+    SendRecoveryComponent,
+    EventComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +41,8 @@ import {FolderService} from "./folders/folder.service";
   providers: [AccountService,
               AuthGuard,
               FolderListService,
-              FolderService],
+              FolderService,
+              EventService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

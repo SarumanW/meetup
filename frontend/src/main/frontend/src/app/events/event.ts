@@ -1,8 +1,13 @@
 export class Evento{
-  id : number;
+  eventId : number;
   name : string;
+  eventDate : string;
   description : string;
+  periodicityId : number;
+  periodicity : string;
   place : string;
-  eventType : number;
+  eventTypeId : number;
+  eventType : string;
+  isDraft : boolean;
   folderId : number;
 }
