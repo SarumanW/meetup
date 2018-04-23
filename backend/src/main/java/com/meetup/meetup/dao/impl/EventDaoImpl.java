@@ -23,6 +23,7 @@ import java.util.Map;
 
 @Repository
 @PropertySource("classpath:sqlDao.properties")
+@PropertySource("image.properties")
 public class EventDaoImpl implements EventDao {
 
     @Autowired
@@ -59,6 +60,10 @@ public class EventDaoImpl implements EventDao {
                 .withTableName("EVENT")
                 .usingGeneratedKeyColumns("EVENT_ID");
 
+        if (model.getImageFilepath() == null) {
+            model.setImageFilepath(env.getProperty("image.default.filepath"));
+        }
+
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("EVENT_ID", model.getEventId());
         parameters.put("NAME", model.getName());
@@ -69,6 +74,7 @@ public class EventDaoImpl implements EventDao {
         parameters.put("EVENT_TYPE_ID", model.getEventTypeId());
         parameters.put("IS_DRAFT", model.isDraft() ? 1 : 0);
         parameters.put("FOLDER_ID", model.getFolderId());
+        parameters.put("IMAGE_FILEPATH", model.getImageFilepath());
         try {
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
             model.setEventId(id);
@@ -112,7 +118,7 @@ public class EventDaoImpl implements EventDao {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("USER_EVENT");
 
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("USER_ID", userId);
         parameters.put("EVENT_ID", eventId);
         parameters.put("ROLE_ID", roleId);
@@ -132,7 +138,7 @@ public class EventDaoImpl implements EventDao {
         try {
             jdbcTemplate.update(env.getProperty("event.update"),
                     model.getName(), model.getEventDate(), model.getDescription(), model.getPeriodicityId(),
-                    model.getPlace(), model.getEventTypeId(), model.isDraft() ? 1 : 0, model.getFolderId(), model.getEventId());
+                    model.getPlace(), model.getEventTypeId(), model.isDraft() ? 1 : 0, model.getFolderId(), model.getImageFilepath(), model.getEventId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
             throw new DatabaseWorkException();

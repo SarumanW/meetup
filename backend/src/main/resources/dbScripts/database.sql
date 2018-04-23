@@ -108,6 +108,7 @@ CREATE TABLE event (
   event_type_id number NOT NULL,
   is_draft number(1) NOT NULL,
   folder_id number NOT NULL,
+  image_filepath varchar2(255) NOT NULL,
   PRIMARY KEY (event_id)
 );
 
