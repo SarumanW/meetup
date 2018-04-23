@@ -2,9 +2,7 @@
      [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <ng-content select=".app-modal-header"></ng-content>
-      </div>
+      <ng-content select=".modal-header"></ng-content>
       <div class="modal-body">
         <ng-content select=".app-modal-body"></ng-content>
       </div>
