@@ -8,14 +8,24 @@
   </div>
 </header>
 
-<div *ngIf="eventt !== undefined">
-  <h1>{{eventt.name}}</h1><br>
-  <ul class="event">
-    <li><span class="names">id: </span>{{eventt.eventId}}</li>
-    <li><span class="names">Event Date: </span>{{eventt.eventDate}}</li>
-    <li><span class="names">Description: </span>{{eventt.description}}</li>
-    <li><span class="names">Periodicity: </span>{{eventt.periodicity}}</li>
-    <li><span class="names">Place: </span>{{eventt.place}}</li>
+<div class="container" *ngIf="eventt !== undefined">
+  <div class="row">
+<div class="col-md-4">
+  <br><br>
+  <ul class="list-group">
+    <li class="list-group-item active">{{eventt.name}} Event</li>
+    <li class="list-group-item">id: {{eventt.eventId}}</li>
+    <li class="list-group-item">Event Date: {{eventt.eventDate}}</li>
+    <li class="list-group-item">Description: {{eventt.description}}</li>
+    <li class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
+    <li class="list-group-item">Place: {{eventt.place}}</li>
   </ul>
 </div>
-
+  <div class="col-md-4">
+    <br><br>
+    <div class="thumbnail">
+    <img src="assets\fjords.jpg" class="img-rounded" alt="Cinque Terre">
+      </div>
+  </div>
+  </div>
+</div>
