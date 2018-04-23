@@ -19,7 +19,7 @@ public class FolderController {
     @Autowired
     private FolderService folderService;
 
-    @GetMapping("/")
+    @GetMapping
     public List<Folder> getAllFolders(){
         return folderService.getUserFolders();
     }
