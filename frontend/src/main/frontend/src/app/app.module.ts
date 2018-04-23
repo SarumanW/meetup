@@ -25,7 +25,7 @@ import {EditComponent} from "./account/edit/edit.component";
 import {FriendComponent} from "./account/friends/friend/friend.component";
 import {FriendsListComponent} from "./account/friends/friends-list.component";
 import {FriendService} from "./account/friends/friend.service";
-
+import {ContinueRegComponent} from "./account/continueReg/continueReg";
 
 @NgModule({
   declarations: [
@@ -43,6 +43,7 @@ import {FriendService} from "./account/friends/friend.service";
     EditComponent,
     FriendsListComponent,
     FriendComponent,
+    ContinueRegComponent,
   ],
   imports: [
     BrowserModule,

@@ -16,6 +16,7 @@ export class RegisterComponent implements OnInit {
   errorLoginExists: string;
   success: boolean;
   account: RegisterAccount;
+  lastName: string;
 
   constructor(private accountService: AccountService,
               private router: Router) {

@@ -36,7 +36,7 @@
               Your username is required.
             </small>
             <small class="form-text text-danger" *ngIf="login.errors.minlength">
-              Your username is required to be at least 1 character.
+              Your username is required to be at least 4 character.
             </small>
             <small class="form-text text-danger" *ngIf="login.errors.maxlength">
               Your username cannot be longer than 50 characters.
@@ -46,46 +46,7 @@
             </small>
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-control-label" for="name">Name</label>
-          <input type="text" class="form-control" [(ngModel)]="account.name" id="name" name="name"
-                 #name="ngModel" placeholder="name"
-                 minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$" required>
-          <div *ngIf="name.dirty && name.invalid">
-            <small class="form-text text-danger" *ngIf="name.errors.required">
-              Your username is required.
-            </small>
-            <small class="form-text text-danger" *ngIf="name.errors.minlength">
-              Your username is required to be at least 1 character.
-            </small>
-            <small class="form-text text-danger" *ngIf="name.errors.maxlength">
-              Your username cannot be longer than 50 characters.
-            </small>
-            <small class="form-text text-danger" *ngIf="name.errors.pattern">
-              Your username can only contain letters and digits.
-            </small>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-control-label" for="lastName">Last name</label>
-          <input type="text" class="form-control" [(ngModel)]="account.lastname" id="lastName" name="lastName"
-                 #lastName="ngModel" placeholder="lastName"
-                 minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$" required>
-          <div *ngIf="lastName.dirty && lastName.invalid">
-            <small class="form-text text-danger" *ngIf="lastName.errors.required">
-              Your username is required.
-            </small>
-            <small class="form-text text-danger" *ngIf="lastName.errors.minlength">
-              Your username is required to be at least 1 character.
-            </small>
-            <small class="form-text text-danger" *ngIf="lastName.errors.maxlength">
-              Your username cannot be longer than 50 characters.
-            </small>
-            <small class="form-text text-danger" *ngIf="lastName.errors.pattern">
-              Your username can only contain letters and digits.
-            </small>
-          </div>
-        </div>
+
         <div class="form-group">
           <label class="form-control-label" for="email">Email</label>
           <input type="email" class="form-control" id="email" name="email" #email="ngModel" placeholder="email@mail.com"
@@ -119,7 +80,7 @@
             <small class="form-text text-danger" *ngIf="password.errors.maxlength">
               Your password cannot be longer than 50 characters.
             </small>
-            <small class="form-text text-danger" *ngIf="password.errors.pattern">
+            <small class="form-text text-danger" *ngIf="lastName.errors.pattern">
               Your username can only contain letters and digits.
             </small>
           </div>
@@ -139,12 +100,12 @@
             <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.maxlength">
               Your confirmation password cannot be longer than 50 characters.
             </small>
-            <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.pattern">
+            <small class="form-text text-danger" *ngIf="lastName.errors.pattern">
               Your username can only contain letters and digits.
             </small>
           </div>
         </div>
-        <button type="button" (click)="register()" [disabled]="registerForm.form.invalid" class="btn btn-primary">
+        <button type="button" (click)="register()" [disabled]="registerForm.form.invalid" class="btn btn-primary" [routerLink]="['/continueReg']">
           Register
         </button>
       </form>
