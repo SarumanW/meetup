@@ -30,7 +30,11 @@ header{
 
 .folder .card{
   overflow: hidden;
-  width: calc(25% - 10px)
+  width: calc(25% - 15px);
+  margin-right: 20px;
+}
+.folder .card:nth-child(4n){
+  margin-right: 0;
 }
 .folder .card .head{
   height: 150px;
