@@ -2,7 +2,7 @@ package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.service.ProfileService;
-import com.meetup.meetup.service.vm.Friend;
+import com.meetup.meetup.entity.Friend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;

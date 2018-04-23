@@ -35,7 +35,7 @@ export class RegisterComponent implements OnInit {
       this.accountService.save(this.account).subscribe(
         () => {
           this.success = true;
-          this.router.navigate(['/login']);
+          this.router.navigate(['/continueReg']);
         },
         response => this.processError(response)
       );

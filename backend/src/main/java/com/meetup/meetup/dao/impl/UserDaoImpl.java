@@ -32,7 +32,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findByLogin(String login) {
-        User user;
+        User user = null;
         try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findByLogin"),
@@ -40,7 +40,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            throw new UserNotFoundException("login", login);
+            System.out.println(new UserNotFoundException("login", login).getMessage());
         }
 
         return user;
@@ -49,7 +49,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findByEmail(String email) {
 
-        User user;
+        User user = null;
         try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findByEmail"),
@@ -57,7 +57,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            throw new UserNotFoundException("email", email);
+            System.out.println(new UserNotFoundException("email", email).getMessage());
         }
 
         return user;
@@ -77,7 +77,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findById(int id) {
-        User user;
+        User user = null;
         try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findById"),
@@ -85,7 +85,7 @@ public class UserDaoImpl implements UserDao {
                     }
             );
         } catch (DataAccessException e) {
-            throw new UserNotFoundException("id", id + "");
+            System.out.println(new UserNotFoundException("id", id+"").getMessage());
         }
         return user;
     }
@@ -106,9 +106,9 @@ public class UserDaoImpl implements UserDao {
         parameters.put("name", model.getName());
         parameters.put("surname", model.getLastname());
         parameters.put("email", model.getEmail());
-        parameters.put("timezone", model.getTimeZone());
+        parameters.put("time_zone", model.getTimeZone());
         parameters.put("image_filepath", model.getImgPath());
-        parameters.put("bday", (model.getBirthDay() != null ? Date.valueOf(model.getBirthDay()) : null));
+        parameters.put("birthday", (model.getBirthDay() != null ? Date.valueOf(model.getBirthDay()) : null));
         parameters.put("phone", model.getPhone());
         try {
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();

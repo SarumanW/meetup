@@ -1,4 +1,4 @@
-package com.meetup.meetup.service.vm;
+package com.meetup.meetup.entity;
 
 import com.meetup.meetup.entity.User;
 import lombok.AllArgsConstructor;

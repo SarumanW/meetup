@@ -1,5 +1,5 @@
 export class TestFriend {
-  public id: string;
+  public id: number;
   public name: string;
   public confirmed: boolean;
 }

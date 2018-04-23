@@ -3,7 +3,7 @@ package com.meetup.meetup.service;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.security.AuthenticationFacade;
-import com.meetup.meetup.service.vm.Friend;
+import com.meetup.meetup.entity.Friend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
