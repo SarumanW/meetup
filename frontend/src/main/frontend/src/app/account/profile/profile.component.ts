@@ -1,20 +1,21 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {Profile} from "../profile";
 import {AccountService} from "../account.service";
 import {Router} from "@angular/router";
 
 @Component({
-  selector: 'app-success',
-  templateUrl: './profile.component.html',
-  styleUrls: [ './profile.component.css' ]
+ templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.css']
 })
 
 export class ProfileComponent {
 
-  profile : Profile;
+  state:string="profile";
+  profile: Profile;
+
 
   constructor(private accountService: AccountService,
-              private router : Router){
+              private router: Router) {
     this.profile = new Profile();
   }
 
@@ -23,18 +24,18 @@ export class ProfileComponent {
 
     console.log("profile service working");
 
-    this.accountService.profile(this.profile).subscribe(
-      (data) => {
-        this.profile = data;
-      }
-    )
+      this.accountService.profile(this.profile).subscribe(
+        (data) => {
+          this.profile = data;
+        }
+      )
   }
 
-  logout(){
+  logout() {
     localStorage.clear();
   }
 
-  openFolders(){
+  openFolders() {
     this.router.navigate(["/profile/" + this.profile.id + "/folders"]);
   }
 }

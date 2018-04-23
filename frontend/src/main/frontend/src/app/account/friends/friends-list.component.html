@@ -1,0 +1,24 @@
+<div class="container-fluid" style="margin-top:20px">
+  <div class="row">
+    <div class="col-3">
+      <home-comp [states]="state"></home-comp>
+
+    </div>
+    <div class="col-9">
+
+      <div align="center">
+        <h3>Friends List</h3>
+      </div>
+      <hr>
+      <form class="row" (ngSubmit)="addFriend(form)" #form="ngForm">
+        <div class="form-group mx-4 mb-2">
+          <input type="text" class="form-control" placeholder="User name" [(ngModel)]="newFriendName"
+                 name="newFriendName">
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Add friend</button>
+      </form>
+      <hr>
+      <friend *ngFor="let user of users" [user]="user"></friend>
+    </div>
+  </div>
+</div>

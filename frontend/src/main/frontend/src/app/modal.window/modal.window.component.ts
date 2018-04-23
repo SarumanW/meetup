@@ -13,7 +13,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 export class ModalWindow implements OnInit {
 
   public visible = false;
-  private visibleAnimate = false;
+  public visibleAnimate = false;
 
   constructor() {}
 

@@ -1,7 +1,35 @@
-<h1>Success login!</h1>
-<button type="button" (click)="logout()" class="btn btn-primary" routerLink="/login">
-  LogOut
-</button>
-<button type="button" (click)="openFolders()" class="btn btn-primary">
-  Folders
-</button>
+<div class="container-fluid" style="margin-top:20px">
+  <div class="row">
+    <div class="col-3">
+      <home-comp [states]="state"></home-comp>
+
+    </div>
+
+    <div class="col-9">
+      <dl class="row">
+
+        <dt class="col-sm-3">Your id</dt>
+        <dd class="col-sm-9">{{profile.id}}</dd>
+
+
+        <dt class="col-sm-3">Username</dt>
+        <dd class="col-sm-9">{{profile.login}}</dd>
+
+        <dt class="col-sm-3">First name</dt>
+        <dd class="col-sm-9">{{profile.name}}</dd>
+
+        <dt class="col-sm-3">Last name</dt>
+        <dd class="col-sm-9">{{profile.lastname}}</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">{{profile.email}}</dd>
+
+        <a class="btn btn-primary" style="margin-right:10px" routerLink="/edit/{{profile.id}}" role="button">Edit profile</a>
+        <a class="btn btn-primary" (click)="openFolders()" role="button">Folders</a>
+
+      </dl>
+
+
+    </div>
+  </div>
+</div>

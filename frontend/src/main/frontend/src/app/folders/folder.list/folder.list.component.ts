@@ -13,6 +13,7 @@ export class FolderListComponent implements OnInit {
 
   folders: Folder[];
   selectedFolder: Folder;
+  state:string="profile";
 
   constructor(private folderListService: FolderListService,
               private router : Router) {
