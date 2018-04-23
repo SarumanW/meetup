@@ -143,7 +143,6 @@ public class UserDaoImpl implements UserDao {
         return user_id;
     }
 
-
     //working
     @Override
     public int deleteFriend(int user_id, int friend_id){

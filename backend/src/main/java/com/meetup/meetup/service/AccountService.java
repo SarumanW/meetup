@@ -42,7 +42,7 @@ public class AccountService {
             throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
         }
 
-        User user = profileService.get(credentials.getLogin());
+        User user = userDao.findByLogin((credentials.getLogin()));
 
         if (user == null || !user.getPassword().equals(credentials.getPassword())) {
             throw new FailedToLoginException(credentials.getLogin());
@@ -118,7 +118,7 @@ public class AccountService {
             throw new BadTokenException();
         }
 
-        User user = profileService.get(login);
+        User user = userDao.findByLogin((login));
         if (user == null) {
             throw new LoginNotFoundException();
         }
