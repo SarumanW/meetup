@@ -8,11 +8,22 @@ header img {
 }
 
 header{
-  padding-top: 20px;
+  padding-top: 0px;
+  padding-left: 10px;
   color: #fff;
   background-color: #0069d9;
   border-color: #0062cc;
   height: 80px;
+}
+
+header button{
+  background-color: white;
+  color:#0062cc;
+}
+
+header button:hover{
+  background-color: #b3d7ff;
+  color:#00244d;
 }
 
 .login-main{
