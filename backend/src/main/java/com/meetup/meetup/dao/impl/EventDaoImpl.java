@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Repository
 @PropertySource("classpath:sqlDao.properties")
-@PropertySource("image.properties")
+@PropertySource("classpath:image.properties")
 public class EventDaoImpl implements EventDao {
 
     @Autowired
