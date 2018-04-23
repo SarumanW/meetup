@@ -6,6 +6,7 @@ import {Router} from "@angular/router";
 @Component({
   selector: 'home-comp',
   templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
 
 export class HomeComponent {
@@ -33,8 +34,4 @@ export class HomeComponent {
   logout() {
     localStorage.clear();
   }
-
-   openFolders() {
-     this.router.navigate(["/profile/" + this.profile.id + "/folders"]);
-   }
 }

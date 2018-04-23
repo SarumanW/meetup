@@ -34,8 +34,4 @@ export class ProfileComponent {
   logout() {
     localStorage.clear();
   }
-
-  openFolders() {
-    this.router.navigate(["/profile/" + this.profile.id + "/folders"]);
-  }
 }

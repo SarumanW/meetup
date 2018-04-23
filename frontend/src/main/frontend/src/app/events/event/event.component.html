@@ -1,31 +1,33 @@
 <div class="container-fluid" style="margin-top:20px">
   <div class="row">
-    <div class="col-3">
+    <div class="col-2">
       <home-comp [states]="state"></home-comp>
-
     </div>
-    <div class="col-9">
-      <div class="container" *ngIf="eventt !== undefined">
-        <div class="row">
-          <div class="col-md-4">
-            <br><br>
-            <ul class="list-group">
-              <li class="list-group-item active">{{eventt.name}} Event</li>
-              <li class="list-group-item">id: {{eventt.eventId}}</li>
-              <li class="list-group-item">Event Date: {{eventt.eventDate}}</li>
-              <li class="list-group-item">Description: {{eventt.description}}</li>
-              <li class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
-              <li class="list-group-item">Place: {{eventt.place}}</li>
-            </ul>
-          </div>
-          <div class="col-md-4">
-            <br><br>
-            <div class="thumbnail">
-              <img src="assets\fjords.jpg" class="img-rounded" alt="Cinque Terre">
+
+
+      <div class="col-10">
+        <div class="container justify-content-center" *ngIf="eventt !== undefined">
+          <div class="row">
+            <div class="col-md-4">
+              <br><br>
+              <ul class="list-group">
+                <li class="list-group-item active">{{eventt.name}} Event</li>
+                <li class="list-group-item">id: {{eventt.eventId}}</li>
+                <li class="list-group-item">Event Date: {{eventt.eventDate}}</li>
+                <li class="list-group-item">Description: {{eventt.description}}</li>
+                <li class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
+                <li class="list-group-item">Place: {{eventt.place}}</li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <br><br>
+              <div class="thumbnail">
+                <img src="assets\fjords.jpg" class="img-rounded" alt="Cinque Terre">
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 </div>
+

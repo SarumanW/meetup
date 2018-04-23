@@ -1,10 +1,12 @@
 <div class="list-group" role="tablist">
   <img src="http://tuzikgreet.ru/i/files/stati/9-veshhey-kotorye-hochet-skazat-vam-vasha-sobaka-1.jpg"
-       class="img-thumbnail rounded-circle" style="margin-bottom: 10px">
+       class="profile-logo" style="margin-bottom: 10px">
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states == 'profile'}"
      href="#/profile/{{profile.id}}" role="tab">Profile</a>
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'friends'}"
      href="#/friends/">Friends</a>
+  <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'folders'}"
+     href="#/folders/">Folders</a>
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'wishlist'}"
      >Wish List</a>
   <a class="list-group-item list-group-item-action"  (click)="logout()"
