@@ -13,6 +13,7 @@ export class FolderListComponent implements OnInit {
 
   folders: Folder[];
   selectedFolder: Folder;
+  state:string="profile";
 
   constructor(private folderListService: FolderListService,
               private router : Router) {
@@ -24,11 +25,22 @@ export class FolderListComponent implements OnInit {
   }
 
   getFoldersList():void{
-    this.folderListService.getFoldersList(JSON.parse(localStorage.getItem("currentUser")).id).
+    this.folderListService.getFoldersList().
       subscribe(
         folders => {
           this.folders = folders
         })
+  }
+
+  addFolder(folderName){
+    let folder : Folder = new Folder();
+    folder.name = folderName.value;
+    folder.userId = JSON.parse(localStorage.currentUser).id;
+
+    console.log(folder);
+
+    this.folderListService.addFolder(folder).subscribe();
+    this.getFoldersList();
   }
 
 }

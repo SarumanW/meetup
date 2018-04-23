@@ -1,29 +1,56 @@
-<header>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-0">
-        <img width="160" alt="Meetup Logo" src="assets\logomeetup.svg">
+<div class="container-fluid" style="margin-top:20px">
+  <div class="row">
+    <div class="col-3">
+      <home-comp [states]="state"></home-comp>
+
+    </div>
+
+    <div class="col-9">
+      <div class="container justify-content-center">
+        <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
+          <h2>Folders:</h2>
+          <button type="button" class="btn btn-primary" (click)="modal.show()" data-toggle="modal">Add folder</button>
+        </div>
+        <div class="folder d-flex justify-content-between flex-wrap">
+          <div *ngFor="let folder of folders" class="card mb-4">
+            <div class="head card-body">
+              <img class="folder-icon" src="assets/folder-icon.svg" alt="Card image cap">
+              <img class="close-btn" src="assets/close-white.svg" alt="">
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{folder.name}}</h5>
+              <p class="card-text"><b>Id: </b>{{folder.folderId}}</p>
+              <a routerLink="/profile/{{folder.userId}}/folders/{{folder.folderId}}" class="btn btn-primary">Open
+                folder</a>
+            </div>
+          </div>
+          <!--<a *ngFor="let folder of folders" routerLink="/profile/{{folder.userId}}/folders/{{folder.folderId}}">-->
+          <!--<div class="folder d-inline-flex p-2 justify-content-center align-items-center flex-wrap">-->
+          <!--<p>{{folder.name}}</p><br><br>-->
+          <!--<p>{{folder.folderId}}</p>-->
+          <!--</div>-->
+          <!--</a>-->
+          <!--</div>-->
+        </div>
+
+        <div class="add-folder">
+          <app-modal-window #modal>
+            <div class="modal-header d-flex justify-content-between align-items-center">
+              <h4 class="modal-title">Add folder</h4>
+              <img class="close-btn" src="assets/close.svg" (click)="modal.hide()" alt="">
+            </div>
+            <div class="app-modal-body">
+              <form>
+                <div class="form-group">
+                  <label for="name">Folder name:</label>
+                  <input class="form-control" id="name" placeholder="Enter folder name" name="name" #name>
+                </div>
+                <button class="btn btn-default" (click)="modal.hide(); addFolder(name)">Add</button>
+              </form>
+            </div>
+          </app-modal-window>
+        </div>
       </div>
     </div>
   </div>
-</header>
-
-<body>
-<div>
-  <div class="row justify-content-center">
-    <div class="col-md-6 d-inline-flex p-2 justify-content-center align-items-center">
-      <h2>Folders</h2>
-    </div>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-md-6 d-inline-flex p-2 justify-content-around align-items-start flex-wrap main">
-      <a *ngFor="let folder of folders" routerLink="/profile/{{folder.userId}}/folders/{{folder.folderId}}">
-        <div class="folder d-inline-flex p-2 justify-content-center align-items-center flex-wrap">
-          <p>{{folder.name}}</p><br><br>
-          <p>{{folder.folderId}}</p>
-        </div>
-      </a>
-    </div>
-  </div>
 </div>
-</body>

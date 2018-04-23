@@ -19,6 +19,13 @@ import {FolderComponent} from "./folders/folder/folder.component";
 import {FolderService} from "./folders/folder.service";
 import { EventComponent } from './events/event/event.component';
 import { EventService } from './events/event.service';
+import {ModalWindow} from "./modal.window/modal.window.component";
+import {HomeComponent} from './account/home/home.component';
+import {EditComponent} from "./account/edit/edit.component";
+import {FriendComponent} from "./account/friends/friend/friend.component";
+import {FriendsListComponent} from "./account/friends/friends-list.component";
+import {FriendService} from "./account/friends/friend.service";
+import {ContinueRegComponent} from "./account/continueReg/continueReg";
 
 @NgModule({
   declarations: [
@@ -30,7 +37,13 @@ import { EventService } from './events/event.service';
     FolderComponent,
     RecoveryComponent,
     SendRecoveryComponent,
-    EventComponent
+    EventComponent,
+    ModalWindow,
+    HomeComponent,
+    EditComponent,
+    FriendsListComponent,
+    FriendComponent,
+    ContinueRegComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,7 +55,8 @@ import { EventService } from './events/event.service';
               AuthGuard,
               FolderListService,
               FolderService,
-              EventService],
+              EventService,
+              FriendService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

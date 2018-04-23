@@ -13,6 +13,7 @@ export class EventComponent implements OnInit {
   eventId : number;
   folderId : number;
   eventt : Evento;
+  state:string="profile";
 
   constructor(private eventService : EventService,
               private route: ActivatedRoute) { }
@@ -27,7 +28,7 @@ export class EventComponent implements OnInit {
   }
 
   getEvent() {
-    this.eventService.getEvent(this.eventId, this.folderId).
+    this.eventService.getEvent(this.eventId).
     subscribe(eventt =>{
       this.eventt = eventt;
     })

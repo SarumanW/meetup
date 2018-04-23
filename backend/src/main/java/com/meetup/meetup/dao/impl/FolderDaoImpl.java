@@ -89,7 +89,6 @@ public class FolderDaoImpl implements FolderDao {
                 .usingGeneratedKeyColumns("FOLDER_ID");
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("folder_id", model.getFolderId());
         parameters.put("name", model.getName());
         parameters.put("user_id", model.getUserId());
 
