@@ -10,11 +10,11 @@
           <h2>Folders:</h2>
           <button type="button" class="btn btn-primary" (click)="modal.show()" data-toggle="modal">Add folder</button>
         </div>
-        <div class="folder d-flex justify-content-between flex-wrap">
+        <div class="folder d-flex flex-wrap">
           <div *ngFor="let folder of folders" class="card mb-4">
             <div class="head card-body">
               <img class="folder-icon" src="assets/folder-icon.svg" alt="Card image cap">
-              <img class="close-btn" src="assets/close-white.svg" alt="">
+              <img (click)="deleteFolder(folder)" class="close-btn" src="assets/close-white.svg" alt="">
             </div>
             <div class="card-body">
               <h5 class="card-title">{{folder.name}}</h5>
@@ -23,13 +23,6 @@
                 folder</a>
             </div>
           </div>
-          <!--<a *ngFor="let folder of folders" routerLink="/profile/{{folder.userId}}/folders/{{folder.folderId}}">-->
-          <!--<div class="folder d-inline-flex p-2 justify-content-center align-items-center flex-wrap">-->
-          <!--<p>{{folder.name}}</p><br><br>-->
-          <!--<p>{{folder.folderId}}</p>-->
-          <!--</div>-->
-          <!--</a>-->
-          <!--</div>-->
         </div>
 
         <div class="add-folder">

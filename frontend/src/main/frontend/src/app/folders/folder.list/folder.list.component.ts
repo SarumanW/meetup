@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import {Folder} from "../folder";
 import {FolderListService} from "../folder.list.service";
 import {FolderService} from "../folder.service";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-folder',
@@ -21,7 +22,7 @@ export class FolderListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getFoldersList()
+    this.getFoldersList();
   }
 
   getFoldersList():void{
@@ -39,8 +40,24 @@ export class FolderListComponent implements OnInit {
 
     console.log(folder);
 
-    this.folderListService.addFolder(folder).subscribe();
-    this.getFoldersList();
+    this.folderListService.addFolder(folder)
+      .subscribe(() => {
+        this.folders.push(folder);
+      });
+  }
+
+  deleteFolder(folder){
+    this.folderListService.deleteFolder(folder)
+      .subscribe(() => {
+        // this.folders.filter(f => f !== folder);
+          const index: number = this.folders.indexOf(folder);
+          if (index !== -1) {
+            this.folders.splice(index, 1);
+          }
+        },
+() => {
+      console.log("error")
+    });
   }
 
 }
