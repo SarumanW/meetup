@@ -20,6 +20,7 @@ public class Event {
     private EventType eventType;
     private boolean isDraft;
     private int folderId;
+    private String imageFilepath;
 
     private List<User> participants;
 

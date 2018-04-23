@@ -47,6 +47,7 @@ public class EventRowMapper implements RowMapper<Event> {
         event.setEventType("EVENT".equals(resultSet.getString("TYPE")) ? EventType.EVENT : EventType.NOTE);
         event.setDraft(resultSet.getInt("IS_DRAFT") == 1);
         event.setFolderId(resultSet.getInt("FOLDER_ID"));
+        event.setImageFilepath(resultSet.getString("IMAGE_FILEPATH"));
 
         return event;
     }
