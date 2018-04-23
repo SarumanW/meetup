@@ -1,11 +1,11 @@
 <header>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-0">
-        <img width="160" alt="Meetup Logo" src="assets\logomeetup.svg">
-      </div>
-    </div>
-  </div>
+  <nav class="navbar">
+    <a class="navbar-brand">
+        <img width="160" alt="Meetup Logo" src="assets\logomeetup.svg"  class="d-inline-block align-top" alt="">
+    </a>
+    <button *ngIf="showLogout" type="button" class="btn btn-primary" type="submit" (click)="logout()">Logout</button>
+  </nav>
 </header>
+
 <router-outlet></router-outlet>
 

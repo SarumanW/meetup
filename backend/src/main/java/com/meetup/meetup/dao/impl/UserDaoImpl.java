@@ -13,7 +13,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,10 +68,91 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
-    @Override
-    public List<Integer> friendsIds(String id) {
+    //working
+    private List<Integer> getFriendsIds(int user_id) {
         // TODO: 4/19/2018 Implement method get list friends ids
-        return null;
+        List<Integer> friendIds=new ArrayList<>();
+        List<Map<String, Object>> list=new ArrayList<>();
+        BigDecimal b;
+        try {
+            list = jdbcTemplate.queryForList(env.getProperty("user.getFriendsIds"),
+                    new Object[]{user_id, user_id});
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        for (Map<String, Object> row : list) {
+            b= (BigDecimal) row.get("SENDER_ID");
+            if(b.intValue()!=user_id) {friendIds.add(b.intValue());};
+            b= (BigDecimal) row.get("RECEIVER_ID");
+            if(b.intValue()!=user_id) {friendIds.add(b.intValue());};
+        }
+        return friendIds;
+    }
+
+    public List<User> getFriends(int user_id){
+        List<Integer> friendIds = getFriendsIds(user_id);
+        List<User> friends = new ArrayList<>();
+        for(int id : friendIds){
+            User friend = findById(id);
+            if(friend != null) {
+                friends.add(findById(id));
+            }
+        }
+        return friends;
+    }
+
+    public List<User> getFriendsRequests(int user_id){
+        List<Integer> friendIds = getUnconfirmedIds(user_id);
+        List<User> friends = new ArrayList<>();
+        for(int id : friendIds){
+            User friend = findById(id);
+            if(friend != null) {
+                friends.add(findById(id));
+            }
+        }
+        return friends;
+    }
+
+    //working
+    private List<Integer> getUnconfirmedIds(int user_id){
+
+        List<Integer> unConfirmedIds=new ArrayList<>();
+        List<Map<String, Object>> list=new ArrayList<>();
+        BigDecimal b;
+        try {
+            list = jdbcTemplate.queryForList(env.getProperty("user.getUnconfirmedIds"),
+                    new Object[]{user_id});
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        for (Map<String, Object> row : list) {
+            b= (BigDecimal) row.get("SENDER_ID");
+            unConfirmedIds.add(b.intValue());
+        }
+        return unConfirmedIds;
+    }
+
+    //working
+    @Override
+    public int confirmFriend(int user_id, int friend_id){
+        try{
+            jdbcTemplate.update(env.getProperty("user.confirmFriend"), friend_id ,user_id);
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        return user_id;
+    }
+
+
+    //working
+    @Override
+    public int deleteFriend(int user_id, int friend_id){
+        try {
+            jdbcTemplate.update(env.getProperty("user.deleteFriend"), user_id, friend_id, friend_id, user_id);
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        return user_id;
     }
 
     @Override
