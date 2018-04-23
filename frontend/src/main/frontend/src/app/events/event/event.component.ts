@@ -13,7 +13,7 @@ export class EventComponent implements OnInit {
   eventId : number;
   folderId : number;
   eventt : Evento;
-  state:string="profile";
+  state:string="folders";
 
   constructor(private eventService : EventService,
               private route: ActivatedRoute) { }

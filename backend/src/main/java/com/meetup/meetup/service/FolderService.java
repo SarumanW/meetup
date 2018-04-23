@@ -58,6 +58,14 @@ public class FolderService {
     public Folder deleteFolder(Folder folder) {
         checkPermission(folder);
 
+        List<Event> events = eventDao.findByFolderId(folder.getFolderId());
+        Folder general = folderDao.findByName("general");
+
+        for(Event e : events){
+            e.setFolderId(general.getFolderId());
+            eventDao.update(e);
+        }
+
         return folderDao.delete(folder);
     }
 

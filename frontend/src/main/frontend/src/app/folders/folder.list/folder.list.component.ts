@@ -41,7 +41,8 @@ export class FolderListComponent implements OnInit {
     console.log(folder);
 
     this.folderListService.addFolder(folder)
-      .subscribe(() => {
+      .subscribe((res) => {
+        folder.folderId = res.folderId;
         this.folders.push(folder);
       });
   }
@@ -49,7 +50,6 @@ export class FolderListComponent implements OnInit {
   deleteFolder(folder){
     this.folderListService.deleteFolder(folder)
       .subscribe(() => {
-        // this.folders.filter(f => f !== folder);
           const index: number = this.folders.indexOf(folder);
           if (index !== -1) {
             this.folders.splice(index, 1);

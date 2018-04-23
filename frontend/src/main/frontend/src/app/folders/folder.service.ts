@@ -13,8 +13,9 @@ export class FolderService {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
+    console.log("get events service")
+
     return this.http
       .get<any>('api/events/folder/' + folderId, {headers: headers});
-
   }
 }

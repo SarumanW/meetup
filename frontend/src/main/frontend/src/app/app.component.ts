@@ -22,7 +22,7 @@ export class AppComponent {
   }
 
   modifyHeader(location) {
-    if (location.url === "/login" || location.url === "/register" || location.url === '/')
+    if (location.url === "/login" || location.url === "/register" || location.url === '/' || location.url === '/continueReg')
     {
       this.showLogout = false;
     } else {
