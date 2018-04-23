@@ -15,6 +15,13 @@ export class FriendService {
       })
   }
 
+  getFriendsRequests(): Observable<any> {
+    return this.http.get<any>('api/profile/friendsRequests')
+      .map(requests => {
+        return requests;
+      })
+  }
+
   addFriend(newFriend: String): Observable<any> {
     return this.http.post<any>('api/profile/addFriend', newFriend).map(friend => {
       return friend;

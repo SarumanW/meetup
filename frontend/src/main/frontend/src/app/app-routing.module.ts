@@ -10,7 +10,7 @@ import {FolderComponent} from "./folders/folder/folder.component";
 import {SendRecoveryComponent} from "./account/recovery/sendrecovery.component";
 import {EventComponent} from "./events/event/event.component";
 import {EditComponent} from "./account/edit/edit.component";
-import {FriendsListComponent} from "./account/friends/friends-list.component";
+import {FriendsListComponent} from "./account/friends/friends.list.component";
 import {ContinueRegComponent} from "./account/continueReg/continueReg";
 
 const routes: Routes = [

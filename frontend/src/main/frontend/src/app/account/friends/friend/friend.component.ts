@@ -1,6 +1,7 @@
 import {Component, Input} from "@angular/core";
 import {TestFriend} from "./test.friend";
 import {FriendService} from "../friend.service";
+import {Profile} from "../../profile";
 
 @Component({
   selector: 'friend',
@@ -9,7 +10,7 @@ import {FriendService} from "../friend.service";
 })
 
 export class FriendComponent {
-  @Input() user: TestFriend;
+  @Input() user: Profile;
   state:string="friends"
   constructor(private friendService: FriendService){
   }
