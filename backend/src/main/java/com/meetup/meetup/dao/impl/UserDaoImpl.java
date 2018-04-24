@@ -69,6 +69,7 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
+    @Override
     public List<User> getFriends(int userId) {
 
         List<Integer> friendIds = getFriendsIds(userId);
@@ -85,13 +86,20 @@ public class UserDaoImpl implements UserDao {
         return friends;
     }
 
-    private List<Integer> getFriendsIds(int user_id) {
+
+    /**
+     * Returns list of user ids where friendship for given user's id is confirmed
+     *
+     * @param userId
+     * @return
+     */
+    private List<Integer> getFriendsIds(int userId) {
 
         List<Map<String, Object>> list = new ArrayList<>();
 
         try {
             list = jdbcTemplate.queryForList(env.getProperty("user.getFriendsIds"),
-                    user_id, user_id);
+                    userId, userId);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
@@ -102,12 +110,12 @@ public class UserDaoImpl implements UserDao {
 
         for (Map<String, Object> row : list) {
             b = (Integer) row.get("SENDER_ID");
-            if (b != user_id) {
+            if (b != userId) {
                 friendIds.add(b);
             }
 
             b = (Integer) row.get("RECEIVER_ID");
-            if (b != user_id) {
+            if (b != userId) {
                 friendIds.add(b);
             }
 
@@ -137,6 +145,13 @@ public class UserDaoImpl implements UserDao {
         return true;
     }
 
+    /**
+     * Returns list of unconfirmed friend requests
+     *
+     * @param userId
+     * @return
+     */
+    @Override
     public List<User> getFriendsRequests(int userId) {
 
         List<Integer> friendIds = getUnconfirmedIds(userId);
@@ -152,14 +167,20 @@ public class UserDaoImpl implements UserDao {
         return friends;
     }
 
-    //working
-    private List<Integer> getUnconfirmedIds(int user_id) {
+
+    /**
+     * Returns list of ids where friendship isn't confirmed for given user's id
+     *
+     * @param userId
+     * @return
+     */
+    private List<Integer> getUnconfirmedIds(int userId) {
 
         List<Integer> unConfirmedIds = new ArrayList<>();
 
         try {
             unConfirmedIds = jdbcTemplate.queryForList(env.getProperty("user.getUnconfirmedIds"),
-                    new Object[] {user_id},Integer.class);
+                    new Object[] {userId},Integer.class);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
@@ -211,7 +232,6 @@ public class UserDaoImpl implements UserDao {
     public User insert(User model) {
 
         int id = -1;
-        Folder folder;
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("UUSER")
@@ -228,6 +248,7 @@ public class UserDaoImpl implements UserDao {
         parameters.put("image_filepath", model.getImgPath());
         parameters.put("bday", (model.getBirthDay() != null ? Date.valueOf(model.getBirthDay()) : null));
         parameters.put("phone", model.getPhone());
+
         try {
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
             model.setId(id);
@@ -235,7 +256,7 @@ public class UserDaoImpl implements UserDao {
             System.out.println(e.getMessage());
         }
 
-        folder = new Folder();
+        Folder folder = new Folder();
         folder.setName("general");
         folder.setUserId(id);
 

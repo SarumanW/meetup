@@ -10,6 +10,8 @@ public interface UserDao extends Dao<User> {
 
     User findByEmail(String email);
 
+    User update(User model);
+
     boolean updatePassword(User user);
 
     int confirmFriend(int userId, int friendId);
