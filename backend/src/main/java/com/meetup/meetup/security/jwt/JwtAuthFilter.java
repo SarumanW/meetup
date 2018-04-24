@@ -1,5 +1,6 @@
 package com.meetup.meetup.security.jwt;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +19,16 @@ public class JwtAuthFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof JwtAuthenticatedProfile)){
-            String authorization = request.getHeader("Authorization");
-            if (authorization != null) {
-                JwtAuthToken jwtAuthToken = new JwtAuthToken(authorization.replaceAll("Bearer ", ""));
+        String authorization = request.getHeader("Authorization");
+
+        if (authorization != null) {
+
+            String token = authorization.replaceAll("Bearer ", "");
+            Authentication authentication =
+                    SecurityContextHolder.getContext().getAuthentication();
+
+            if (authentication == null || !token.equals(authentication.getCredentials().toString())) {
+                JwtAuthToken jwtAuthToken = new JwtAuthToken(token);
                 SecurityContextHolder.getContext().setAuthentication(jwtAuthToken);
             }
         }
