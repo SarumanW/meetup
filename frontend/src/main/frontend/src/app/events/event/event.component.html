@@ -26,6 +26,17 @@
               </div>
             </div>
           </div>
+          <div class="row" *ngIf="eventt.participants !== null">
+            <div class="col-md-4">
+              <br><br>
+            <ul class="list-group">
+              <li class="list-group-item active">Participants</li>
+            <div *ngFor="let participant of eventt.participants">
+              <li class="list-group-item">name: {{participant.login}}</li>
+            </div>
+            </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>

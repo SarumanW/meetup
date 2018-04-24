@@ -1,6 +1,7 @@
 package com.meetup.meetup.dao.impl;
 
 import com.meetup.meetup.dao.EventDao;
+import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.EventRowMapper;
 import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.Role;
@@ -28,6 +29,9 @@ public class EventDaoImpl implements EventDao {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     @Qualifier("jdbcTemplate")
@@ -85,6 +89,7 @@ public class EventDaoImpl implements EventDao {
         return model;
     }
 
+    @Override
     public Event createEvent(Event model, int userId) {
 
         Event event;
@@ -95,6 +100,7 @@ public class EventDaoImpl implements EventDao {
         return event;
     }
 
+    @Override
     public Role getRole(int userId, int eventId) {
 
         Role role = null;
@@ -159,7 +165,7 @@ public class EventDaoImpl implements EventDao {
 
     @Override
     public List<Event> findByFolderId(int folderId) {
-        List<Event> events = new ArrayList<>();
+        List<Event> events = null;
 
         try {
             events = jdbcTemplate.query(env.getProperty("event.findByFolderId"),
@@ -175,7 +181,21 @@ public class EventDaoImpl implements EventDao {
     @Override
     public List<User> getParticipants(Event event) {
 
-        throw new NotImplementedException();
+        List<Integer> ids;
+        List<User> participants = new ArrayList<>();
+
+        ids = jdbcTemplate.queryForList(env.getProperty("event.getParticipants"), new Object[]{event.getEventId()}, Integer.class);
+
+        if (!ids.isEmpty()) {
+
+            for (int id : ids) {
+                participants.add(userDao.findById(id));
+            }
+        } else {
+            participants = null;
+        }
+
+        return participants;
 
     }
 }
