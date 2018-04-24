@@ -15,12 +15,18 @@ import org.springframework.stereotype.Service;
 @PropertySource("classpath:links.properties")
 public class MailService {
 
+    private static final String HTTP = "http://";
+
+    private final JavaMailSender mailSender;
+    private final MailBuilder mailBuilder;
+    private final Environment environment;
+
     @Autowired
-    private JavaMailSender mailSender;
-    @Autowired
-    private MailBuilder mailBuilder;
-    @Autowired
-    private Environment environment;
+    public MailService(JavaMailSender mailSender, MailBuilder mailBuilder, Environment environment) {
+        this.mailSender = mailSender;
+        this.mailBuilder = mailBuilder;
+        this.environment = environment;
+    }
 
     @Async
     public void sendMailRegistration(User user) throws MailException {
@@ -28,7 +34,8 @@ public class MailService {
                 .setSubject("Meetup successful registration")
                 .setVariable("name", user.getName() + ' ' + user.getLastname())
                 .setVariable("login", user.getLogin())
-                .setVariable("link", environment.getProperty("mail.login"))
+                .setVariable("link", HTTP + environment.getProperty("server.domain") +
+                        environment.getProperty("mail.login"))
                 .setTemplate(MailBuilder.REGISTER_MAIL_TEMPLATE)
                 .build();
         mailSender.send(messagePreparator);
@@ -39,7 +46,8 @@ public class MailService {
         MimeMessagePreparator messagePreparator = mailBuilder.setTo(user.getEmail())
                 .setSubject("Password recovery")
                 .setVariable("name", user.getName())
-                .setVariable("link", environment.getProperty("mail.recovery") + token)
+                .setVariable("link", HTTP + environment.getProperty("server.domain") +
+                        environment.getProperty("mail.recovery") + token)
                 .setTemplate(MailBuilder.RECOVERY_PASSWORD_TEMPLATE)
                 .build();
         mailSender.send(messagePreparator);
