@@ -1,7 +1,9 @@
 package com.meetup.meetup.security.jwt;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -31,6 +33,8 @@ public class JwtAuthFilter implements Filter {
                 JwtAuthToken jwtAuthToken = new JwtAuthToken(token);
                 SecurityContextHolder.getContext().setAuthentication(jwtAuthToken);
             }
+        } else if (!(request instanceof SecurityContextHolderAwareRequestWrapper)){
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(servletRequest, servletResponse);

@@ -15,7 +15,7 @@ public class AuthenticationFacade {
     public User getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (!authentication.isAuthenticated()) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             throw new AuthenticationException("User is not authenticated");
         }
 
