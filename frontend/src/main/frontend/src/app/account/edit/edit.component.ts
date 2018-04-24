@@ -54,7 +54,7 @@ export class EditComponent implements OnInit {
   onUpload() {
     const fd = new FormData();
     fd.append('image', this.imgPath, this.imgPath.name);
-    this.accountService.save(this.account).subscribe(
+    this.accountService.upImg(this.account).subscribe(
       () => {
         this.success = true;
       },

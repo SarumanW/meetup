@@ -37,7 +37,6 @@ public class ProfileController {
         return profileService.getFriendsRequests();
     }
 
-    // TODO: 23.04.2018 need dao.addFriend()
     @PostMapping("/addFriend")
     public String addFriend(@RequestBody String newFriend) {
         profileService.addFriend(newFriend);

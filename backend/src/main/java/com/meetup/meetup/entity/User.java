@@ -37,10 +37,8 @@ public class User {
     @Size(min = 4, max = 254)
     private String lastname;
 
-    @JsonIgnore
     private String phone;
 
-    @JsonIgnore
     private String birthDay;
 
     @JsonIgnore
@@ -60,9 +58,9 @@ public class User {
     }
 
     public User setState(User newState){
-        if(newState.getLogin() != null){
-            this.login = newState.getLogin();
-        }
+//        if(newState.getLogin() != null){
+//            this.login = newState.getLogin();
+//        }
         if(newState.getEmail() != null){
             this.email = newState.getEmail();
         }
@@ -78,6 +76,11 @@ public class User {
         if(newState.getBirthDay() != null){
             this.birthDay= newState.getBirthDay();
         }
+        if(newState.getImgPath() != null){
+            this.imgPath = newState.getImgPath();
+        }
         return this;
     }
+
+
 }

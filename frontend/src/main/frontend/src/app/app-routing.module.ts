@@ -7,7 +7,7 @@ import {RecoveryComponent} from "./account/recovery/recovery.component";
 import {AuthGuard} from "./account/auth.guard";
 import {FolderListComponent} from "./folders/folder.list/folder.list.component";
 import {FolderComponent} from "./folders/folder/folder.component";
-import {SendRecoveryComponent} from "./account/recovery/sendrecovery.component";
+import {SendRecoveryComponent} from "./account/recovery/send.recovery.component";
 import {EventComponent} from "./events/event/event.component";
 import {EditComponent} from "./account/edit/edit.component";
 import {FriendsListComponent} from "./account/friends/friends.list.component";
@@ -27,7 +27,7 @@ const routes: Routes = [
   {path: 'profile/:id/folders/:folderId/events/:eventId', component: EventComponent},
   {path: 'edit/:id', component: EditComponent},
   {path: 'friends', component: FriendsListComponent},
-  {path: 'continue.reg', component: ContinueRegistrationComponent},
+  {path: 'continuereg/:login', component: ContinueRegistrationComponent},
   {path: 'folders', component: FolderListComponent},
   {path: 'change.password', component: ChangePasswordComponent},
 

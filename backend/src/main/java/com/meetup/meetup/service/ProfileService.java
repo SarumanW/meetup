@@ -22,7 +22,7 @@ public class ProfileService {
     }
 
     public User updateUser(User newUser) {
-        User updatedUser = userDao.findById(newUser.getId()).setState(newUser);
+        User updatedUser = userDao.findByLogin(newUser.getLogin()).setState(newUser);
         updatedUser = userDao.update(updatedUser);
         return updatedUser;
     }
@@ -40,7 +40,7 @@ public class ProfileService {
     public void addFriend(String userName){
         User user = authenticationFacade.getAuthentication();
         User friend = userDao.findByLogin(userName);
-//        userDao.addFriend(user.getId(), friend.getId());
+        userDao.addFriend(user.getId(), friend.getId());
     }
 
     public int confirmFriend(int friendId){

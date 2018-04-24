@@ -4,7 +4,7 @@ import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-sendrecovery',
-  templateUrl: './sendrecovery.component.html'
+  templateUrl: './send.recovery.component.html'
 })
 export class SendRecoveryComponent implements OnInit {
   emailAddr: string;

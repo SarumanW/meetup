@@ -13,14 +13,10 @@ import {ActivatedRoute, Router} from "@angular/router"
 export class ContinueRegistrationComponent implements OnInit {
 
   success: boolean;
-  login: string;
-  email: string;
-  name: string;
   imgPath = null;
-  birthDay: string;
+  // birthDay: string;
+  // phone: string
   error: string;
-  errorEmailExists: string;
-  errorLoginExists: string;
   account: Profile;
 
 
@@ -33,12 +29,22 @@ export class ContinueRegistrationComponent implements OnInit {
     this.success = false;
     this.account = new Profile();
     this.route.params.subscribe(params => {
-      this.account.token = params['token'];
+      this.account.login = params['login'];
     });
   }
 
   onFileSelected(event) {
     this.imgPath = <File>event.target.files[0];
+  }
+
+  save(){
+
+    this.accountService.update(this.account).subscribe(
+      () => {
+        this.success = true;
+      },
+      response => this.processError(response)
+    );
   }
 
   onUpload() {
@@ -56,25 +62,19 @@ export class ContinueRegistrationComponent implements OnInit {
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    this.birthDay = `${day}-${month}-${year}`;
-    this.accountService.save(this.account).subscribe(
-      () => {
-        this.success = true;
-      },
-      response => this.processError(response)
-    );
+    this.account.birthDay = `${day}-${month}-${year}`;
+    // this.birthDay = `${day}-${month}-${year}`;
+    // this.accountService.save(this.account).subscribe(
+    //   () => {
+    //     this.success = true;
+    //   },
+    //   response => this.processError(response)
+    // );
   }
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
-    if (response.error === 'Login already used') {
-      this.errorLoginExists = 'ERROR';
-    } else if (response.error === 'Email already used') {
-      this.errorEmailExists = 'ERROR';
-    } else {
-      this.error = 'ERROR';
-    }
-
+    this.error = 'ERROR';
   }
 
   changeWishList() {

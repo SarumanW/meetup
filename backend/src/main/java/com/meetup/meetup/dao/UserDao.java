@@ -20,4 +20,6 @@ public interface UserDao extends Dao<User> {
 
     List<User> getFriends(int user_id);
 
+    boolean addFriend(int senderId, int receiverId);
+
 }

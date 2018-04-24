@@ -15,6 +15,11 @@ export class AccountService {
     return this.http.post('api/register', account);
   }
 
+  upImg(img:any):Observable<any>{
+    console.log("assad");
+    return this.http.post('api/profile/img', img);
+  }
+
   login(account: any): Observable<Profile> {
     console.log("login " + account.login);
     console.log("password " + account.password);
@@ -36,6 +41,11 @@ export class AccountService {
 
     return this.http
       .get<any>('api/profile/' + account.id, {headers: headers});
+  }
+
+  update(account:any):Observable<any>{
+    console.log("updating");
+    return this.http.post<any>('/api/profile/update', account);
   }
 
   recovery(data: any):Observable<any>{
