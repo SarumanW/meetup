@@ -22,17 +22,16 @@ import java.security.NoSuchAlgorithmException;
 @Component
 public class AccountService {
 
-    @Autowired
-    private ProfileService profileService;
+    private final JwtService jwtService;
+    private final UserDao userDao;
+    private final MailService mailService;
 
     @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private UserDao userDao;
-
-    @Autowired
-    private MailService mailService;
+    public AccountService(JwtService jwtService, UserDao userDao, MailService mailService) {
+        this.jwtService = jwtService;
+        this.userDao = userDao;
+        this.mailService = mailService;
+    }
 
     public User login(LoginVM credentials) throws Exception {
         try {
@@ -59,7 +58,7 @@ public class AccountService {
         return userAndToken;
     }
 
-    public String register(User user) throws Exception {
+    public ResponseEntity<String> register(User user) throws Exception {
         if (null != userDao.findByLogin(user.getLogin())) {  //checking if user exist in system
             throw new LoginAlreadyUsedException();
         }
@@ -88,7 +87,7 @@ public class AccountService {
             throw new Exception("SendCustomErrorSend mail exception");
         }
 
-        return Json.createObjectBuilder().add("success", "Success").build().toString();
+        return new ResponseEntity<>("{ \"success\" : \"Success\" }", HttpStatus.ACCEPTED);
     }
 
     public ResponseEntity<String> recoveryPasswordMail(String email) throws Exception{
@@ -113,14 +112,10 @@ public class AccountService {
     }
 
     public ResponseEntity<String> recoveryPassword(RecoveryPasswordVM model) throws Exception{
-        String login = jwtService.verifyLogin(model.getToken());
-        if (login == null) {
-            throw new BadTokenException();
-        }
+        User user = jwtService.verifyForRecoveryPassword(model.getToken());
 
-        User user = userDao.findByLogin((login));
         if (user == null) {
-            throw new LoginNotFoundException();
+            throw new BadTokenException();
         }
 
         try {
