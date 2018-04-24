@@ -18,10 +18,10 @@ export class EditComponent implements OnInit {
   email: string;
   name: string;
   wishList: string;
+  phone: string;
   lastname: string;
   imgPath = null;
   birthDay: string;
-  doNotMatch: string;
   error: string;
   errorEmailExists: string;
   errorLoginExists: string;

@@ -1,3 +1,4 @@
+import {Profile} from "../account/profile";
 export class Evento{
   eventId : number;
   name : string;
@@ -11,4 +12,5 @@ export class Evento{
   isDraft : boolean;
   folderId : number;
   imageFiepath : string;
+  participants : Profile[]
 }
