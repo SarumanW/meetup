@@ -232,7 +232,6 @@ public class UserDaoImpl implements UserDao {
     public User insert(User model) {
 
         int id = -1;
-        Folder folder;
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("UUSER")
@@ -257,7 +256,7 @@ public class UserDaoImpl implements UserDao {
             System.out.println(e.getMessage());
         }
 
-        folder = new Folder();
+        Folder folder = new Folder();
         folder.setName("general");
         folder.setUserId(id);
 
