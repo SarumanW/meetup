@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpResponse, HttpEventType} from "@angular/common/http";
 import {AccountService} from "../account.service";
 import {Profile} from "../profile";
 import {ActivatedRoute, Router} from "@angular/router"
+import {UploadFileService} from "../../upload.file/upload.file.service";
 
 @Component({
   selector: 'edit',
@@ -14,22 +15,17 @@ import {ActivatedRoute, Router} from "@angular/router"
 export class EditComponent implements OnInit {
 
   success: boolean;
-  login: string;
-  email: string;
-  name: string;
   wishList: string;
-  phone: string;
-  lastname: string;
-  imgPath = null;
-  birthDay: string;
   error: string;
-  errorEmailExists: string;
-  errorLoginExists: string;
+  selectedFiles: FileList;
+  currentFileUpload: File;
+  progress: { percentage: number } = { percentage: 0 };
   account: Profile;
   state: string = "profile";
 
   constructor(private accountService: AccountService,
-              private router: Router, private route: ActivatedRoute, private  http: HttpClient) {
+              private router: Router, private route: ActivatedRoute,
+              private  http: HttpClient, private uploadService: UploadFileService) {
   }
 
   ngOnInit() {
@@ -57,27 +53,45 @@ export class EditComponent implements OnInit {
       response => this.processError(response)
     );
   }
-
-  onFileSelected(event) {
-    this.imgPath = <File>event.target.files[0];
-    this.accountService.save(this.account).subscribe(
-      () => {
-        this.success = true;
-      },
-      response => this.processError(response)
-    );
+  selectFile(event) {
+    this.selectedFiles = event.target.files;
   }
 
-  onUpload() {
-    const fd = new FormData();
-    fd.append('image', this.imgPath, this.imgPath.name);
-    this.accountService.upImg(this.account).subscribe(
-      () => {
-        this.success = true;
-      },
-      response => this.processError(response)
-    );
+  upload() {
+    this.progress.percentage = 0;
+
+    this.currentFileUpload = this.selectedFiles.item(0)
+    this.uploadService.pushFileToStorage(this.currentFileUpload).subscribe(event => {
+      if (event.type === HttpEventType.UploadProgress) {
+        this.progress.percentage = Math.round(100 * event.loaded / event.total);
+      } else if (event instanceof HttpResponse) {
+        console.log('File is completely uploaded!');
+      }
+    })
+
+    this.selectedFiles = undefined
   }
+
+  // onFileSelected(event) {
+  //   this.imgPath = <File>event.target.files[0];
+  //   this.accountService.save(this.account).subscribe(
+  //     () => {
+  //       this.success = true;
+  //     },
+  //     response => this.processError(response)
+  //   );
+  // }
+
+  // onUpload() {
+  //   const fd = new FormData();
+  //   fd.append('image', this.imgPath, this.imgPath.name);
+  //   this.accountService.upImg(this.account).subscribe(
+  //     () => {
+  //       this.success = true;
+  //     },
+  //     response => this.processError(response)
+  //   );
+  // }
 
   formatDate(date: Date) {
     const day = date.getDate();

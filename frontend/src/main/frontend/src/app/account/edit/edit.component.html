@@ -13,14 +13,6 @@
             <strong>Profile edited!</strong>
           </div>
 
-          <div class="alert alert-danger" *ngIf="errorLoginExists">
-            <strong>Login name already registered!</strong> Please choose another one.
-          </div>
-
-          <div class="alert alert-danger" *ngIf="errorEmailExists">
-            <strong>Email is already in use!</strong> Please choose another one.
-          </div>
-
         </div>
       </div>
 
@@ -28,8 +20,22 @@
       <form name="form" role="form" #editForm="ngForm" *ngIf="!success">
         <div class="form-group">
           <label>To change your profile photo:</label>
-          <input type="file" (change)="onFileSelected($event)">
-          <button type="button" (click)="onUpload()">Upload</button>
+          <div *ngIf="currentFileUpload" class="progress">
+            <div class="progress-bar progress-bar-info progress-bar-striped"
+                 role="progressbar" attr.aria-valuenow="{{progress.percentage}}"
+                 aria-valuemin="0" aria-valuemax="100"
+                 [ngStyle]="{width:progress.percentage+'%'}">
+              {{progress.percentage}}%
+            </div>
+          </div>
+
+          <label class="btn btn-default">
+            <input type="file" (change)="selectFile($event)">
+          </label>
+
+          <button class="btn btn-success" [disabled]="!selectedFiles"
+                  (click)="upload()">Upload
+          </button>
         </div>
 
         <div class="form-group">

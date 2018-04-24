@@ -2,8 +2,13 @@ package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.service.ProfileService;
+import com.meetup.meetup.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @RestController
@@ -12,6 +17,9 @@ public class ProfileController {
 
     @Autowired
     private ProfileService profileService;
+
+    @Autowired
+    StorageService storageService;
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable int id) {
@@ -49,7 +57,22 @@ public class ProfileController {
     }
 
     @PostMapping("/confirmFriend")
-    public void confirmFriend(@RequestBody int friendId){
+    public void confirmFriend(@RequestBody int friendId) {
         profileService.confirmFriend(friendId);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+        String message = "";
+        try {
+            storageService.store(file);
+
+            message = "You successfully uploaded " + file.getOriginalFilename() + "!";
+            return ResponseEntity.status(HttpStatus.OK).body(message);
+        } catch (Exception e) {
+            message = "FAIL to upload " + file.getOriginalFilename() + "!";
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
+
+        }
     }
 }

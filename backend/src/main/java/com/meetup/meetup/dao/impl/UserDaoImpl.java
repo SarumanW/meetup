@@ -85,12 +85,10 @@ public class UserDaoImpl implements UserDao {
             if (b.intValue() != user_id) {
                 friendIds.add(b.intValue());
             }
-            ;
             b = (BigDecimal) row.get("RECEIVER_ID");
             if (b.intValue() != user_id) {
                 friendIds.add(b.intValue());
             }
-            ;
         }
         return friendIds;
     }

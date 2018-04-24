@@ -1,10 +1,10 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
 import {FormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 
-import { AppComponent } from './app.component';
+import {AppComponent} from './app.component';
 import {RegisterComponent} from "./account/register/register.component";
 import {RecoveryComponent} from "./account/recovery/recovery.component";
 import {SendRecoveryComponent} from "./account/recovery/send.recovery.component";
@@ -17,8 +17,8 @@ import {FolderListComponent} from "./folders/folder.list/folder.list.component";
 import {FolderListService} from "./folders/folder.list.service";
 import {FolderComponent} from "./folders/folder/folder.component";
 import {FolderService} from "./folders/folder.service";
-import { EventComponent } from './events/event/event.component';
-import { EventService } from './events/event.service';
+import {EventComponent} from './events/event/event.component';
+import {EventService} from './events/event.service';
 import {ModalWindow} from "./modal.window/modal.window.component";
 import {HomeComponent} from './account/home/home.component';
 import {EditComponent} from "./account/edit/edit.component";
@@ -27,6 +27,7 @@ import {FriendsListComponent} from "./account/friends/friends.list.component";
 import {FriendService} from "./account/friends/friend.service";
 import {ContinueRegistrationComponent} from "./account/continue.registration/continue.registration.component";
 import {ChangePasswordComponent} from "./account/change.password/change.password.component";
+import {UploadFileService} from "./upload.file/upload.file.service";
 
 @NgModule({
   declarations: [
@@ -45,7 +46,7 @@ import {ChangePasswordComponent} from "./account/change.password/change.password
     FriendsListComponent,
     FriendComponent,
     ContinueRegistrationComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,11 +55,13 @@ import {ChangePasswordComponent} from "./account/change.password/change.password
     AppRoutingModule
   ],
   providers: [AccountService,
-              AuthGuard,
-              FolderListService,
-              FolderService,
-              EventService,
-              FriendService],
+    AuthGuard,
+    FolderListService,
+    FolderService,
+    EventService,
+    FriendService,
+    UploadFileService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
