@@ -42,6 +42,8 @@ export class ContinueRegistrationComponent implements OnInit {
     this.accountService.update(this.account).subscribe(
       () => {
         this.success = true;
+        this.router.navigate(
+          ['/profile', JSON.parse(localStorage.currentUser).id]);
       },
       response => this.processError(response)
     );
@@ -63,13 +65,6 @@ export class ContinueRegistrationComponent implements OnInit {
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     this.account.birthDay = `${day}-${month}-${year}`;
-    // this.birthDay = `${day}-${month}-${year}`;
-    // this.accountService.save(this.account).subscribe(
-    //   () => {
-    //     this.success = true;
-    //   },
-    //   response => this.processError(response)
-    // );
   }
 
   private processError(response: HttpErrorResponse) {

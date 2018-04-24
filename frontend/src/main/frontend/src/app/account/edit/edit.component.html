@@ -121,7 +121,7 @@
           </div>
         </div>
 
-        <button type="button" class="btn btn-primary" [routerLink]="['/edit']" [disabled]="editForm.form.invalid">
+        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="editForm.form.invalid">
           Save changes
         </button>
         <button type="button" class="btn btn-primary" [routerLink]="['/profile']">

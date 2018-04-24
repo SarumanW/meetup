@@ -26,7 +26,7 @@ export class EditComponent implements OnInit {
   errorEmailExists: string;
   errorLoginExists: string;
   account: Profile;
-  state:string="profile";
+  state: string = "profile";
 
   constructor(private accountService: AccountService,
               private router: Router, private route: ActivatedRoute, private  http: HttpClient) {
@@ -36,10 +36,27 @@ export class EditComponent implements OnInit {
     this.success = false;
     this.account = new Profile();
     this.route.params.subscribe(params => {
-      this.account.token = params['token'];
+      this.account.id = params['id'];
     });
+    this.accountService.profile(this.account).subscribe(
+      (data) => {
+        this.account = data;
+      }
+    );
+    console.log(this.account);
   }
 
+  save(){
+
+    this.accountService.update(this.account).subscribe(
+      () => {
+        this.success = true;
+        this.router.navigate(
+          ['/profile', JSON.parse(localStorage.currentUser).id]);
+      },
+      response => this.processError(response)
+    );
+  }
 
   onFileSelected(event) {
     this.imgPath = <File>event.target.files[0];
@@ -66,25 +83,12 @@ export class EditComponent implements OnInit {
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    this.birthDay = `${day}-${month}-${year}`;
-    this.accountService.save(this.account).subscribe(
-      () => {
-        this.success = true;
-      },
-      response => this.processError(response)
-    );
+    this.account.birthDay = `${day}-${month}-${year}`;
   }
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
-    if (response.error === 'Login already used') {
-      this.errorLoginExists = 'ERROR';
-    } else if (response.error === 'Email already used') {
-      this.errorEmailExists = 'ERROR';
-    } else {
       this.error = 'ERROR';
-    }
-
   }
 
   changeWishList() {
