@@ -19,7 +19,8 @@
       "prefix": "app",
       "styles": [
         "bootstrap.css",
-        "styles.css"
+        "styles.css",
+        "../node_modules/ngx-toastr/toastr.css"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",

@@ -35,7 +35,8 @@
               <form>
                 <div class="form-group">
                   <label for="name">Folder name:</label>
-                  <input class="form-control" id="name" placeholder="Enter folder name" name="name" #name>
+                  <input class="form-control" id="name" placeholder="Enter folder name" name="name" #name
+                         [(ngModel)]="nameInput">
                 </div>
                 <button class="btn btn-default" (click)="modal.hide(); addFolder(name)">Add</button>
               </form>
@@ -45,6 +46,5 @@
       </div>
     </div>
   </div>
-</div>
 
 

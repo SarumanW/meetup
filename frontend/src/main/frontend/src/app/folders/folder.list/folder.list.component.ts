@@ -4,6 +4,7 @@ import {Folder} from "../folder";
 import {FolderListService} from "../folder.list.service";
 import {FolderService} from "../folder.service";
 import {Observable} from "rxjs/Observable";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-folder',
@@ -15,9 +16,11 @@ export class FolderListComponent implements OnInit {
   folders: Folder[];
   selectedFolder: Folder;
   state:string="folders";
+  nameInput:string = "";
 
   constructor(private folderListService: FolderListService,
-              private router : Router) {
+              private router : Router,
+              private toastr: ToastrService) {
     this.selectedFolder = new Folder;
   }
 
@@ -45,6 +48,8 @@ export class FolderListComponent implements OnInit {
         folder.folderId = res.folderId;
         this.folders.push(folder);
       });
+
+    this.nameInput = null;
   }
 
   deleteFolder(folder){
@@ -54,9 +59,19 @@ export class FolderListComponent implements OnInit {
           if (index !== -1) {
             this.folders.splice(index, 1);
           }
+
+          this.showSuccess();
         },
 () => {
       console.log("error")
+    });
+  }
+
+  showSuccess() {
+    this.toastr.info('Your events were moved to general folder', 'Attention!', {
+      timeOut: 3000,
+      positionClass: 'toast-bottom-left',
+      closeButton: true
     });
   }
 
