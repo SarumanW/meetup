@@ -27,7 +27,7 @@ const routes: Routes = [
   {path: 'profile/:id/folders/:folderId/events/:eventId', component: EventComponent},
   {path: 'edit/:id', component: EditComponent},
   {path: 'friends', component: FriendsListComponent},
-  {path: 'continue.reg', component: ContinueRegistrationComponent},
+  {path: 'continue.registration', component: ContinueRegistrationComponent},
   {path: 'folders', component: FolderListComponent},
   {path: 'change.password', component: ChangePasswordComponent},
 
