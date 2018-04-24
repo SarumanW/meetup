@@ -53,6 +53,7 @@ export class EditComponent implements OnInit {
       response => this.processError(response)
     );
   }
+
   selectFile(event) {
     this.selectedFiles = event.target.files;
   }
