@@ -5,12 +5,12 @@ import {AccountService} from "../account.service";
 import {ActivatedRoute, Router} from "@angular/router"
 
 @Component({
-  selector: 'continueReg',
-  templateUrl: './continueReg.html'
+  selector: 'continueRegistration',
+  templateUrl: './continue.registration.component.html'
 })
 
 
-export class ContinueRegComponent implements OnInit {
+export class ContinueRegistrationComponent implements OnInit {
 
   success: boolean;
   login: string;
@@ -37,15 +37,8 @@ export class ContinueRegComponent implements OnInit {
     });
   }
 
-
   onFileSelected(event) {
     this.imgPath = <File>event.target.files[0];
-    this.accountService.save(this.account).subscribe(
-      () => {
-        this.success = true;
-      },
-      response => this.processError(response)
-    );
   }
 
   onUpload() {
@@ -81,10 +74,6 @@ export class ContinueRegComponent implements OnInit {
     } else {
       this.error = 'ERROR';
     }
-
-  }
-
-  checkSomething() {
 
   }
 

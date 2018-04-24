@@ -9,6 +9,10 @@
         <div class="form-group">
           <h1>Profile editor</h1>
 
+          <div class="alert alert-danger" *ngIf=success>
+            <strong>Profile edited!</strong>
+          </div>
+
           <div class="alert alert-danger" *ngIf="errorLoginExists">
             <strong>Login name already registered!</strong> Please choose another one.
           </div>
@@ -17,14 +21,11 @@
             <strong>Email is already in use!</strong> Please choose another one.
           </div>
 
-          <div class="alert alert-danger" *ngIf="doNotMatch">
-            The password and its confirmation do not match!
-          </div>
         </div>
       </div>
 
 
-      <form name="form" role="form" #egitForm="ngForm" *ngIf="!success">
+      <form name="form" role="form" #editForm="ngForm" *ngIf="!success">
         <div class="form-group">
           <label>To change your profile photo:</label>
           <input type="file" (change)="onFileSelected($event)">
@@ -34,7 +35,13 @@
         <div class="form-group">
           <label class="form-control-label" for="birthDay">Choose the day of your birth: </label>
           <input type="date" class="form" id="birthDay" name="birthDay" #birthDay="ngModel"
-                 [(ngModel)]="account.birthDay" (click)="formatDate()">
+                 [(ngModel)]="account.birthDay" placeholder="{{this.user.account.birthDay}}" (click)="formatDate()">
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="lastName">Phone</label>
+          <input type="text" class="form-control" [(ngModel)]="account.phone" id="phone" name="phone"
+                 #lastName="ngModel" placeholder="{{this.user.account.phone}}">
         </div>
 
         <div class="form-group">
@@ -44,7 +51,7 @@
         <div class="form-group">
           <label class="form-control-label" for="login">Login</label>
           <input type="text" class="form-control" [(ngModel)]="account.login" id="login" name="login"
-                 #login="ngModel" placeholder="Enter new login"
+                 #login="ngModel" placeholder="{{this.user.account.login}}"
                  minlength="4" maxlength="50" pattern="^[_.@A-Za-z0-9-]*$">
           <div *ngIf="login.dirty && login.invalid">
             <small class="form-text text-danger" *ngIf="login.errors.minlength">
@@ -62,7 +69,7 @@
         <div class="form-group">
           <label class="form-control-label" for="name">Name</label>
           <input type="text" class="form-control" [(ngModel)]="account.name" id="name" name="name"
-                 #name="ngModel" placeholder="Enter your name"
+                 #name="ngModel" placeholder="{{this.user.account.name}}"
                  minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$">
           <div *ngIf="name.dirty && name.invalid">
 
@@ -81,7 +88,7 @@
         <div class="form-group">
           <label class="form-control-label" for="lastName">Last name</label>
           <input type="text" class="form-control" [(ngModel)]="account.lastname" id="lastName" name="lastName"
-                 #lastName="ngModel" placeholder="Enter your last name"
+                 #lastName="ngModel" placeholder="{{this.user.account.lastname}}"
                  minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$">
           <div *ngIf="lastName.dirty && lastName.invalid">
             <small class="form-text text-danger" *ngIf="lastName.errors.minlength">
@@ -99,7 +106,7 @@
         <div class="form-group">
           <label class="form-control-label" for="email">Email</label>
           <input type="email" class="form-control" id="email" name="email" #email="ngModel"
-                 placeholder="Enter new email"
+                 placeholder="{{this.user.account.email}}"
                  [(ngModel)]="account.email" minlength=5 maxlength=100 email>
           <div *ngIf="email.dirty && email.invalid">
             <small class="form-text text-danger" *ngIf="email.errors.invalid">
@@ -114,42 +121,17 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-control-label" for="password">Password</label>
-          <input type="password" class="form-control" id="password" name="password" #password="ngModel"
-                 placeholder="Enter new password"
-                 [(ngModel)]="account.password" minlength=6 maxlength=50>
-          <div *ngIf="password.dirty && password.invalid">
-            <small class="form-text text-danger" *ngIf="password.errors.minlength">
-              Your password is required to be at least 6 characters.
-            </small>
-            <small class="form-text text-danger" *ngIf="password.errors.maxlength">
-              Your password cannot be longer than 50 characters.
-            </small>
-          </div>
-        </div>
-
-
-        <div class="form-group">
-          <label class="form-control-label" for="confirmPassword">Password confirmation</label>
-          <input type="password" class="form-control" id="confirmPassword" name="confirmPasswordInput"
-                 #confirmPasswordInput="ngModel" placeholder="Confirm password"
-                 [(ngModel)]="confirmPassword" minlength=6 maxlength=50>
-          <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">
-            <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.minlength">
-              Your confirmation password is required to be at least 6 characters.
-            </small>
-            <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.maxlength">
-              Your confirmation password cannot be longer than 50 characters.
-            </small>
-          </div>
-        </div>
-
-        <button type="button" class="btn btn-primary" (click)="passwordConfirm()" [routerLink]="['/profile']">
+        <button type="button" class="btn btn-primary" [routerLink]="['/edit']" [disabled]="editForm.form.invalid">
           Save changes
+        </button>
+        <button type="button" class="btn btn-primary" [routerLink]="['/profile']">
+          Cancel
         </button>
       </form>
     </div>
   </div>
 </div>
+
+
+
 

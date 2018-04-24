@@ -58,4 +58,26 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public User setState(User newState){
+        if(newState.getLogin() != null){
+            this.login = newState.getLogin();
+        }
+        if(newState.getEmail() != null){
+            this.email = newState.getEmail();
+        }
+        if(newState.getName() != null){
+            this.name = newState.getName();
+        }
+        if(newState.getLastname() != null){
+            this.lastname= newState.getLastname();
+        }
+        if(newState.getPhone() != null){
+            this.phone= newState.getPhone();
+        }
+        if(newState.getBirthDay() != null){
+            this.birthDay= newState.getBirthDay();
+        }
+        return this;
+    }
 }

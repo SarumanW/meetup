@@ -10,8 +10,9 @@ import {FolderComponent} from "./folders/folder/folder.component";
 import {SendRecoveryComponent} from "./account/recovery/sendrecovery.component";
 import {EventComponent} from "./events/event/event.component";
 import {EditComponent} from "./account/edit/edit.component";
-import {FriendsListComponent} from "./account/friends/friends-list.component";
-import {ContinueRegComponent} from "./account/continueReg/continueReg";
+import {FriendsListComponent} from "./account/friends/friends.list.component";
+import {ContinueRegistrationComponent} from "./account/continue.registration/continue.registration.component";
+import {ChangePasswordComponent} from "./account/change.password/change.password.component";
 
 const routes: Routes = [
   {path: 'register', component: RegisterComponent},
@@ -26,8 +27,9 @@ const routes: Routes = [
   {path: 'profile/:id/folders/:folderId/events/:eventId', component: EventComponent},
   {path: 'edit/:id', component: EditComponent},
   {path: 'friends', component: FriendsListComponent},
-  {path: 'continueReg', component: ContinueRegComponent},
-  {path: 'folders', component: FolderListComponent}
+  {path: 'continue.registration', component: ContinueRegistrationComponent},
+  {path: 'folders', component: FolderListComponent},
+  {path: 'change.password', component: ChangePasswordComponent},
 
 ];
 

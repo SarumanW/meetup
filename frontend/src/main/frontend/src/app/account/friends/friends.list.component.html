@@ -6,6 +6,11 @@
 
     <div class="col-10">
       <div align="center">
+        <h3>Friends Requests</h3>
+      </div>
+      <friend *ngFor="let unconfirmedFriend of unconfirmedFriends" [user]="unconfirmedFriend"></friend>
+      <hr>
+      <div align="center">
         <h3>Friends List</h3>
       </div>
       <hr>
@@ -17,7 +22,7 @@
         <button type="submit" class="btn btn-primary mb-2">Add friend</button>
       </form>
       <hr>
-      <friend *ngFor="let user of users" [user]="user"></friend>
+      <friend *ngFor="let friend of friends" [user]="friend"></friend>
     </div>
   </div>
 </div>

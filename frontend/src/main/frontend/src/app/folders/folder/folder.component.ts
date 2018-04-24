@@ -13,7 +13,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 export class FolderComponent implements OnInit {
   events : Evento[];
   folderId : number;
-  state:string="profile";
+  state:string="folders";
 
   constructor(private folderService : FolderService,
               private route: ActivatedRoute,

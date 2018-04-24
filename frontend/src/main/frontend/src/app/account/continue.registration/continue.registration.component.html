@@ -10,7 +10,7 @@
 
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <form name="form" role="form" #egitForm="ngForm" *ngIf="!success">
+      <form name="form" role="form" #continueRegistrationForm="ngForm" *ngIf="!success">
         <div class="form-group">
           <label>Choose your profile photo:</label>
           <input type="file" (change)="onFileSelected($event)">
@@ -22,6 +22,12 @@
           <input type="date" class="form" id="birthDay" name="birthDay" #birthDay="ngModel"
                  [(ngModel)]="account.birthDay" (click)="formatDate()">
         </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="lastName">Phone</label>
+          <input type="text" class="form-control" [(ngModel)]="account.phone" id="phone" name="phone"
+                 #lastName="ngModel" placeholder="Enter your phone number">
+          </div>
 
         <div class="form-group">
           <label class="form-control-label" (click)="changeWishList()">Add first note to your Wishlist: </label>
@@ -64,11 +70,17 @@
           </div>
         </div>
 
+        <div class="form-group">
+        <button type="button" class="btn btn-primary" [routerLink]="['/change.password']">
+          Change password
+        </button>
+        </div>
 
-        <button type="button" class="btn btn-primary"  (click)="passwordConfirm()" [routerLink]="['/profile']" >
+        <button type="button" class="btn btn-primary" [routerLink]="['/continue.registration']"[disabled]="continueRegistrationForm.form.invalid" >
           Save changes
         </button>
-        <button type="button" class="btn btn-primary"  (click)="passwordConfirm()" [routerLink]="['/profile']" >
+
+        <button type="button" class="btn btn-primary" [routerLink]="['/profile']" >
           Skip
         </button>
       </form>

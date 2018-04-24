@@ -13,4 +13,6 @@ public interface FolderDao extends Dao<Folder> {
 
     List<Folder> getUserFolders(int id);
 
+    Folder findByName(String name);
+
 }

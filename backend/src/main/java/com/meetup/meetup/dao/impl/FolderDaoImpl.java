@@ -64,6 +64,22 @@ public class FolderDaoImpl implements FolderDao {
     }
 
     @Override
+    public Folder findByName(String name) {
+        Folder folder = null;
+
+        try{
+            folder = jdbcTemplate.queryForObject(
+                    env.getProperty("folder.getByName"),
+                    new Object[]{name}, new FolderRowMapper()
+            );
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return folder;
+    }
+
+    @Override
     public Folder findById(int id, int userId) {
         Folder folder = null;
 

@@ -21,14 +21,11 @@ export class HomeComponent {
 
   ngOnInit() {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
-
-    console.log("profile service working");
-
-     this.accountService.profile(this.profile).subscribe(
-       (data) => {
-         this.profile = data;
-       }
-     )
+     // this.accountService.profile(this.profile).subscribe(
+     //   (data) => {
+     //     this.profile = data;
+     //   }
+     // )
   }
 
   logout() {

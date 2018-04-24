@@ -23,9 +23,10 @@ import {ModalWindow} from "./modal.window/modal.window.component";
 import {HomeComponent} from './account/home/home.component';
 import {EditComponent} from "./account/edit/edit.component";
 import {FriendComponent} from "./account/friends/friend/friend.component";
-import {FriendsListComponent} from "./account/friends/friends-list.component";
+import {FriendsListComponent} from "./account/friends/friends.list.component";
 import {FriendService} from "./account/friends/friend.service";
-import {ContinueRegComponent} from "./account/continueReg/continueReg";
+import {ContinueRegistrationComponent} from "./account/continue.registration/continue.registration.component";
+import {ChangePasswordComponent} from "./account/change.password/change.password.component";
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import {ContinueRegComponent} from "./account/continueReg/continueReg";
     EditComponent,
     FriendsListComponent,
     FriendComponent,
-    ContinueRegComponent,
+    ContinueRegistrationComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,

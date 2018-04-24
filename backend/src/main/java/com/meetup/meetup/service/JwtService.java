@@ -1,5 +1,6 @@
 package com.meetup.meetup.service;
 
+import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.security.jwt.SecretKeyProvider;
 import io.jsonwebtoken.Claims;
@@ -29,12 +30,12 @@ public class JwtService {
     private SecretKeyProvider secretKeyProvider;
 
     @Autowired
-    private ProfileService profileService;
+    private UserDao userDao;
 
     public User verify(String token) throws IOException, URISyntaxException {
         byte[] secretKey = secretKeyProvider.getKey();
         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-        return profileService.get(claims.getBody().get(LOGIN).toString());
+        return userDao.findByLogin(claims.getBody().get(LOGIN).toString());
     }
 
     public String verifyLogin(String token) throws IOException, URISyntaxException {

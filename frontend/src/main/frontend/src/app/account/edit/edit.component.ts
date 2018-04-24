@@ -18,11 +18,10 @@ export class EditComponent implements OnInit {
   email: string;
   name: string;
   wishList: string;
+  phone: string;
   lastname: string;
   imgPath = null;
-  confirmPassword: string;
   birthDay: string;
-  doNotMatch: string;
   error: string;
   errorEmailExists: string;
   errorLoginExists: string;
@@ -31,20 +30,6 @@ export class EditComponent implements OnInit {
 
   constructor(private accountService: AccountService,
               private router: Router, private route: ActivatedRoute, private  http: HttpClient) {
-  }
-
-  passwordConfirm() {
-    // if (this.account.password !== this.confirmPassword) {
-    //   this.doNotMatch = 'ERROR';
-    // } else {
-    //   this.doNotMatch = null;
-    //   this.accountService.save(this.account).subscribe(
-    //     () => {
-    //       this.success = true;
-    //     },
-    //     response => this.processError(response)
-    //   );
-    // }
   }
 
   ngOnInit() {
