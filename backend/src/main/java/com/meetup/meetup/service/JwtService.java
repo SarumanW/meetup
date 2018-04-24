@@ -22,15 +22,19 @@ public class JwtService {
 
     private static final String SUBJECT = "meetup";
 
-    private static final String ISSUER = "in.sdqali.jwt";
+    private static final String ISSUER = "com.meetup";
 
-    public static final String LOGIN = "login";
+    private static final String LOGIN = "login";
+    private static final String EMAIL = "email";
+
+    private final SecretKeyProvider secretKeyProvider;
+    private final UserDao userDao;
 
     @Autowired
-    private SecretKeyProvider secretKeyProvider;
-
-    @Autowired
-    private UserDao userDao;
+    public JwtService(SecretKeyProvider secretKeyProvider, UserDao userDao) {
+        this.secretKeyProvider = secretKeyProvider;
+        this.userDao = userDao;
+    }
 
     public User verify(String token) throws IOException, URISyntaxException {
         byte[] secretKey = secretKeyProvider.getKey();
@@ -38,15 +42,15 @@ public class JwtService {
         return userDao.findByLogin(claims.getBody().get(LOGIN).toString());
     }
 
-    public String verifyLogin(String token) throws IOException, URISyntaxException {
+    public User verifyForRecoveryPassword(String token) throws IOException, URISyntaxException {
         byte[] secretKey = secretKeyProvider.getKey();
         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-        return claims.getBody().get(LOGIN).toString();
+        return userDao.findByEmail(claims.getBody().get(EMAIL).toString());
     }
 
     public String tokenFor(User user) throws IOException, URISyntaxException {
         byte[] secretKey = secretKeyProvider.getKey();
-        Date expiration = Date.from(LocalDateTime.now(UTC).plusMinutes(20).toInstant(UTC));
+        Date expiration = Date.from(LocalDateTime.now(UTC).plusDays(365).toInstant(UTC));
         return Jwts.builder()
                 .setSubject(SUBJECT)
                 .setExpiration(expiration)
@@ -63,7 +67,7 @@ public class JwtService {
                 .setSubject(SUBJECT)
                 .setExpiration(expiration)
                 .setIssuer(ISSUER)
-                .claim(LOGIN, user.getLogin())
+                .claim(EMAIL, user.getEmail())
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }

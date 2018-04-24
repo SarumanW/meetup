@@ -31,8 +31,7 @@ public class AccountController {
     }
 
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public String registerAccount(@Valid @RequestBody User user) throws Exception {
+    public ResponseEntity<String> registerAccount(@Valid @RequestBody User user) throws Exception {
         return accountService.register(user);
     }
 
