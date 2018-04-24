@@ -5,24 +5,31 @@
     </div>
 
     <div class="col-10">
-      <div align="center">
-        <h3>Friends Requests</h3>
+      <div *ngIf="unconfirmedFriends.length>0">
+        <div align="center">
+          <h3>Friends Requests</h3>
+          <hr>
+        </div>
+        <friend *ngFor="let unconfirmedFriend of unconfirmedFriends" [user]="unconfirmedFriend"></friend>
+        <hr>
       </div>
-      <friend *ngFor="let unconfirmedFriend of unconfirmedFriends" [user]="unconfirmedFriend"></friend>
-      <hr>
+
       <div align="center">
         <h3>Friends List</h3>
+        <hr>
       </div>
-      <hr>
       <form class="row" (ngSubmit)="addFriend(form)" #form="ngForm">
         <div class="form-group mx-4 mb-2">
           <input type="text" class="form-control" placeholder="User name" [(ngModel)]="newFriendName"
                  name="newFriendName">
         </div>
         <button type="submit" class="btn btn-primary mb-2">Add friend</button>
+        <div class="message mx-4">
+        {{message}}
+        </div>
       </form>
       <hr>
-      <friend *ngFor="let friend of friends" [user]="friend"></friend>
+      <friend *ngFor="let friend of friends" [user]="friend" [confirmed]="true"></friend>
     </div>
   </div>
 </div>

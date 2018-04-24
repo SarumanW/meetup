@@ -10,18 +10,24 @@ import {Profile} from "../profile";
 })
 
 export class FriendsListComponent {
-  newFriendName: string;
   state: string = "friends";
-  unconfirmedFriends: Profile[];
+  newFriendName: string;
   friends: Profile[];
+  unconfirmedFriends: Profile[];
+  message: string;
 
   constructor(private friendService: FriendService) {
+    this.getInfo();
+  }
+
+  getInfo(){
     this.friendService.getFriendsRequests().subscribe((requests) => this.unconfirmedFriends = requests);
     this.friendService.getFriends().subscribe((friends) => this.friends = friends);
   }
 
   addFriend(form: NgForm) {
-    this.friendService.addFriend(form.form.value.newFriendName).subscribe();
+    this.friendService.addFriend(form.form.value.newFriendName).subscribe((message) => this.message = message);
     this.newFriendName = "";
+
   }
 }

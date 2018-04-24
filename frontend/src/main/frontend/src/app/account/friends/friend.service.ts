@@ -23,7 +23,14 @@ export class FriendService {
   }
 
   addFriend(newFriend: String): Observable<any> {
-    return this.http.post<any>('api/profile/addFriend', newFriend).map(friend => {
+    return this.http.post<any>('api/profile/addFriend', newFriend).map(message => {
+      console.log(message);
+      return message;
+    });
+  }
+
+  confirmFriend(confirmedFriend: number): Observable<any> {
+    return this.http.post<any>('api/profile/confirmFriend', confirmedFriend).map(friend => {
       return friend;
     });
   }

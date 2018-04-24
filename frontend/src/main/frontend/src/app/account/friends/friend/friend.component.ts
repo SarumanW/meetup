@@ -1,7 +1,7 @@
 import {Component, Input} from "@angular/core";
-import {TestFriend} from "./test.friend";
 import {FriendService} from "../friend.service";
 import {Profile} from "../../profile";
+import {FriendsListComponent} from "../friends.list.component";
 
 @Component({
   selector: 'friend',
@@ -10,12 +10,17 @@ import {Profile} from "../../profile";
 })
 
 export class FriendComponent {
+  @Input() confirmed: boolean;
   @Input() user: Profile;
   state:string="friends"
-  constructor(private friendService: FriendService){
+  constructor(private friendService: FriendService,
+              private friendsList: FriendsListComponent){
   }
 
   deleteFriend(id: number){
-    this.friendService.deleteFriend(id).subscribe();
+    this.friendService.confirmFriend(id).subscribe((response)=>this.friendsList.getInfo());
+  }
+  confirmFriend(id: number){
+    this.friendService.deleteFriend(id).subscribe((response)=>this.friendsList.getInfo());
   }
 }

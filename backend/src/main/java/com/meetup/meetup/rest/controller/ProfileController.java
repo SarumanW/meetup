@@ -39,8 +39,10 @@ public class ProfileController {
 
     @PostMapping("/addFriend")
     public String addFriend(@RequestBody String newFriend) {
-        profileService.addFriend(newFriend);
-        return newFriend;
+        if(profileService.addFriend(newFriend)){
+            return "Success";
+        }
+        return "Adding new friend failed";
     }
 
     @PostMapping("/deleteFriend")
@@ -49,7 +51,7 @@ public class ProfileController {
     }
 
     @PostMapping("/confirmFriend")
-    public void confirmFriend(@RequestBody int friendId){
-        profileService.confirmFriend(friendId);
+    public int confirmFriend(@RequestBody int friendId){
+        return profileService.confirmFriend(friendId);
     }
 }

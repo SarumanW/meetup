@@ -37,10 +37,13 @@ public class ProfileService {
         return userDao.getFriendsRequests(user.getId());
     }
 
-    public void addFriend(String userName){
+    public boolean addFriend(String userName){
         User user = authenticationFacade.getAuthentication();
         User friend = userDao.findByLogin(userName);
-        userDao.addFriend(user.getId(), friend.getId());
+        if(friend != null) {
+            return userDao.addFriend(user.getId(), friend.getId());
+        }
+        return false;
     }
 
     public int confirmFriend(int friendId){

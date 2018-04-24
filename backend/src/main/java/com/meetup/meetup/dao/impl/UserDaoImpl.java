@@ -85,12 +85,12 @@ public class UserDaoImpl implements UserDao {
             if (b.intValue() != user_id) {
                 friendIds.add(b.intValue());
             }
-            ;
+
             b = (BigDecimal) row.get("RECEIVER_ID");
             if (b.intValue() != user_id) {
                 friendIds.add(b.intValue());
             }
-            ;
+
         }
         return friendIds;
     }
@@ -109,9 +109,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean addFriend(int senderId, int receiverId) {
-        int id = -1;
-        Folder folder;
-
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("FRIEND");
 
@@ -120,12 +117,13 @@ public class UserDaoImpl implements UserDao {
         parameters.put("RECEIVER_ID", receiverId);
         parameters.put("IS_CONFIRMED", 0);
         try {
-            id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
+            simpleJdbcInsert.execute((parameters));
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
+            return false;
         }
 
-        return id != -1;
+        return true;
     }
 
     public List<User> getFriendsRequests(int user_id) {
@@ -142,7 +140,6 @@ public class UserDaoImpl implements UserDao {
 
     //working
     private List<Integer> getUnconfirmedIds(int user_id) {
-
         List<Integer> unConfirmedIds = new ArrayList<>();
         List<Map<String, Object>> list = new ArrayList<>();
         BigDecimal b;

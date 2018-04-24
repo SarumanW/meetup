@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(env.getProperty("api.loginFull")).permitAll()
                 .antMatchers(env.getProperty("api.registerFull")).permitAll()
                 .antMatchers(env.getProperty("api.recoveryFull")).permitAll()
-//                .antMatchers(env.getProperty("api.otherAll")).hasAuthority("ROLE_USER")
+                .antMatchers(env.getProperty("api.otherAll")).hasAuthority("ROLE_USER")
                 .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
