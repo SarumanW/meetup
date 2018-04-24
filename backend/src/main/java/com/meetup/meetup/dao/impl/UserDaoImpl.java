@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +36,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findByLogin(String login) {
+
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(
@@ -55,6 +55,7 @@ public class UserDaoImpl implements UserDao {
     public User findByEmail(String email) {
 
         User user = null;
+
         try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findByEmail"),
@@ -68,44 +69,53 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
-    //working
+    public List<User> getFriends(int userId) {
+
+        List<Integer> friendIds = getFriendsIds(userId);
+        List<User> friends = new ArrayList<>();
+
+        for (int id : friendIds) {
+            User friend = findById(id);
+
+            if (friend != null) {
+                friends.add(friend);
+            }
+        }
+
+        return friends;
+    }
+
     private List<Integer> getFriendsIds(int user_id) {
-        // TODO: 4/19/2018 Implement method get list friends ids
-        List<Integer> friendIds = new ArrayList<>();
+
         List<Map<String, Object>> list = new ArrayList<>();
-        BigDecimal b;
+
         try {
             list = jdbcTemplate.queryForList(env.getProperty("user.getFriendsIds"),
-                    new Object[]{user_id, user_id});
+                    user_id, user_id);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
+
+
+        Integer b;
+        List<Integer> friendIds = new ArrayList<>();
+
         for (Map<String, Object> row : list) {
-            b = (BigDecimal) row.get("SENDER_ID");
-            if (b.intValue() != user_id) {
-                friendIds.add(b.intValue());
+            b = (Integer) row.get("SENDER_ID");
+            if (b != user_id) {
+                friendIds.add(b);
             }
 
-            b = (BigDecimal) row.get("RECEIVER_ID");
-            if (b.intValue() != user_id) {
-                friendIds.add(b.intValue());
+            b = (Integer) row.get("RECEIVER_ID");
+            if (b != user_id) {
+                friendIds.add(b);
             }
 
         }
+
         return friendIds;
     }
 
-    public List<User> getFriends(int user_id) {
-        List<Integer> friendIds = getFriendsIds(user_id);
-        List<User> friends = new ArrayList<>();
-        for (int id : friendIds) {
-            User friend = findById(id);
-            if (friend != null) {
-                friends.add(findById(id));
-            }
-        }
-        return friends;
-    }
 
     @Override
     public boolean addFriend(int senderId, int receiverId) {
@@ -116,6 +126,7 @@ public class UserDaoImpl implements UserDao {
         parameters.put("SENDER_ID", senderId);
         parameters.put("RECEIVER_ID", receiverId);
         parameters.put("IS_CONFIRMED", 0);
+
         try {
             simpleJdbcInsert.execute((parameters));
         } catch (DataAccessException e) {
@@ -126,61 +137,63 @@ public class UserDaoImpl implements UserDao {
         return true;
     }
 
-    public List<User> getFriendsRequests(int user_id) {
-        List<Integer> friendIds = getUnconfirmedIds(user_id);
+    public List<User> getFriendsRequests(int userId) {
+
+        List<Integer> friendIds = getUnconfirmedIds(userId);
         List<User> friends = new ArrayList<>();
+
         for (int id : friendIds) {
             User friend = findById(id);
             if (friend != null) {
                 friends.add(findById(id));
             }
         }
+
         return friends;
     }
 
     //working
     private List<Integer> getUnconfirmedIds(int user_id) {
+
         List<Integer> unConfirmedIds = new ArrayList<>();
-        List<Map<String, Object>> list = new ArrayList<>();
-        BigDecimal b;
+
         try {
-            list = jdbcTemplate.queryForList(env.getProperty("user.getUnconfirmedIds"),
-                    new Object[]{user_id});
+            unConfirmedIds = jdbcTemplate.queryForList(env.getProperty("user.getUnconfirmedIds"),
+                    new Object[] {user_id},Integer.class);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
-        for (Map<String, Object> row : list) {
-            b = (BigDecimal) row.get("SENDER_ID");
-            unConfirmedIds.add(b.intValue());
-        }
+
         return unConfirmedIds;
     }
 
     //working
     @Override
-    public int confirmFriend(int user_id, int friend_id) {
+    public int confirmFriend(int userId, int friendId) {
         try {
-            jdbcTemplate.update(env.getProperty("user.confirmFriend"), friend_id, user_id);
+            jdbcTemplate.update(env.getProperty("user.confirmFriend"), friendId, userId);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
-        return user_id;
+        return userId;
     }
 
     //working
     @Override
-    public int deleteFriend(int user_id, int friend_id) {
+    public int deleteFriend(int userId, int friendId) {
         try {
-            jdbcTemplate.update(env.getProperty("user.deleteFriend"), user_id, friend_id, friend_id, user_id);
+            jdbcTemplate.update(env.getProperty("user.deleteFriend"), userId, friendId, friendId, userId);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
-        return user_id;
+        return userId;
     }
 
     @Override
     public User findById(int id) {
+
         User user = null;
+
         try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty("user.findById"),
@@ -190,6 +203,7 @@ public class UserDaoImpl implements UserDao {
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
+
         return user;
     }
 
