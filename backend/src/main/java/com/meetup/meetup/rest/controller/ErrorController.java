@@ -27,7 +27,8 @@ public class ErrorController {
             response.setStatus(500);
             response.getWriter().print(e.getMessage().replace("SendCustomError",""));
         } else {
-            System.out.println("Exception: " + e.getMessage());
+            System.out.println("Exception: ");
+            e.printStackTrace();
         }
     }
 }
