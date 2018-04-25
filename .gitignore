@@ -1,4 +1,6 @@
-/target/
+/target/**
+/backend/target/**
+/frontend/target/**
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###

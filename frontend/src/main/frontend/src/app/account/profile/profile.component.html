@@ -1,0 +1,42 @@
+<div class="container-fluid" style="margin-top:20px">
+  <div class="row">
+    <div class="col-2">
+      <home-comp [states]="state"></home-comp>
+
+    </div>
+
+    <div class="col-10">
+      <div class="alert alert-danger" *ngIf="!profile.birthDay">
+        Go to "Edit profile" for setting your birth day.
+      </div>
+
+      <div class="alert alert-danger" *ngIf="!profile.phone">
+        Go to "Edit profile" for setting your phone number.
+      </div>
+      <dl class="row py-4">
+
+        <dt class="col-sm-3">Your id</dt>
+        <dd class="col-sm-9">{{profile.id}}</dd>
+
+
+        <dt class="col-sm-3">Username</dt>
+        <dd class="col-sm-9">{{profile.login}}</dd>
+
+        <dt class="col-sm-3">First name</dt>
+        <dd class="col-sm-9">{{profile.name}}</dd>
+
+        <dt class="col-sm-3">Last name</dt>
+        <dd class="col-sm-9">{{profile.lastname}}</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">{{profile.email}}</dd>
+
+        <a class="btn btn-primary" style="margin-right:10px" routerLink="/edit/{{profile.id}}" role="button">Edit
+          profile</a>
+
+      </dl>
+
+
+    </div>
+  </div>
+</div>

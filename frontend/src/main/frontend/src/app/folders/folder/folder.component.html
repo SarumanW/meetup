@@ -1,0 +1,82 @@
+<div class="container-fluid" style="margin-top:20px">
+  <div class="row">
+    <div class="col-2">
+      <home-comp [states]="state"></home-comp>
+
+    </div>
+    <div class="col-10">
+      <div class="container justify-content-center">
+        <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
+          <h2>Events:</h2>
+        </div>
+
+        <div class="d-flex events">
+
+          <div class="col-md-3 p-2 main">
+
+            <h3 class="mb-3">Public events</h3>
+
+            <div *ngFor="let event of events" class="card mb-4">
+              <div class="head card-body">
+                <img class="folder-icon" src="assets/event-public-icon.svg" alt="Card image cap">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">{{event.name}}</h5>
+                <a (click)="openEvent(event)" href="javascript:void(0);" class="btn btn-primary">Open event</a>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-3 p-2 main">
+
+            <h3 class="mb-3">Private events</h3>
+
+            <div *ngFor="let event of events" class="card mb-4">
+              <div class="head card-body">
+                <img class="folder-icon" src="assets/event-private-icon.svg" alt="Card image cap">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">{{event.name}}</h5>
+                <a (click)="openEvent(event)" href="javascript:void(0);" class="btn btn-primary">Open event</a>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-3 p-2 main">
+
+            <h3 class="mb-3">Notes</h3>
+
+            <div *ngFor="let event of events" class="card mb-4">
+              <div class="head card-body">
+                <img class="folder-icon" src="assets/event-notes-icon.svg" alt="Card image cap">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">{{event.name}}</h5>
+                <a (click)="openEvent(event)" href="javascript:void(0);" class="btn btn-primary">Open event</a>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-3 p-2 main">
+
+            <h3 class="mb-3">Drafts</h3>
+
+            <div *ngFor="let event of events" class="card mb-4">
+              <div class="head card-body">
+                <img class="folder-icon" src="assets/event-draft-icon.svg" alt="Card image cap">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">{{event.name}}</h5>
+                <a (click)="openEvent(event)" href="javascript:void(0);" class="btn btn-primary">Open event</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

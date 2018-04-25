@@ -1,0 +1,6 @@
+.friend-info, .friend-action{
+  display: inline-block;
+}
+.friend-info{
+  width: 80%;
+}
