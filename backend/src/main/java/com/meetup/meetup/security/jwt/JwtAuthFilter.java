@@ -22,18 +22,18 @@ public class JwtAuthFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
         String authorization = request.getHeader("Authorization");
+        Authentication authentication3 = SecurityContextHolder.getContext().getAuthentication();
+
+        if (request instanceof SecurityContextHolderAwareRequestWrapper) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
 
         if (authorization != null) {
-
             String token = authorization.replaceAll("Bearer ", "");
-            Authentication authentication =
-                    SecurityContextHolder.getContext().getAuthentication();
-
-            if (authentication == null || !token.equals(authentication.getCredentials().toString())) {
-                JwtAuthToken jwtAuthToken = new JwtAuthToken(token);
-                SecurityContextHolder.getContext().setAuthentication(jwtAuthToken);
-            }
-        } else if (!(request instanceof SecurityContextHolderAwareRequestWrapper)){
+            JwtAuthToken jwtAuthToken = new JwtAuthToken(token);
+            SecurityContextHolder.getContext().setAuthentication(jwtAuthToken);
+        } else {
             SecurityContextHolder.clearContext();
         }
 
