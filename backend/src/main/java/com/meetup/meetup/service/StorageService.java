@@ -17,6 +17,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.bind.SchemaOutputResolver;
+
 @Service
 @PropertySource("classpath:links.properties")
 public class StorageService {
@@ -38,7 +40,7 @@ public class StorageService {
         try {
             Files.createDirectory(rootLocation);
         } catch (IOException e) {
-            throw new RuntimeException("Could not initialize storage!");
+            System.out.println("Location exists");
         }
         User user = authenticationFacade.getAuthentication();
         user.setImgPath(env.getProperty("remote.img.link")+user.getId()+".jpg");
