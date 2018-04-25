@@ -167,10 +167,10 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.1</version>
 				<configuration>
-					<url>[address]/manager/text</url>
+					<url>http://35.196.1.189/manager/text</url>
 					<path>/</path>
-					<username>[username]</username>
-					<password>[password]</password>
+					<username>meetup</username>
+					<password>odGbZ93WlkeRM7sQ6v</password>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -6,6 +6,13 @@
     </div>
 
     <div class="col-10">
+      <div class="alert alert-danger" *ngIf="!profile.birthDay">
+        Go to "Edit profile" for setting your birth day.
+      </div>
+
+      <div class="alert alert-danger" *ngIf="!profile.phone">
+        Go to "Edit profile" for setting your phone number.
+      </div>
       <dl class="row py-4">
 
         <dt class="col-sm-3">Your id</dt>
@@ -24,7 +31,8 @@
         <dt class="col-sm-3">Email</dt>
         <dd class="col-sm-9">{{profile.email}}</dd>
 
-        <a class="btn btn-primary" style="margin-right:10px" routerLink="/edit/{{profile.id}}" role="button">Edit profile</a>
+        <a class="btn btn-primary" style="margin-right:10px" routerLink="/edit/{{profile.id}}" role="button">Edit
+          profile</a>
 
       </dl>
 

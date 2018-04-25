@@ -25,7 +25,6 @@ import {EditComponent} from "./account/edit/edit.component";
 import {FriendComponent} from "./account/friends/friend/friend.component";
 import {FriendsListComponent} from "./account/friends/friends.list.component";
 import {FriendService} from "./account/friends/friend.service";
-import {ContinueRegistrationComponent} from "./account/continue.registration/continue.registration.component";
 import {ChangePasswordComponent} from "./account/change.password/change.password.component";
 import {UploadFileService} from "./upload.file/upload.file.service";
 import {ToastrModule} from "ngx-toastr";
@@ -46,7 +45,6 @@ import {ToastrModule} from "ngx-toastr";
     EditComponent,
     FriendsListComponent,
     FriendComponent,
-    ContinueRegistrationComponent,
     ChangePasswordComponent,
   ],
   imports: [
