@@ -13,21 +13,27 @@ import "rxjs/add/observable/timer";
 export class FriendsListComponent {
   state: string = "friends";
   newFriendName: string;
-  friends: Profile[];
-  unconfirmedFriends: Profile[];
+  friends: Profile[] = [];
+  unconfirmedFriends: Profile[] = [];
   message: string;
 
-  constructor(private friendService: FriendService) {
+  constructor(private friendService: FriendService) {}
+
+  ngOnInit(){
     this.getInfo();
   }
 
   getInfo(){
-    this.friendService.getFriendsRequests().subscribe((requests) => this.unconfirmedFriends = requests);
-    this.friendService.getFriends().subscribe((friends) => this.friends = friends);
+    this.friendService.getFriendsRequests()
+      .subscribe((requests) => this.unconfirmedFriends = requests);
+    this.friendService.getFriends()
+      .subscribe((friends) => this.friends = friends);
   }
 
   addFriend(form: NgForm) {
-    this.friendService.addFriend(form.form.value.newFriendName).subscribe((message) => this.message = message,
+    this.friendService.addFriend(form.form.value.newFriendName)
+      .subscribe(
+        (message) => this.message = message,
       (error)=> {if(error.status === 200){
         this.message = error.error.text;
       }else{
