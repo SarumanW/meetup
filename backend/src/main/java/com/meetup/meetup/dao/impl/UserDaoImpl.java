@@ -269,7 +269,7 @@ public class UserDaoImpl implements UserDao {
     public User update(User model) {
         try {
             jdbcTemplate.update(env.getProperty("user.update"),
-                model.getLogin(), model.getPassword(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
+                model.getLogin(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
                 model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
