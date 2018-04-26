@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {Router} from "@angular/router";
+import {Profile} from "./account/profile";
 
 
 @Component({
@@ -10,9 +11,11 @@ import {Router} from "@angular/router";
 export class AppComponent {
 
   showLogout : boolean = true;
+  profile : Profile;
 
   ngOnInit(){
     this.router.events.subscribe(event => this.modifyHeader(event));
+    this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
 
   constructor(private router : Router){}
@@ -35,7 +38,7 @@ export class AppComponent {
   goToProfile(){
 
     if(localStorage.currentUser){
-      this.router.navigate(['/profile/'+JSON.parse(localStorage.currentUser).id]);
+      this.router.navigate(['/'+JSON.parse(localStorage.currentUser).login + "profile"]);
     } else {
       this.router.navigate(['/login']);
     }

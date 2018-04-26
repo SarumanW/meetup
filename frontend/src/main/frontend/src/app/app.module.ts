@@ -1,5 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
@@ -55,7 +56,8 @@ import {ThankyouComponent} from "./account/thankyou/thankyou.component";
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    NgbModule.forRoot()
   ],
   providers: [AccountService,
     AuthGuard,

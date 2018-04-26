@@ -1,10 +1,20 @@
 <header>
   <nav class="navbar">
     <a class="navbar-brand">
-        <img (click)="goToProfile()" width="160" alt="Meetup Logo" src="assets\logomeetup.svg"
-             class="d-inline-block align-top" alt="">
+      <img (click)="goToProfile()" width="160" alt="Meetup Logo" src="assets\logomeetup.svg"
+           class="d-inline-block align-top " alt="">
     </a>
-    <button *ngIf="showLogout" type="button" class="btn btn-primary" type="submit" (click)="logout()">Logout</button>
+
+    <div *ngIf="showLogout" ngbDropdown class="d-inline-block navbar-right pr-5">
+      <button class="btn btn-default" id="dropdownBasic" ngbDropdownToggle>Actions</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic" class="">
+        <button class="dropdown-item" routerLink="/{{profile.login}}/profile">Profile</button>
+        <button class="dropdown-item" routerLink="/{{profile.login}}/friends">Friends</button>
+        <button class="dropdown-item" routerLink="/{{profile.login}}/folders">Folders</button>
+        <button class="dropdown-item" (click)="logout()">Logout</button>
+      </div>
+    </div>
+
   </nav>
 </header>
 
