@@ -35,7 +35,9 @@ export class RecoveryComponent implements OnInit {
       this.accountService.recovery(this.recovery).subscribe(
         () => {
           this.success = true;
-          this.router.navigate(['/login']);
+          setTimeout(() => {
+           this.router.navigate(['/login']);
+          }, 10000);
         },
         response => this.processError(response)
       );
