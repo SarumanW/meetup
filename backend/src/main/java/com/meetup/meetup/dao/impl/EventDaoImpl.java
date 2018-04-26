@@ -69,7 +69,6 @@ public class EventDaoImpl implements EventDao {
         }
 
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("EVENT_ID", model.getEventId());
         parameters.put("NAME", model.getName());
         parameters.put("EVENT_DATE",  model.getEventDate());
         parameters.put("DESCRIPTION", model.getDescription());
@@ -110,7 +109,7 @@ public class EventDaoImpl implements EventDao {
                     env.getProperty("role.getRole"), new Object[] { userId, eventId },
                     String.class);
 
-            role = "OWNER".equals(roleString) ? Role.OWNER : Role.PARTICIPANT;
+            role = Role.valueOf(roleString);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
@@ -170,7 +169,7 @@ public class EventDaoImpl implements EventDao {
         try {
             events = jdbcTemplate.query(env.getProperty("event.findByFolderId"),
                     new Object[]{folderId}, new EventRowMapper());
-            System.out.println(events);
+            //System.out.println(events);
         } catch (DataAccessException e){
             System.out.println(e.getMessage());
         }

@@ -22,29 +22,10 @@ public class EventRowMapper implements RowMapper<Event> {
         event.setEventDate(date == null ? null : date.toString());
         event.setDescription(resultSet.getString("DESCRIPTION"));
         event.setPeriodicityId(resultSet.getInt("PERIODICITY_ID"));
-        switch (resultSet.getString("PERIODICITY_NAME")) {
-            case "ONCE":
-                event.setPeriodicity(EventPeriodicity.ONCE);
-                break;
-            case "HOUR":
-                event.setPeriodicity(EventPeriodicity.HOUR);
-                break;
-            case "DAY":
-                event.setPeriodicity(EventPeriodicity.DAY);
-                break;
-            case "WEEK":
-                event.setPeriodicity(EventPeriodicity.WEEK);
-                break;
-            case "MONTH":
-                event.setPeriodicity(EventPeriodicity.MONTH);
-                break;
-            case "YEAR":
-                event.setPeriodicity(EventPeriodicity.YEAR);
-                break;
-        }
+        event.setPeriodicity(EventPeriodicity.valueOf(resultSet.getString("PERIODICITY_NAME")));
         event.setPlace(resultSet.getString("PLACE"));
         event.setEventTypeId(resultSet.getInt("EVENT_TYPE_ID"));
-        event.setEventType("EVENT".equals(resultSet.getString("TYPE")) ? EventType.EVENT : EventType.NOTE);
+        event.setEventType(EventType.valueOf(resultSet.getString("TYPE")));
         event.setDraft(resultSet.getInt("IS_DRAFT") == 1);
         event.setFolderId(resultSet.getInt("FOLDER_ID"));
         event.setImageFilepath(resultSet.getString("IMAGE_FILEPATH"));
