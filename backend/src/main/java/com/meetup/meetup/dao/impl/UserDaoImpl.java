@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,12 +36,13 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findByLogin(String login) {
+
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(
-                    env.getProperty("user.findByLogin"),
-                    new Object[]{login}, new UserRowMapper() {
-                    }
+                env.getProperty("user.findByLogin"),
+                new Object[]{login}, new UserRowMapper() {
+                }
             );
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
@@ -55,11 +55,12 @@ public class UserDaoImpl implements UserDao {
     public User findByEmail(String email) {
 
         User user = null;
+
         try {
             user = jdbcTemplate.queryForObject(
-                    env.getProperty("user.findByEmail"),
-                    new Object[]{email}, new UserRowMapper() {
-                    }
+                env.getProperty("user.findByEmail"),
+                new Object[]{email}, new UserRowMapper() {
+                }
             );
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
@@ -68,54 +69,72 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
-    //working
-    private List<Integer> getFriendsIds(int user_id) {
-        // TODO: 4/19/2018 Implement method get list friends ids
-        List<Integer> friendIds = new ArrayList<>();
+    @Override
+    public List<User> getFriends(int userId) {
+
+        List<Integer> friendIds = getFriendsIds(userId);
+        List<User> friends = new ArrayList<>();
+
+        for (int id : friendIds) {
+            User friend = findById(id);
+
+            if (friend != null) {
+                friends.add(friend);
+            }
+        }
+
+        return friends;
+    }
+
+
+    /**
+     * Returns list of user ids where friendship for given user's id is confirmed
+     *
+     * @param userId
+     * @return
+     */
+    private List<Integer> getFriendsIds(int userId) {
+
         List<Map<String, Object>> list = new ArrayList<>();
-        BigDecimal b;
+
         try {
             list = jdbcTemplate.queryForList(env.getProperty("user.getFriendsIds"),
-                    new Object[]{user_id, user_id});
+                userId, userId);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
+
+
+        Integer b;
+        List<Integer> friendIds = new ArrayList<>();
+
         for (Map<String, Object> row : list) {
-            b = (BigDecimal) row.get("SENDER_ID");
-            if (b.intValue() != user_id) {
-                friendIds.add(b.intValue());
+            b = (Integer) row.get("SENDER_ID");
+            if (b != userId) {
+                friendIds.add(b);
             }
 
-            b = (BigDecimal) row.get("RECEIVER_ID");
-            if (b.intValue() != user_id) {
-                friendIds.add(b.intValue());
+            b = (Integer) row.get("RECEIVER_ID");
+            if (b != userId) {
+                friendIds.add(b);
             }
 
         }
+
         return friendIds;
     }
 
-    public List<User> getFriends(int user_id) {
-        List<Integer> friendIds = getFriendsIds(user_id);
-        List<User> friends = new ArrayList<>();
-        for (int id : friendIds) {
-            User friend = findById(id);
-            if (friend != null) {
-                friends.add(findById(id));
-            }
-        }
-        return friends;
-    }
 
     @Override
     public boolean addFriend(int senderId, int receiverId) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName("FRIEND");
+            .withTableName("FRIEND");
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("SENDER_ID", senderId);
         parameters.put("RECEIVER_ID", receiverId);
         parameters.put("IS_CONFIRMED", 0);
+
         try {
             simpleJdbcInsert.execute((parameters));
         } catch (DataAccessException e) {
@@ -126,70 +145,86 @@ public class UserDaoImpl implements UserDao {
         return true;
     }
 
-    public List<User> getFriendsRequests(int user_id) {
-        List<Integer> friendIds = getUnconfirmedIds(user_id);
+    /**
+     * Returns list of unconfirmed friend requests
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<User> getFriendsRequests(int userId) {
+
+        List<Integer> friendIds = getUnconfirmedIds(userId);
         List<User> friends = new ArrayList<>();
+
         for (int id : friendIds) {
             User friend = findById(id);
             if (friend != null) {
                 friends.add(findById(id));
             }
         }
+
         return friends;
     }
 
-    //working
-    private List<Integer> getUnconfirmedIds(int user_id) {
+
+    /**
+     * Returns list of ids where friendship isn't confirmed for given user's id
+     *
+     * @param userId
+     * @return
+     */
+    private List<Integer> getUnconfirmedIds(int userId) {
+
         List<Integer> unConfirmedIds = new ArrayList<>();
-        List<Map<String, Object>> list = new ArrayList<>();
-        BigDecimal b;
+
         try {
-            list = jdbcTemplate.queryForList(env.getProperty("user.getUnconfirmedIds"),
-                    new Object[]{user_id});
+            unConfirmedIds = jdbcTemplate.queryForList(env.getProperty("user.getUnconfirmedIds"),
+                new Object[] {userId},Integer.class);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
-        for (Map<String, Object> row : list) {
-            b = (BigDecimal) row.get("SENDER_ID");
-            unConfirmedIds.add(b.intValue());
-        }
+
         return unConfirmedIds;
     }
 
     //working
     @Override
-    public int confirmFriend(int user_id, int friend_id) {
+    public int confirmFriend(int userId, int friendId) {
         try {
-            jdbcTemplate.update(env.getProperty("user.confirmFriend"), friend_id, user_id);
+            jdbcTemplate.update(env.getProperty("user.confirmFriend"), friendId, userId);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
-        return user_id;
+        return userId;
     }
 
     //working
     @Override
-    public int deleteFriend(int user_id, int friend_id) {
+    public int deleteFriend(int userId, int friendId) {
         try {
-            jdbcTemplate.update(env.getProperty("user.deleteFriend"), user_id, friend_id, friend_id, user_id);
+            jdbcTemplate.update(env.getProperty("user.deleteFriend"), userId, friendId, friendId, userId);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
-        return user_id;
+        return userId;
     }
 
     @Override
     public User findById(int id) {
+
         User user = null;
+
         try {
             user = jdbcTemplate.queryForObject(
-                    env.getProperty("user.findById"),
-                    new Object[]{id}, new UserRowMapper() {
-                    }
+                env.getProperty("user.findById"),
+                new Object[]{id}, new UserRowMapper() {
+                }
             );
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
+
         return user;
     }
 
@@ -197,11 +232,10 @@ public class UserDaoImpl implements UserDao {
     public User insert(User model) {
 
         int id = -1;
-        Folder folder;
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName("UUSER")
-                .usingGeneratedKeyColumns("USER_ID");
+            .withTableName("UUSER")
+            .usingGeneratedKeyColumns("USER_ID");
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("USER_ID", model.getId());
@@ -214,6 +248,7 @@ public class UserDaoImpl implements UserDao {
         parameters.put("image_filepath", model.getImgPath());
         parameters.put("bday", (model.getBirthDay() != null ? Date.valueOf(model.getBirthDay()) : null));
         parameters.put("phone", model.getPhone());
+
         try {
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
             model.setId(id);
@@ -221,7 +256,7 @@ public class UserDaoImpl implements UserDao {
             System.out.println(e.getMessage());
         }
 
-        folder = new Folder();
+        Folder folder = new Folder();
         folder.setName("general");
         folder.setUserId(id);
 
@@ -234,8 +269,8 @@ public class UserDaoImpl implements UserDao {
     public User update(User model) {
         try {
             jdbcTemplate.update(env.getProperty("user.update"),
-                    model.getLogin(), model.getPassword(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
-                    model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
+                model.getLogin(), model.getPassword(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
+                model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }

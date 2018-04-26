@@ -44,8 +44,11 @@ export class AccountService {
   }
 
   update(account:any):Observable<any>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
     console.log("updating");
-    return this.http.post<any>('/api/profile/update', account);
+    return this.http.post<any>('/api/profile/update', account, {headers: headers});
   }
 
   recovery(data: any):Observable<any>{

@@ -14,7 +14,7 @@
           <div *ngFor="let folder of folders" class="card mb-4">
             <div class="head card-body">
               <img class="folder-icon" src="assets/folder-icon.svg" alt="Card image cap">
-              <img (click)="deleteFolder(folder)" class="close-btn" src="assets/close-white.svg" alt="">
+              <img *ngIf="folder.name!=='general'" (click)="deleteFolder(folder)" class="close-btn" src="assets/close-white.svg" alt="">
             </div>
             <div class="card-body">
               <h5 class="card-title">{{folder.name}}</h5>
@@ -35,7 +35,8 @@
               <form>
                 <div class="form-group">
                   <label for="name">Folder name:</label>
-                  <input class="form-control" id="name" placeholder="Enter folder name" name="name" #name>
+                  <input class="form-control" id="name" placeholder="Enter folder name" name="name" #name
+                         [(ngModel)]="nameInput">
                 </div>
                 <button class="btn btn-default" (click)="modal.hide(); addFolder(name)">Add</button>
               </form>
@@ -45,6 +46,5 @@
       </div>
     </div>
   </div>
-</div>
 
 

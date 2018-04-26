@@ -10,15 +10,17 @@ public interface UserDao extends Dao<User> {
 
     User findByEmail(String email);
 
+    User update(User model);
+
     boolean updatePassword(User user);
 
-    int confirmFriend(int user_id, int friend_id);
+    int confirmFriend(int userId, int friendId);
 
-    int deleteFriend(int user_id, int friend_id);
+    int deleteFriend(int userId, int friendId);
 
-    List<User> getFriendsRequests(int user_id);
+    List<User> getFriendsRequests(int userId);
 
-    List<User> getFriends(int user_id);
+    List<User> getFriends(int userId);
 
     boolean addFriend(int senderId, int receiverId);
 

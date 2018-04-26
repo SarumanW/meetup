@@ -13,18 +13,9 @@ import java.util.Locale;
 @SpringBootApplication
 public class MeetupApplication extends SpringBootServletInitializer {
 
-	@Resource
-	StorageService storageService;
-
 	public static void main(String[] args) {
 		Locale.setDefault(Locale.ENGLISH);
 		SpringApplication.run(MeetupApplication.class, args);
-	}
-
-	@Override
-	protected WebApplicationContext run(SpringApplication application) {
-		storageService.init();
-		return super.run(application);
 	}
 
 	@Override

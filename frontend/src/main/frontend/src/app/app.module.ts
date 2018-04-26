@@ -25,9 +25,9 @@ import {EditComponent} from "./account/edit/edit.component";
 import {FriendComponent} from "./account/friends/friend/friend.component";
 import {FriendsListComponent} from "./account/friends/friends.list.component";
 import {FriendService} from "./account/friends/friend.service";
-import {ContinueRegistrationComponent} from "./account/continue.registration/continue.registration.component";
 import {ChangePasswordComponent} from "./account/change.password/change.password.component";
 import {UploadFileService} from "./upload.file/upload.file.service";
+import {ToastrModule} from "ngx-toastr";
 
 @NgModule({
   declarations: [
@@ -45,14 +45,14 @@ import {UploadFileService} from "./upload.file/upload.file.service";
     EditComponent,
     FriendsListComponent,
     FriendComponent,
-    ContinueRegistrationComponent,
     ChangePasswordComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ToastrModule.forRoot()
   ],
   providers: [AccountService,
     AuthGuard,

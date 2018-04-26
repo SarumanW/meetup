@@ -44,7 +44,7 @@ public class User {
     @JsonIgnore
     private int timeZone;
 
-    @JsonIgnore
+//    @JsonIgnore
     private String imgPath;
 
     @JsonIgnore
