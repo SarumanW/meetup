@@ -1,4 +1,4 @@
-<div class="container-fluid" style="margin-top:20px">
+<div class="container-fluid">
   <div class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
@@ -14,7 +14,8 @@
           <div *ngFor="let folder of folders" class="card mb-4">
             <div class="head card-body">
               <img class="folder-icon" src="assets/folder-icon.svg" alt="Card image cap">
-              <img *ngIf="folder.name!=='general'" (click)="deleteFolder(folder)" class="close-btn" src="assets/close-white.svg" alt="">
+              <img *ngIf="folder.name!=='general'" (click)="deleteFolder(folder)" class="close-btn"
+                   src="assets/close-white.svg" alt="">
             </div>
             <div class="card-body">
               <h5 class="card-title">{{folder.name}}</h5>
@@ -47,4 +48,4 @@
     </div>
   </div>
 
-
+</div>
