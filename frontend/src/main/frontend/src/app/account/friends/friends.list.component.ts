@@ -2,6 +2,7 @@ import {Component} from "@angular/core";
 import {FriendService} from "./friend.service";
 import {NgForm} from "@angular/forms";
 import {Profile} from "../profile";
+import "rxjs/add/observable/timer";
 
 @Component({
   selector: 'friends-list',
@@ -26,8 +27,13 @@ export class FriendsListComponent {
   }
 
   addFriend(form: NgForm) {
-    this.friendService.addFriend(form.form.value.newFriendName).subscribe((message) => this.message = message);
+    this.friendService.addFriend(form.form.value.newFriendName).subscribe((message) => this.message = message,
+      (error)=> {if(error.status === 200){
+        this.message = error.error.text;
+      }else{
+        this.message = error.error;
+      }
+    });
     this.newFriendName = "";
-
   }
 }
