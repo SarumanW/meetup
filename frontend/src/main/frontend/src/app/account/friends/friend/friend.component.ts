@@ -18,9 +18,9 @@ export class FriendComponent {
   }
 
   deleteFriend(id: number){
-    this.friendService.confirmFriend(id).subscribe((response)=>this.friendsList.getInfo());
+    this.friendService.deleteFriend(id).subscribe((response)=>this.friendsList.getInfo());
   }
   confirmFriend(id: number){
-    this.friendService.deleteFriend(id).subscribe((response)=>this.friendsList.getInfo());
+    this.friendService.confirmFriend(id).subscribe((response)=>this.friendsList.getInfo());
   }
 }

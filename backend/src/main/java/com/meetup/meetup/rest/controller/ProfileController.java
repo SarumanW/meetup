@@ -19,7 +19,7 @@ public class ProfileController {
     private ProfileService profileService;
 
     @Autowired
-    StorageService storageService;
+    private StorageService storageService;
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable int id) {
@@ -27,12 +27,12 @@ public class ProfileController {
     }
 
     @PostMapping("/update")
-    public String updateProfile(@RequestBody User newUser) {
+    public ResponseEntity<String> updateProfile(@RequestBody User newUser) {
         User updatedUser = profileService.updateUser(newUser);
         if (updatedUser != null) {
-            return "Success";
+            return new ResponseEntity<>("Successfully updated profile", HttpStatus.OK);
         }
-        return "Updating failed";
+        return new ResponseEntity<>("Updating failed", HttpStatus.NOT_MODIFIED);
     }
 
     @GetMapping("/friends")
@@ -46,26 +46,26 @@ public class ProfileController {
     }
 
     @PostMapping("/addFriend")
-    public String addFriend(@RequestBody String newFriend) {
-        if(profileService.addFriend(newFriend)){
-            return "Success";
+    public ResponseEntity<String> addFriend(@RequestBody String newFriend) {
+        if (profileService.addFriend(newFriend)) {
+            return new ResponseEntity<>("Successfully send request to " + newFriend, HttpStatus.OK);
         }
-        return "Adding new friend failed";
+        return new ResponseEntity<>("User does not exist or you have already sent request", HttpStatus.EXPECTATION_FAILED);
     }
 
     @PostMapping("/deleteFriend")
-    public int deleteFriend(@RequestBody int id) {
-        return profileService.deleteFriend(id);
+    public void deleteFriend(@RequestBody int id) {
+        profileService.deleteFriend(id);
     }
 
     @PostMapping("/confirmFriend")
-    public int confirmFriend(@RequestBody int friendId){
-        return profileService.confirmFriend(friendId);
+    public void confirmFriend(@RequestBody int friendId) {
+        profileService.confirmFriend(friendId);
     }
 
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
-        String message = "";
+        String message;
         try {
             storageService.store(file);
 

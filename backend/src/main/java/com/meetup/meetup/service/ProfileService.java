@@ -40,19 +40,16 @@ public class ProfileService {
     public boolean addFriend(String userName){
         User user = authenticationFacade.getAuthentication();
         User friend = userDao.findByLogin(userName);
-        if(friend != null) {
-            return userDao.addFriend(user.getId(), friend.getId());
-        }
-        return false;
+        return friend != null && userDao.addFriend(user.getId(), friend.getId());
     }
 
-    public int confirmFriend(int friendId){
+    public void confirmFriend(int friendId){
         User user = authenticationFacade.getAuthentication();
-        return userDao.confirmFriend(user.getId(), friendId);
+        userDao.confirmFriend(user.getId(), friendId);
     }
 
-    public int deleteFriend(int id){
+    public void deleteFriend(int id){
         User user = authenticationFacade.getAuthentication();
-        return userDao.deleteFriend(user.getId(), id);
+        userDao.deleteFriend(user.getId(), id);
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,20 +106,19 @@ public class UserDaoImpl implements UserDao {
         }
 
 
-        Integer b;
+        BigDecimal b;
         List<Integer> friendIds = new ArrayList<>();
 
         for (Map<String, Object> row : list) {
-            b = (Integer) row.get("SENDER_ID");
-            if (b != userId) {
-                friendIds.add(b);
+            b = (BigDecimal) row.get("SENDER_ID");
+            if (b.intValue() != userId) {
+                friendIds.add(b.intValue());
             }
 
-            b = (Integer) row.get("RECEIVER_ID");
-            if (b != userId) {
-                friendIds.add(b);
+            b = (BigDecimal) row.get("RECEIVER_ID");
+            if (b.intValue() != userId) {
+                friendIds.add(b.intValue());
             }
-
         }
 
         return friendIds;
