@@ -5,6 +5,7 @@ import {FolderListService} from "../folder.list.service";
 import {FolderService} from "../folder.service";
 import {Observable} from "rxjs/Observable";
 import {ToastrService} from "ngx-toastr";
+import {Profile} from "../../account/profile";
 
 @Component({
   selector: 'app-folder',
@@ -17,6 +18,7 @@ export class FolderListComponent implements OnInit {
   selectedFolder: Folder;
   state:string="folders";
   nameInput:string = "";
+  profile: Profile;
 
   constructor(private folderListService: FolderListService,
               private router : Router,
@@ -26,6 +28,7 @@ export class FolderListComponent implements OnInit {
 
   ngOnInit() {
     this.getFoldersList();
+    this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
 
   getFoldersList():void{

@@ -24,7 +24,6 @@ export class EventComponent implements OnInit {
       this.folderId = params['folderId'];
     });
     this.getEvent();
-    //console.log(this.eventt)
   }
 
   getEvent() {

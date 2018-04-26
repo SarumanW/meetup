@@ -7,11 +7,11 @@
     <img [src]="profile.imgPath" class="profile-logo">
   </div>
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'profile'}"
-     href="#/profile/{{profile.id}}">Profile</a>
+     href="#/{{profile.login}}/profile">Profile</a>
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'friends'}"
-     href="#/friends/">Friends</a>
+     href="#/{{profile.login}}/friends/">Friends</a>
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'folders'}"
-     href="#/folders/">Folders</a>
+     href="#/{{profile.login}}/folders/">Folders</a>
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'wishlist'}"
      >Wish List</a>
   <a class="list-group-item list-group-item-action"  (click)="logout()"

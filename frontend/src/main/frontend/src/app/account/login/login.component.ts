@@ -25,15 +25,13 @@ export class LoginComponent implements OnInit {
 
   logIn() {
       this.accountService.login(this.account).subscribe(
-        (user) => {
-            console.log("/profile/"+JSON.parse(localStorage.currentUser).id);
+        () => {
             this.success = true;
             this.router.navigate(
-              ['/profile/'+JSON.parse(localStorage.currentUser).id]);
+              ['/'+JSON.parse(localStorage.currentUser).login + '/profile']);
         },
         response => {
           this.processError(response);
-          //this.router.navigate(['/login']);}
         }
       );
     }

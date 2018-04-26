@@ -21,11 +21,6 @@ export class HomeComponent {
 
   ngOnInit() {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
-    console.log("home init "+this.profile.id);
-  }
-
-  openProfile(){
-     this.router.navigate(['/profile/'+JSON.parse(localStorage.currentUser).id]);
   }
 
   logout() {

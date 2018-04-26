@@ -48,7 +48,7 @@ export class EditComponent implements OnInit {
       () => {
         this.success = true;
         this.router.navigate(
-          ['/profile', JSON.parse(localStorage.currentUser).id]);
+          [JSON.parse(localStorage.currentUser).id + '/profile']);
       },
       response => this.processError(response)
     );
