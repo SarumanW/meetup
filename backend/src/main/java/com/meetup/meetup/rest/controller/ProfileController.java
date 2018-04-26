@@ -29,7 +29,7 @@ public class ProfileController {
         return new ResponseEntity<>(profileService.getUser(id), HttpStatus.OK);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<String> updateProfile(@RequestBody User newUser) {
         User updatedUser = profileService.updateUser(newUser);
         if (updatedUser != null) {
@@ -56,6 +56,7 @@ public class ProfileController {
         return new ResponseEntity<>("User does not exist or you have already sent request", HttpStatus.EXPECTATION_FAILED);
     }
 
+    // TODO: 26.04.2018 change in frontend
     @DeleteMapping("/deleteFriend")
     public ResponseEntity deleteFriend(@RequestBody int id) {
         profileService.deleteFriend(id);
