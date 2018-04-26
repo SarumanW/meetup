@@ -3,11 +3,13 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {RegisterAccount} from "../register.account";
 import {AccountService} from "../account.service";
 import {Router} from "@angular/router"
+import {FormBuilder, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html'
 })
+
 export class RegisterComponent implements OnInit {
   confirmPassword: string;
   doNotMatch: string;
@@ -17,20 +19,30 @@ export class RegisterComponent implements OnInit {
   success: boolean;
   account: RegisterAccount;
   lastName: string;
+  isValidFormSubmitted = null;
+  emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";
+ registerForm = this.fb.group({
+    email: ['', [Validators.required, Validators.pattern(this.emailPattern)]] });
 
-  constructor(private accountService: AccountService,
-              private router: Router) {
-  }
+  constructor(private accountService: AccountService,private fb: FormBuilder, private router: Router) {
+    }
 
   ngOnInit() {
     this.success = false;
     this.account = new RegisterAccount();
+    this.registerForm.get('email').setValidators(Validators.email);
   }
 
-  register() {
-    if (this.account.password !== this.confirmPassword) {
+   register() {
+     this.isValidFormSubmitted = false;
+     if (this.registerForm.invalid) {
+       return;
+     }
+        if (this.account.password !== this.confirmPassword) {
       this.doNotMatch = 'ERROR';
-    } else {
+    }
+
+    else {
       this.doNotMatch = null;
       console.log(this.account);
       this.accountService.save(this.account).subscribe(
@@ -41,6 +53,11 @@ export class RegisterComponent implements OnInit {
         response => this.processError(response)
       );
     }
+     this.registerForm.reset();
+  }
+
+  get email() {
+    return this.registerForm.get('email');
   }
 
   private processError(response: HttpErrorResponse) {
