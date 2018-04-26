@@ -5,6 +5,7 @@ import com.meetup.meetup.dao.rowMappers.EventRowMapper;
 import com.meetup.meetup.dao.rowMappers.FolderRowMapper;
 import com.meetup.meetup.entity.*;
 import com.meetup.meetup.exception.DatabaseWorkException;
+import oracle.jdbc.OracleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
@@ -30,7 +31,6 @@ public class FolderDaoImpl implements FolderDao {
     private Environment env;
 
     @Autowired
-    @Qualifier("jdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
     @Override
@@ -77,6 +77,19 @@ public class FolderDaoImpl implements FolderDao {
         }
 
         return folder;
+    }
+
+    @Override
+    public boolean moveEventsToGeneral(int id) {
+
+        try{
+            jdbcTemplate.update(env.getProperty("folder.removeEvents"), id);
+            return true;
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+            throw new DatabaseWorkException();
+        }
+
     }
 
     @Override
