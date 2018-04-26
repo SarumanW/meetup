@@ -7,6 +7,10 @@ header img {
   max-height:100%;
 }
 
+header img:hover{
+  cursor: pointer;
+}
+
 header{
   padding-top: 0px;
   padding-left: 10px;

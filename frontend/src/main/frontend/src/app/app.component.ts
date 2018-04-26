@@ -30,4 +30,8 @@ export class AppComponent {
     }
   }
 
+  goToProfile(){
+    this.router.navigate(['/profile/'+JSON.parse(localStorage.currentUser).id]);
+  }
+
 }
