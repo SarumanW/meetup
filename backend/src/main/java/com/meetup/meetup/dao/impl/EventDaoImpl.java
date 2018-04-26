@@ -3,6 +3,7 @@ package com.meetup.meetup.dao.impl;
 import com.meetup.meetup.dao.EventDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.EventRowMapper;
+import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.Role;
 import com.meetup.meetup.entity.User;
@@ -42,7 +43,7 @@ public class EventDaoImpl implements EventDao {
 
     @Override
     public Event findById(int id) {
-        Event event = new Event();
+        Event event = null;
 
         try {
             event = jdbcTemplate.queryForObject(
@@ -51,6 +52,9 @@ public class EventDaoImpl implements EventDao {
             );
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
+        }
+        if (event != null) {
+            event.setParticipants(getParticipants(event));
         }
 
         return event;
@@ -88,6 +92,12 @@ public class EventDaoImpl implements EventDao {
         return model;
     }
 
+    /**
+     * create event with this method, not insert
+     * @param model event
+     * @param userId owner id
+     * @return created event with id
+     */
     @Override
     public Event createEvent(Event model, int userId) {
 
@@ -180,17 +190,18 @@ public class EventDaoImpl implements EventDao {
     @Override
     public List<User> getParticipants(Event event) {
 
-        List<Integer> ids;
         List<User> participants = new ArrayList<>();
 
-        ids = jdbcTemplate.queryForList(env.getProperty("event.getParticipants"), new Object[]{event.getEventId()}, Integer.class);
+        try {
+            participants = jdbcTemplate.query(env.getProperty("event.getParticipants"),
+                    new Object[]{event.getEventId()}, new UserRowMapper());
+        } catch (DataAccessException e) {
+            // TODO: 26/04/18  Add logs
+            System.out.println(e.getMessage());
+        }
 
-        if (!ids.isEmpty()) {
-
-            for (int id : ids) {
-                participants.add(userDao.findById(id));
-            }
-        } else {
+        if (participants.isEmpty()) {
+            //TODO add logs
             participants = null;
         }
 

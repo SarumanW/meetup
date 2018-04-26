@@ -22,7 +22,6 @@ public class EventService {
 
     public Event getEvent(int eventId) {
         Event event = eventDao.findById(eventId);
-        event.setParticipants(eventDao.getParticipants(event));
         if(event == null) {
             throw new EntityNotFoundException("Event", "eventId", eventId);
         }
