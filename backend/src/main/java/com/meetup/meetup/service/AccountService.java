@@ -8,15 +8,9 @@ import com.meetup.meetup.service.vm.LoginVM;
 import com.meetup.meetup.service.vm.RecoveryPasswordVM;
 import com.meetup.meetup.service.vm.UserAndTokenVM;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
 
-import javax.json.Json;
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 
 @Component
@@ -33,7 +27,7 @@ public class AccountService {
         this.mailService = mailService;
     }
 
-    public User login(LoginVM credentials) throws Exception {
+    public UserAndTokenVM login(LoginVM credentials) throws Exception {
         try {
             String md5Pass = HashMD5.hash(credentials.getPassword());
             credentials.setPassword(md5Pass);
@@ -58,7 +52,7 @@ public class AccountService {
         return userAndToken;
     }
 
-    public ResponseEntity<String> register(User user) throws Exception {
+    public void register(User user) throws Exception {
         if (null != userDao.findByLogin(user.getLogin())) {  //checking if user exist in system
             throw new LoginAlreadyUsedException();
         }
@@ -86,11 +80,9 @@ public class AccountService {
             e.printStackTrace();
             throw new Exception("SendCustomErrorSend mail exception");
         }
-
-        return new ResponseEntity<>("{ \"success\" : \"Success\" }", HttpStatus.ACCEPTED);
     }
 
-    public ResponseEntity<String> recoveryPasswordMail(String email) throws Exception{
+    public void recoveryPasswordMail(String email) throws Exception{
         User user = userDao.findByEmail(email);
         if (user == null) {
             throw new LoginNotFoundException();
@@ -107,11 +99,9 @@ public class AccountService {
         } catch (MailException e) {
             e.printStackTrace();
         }
-
-        return new ResponseEntity<>("{ \"success\" : \"Success\" }", HttpStatus.OK);
     }
 
-    public ResponseEntity<String> recoveryPassword(RecoveryPasswordVM model) throws Exception{
+    public void recoveryPassword(RecoveryPasswordVM model) throws Exception{
         User user = jwtService.verifyForRecoveryPassword(model.getToken());
 
         if (user == null) {
@@ -128,6 +118,5 @@ public class AccountService {
         if (!userDao.updatePassword(user)) {
             throw new DatabaseWorkException();
         }
-        return new ResponseEntity<>("{ \"success\" : \"Success\" }", HttpStatus.ACCEPTED);
     }
 }

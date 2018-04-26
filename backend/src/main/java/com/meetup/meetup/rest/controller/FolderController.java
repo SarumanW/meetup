@@ -20,13 +20,13 @@ public class FolderController {
     private FolderService folderService;
 
     @GetMapping
-    public List<Folder> getAllFolders(){
-        return folderService.getUserFolders();
+    public ResponseEntity<List<Folder>> getAllFolders(){
+        return new ResponseEntity<>(folderService.getUserFolders(), HttpStatus.OK);
     }
 
     @GetMapping("/{folderId}")
-    public Folder getFolderById(@PathVariable int folderId){
-        return folderService.getFolder(folderId);
+    public ResponseEntity<Folder> getFolderById(@PathVariable int folderId){
+        return new ResponseEntity<>(folderService.getFolder(folderId), HttpStatus.OK);
     }
 
     @PostMapping("/add")
@@ -34,12 +34,12 @@ public class FolderController {
         return new ResponseEntity<>(folderService.addFolder(folder), HttpStatus.CREATED);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<Folder> updateEvent(@Valid @RequestBody Folder folder) {
         return new ResponseEntity<>(folderService.updateFolder(folder), HttpStatus.OK);
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<Folder> deleteFolder(@Valid @RequestBody Folder folder) {
         return new ResponseEntity<>(folderService.deleteFolder(folder), HttpStatus.OK);
     }

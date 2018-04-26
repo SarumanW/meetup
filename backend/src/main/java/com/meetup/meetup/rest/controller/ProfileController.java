@@ -15,15 +15,18 @@ import java.util.List;
 @RequestMapping(path = "/api/profile")
 public class ProfileController {
 
-    @Autowired
-    private ProfileService profileService;
+    private final ProfileService profileService;
+    private final StorageService storageService;
 
     @Autowired
-    private StorageService storageService;
+    public ProfileController(ProfileService profileService, StorageService storageService) {
+        this.profileService = profileService;
+        this.storageService = storageService;
+    }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable int id) {
-        return profileService.getUser(id);
+    public ResponseEntity<User> getUserById(@PathVariable int id) {
+        return new ResponseEntity<>(profileService.getUser(id), HttpStatus.OK);
     }
 
     @PostMapping("/update")
@@ -36,13 +39,13 @@ public class ProfileController {
     }
 
     @GetMapping("/friends")
-    public List<User> getFriends() {
-        return profileService.getFriends();
+    public ResponseEntity<List<User>> getFriends() {
+        return new ResponseEntity<>(profileService.getFriends(), HttpStatus.OK);
     }
 
     @GetMapping("/friendsRequests")
-    public List<User> getFriendsRequests() {
-        return profileService.getFriendsRequests();
+    public ResponseEntity<List<User>> getFriendsRequests() {
+        return new ResponseEntity<>(profileService.getFriendsRequests(), HttpStatus.OK);
     }
 
     @PostMapping("/addFriend")
@@ -53,14 +56,16 @@ public class ProfileController {
         return new ResponseEntity<>("User does not exist or you have already sent request", HttpStatus.EXPECTATION_FAILED);
     }
 
-    @PostMapping("/deleteFriend")
-    public void deleteFriend(@RequestBody int id) {
+    @DeleteMapping("/deleteFriend")
+    public ResponseEntity deleteFriend(@RequestBody int id) {
         profileService.deleteFriend(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/confirmFriend")
-    public void confirmFriend(@RequestBody int friendId) {
+    public ResponseEntity confirmFriend(@RequestBody int friendId) {
         profileService.confirmFriend(friendId);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @PostMapping("/upload")
@@ -74,7 +79,6 @@ public class ProfileController {
         } catch (Exception e) {
             message = "FAIL to upload " + file.getOriginalFilename() + "!";
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
-
         }
     }
 }

@@ -17,13 +17,13 @@ public class EventController {
     private EventService eventService;
 
     @GetMapping("/{id}")
-    public Event getEvent(@PathVariable int id) {
-        return eventService.getEvent(id);
+    public ResponseEntity<Event> getEvent(@PathVariable int id) {
+        return new ResponseEntity<>(eventService.getEvent(id), HttpStatus.OK);
     }
 
     @GetMapping("/folder/{folderId}")
-    public List<Event> getFolderEvents(@PathVariable int folderId) {
-        return eventService.getFolderEvents(folderId);
+    public ResponseEntity<List<Event>> getFolderEvents(@PathVariable int folderId) {
+        return new ResponseEntity<>(eventService.getFolderEvents(folderId), HttpStatus.OK);
     }
 
     @PostMapping("/add")
@@ -31,13 +31,13 @@ public class EventController {
         return new ResponseEntity<>(eventService.addEvent(event), HttpStatus.CREATED);
     }
 
-    @PostMapping("/update")
-    public Event updateEvent(@Valid @RequestBody Event event) {
-        return eventService.updateEvent(event);
+    @PutMapping("/update")
+    public ResponseEntity<Event> updateEvent(@Valid @RequestBody Event event) {
+        return new ResponseEntity<>(eventService.updateEvent(event), HttpStatus.OK);
     }
 
-    @PostMapping("/delete")
-    public Event deleteEvent(@Valid @RequestBody Event event) {
-        return eventService.deleteEvent(event);
+    @DeleteMapping("/delete")
+    public ResponseEntity<Event> deleteEvent(@Valid @RequestBody Event event) {
+        return new ResponseEntity<>(eventService.deleteEvent(event), HttpStatus.OK);
     }
 }

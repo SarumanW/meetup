@@ -7,8 +7,10 @@ import com.meetup.meetup.service.vm.RecoveryPasswordVM;
 import com.meetup.meetup.service.vm.UserAndTokenVM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -23,25 +25,28 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping("/login")
-    public UserAndTokenVM login(@Valid @RequestBody LoginVM loginModel,
-                         HttpServletResponse response) throws Exception {
-        UserAndTokenVM userAndTokenVM = (UserAndTokenVM) accountService.login(loginModel);
-        response.setHeader("Token", userAndTokenVM.getToken());
-        return userAndTokenVM;
+    public ResponseEntity<UserAndTokenVM> login(@Valid @RequestBody LoginVM loginModel) throws Exception {
+        UserAndTokenVM userAndTokenVM = accountService.login(loginModel);
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.add("Token", userAndTokenVM.getToken());
+        return new ResponseEntity<>(userAndTokenVM, headers, HttpStatus.OK);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerAccount(@Valid @RequestBody User user) throws Exception {
-        return accountService.register(user);
+    public ResponseEntity registerAccount(@Valid @RequestBody User user) throws Exception {
+        accountService.register(user);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @GetMapping("/recovery/{email}")
-    public ResponseEntity<String> mailRecoveryPassword(@PathVariable String email) throws Exception {
-        return accountService.recoveryPasswordMail(email);
+    public ResponseEntity mailRecoveryPassword(@PathVariable String email) throws Exception {
+        accountService.recoveryPasswordMail(email);
+        return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/recovery")
-    public ResponseEntity<String> passwordRecovery(@Valid @RequestBody RecoveryPasswordVM model) throws Exception{
-        return accountService.recoveryPassword(model);
+    public ResponseEntity passwordRecovery(@Valid @RequestBody RecoveryPasswordVM model) throws Exception{
+        accountService.recoveryPassword(model);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
