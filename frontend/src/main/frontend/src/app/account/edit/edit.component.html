@@ -4,20 +4,15 @@
       <home-comp [states]="state"></home-comp>
     </div>
 
-    <div class="row justify-content-center">
-      <div class="col-10">
-        <div class="form-group">
-          <h1>Profile editor</h1>
-
-          <div class="alert alert-danger" *ngIf=success>
-            <strong>Profile edited!</strong>
-          </div>
-
+    <div class="col-6 py-4">
+      <div class="form-group">
+        <h1>Profile editor</h1>
+        <div class="alert alert-danger" *ngIf=success>
+          <strong>Profile edited!</strong>
         </div>
       </div>
 
-
-      <form name="form" role="form" #editForm="ngForm" *ngIf="!success">
+      <form name="form" role="form" #editForm="ngForm" *ngIf=!success>
         <div class="form-group">
           <label>To change your profile photo:</label>
           <div *ngIf="currentFileUpload" class="progress">
@@ -33,21 +28,20 @@
             <input type="file" (change)="selectFile($event)">
           </label>
 
-          <button class="btn btn-success" [disabled]="!selectedFiles"
-                  (click)="upload()">Upload
+          <button class="btn btn-success" (click)="upload()">Upload
           </button>
         </div>
 
         <div class="form-group">
           <label class="form-control-label" for="birthDay">Choose the day of your birth: </label>
           <input type="date" class="form" id="birthDay" name="birthDay" #birthDay="ngModel"
-                 [(ngModel)]="account.birthDay" placeholder="{{this.user.account.birthDay}}" (click)="formatDate()">
+                 [(ngModel)]="account.birthDay" placeholder="{{account.birthDay}}" (click)="formatDate()">
         </div>
 
         <div class="form-group">
           <label class="form-control-label" for="lastName">Phone</label>
           <input type="text" class="form-control" [(ngModel)]="account.phone" id="phone" name="phone"
-                 #lastName="ngModel" placeholder="{{this.user.account.phone}}">
+                 #lastName="ngModel" placeholder="{{account.phone}}">
         </div>
 
         <div class="form-group">
@@ -57,7 +51,7 @@
         <div class="form-group">
           <label class="form-control-label" for="login">Login</label>
           <input type="text" class="form-control" [(ngModel)]="account.login" id="login" name="login"
-                 #login="ngModel" placeholder="{{this.user.account.login}}"
+                 #login="ngModel" placeholder="{{account.login}}"
                  minlength="4" maxlength="50" pattern="^[_.@A-Za-z0-9-]*$">
           <div *ngIf="login.dirty && login.invalid">
             <small class="form-text text-danger" *ngIf="login.errors.minlength">
@@ -75,7 +69,7 @@
         <div class="form-group">
           <label class="form-control-label" for="name">Name</label>
           <input type="text" class="form-control" [(ngModel)]="account.name" id="name" name="name"
-                 #name="ngModel" placeholder="{{this.user.account.name}}"
+                 #name="ngModel" placeholder="{{account.name}}"
                  minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$">
           <div *ngIf="name.dirty && name.invalid">
 
@@ -94,7 +88,7 @@
         <div class="form-group">
           <label class="form-control-label" for="lastName">Last name</label>
           <input type="text" class="form-control" [(ngModel)]="account.lastname" id="lastName" name="lastName"
-                 #lastName="ngModel" placeholder="{{this.user.account.lastname}}"
+                 #lastName="ngModel" placeholder="{{account.lastname}}"
                  minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$">
           <div *ngIf="lastName.dirty && lastName.invalid">
             <small class="form-text text-danger" *ngIf="lastName.errors.minlength">
@@ -112,7 +106,7 @@
         <div class="form-group">
           <label class="form-control-label" for="email">Email</label>
           <input type="email" class="form-control" id="email" name="email" #email="ngModel"
-                 placeholder="{{this.user.account.email}}"
+                 placeholder="{{account.email}}"
                  [(ngModel)]="account.email" minlength=5 maxlength=100 email>
           <div *ngIf="email.dirty && email.invalid">
             <small class="form-text text-danger" *ngIf="email.errors.invalid">
@@ -130,12 +124,13 @@
         <button type="button" class="btn btn-primary" (click)="save()" [disabled]="editForm.form.invalid">
           Save changes
         </button>
-        <button type="button" class="btn btn-primary" [routerLink]="['/profile']">
+        <button type="button" class="btn btn-primary" routerLink="/{{profile.login}}/profile">
           Cancel
         </button>
       </form>
     </div>
   </div>
+  <!--</div>-->
 </div>
 
 

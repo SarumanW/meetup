@@ -11,34 +11,37 @@ import {UploadFileService} from "../../upload.file/upload.file.service";
   templateUrl: './edit.component.html'
 })
 
-
 export class EditComponent implements OnInit {
 
-  success: boolean;
+  success: boolean = false;
   wishList: string;
   error: string;
   selectedFiles: FileList;
   currentFileUpload: File;
   progress: { percentage: number } = { percentage: 0 };
   account: Profile;
+  profile: Profile;
   state: string = "profile";
 
   constructor(private accountService: AccountService,
               private router: Router, private route: ActivatedRoute,
               private  http: HttpClient, private uploadService: UploadFileService) {
+    this.account = new Profile();
   }
 
   ngOnInit() {
-    this.success = false;
-    this.account = new Profile();
+    this.profile = JSON.parse(localStorage.getItem('currentUser'));
+
     this.route.params.subscribe(params => {
       this.account.id = params['id'];
     });
+
     this.accountService.profile(this.account).subscribe(
       (data) => {
         this.account = data;
       }
     );
+
     console.log(this.account);
   }
 
