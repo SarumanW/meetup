@@ -12,6 +12,7 @@ import {EventComponent} from "./events/event/event.component";
 import {EditComponent} from "./account/edit/edit.component";
 import {FriendsListComponent} from "./account/friends/friends.list.component";
 import {ChangePasswordComponent} from "./account/change.password/change.password.component";
+import {ThankyouComponent} from "./account/thankyou/thankyou.component";
 
 const routes: Routes = [
   {path: 'register', component: RegisterComponent},
@@ -26,7 +27,7 @@ const routes: Routes = [
   {path: ':login/folders/:folderId', component: FolderComponent, canActivate: [AuthGuard]},
   {path: ':login/folders/:folderId/:eventId', component: EventComponent, canActivate: [AuthGuard]},
   {path: 'change.password', component: ChangePasswordComponent},
-
+  {path: 'thankyou', component: ThankyouComponent},
 ];
 
 @NgModule({

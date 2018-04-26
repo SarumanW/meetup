@@ -28,6 +28,7 @@ import {FriendService} from "./account/friends/friend.service";
 import {ChangePasswordComponent} from "./account/change.password/change.password.component";
 import {UploadFileService} from "./upload.file/upload.file.service";
 import {ToastrModule} from "ngx-toastr";
+import {ThankyouComponent} from "./account/thankyou/thankyou.component";
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import {ToastrModule} from "ngx-toastr";
     EditComponent,
     FriendsListComponent,
     FriendComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    ThankyouComponent
   ],
   imports: [
     ReactiveFormsModule,
