@@ -1,11 +1,10 @@
 <div class="list-group py-4" role="tablist">
-  <div>
-    <img src="http://tuzikgreet.ru/i/files/stati/9-veshhey-kotorye-hochet-skazat-vam-vasha-sobaka-1.jpg"
+  <div >
+    <img *ngIf="!profile.imgPath" src="http://tuzikgreet.ru/i/files/stati/9-veshhey-kotorye-hochet-skazat-vam-vasha-sobaka-1.jpg"
          class="profile-logo">
+    <img *ngIf="profile.imgPath" [src]="profile.imgPath" class="profile-logo">
   </div>
-  <div *ngIf="profile.imgPath">
-    <img [src]="profile.imgPath" class="profile-logo">
-  </div>
+
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'profile'}"
      href="#/{{profile.login}}/profile">Profile</a>
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'friends'}"
