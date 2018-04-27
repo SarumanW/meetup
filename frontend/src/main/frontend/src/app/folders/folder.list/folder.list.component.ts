@@ -61,21 +61,25 @@ export class FolderListComponent implements OnInit {
   }
 
   deleteFolder(folder) {
-    this.spinner.show();
+    let isSure = confirm("Are you sure?");
 
-    this.folderListService.deleteFolder(folder)
-      .subscribe(() => {
-          const index: number = this.folders.indexOf(folder);
-          if (index !== -1) {
-            this.folders.splice(index, 1);
-          }
+    if(isSure) {
+      this.spinner.show();
 
-          this.spinner.hide();
-          this.showSuccess();
-        },
-        () => {
-          this.spinner.hide();
-        });
+      this.folderListService.deleteFolder(folder)
+        .subscribe(() => {
+            const index: number = this.folders.indexOf(folder);
+            if (index !== -1) {
+              this.folders.splice(index, 1);
+            }
+
+            this.spinner.hide();
+            this.showSuccess();
+          },
+          () => {
+            this.spinner.hide();
+          });
+    }
   }
 
   showSuccess() {
