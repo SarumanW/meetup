@@ -22,9 +22,7 @@ public class ProfileService {
     }
 
     public User updateUser(User newUser) {
-        User updatedUser = userDao.findByLogin(newUser.getLogin()).setState(newUser);
-        updatedUser = userDao.update(updatedUser);
-        return updatedUser;
+        return userDao.update(newUser);
     }
 
     public List<User> getFriends() {
