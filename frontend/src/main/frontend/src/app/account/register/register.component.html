@@ -96,7 +96,8 @@
         <div class="form-group">
           <label class="form-control-label" for="email">Email</label>
           <input type="email" class="form-control" name="email" id="email"  [(ngModel)]="account.email"
-                 #email="ngModel" placeholder="Enter your email" minlength=5 maxlength=100 email required [pattern]="emailPattern">
+                 #email="ngModel" placeholder="Enter your email" minlength=5 maxlength=100 email
+                 required [pattern]="emailPattern">
           <div *ngIf="email.dirty && email.errors && !isValidFormSubmitted">
             <small class="form-text text-danger"  *ngIf="email.errors.pattern">
               Your email must be in format: mail@example.com
@@ -119,7 +120,8 @@
         <div class="form-group">
           <label class="form-control-label" for="password">Password</label>
           <input type="password" class="form-control" id="password" name="password" #password="ngModel"
-                 placeholder="Enter your password" [(ngModel)]="account.password" minlength=6 maxlength=50  pattern="^[_.@A-Za-z0-9-]*$" required>
+                 placeholder="Enter your password" [(ngModel)]="account.password" minlength=6 maxlength=50
+                 pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="password.dirty && password.invalid">
             <small class="form-text text-danger" *ngIf="password.errors.required">
               Your password is required.
@@ -155,7 +157,7 @@
             </small>
           </div>
         </div>
-        <button type="button" (click)="register()" [disabled]="email.errors?.email" class="btn btn-primary">
+        <button type="button" (click)="register()" [disabled]="email.errors?.pattern" class="btn btn-primary">
           Register
         </button>
       </form>
