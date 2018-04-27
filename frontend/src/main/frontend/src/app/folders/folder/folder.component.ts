@@ -18,10 +18,8 @@ export class FolderComponent implements OnInit {
   state: string = "folders";
   profile: Profile;
 
-  constructor(private folderService: FolderService,
-              private route: ActivatedRoute,
-              private router: Router,
-              private spinner: NgxSpinnerService) {
+  constructor(private route: ActivatedRoute,
+              private router: Router) {
 
   }
 
@@ -29,22 +27,13 @@ export class FolderComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.folderId = params['folderId'];
     });
-    this.getEvents();
+
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
 
-  getEvents() {
-    this.spinner.show();
 
-    this.folderService.getEvents(this.folderId)
-      .subscribe(events => {
-        this.events = events;
-        this.spinner.hide();
-      })
-  }
-
-  openEvent(event: Evento) {
-    this.router.navigate(["/" + this.profile.login + "/folders/" + event.folderId + "/" + event.eventId])
+  openEventList(type : string) {
+    this.router.navigate(["/" + this.profile.login + "/folders/" + this.folderId + "/" + type])
   }
 
 }
