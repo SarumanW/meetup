@@ -5,6 +5,7 @@ import {FolderService} from "../folder.service";
 import {Evento} from "../../events/event";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Profile} from "../../account/profile";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-folder',
@@ -19,7 +20,8 @@ export class FolderComponent implements OnInit {
 
   constructor(private folderService: FolderService,
               private route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              private spinner: NgxSpinnerService) {
 
   }
 
@@ -32,9 +34,12 @@ export class FolderComponent implements OnInit {
   }
 
   getEvents() {
+    this.spinner.show();
+
     this.folderService.getEvents(this.folderId)
       .subscribe(events => {
         this.events = events;
+        this.spinner.hide();
       })
   }
 

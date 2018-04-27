@@ -3,6 +3,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {AccountService} from "../account.service";
 import {LoginAccount} from "../login.account";
 import {Router, ActivatedRoute} from "@angular/router";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,8 @@ export class LoginComponent implements OnInit {
   errorMessage: string;
 
   constructor(private accountService: AccountService,
-              private router: Router) {
+              private router: Router,
+              private spinner: NgxSpinnerService) {
   }
 
   ngOnInit() {
@@ -24,14 +26,17 @@ export class LoginComponent implements OnInit {
   }
 
   logIn() {
+      this.spinner.show();
       this.accountService.login(this.account).subscribe(
         () => {
             this.success = true;
+            this.spinner.hide();
             this.router.navigate(
               ['/'+JSON.parse(localStorage.currentUser).login + '/profile']);
         },
         response => {
           this.processError(response);
+          this.spinner.hide();
         }
       );
     }

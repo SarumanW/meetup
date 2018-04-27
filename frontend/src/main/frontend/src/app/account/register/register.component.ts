@@ -4,6 +4,7 @@ import {RegisterAccount} from "../register.account";
 import {AccountService} from "../account.service";
 import {Router} from "@angular/router"
 import {FormBuilder, Validators} from "@angular/forms";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-register',
@@ -21,11 +22,15 @@ export class RegisterComponent implements OnInit {
   lastName: string;
   isValidFormSubmitted = null;
   emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";
- registerForm = this.fb.group({
-    email: ['', [Validators.email, Validators.pattern(this.emailPattern)]] });
+  registerForm = this.fb.group({
+    email: ['', [Validators.required, Validators.pattern(this.emailPattern)]]
+  });
 
-  constructor(private accountService: AccountService,private fb: FormBuilder, private router: Router) {
-    }
+  constructor(private accountService: AccountService,
+              private fb: FormBuilder,
+              private router: Router,
+              private spinner: NgxSpinnerService) {
+  }
 
   ngOnInit() {
     this.success = false;
@@ -33,30 +38,36 @@ export class RegisterComponent implements OnInit {
     this.registerForm.get('email').setValidators(Validators.email);
   }
 
-   register() {
-     // this.isValidFormSubmitted = false;
-     // if (this.registerForm.invalid) {
-     //   return;
-     // }
-        if (this.account.password !== this.confirmPassword) {
+  register() {
+    this.spinner.show();
+    this.isValidFormSubmitted = false;
+    if (this.registerForm.invalid) {
+      return;
+    }
+    if (this.account.password !== this.confirmPassword) {
       this.doNotMatch = 'ERROR';
     }
 
     else {
       this.doNotMatch = null;
       console.log(this.account);
+
       this.accountService.save(this.account).subscribe(
         () => {
           this.success = true;
+          this.spinner.hide();
           this.router.navigate(['/thankyou']);
         },
-        response => this.processError(response)
+        response => {
+          this.processError(response);
+          this.spinner.hide();
+        }
       );
     }
-     this.registerForm.reset();
+    this.registerForm.reset();
   }
 
-  get gemail() {
+  get email() {
     return this.registerForm.get('email');
   }
 
