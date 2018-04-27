@@ -56,24 +56,24 @@ export class EventComponent implements OnInit {
 
   addParticipant(name) {
 
-    // this.eventt.participants.forEach(profile => {
-    //   if (profile.login === this.currentUserLogin) {
-    //     this.alreadyHasParticipant = true;
-    //     break;
-    //   }
-    // }, this);
+    for (let profile of this.eventt.participants) {
+      if (profile.login === this.loginInput) {
+        this.alreadyHasParticipant = true;
+        break;
+      }
+    }
     console.log(name.value);
     console.log(this.loginInput);
     console.log(this.currentUserLogin);
-    if (this.currentUserLogin !== name.value) {
+    if (this.currentUserLogin !== name.value && !this.alreadyHasParticipant) {
       this.eventService.addParticipant(this.loginInput, this.eventId)
         .subscribe( participant => {
           this.eventt.participants.push(participant);
         }, error => {
-          this.showError('Participant already exists', 'Adding error');
+          this.showError('Unsuccessful participant adding', 'Adding error');
         });
     } else {
-      this.showError('Unsuccessful participant adding', 'Adding error');
+      this.showError('Participant already exists', 'Adding error');
     }
 
   }
