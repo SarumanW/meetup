@@ -21,6 +21,7 @@ public class Event {
     private boolean isDraft;
     private int folderId;
     private String imageFilepath;
+    private int ownerId;
 
     private List<User> participants;
 

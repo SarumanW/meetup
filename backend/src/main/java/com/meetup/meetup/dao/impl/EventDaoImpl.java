@@ -38,6 +38,7 @@ public class EventDaoImpl implements EventDao {
     private JdbcTemplate jdbcTemplate;
 
     private final int ownerId = 1;
+    private final int participantId = 2;
 
 
     @Override
@@ -126,7 +127,7 @@ public class EventDaoImpl implements EventDao {
         return role;
     }
 
-    private int insertUserEvent(int userId, int eventId, int roleId) {
+    private void insertUserEvent(int userId, int eventId, int roleId) {
 
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
@@ -143,8 +144,10 @@ public class EventDaoImpl implements EventDao {
             System.out.println(e.getMessage());
             throw new DatabaseWorkException();
         }
+    }
 
-        return roleId;
+    public void addParticipant(int participantId, int eventId) {
+        insertUserEvent(participantId, eventId, this.participantId);
     }
 
     @Override

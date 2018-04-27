@@ -17,4 +17,12 @@ export class EventService {
 
   }
 
+  addParticipant(login : any, eventId : number):Observable<any>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    console.log('wow');
+    return this.http.post('api/events/' + eventId + '/participant/add', login, {headers: headers});
+  }
+
 }
