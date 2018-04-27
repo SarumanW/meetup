@@ -24,6 +24,7 @@ export class EditComponent implements OnInit {
   state: string = "profile";
   errorFileFormat: string;
 
+
   constructor(private accountService: AccountService,
               private router: Router,
               private route: ActivatedRoute,
