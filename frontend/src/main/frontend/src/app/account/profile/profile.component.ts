@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {Profile} from "../profile";
 import {AccountService} from "../account.service";
 import {Router} from "@angular/router";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
  templateUrl: './profile.component.html',
@@ -15,21 +16,20 @@ export class ProfileComponent {
 
 
   constructor(private accountService: AccountService,
-              private router: Router) {
+              private spinner: NgxSpinnerService) {
+
     this.profile = new Profile();
   }
 
   ngOnInit() {
+    this.spinner.show();
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
 
       this.accountService.profile(this.profile).subscribe(
         (data) => {
+          this.spinner.hide();
           this.profile = data;
         }
       )
-  }
-
-  logout() {
-    localStorage.clear();
   }
 }

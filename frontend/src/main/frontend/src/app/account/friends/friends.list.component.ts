@@ -3,6 +3,7 @@ import {FriendService} from "./friend.service";
 import {NgForm} from "@angular/forms";
 import {Profile} from "../profile";
 import "rxjs/add/observable/timer";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'friends-list',
@@ -17,29 +18,46 @@ export class FriendsListComponent {
   unconfirmedFriends: Profile[] = [];
   message: string;
 
-  constructor(private friendService: FriendService) {}
-
-  ngOnInit(){
-    this.getInfo();
+  constructor(private friendService: FriendService,
+              private spinner: NgxSpinnerService) {
   }
 
-  getInfo(){
+  ngOnInit() {
+    this.spinner.show();
+    this.getInfo();
+    this.spinner.hide();
+  }
+
+  getInfo() {
+
     this.friendService.getFriendsRequests()
-      .subscribe((requests) => this.unconfirmedFriends = requests);
+      .subscribe((requests) => {
+        this.unconfirmedFriends = requests
+      });
     this.friendService.getFriends()
-      .subscribe((friends) => this.friends = friends);
+      .subscribe((friends) => {
+        this.friends = friends
+      });
   }
 
   addFriend(form: NgForm) {
+    this.spinner.show();
+
     this.friendService.addFriend(form.form.value.newFriendName)
       .subscribe(
-        (message) => this.message = message,
-      (error)=> {if(error.status === 200){
-        this.message = error.error.text;
-      }else{
-        this.message = error.error;
-      }
-    });
+        (message) => {
+          this.message = message
+          this.spinner.hide();
+        },
+        (error) => {
+          if (error.status === 200) {
+            this.message = error.error.text;
+          } else {
+            this.message = error.error;
+          }
+          this.spinner.hide();
+        });
+
     this.newFriendName = "";
   }
 }

@@ -30,6 +30,7 @@ import {ChangePasswordComponent} from "./account/change.password/change.password
 import {UploadFileService} from "./upload.file/upload.file.service";
 import {ToastrModule} from "ngx-toastr";
 import {ThankyouComponent} from "./account/thankyou/thankyou.component";
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import {ThankyouComponent} from "./account/thankyou/thankyou.component";
     HttpClientModule,
     AppRoutingModule,
     ToastrModule.forRoot(),
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    NgxSpinnerModule
   ],
   providers: [AccountService,
     AuthGuard,
