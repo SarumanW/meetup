@@ -90,9 +90,10 @@
 
         <div class="form-group">
           <label class="form-control-label" for="email">Email</label>
-          <input class="form-control" name="email" id="email" [ngModel]="account.email" email #email="ngModel" placeholder="Enter your email" minlength=5 maxlength=100 required>
+          <input type="email" class="form-control" name="email" id="email"  [(ngModel)]="account.email"
+                 #email="ngModel" placeholder="Enter your email" minlength=5 maxlength=100 email required [pattern]="emailPattern">
           <div *ngIf="email.dirty && email.errors && !isValidFormSubmitted">
-            <small class="form-text text-danger"  *ngIf="email.errors.email">
+            <small class="form-text text-danger"  *ngIf="email.errors.pattern">
               Your email must be in format: mail@example.com
             </small>
           </div>
@@ -149,7 +150,7 @@
             </small>
           </div>
         </div>
-        <button type="button" (click)="register()" [disabled]="registerForm.form.invalid" class="btn btn-primary">
+        <button type="button" (click)="register()" [disabled]="email.errors?.email" class="btn btn-primary">
           Register
         </button>
       </form>

@@ -22,7 +22,7 @@ export class RegisterComponent implements OnInit {
   isValidFormSubmitted = null;
   emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";
  registerForm = this.fb.group({
-    email: ['', [Validators.required, Validators.pattern(this.emailPattern)]] });
+    email: ['', [Validators.email, Validators.pattern(this.emailPattern)]] });
 
   constructor(private accountService: AccountService,private fb: FormBuilder, private router: Router) {
     }
@@ -34,10 +34,10 @@ export class RegisterComponent implements OnInit {
   }
 
    register() {
-     this.isValidFormSubmitted = false;
-     if (this.registerForm.invalid) {
-       return;
-     }
+     // this.isValidFormSubmitted = false;
+     // if (this.registerForm.invalid) {
+     //   return;
+     // }
         if (this.account.password !== this.confirmPassword) {
       this.doNotMatch = 'ERROR';
     }
@@ -56,7 +56,7 @@ export class RegisterComponent implements OnInit {
      this.registerForm.reset();
   }
 
-  get email() {
+  get gemail() {
     return this.registerForm.get('email');
   }
 
