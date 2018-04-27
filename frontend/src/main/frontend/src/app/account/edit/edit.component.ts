@@ -15,7 +15,6 @@ import {NgxSpinnerService} from "ngx-spinner";
 export class EditComponent implements OnInit {
 
   success: boolean = false;
-  wishList: string;
   error: string;
   selectedFiles: FileList;
   currentFileUpload: File;
@@ -23,6 +22,7 @@ export class EditComponent implements OnInit {
   account: Profile;
   profile: Profile;
   state: string = "profile";
+  errorFileFormat: string;
 
   constructor(private accountService: AccountService,
               private router: Router,
@@ -35,7 +35,6 @@ export class EditComponent implements OnInit {
 
   ngOnInit() {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
-
     this.route.params.subscribe(params => {
       this.account.id = params['id'];
     });
@@ -68,6 +67,14 @@ export class EditComponent implements OnInit {
 
   selectFile(event) {
     this.selectedFiles = event.target.files;
+    var filename:string = this.selectedFiles.item(0).name.toLowerCase();
+    if(!filename.endsWith(".jpg")&&
+      !filename.endsWith(".png")&&
+      !filename.endsWith(".gif")){
+      this.errorFileFormat = "Bad fromat for file "+this.selectedFiles.item(0).name;
+    } else{
+      this.errorFileFormat = null;
+    }
   }
 
   upload() {

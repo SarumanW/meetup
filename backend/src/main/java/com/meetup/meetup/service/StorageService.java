@@ -1,5 +1,6 @@
 package com.meetup.meetup.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -32,32 +33,20 @@ public class StorageService {
     @Autowired
     private UserDao userDao;
 
-    Logger log = LoggerFactory.getLogger(this.getClass().getName());
-    private Path rootLocation ;//= Paths.get(env.getProperty("profile.img.link"));
+    private Path rootLocation ;
 
-    public void store(MultipartFile file) {
+    public void store(MultipartFile file) throws Exception {
         rootLocation = Paths.get(env.getProperty("profile.img.link"));
-        try {
-            Files.createDirectory(rootLocation);
-        } catch (IOException e) {
-            System.out.println("Location exists");
-        }
         User user = authenticationFacade.getAuthentication();
-        user.setImgPath(env.getProperty("remote.img.link")+user.getId()+".jpg");
+        String inFileFormat = "."+file.getOriginalFilename().split("\\.")[1];
+        user.setImgPath(env.getProperty("remote.img.link")+user.getId()+inFileFormat);
         userDao.update(user);
         try {
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(user.getId()+".jpg"));
+            Files.deleteIfExists(this.rootLocation.resolve(user.getId()+inFileFormat));
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(user.getId()+inFileFormat));
         } catch (Exception e) {
-            throw new RuntimeException("FAIL!");
+            throw new Exception("Problems with file coping");
         }
     }
 
-    public void init() {
-        rootLocation = Paths.get(env.getProperty("profile.img.link"));
-        try {
-            Files.createDirectory(rootLocation);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not initialize storage!");
-        }
-    }
 }

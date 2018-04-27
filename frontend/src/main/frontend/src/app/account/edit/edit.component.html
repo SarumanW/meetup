@@ -29,11 +29,15 @@
             </div>
           </div>
 
+          <div class="alert alert-danger" *ngIf="errorFileFormat">
+            {{errorFileFormat}}
+          </div>
+
           <label class="btn btn-default">
             <input type="file" (change)="selectFile($event)">
           </label>
 
-          <button class="btn btn-success" (click)="upload()">Upload
+          <button class="btn btn-success" [disabled]="errorFileFormat || !selectedFiles" (click)="upload()">Upload
           </button>
         </div>
 
