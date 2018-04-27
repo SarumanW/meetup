@@ -31,12 +31,12 @@ public class EventController {
         return new ResponseEntity<>(eventService.addEvent(event), HttpStatus.CREATED);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<Event> updateEvent(@Valid @RequestBody Event event) {
         return new ResponseEntity<>(eventService.updateEvent(event), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<Event> deleteEvent(@Valid @RequestBody Event event) {
         return new ResponseEntity<>(eventService.deleteEvent(event), HttpStatus.OK);
     }

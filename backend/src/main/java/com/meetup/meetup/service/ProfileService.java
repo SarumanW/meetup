@@ -37,9 +37,9 @@ public class ProfileService {
         return userDao.getFriendsRequests(user.getId());
     }
 
-    public boolean addFriend(String userName){
+    public boolean addFriend(int friendId){
         User user = authenticationFacade.getAuthentication();
-        User friend = userDao.findByLogin(userName);
+        User friend = userDao.findById(friendId);
         return friend != null && userDao.addFriend(user.getId(), friend.getId());
     }
 
@@ -48,8 +48,8 @@ public class ProfileService {
         userDao.confirmFriend(user.getId(), friendId);
     }
 
-    public void deleteFriend(int id){
+    public void deleteFriend(int friendId){
         User user = authenticationFacade.getAuthentication();
-        userDao.deleteFriend(user.getId(), id);
+        userDao.deleteFriend(user.getId(), friendId);
     }
 }

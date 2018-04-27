@@ -29,7 +29,7 @@ public class ProfileController {
         return new ResponseEntity<>(profileService.getUser(id), HttpStatus.OK);
     }
 
-    @PostMapping("/update")
+    @PutMapping
     public ResponseEntity<String> updateProfile(@RequestBody User newUser) {
         User updatedUser = profileService.updateUser(newUser);
         if (updatedUser != null) {
@@ -43,29 +43,29 @@ public class ProfileController {
         return new ResponseEntity<>(profileService.getFriends(), HttpStatus.OK);
     }
 
-    @GetMapping("/friendsRequests")
+    @GetMapping("/friends/requests")
     public ResponseEntity<List<User>> getFriendsRequests() {
         return new ResponseEntity<>(profileService.getFriendsRequests(), HttpStatus.OK);
     }
 
-    @PostMapping("/addFriend")
-    public ResponseEntity<String> addFriend(@RequestBody String newFriend) {
-        if (profileService.addFriend(newFriend)) {
-            return new ResponseEntity<>("Successfully send request to " + newFriend, HttpStatus.OK);
+    @PostMapping("/friends/add/{friendId}")
+    public ResponseEntity<String> addFriend(@PathVariable int friendId) {
+        if (profileService.addFriend(friendId)) {
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>("User does not exist or you have already sent request", HttpStatus.EXPECTATION_FAILED);
     }
 
-    @DeleteMapping("/deleteFriend")
-    public ResponseEntity deleteFriend(@RequestBody int id) {
-        profileService.deleteFriend(id);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @PostMapping("/confirmFriend")
-    public ResponseEntity confirmFriend(@RequestBody int friendId) {
+    @PostMapping("/friends/confirm/{friendId}")
+    public ResponseEntity confirmFriend(@PathVariable int friendId) {
         profileService.confirmFriend(friendId);
         return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/friends/{friendId}")
+    public ResponseEntity deleteFriend(@PathVariable int friendId) {
+        profileService.deleteFriend(friendId);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/upload")
