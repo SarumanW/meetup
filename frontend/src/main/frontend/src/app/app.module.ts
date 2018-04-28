@@ -32,10 +32,8 @@ import {ToastrModule} from "ngx-toastr";
 import {ThankyouComponent} from "./account/thankyou/thankyou.component";
 import { NgxSpinnerModule } from 'ngx-spinner';
 import {EventListComponent} from "./events/event.list/event.list.component";
-import {Ng2TableModule, NgTableComponent} from "ng2-table";
-import {NgTableFilteringDirective, NgTablePagingDirective, NgTableSortingDirective } from 'ng2-table/ng2-table';
-import {TooltipModule} from "ng2-bootstrap";
-import {PaginationModule} from "ngx-bootstrap";
+import {Ng2TableModule} from "ng2-table";
+import {PaginationModule, TooltipModule} from "ngx-bootstrap";
 
 @NgModule({
   declarations: [
@@ -67,7 +65,6 @@ import {PaginationModule} from "ngx-bootstrap";
     NgbModule.forRoot(),
     NgxSpinnerModule,
     TooltipModule.forRoot(),
-    PaginationModule,
     Ng2TableModule,
     PaginationModule.forRoot()
   ],
