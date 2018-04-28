@@ -22,7 +22,7 @@ const routes: Routes = [
   {path: ':login/profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'recovery/:token', component: RecoveryComponent},
   {path: 'recovery', component: SendRecoveryComponent},
-  {path: ':login/edit/:id', component: EditComponent, canActivate: [AuthGuard]},
+  {path: ':login/edit', component: EditComponent, canActivate: [AuthGuard]},
   {path: ':login/friends', component: FriendsListComponent, canActivate: [AuthGuard]},
   {path: ':login/folders', component: FolderListComponent, canActivate: [AuthGuard]},
   {path: ':login/folders/:folderId', component: FolderComponent, canActivate: [AuthGuard]},
