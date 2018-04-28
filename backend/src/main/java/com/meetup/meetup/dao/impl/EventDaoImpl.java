@@ -181,10 +181,39 @@ public class EventDaoImpl implements EventDao {
         try {
             events = jdbcTemplate.query(env.getProperty("event.findByFolderId"),
                     new Object[]{folderId}, new EventRowMapper());
-            //System.out.println(events);
         } catch (DataAccessException e){
             System.out.println(e.getMessage());
         }
+
+        return events;
+    }
+
+    @Override
+    public List<Event> getDrafts(int folderId) {
+        List<Event> events = null;
+
+        try {
+            events = jdbcTemplate.query(env.getProperty("event.getDrafts"),
+                    new Object[]{folderId}, new EventRowMapper());
+        } catch (DataAccessException e){
+            System.out.println(e.getMessage());
+        }
+
+        return events;
+    }
+
+    @Override
+    public List<Event> findByType(String eventType, int folderId) {
+        List<Event> events = null;
+
+        try {
+            events = jdbcTemplate.query(env.getProperty("event.findByTypeInFolder"),
+                    new Object[]{eventType, folderId}, new EventRowMapper());
+        } catch (DataAccessException e){
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println(events);
 
         return events;
     }

@@ -1,15 +1,20 @@
 <div class="container-fluid">
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
   <div class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
     </div>
 
     <div class="col-10">
-      <div class="alert alert-danger" *ngIf="!profile.birthDay">
+      <div class="alert alert-danger" *ngIf="!profile.birthDay && loggedUser">
         Go to "Edit profile" for setting your birth day.
       </div>
 
-      <div class="alert alert-danger" *ngIf="!profile.phone">
+      <div class="alert alert-danger" *ngIf="!profile.phone && loggedUser">
         Go to "Edit profile" for setting your phone number.
       </div>
       <dl class="row py-4">
@@ -30,12 +35,9 @@
         <dt class="col-sm-3">Email</dt>
         <dd class="col-sm-9">{{profile.email}}</dd>
 
-        <a class="btn btn-primary" routerLink="/{{profile.login}}/edit/{{profile.id}}" role="button">Edit
+        <a class="btn btn-primary" *ngIf="loggedUser" routerLink="/{{profile.login}}/edit" role="button">Edit
           profile</a>
-
       </dl>
-
-
     </div>
   </div>
 </div>

@@ -29,19 +29,19 @@ export class AccountService {
       })
   }
 
-  profile(account: any):Observable<any>{
+  profile(login: string):Observable<any>{
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
     return this.http
-      .get<any>('api/profile/' + account.id, {headers: headers});
+      .get('api/profile/' + login, {headers: headers});
   }
 
   update(account:any):Observable<any>{
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.put<any>('/api/profile/update', account, {headers: headers});
+    return this.http.put('/api/profile/update', account, {headers: headers});
   }
 
   recovery(data: any):Observable<any>{

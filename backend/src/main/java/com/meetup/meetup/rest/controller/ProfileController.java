@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.List;
 
 @RestController
@@ -29,11 +28,11 @@ public class ProfileController {
         this.storageService = storageService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable int id) {
-        log.debug("Trying to get user by id '{}'", id);
+    @GetMapping("/{login}")
+    public ResponseEntity<User> getUserByLogin(@PathVariable String login) {
+        log.debug("Trying to get user by login '{}'", login);
 
-        User user = profileService.getUser(id);
+        User user = profileService.getUserByLogin(login);
 
         log.debug("Send response body user '{}' and status OK", user.toString());
 

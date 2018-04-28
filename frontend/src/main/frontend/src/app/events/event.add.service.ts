@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
-
-import { Observable } from 'rxjs/Observable';
-import {Evento} from "../events/event";
+import {Observable} from "rxjs/Observable";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Injectable()
-export class FolderService {
+export class EventAddService {
 
   constructor(private http: HttpClient) { }
 
-  getEvents(folderId : number) :  Observable<Evento[]>{
+  addEvent(event: any):Observable<any>{
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http
-      .get<any>('api/events/folder/' + folderId, {headers: headers});
+    console.log('wow');
+    return this.http.post('api/events/add', event, {headers: headers});
   }
+
 }

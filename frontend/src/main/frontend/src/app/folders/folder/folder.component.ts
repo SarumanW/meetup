@@ -5,6 +5,7 @@ import {FolderService} from "../folder.service";
 import {Evento} from "../../events/event";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Profile} from "../../account/profile";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-folder',
@@ -17,8 +18,7 @@ export class FolderComponent implements OnInit {
   state: string = "folders";
   profile: Profile;
 
-  constructor(private folderService: FolderService,
-              private route: ActivatedRoute,
+  constructor(private route: ActivatedRoute,
               private router: Router) {
 
   }
@@ -27,19 +27,13 @@ export class FolderComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.folderId = params['folderId'];
     });
-    this.getEvents();
+
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
 
-  getEvents() {
-    this.folderService.getEvents(this.folderId)
-      .subscribe(events => {
-        this.events = events;
-      })
-  }
 
-  openEvent(event: Evento) {
-    this.router.navigate(["/" + this.profile.login + "/folders/" + event.folderId + "/" + event.eventId])
+  openEventList(type : string) {
+    this.router.navigate(["/" + this.profile.login + "/folders/" + this.folderId + "/" + type])
   }
 
 }

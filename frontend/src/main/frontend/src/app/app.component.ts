@@ -38,10 +38,11 @@ export class AppComponent {
   goToProfile(){
 
     if(localStorage.currentUser){
-      this.router.navigate(['/'+JSON.parse(localStorage.currentUser).login + "profile"]);
+      this.router.navigate(['/'+JSON.parse(localStorage.currentUser).login + "/profile"]);
     } else {
       this.router.navigate(['/login']);
     }
   }
+
 
 }

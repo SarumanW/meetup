@@ -17,8 +17,8 @@ public class ProfileService {
     @Autowired
     private AuthenticationFacade authenticationFacade;
 
-    public User getUser(int id) {
-        return userDao.findById(id);
+    public User getUserByLogin(String login) {
+        return userDao.findByLogin(login);
     }
 
     public User updateUser(User newUser) {

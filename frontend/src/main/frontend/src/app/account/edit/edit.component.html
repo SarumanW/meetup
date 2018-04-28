@@ -1,4 +1,9 @@
 <div class="container-fluid">
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
   <div class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
@@ -24,18 +29,21 @@
             </div>
           </div>
 
+          <div class="alert alert-danger" *ngIf="errorFileFormat">
+            {{errorFileFormat}}
+          </div>
+
           <label class="btn btn-default">
             <input type="file" (change)="selectFile($event)">
           </label>
 
-          <button class="btn btn-success" (click)="upload()">Upload
+          <button class="btn btn-success" [disabled]="errorFileFormat || !selectedFiles" (click)="upload()">Upload
           </button>
         </div>
 
         <div class="form-group">
           <label class="form-control-label" for="birthDay">Choose the day of your birth: </label>
-          <input type="date" class="form" id="birthDay" name="birthDay" #birthDay="ngModel"
-                 [(ngModel)]="account.birthDay" placeholder="{{account.birthDay}}" (click)="formatDate()">
+          <input type="date" min="1960-12-31" max="2002-12-31" class="form" id="birthDay" name="birthDay" #birthDay="ngModel" [(ngModel)]="account.birthDay" placeholder="{{account.birthDay}}" (click)="formatDate()">
         </div>
 
         <div class="form-group">
@@ -120,8 +128,7 @@
             </small>
           </div>
         </div>
-
-        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="editForm.form.invalid">
+        <button type="button" class="btn btn-primary"  [disabled]="editForm.form.invalid" data-toggle="modal" data-target="#myModal" (click)="clickButton()">
           Save changes
         </button>
         <button type="button" class="btn btn-primary" routerLink="/{{profile.login}}/profile">
@@ -130,9 +137,15 @@
       </form>
     </div>
   </div>
-  <!--</div>-->
 </div>
 
+<div>
+<popup> Are you really want to edit your profile?
+<br/>
+  <br/>
+<button type="button" class="btn btn-primary" (click)="save()" routerLink="/profile" >yes</button>
+<button id="close_button" class="btn btn-primary" aria-label="Close" (click)="close()">no</button>
+</popup>
 
-
+</div>
 
