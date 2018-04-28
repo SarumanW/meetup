@@ -40,7 +40,7 @@ public class MailService {
                 .setVariable("link", HTTP +
                         environment.getProperty("server.domain") +
                         environment.getProperty("mail.login"))
-                .setTemplate(MailBuilder.REGISTER_MAIL_TEMPLATE)
+                .setTemplate(environment.getProperty("registerMailTemplate"))
                 .build();
         mailSender.send(messagePreparator);
     }
@@ -54,7 +54,7 @@ public class MailService {
                 .setVariable("link", HTTP +
                         environment.getProperty("server.domain") +
                         environment.getProperty("mail.recovery") + token)
-                .setTemplate(MailBuilder.RECOVERY_PASSWORD_TEMPLATE)
+                .setTemplate(environment.getProperty("recoveryPasswordTemplate"))
                 .build();
         mailSender.send(messagePreparator);
     }

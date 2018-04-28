@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {EventService} from "../event.service";
 import {ActivatedRoute} from "@angular/router";
 import {Evento} from "../event";
 import {ToastrService} from "ngx-toastr";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-event',
@@ -11,18 +12,20 @@ import {ToastrService} from "ngx-toastr";
 })
 export class EventComponent implements OnInit {
 
-  eventId : number;
-  folderId : number;
-  eventt : Evento;
-  currentUserId : number;
-  currentUserLogin : string;
-  alreadyHasParticipant : boolean;
-  loginInput : string = "";
-  state:string="folders";
+  eventId: number;
+  folderId: number;
+  eventt: Evento;
+  currentUserId: number;
+  currentUserLogin: string;
+  alreadyHasParticipant: boolean;
+  loginInput: string = "";
+  state: string = "folders";
 
-  constructor(private eventService : EventService,
+  constructor(private eventService: EventService,
               private route: ActivatedRoute,
-              private toastr: ToastrService) { }
+              private toastr: ToastrService,
+              private spinner: NgxSpinnerService) {
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -38,15 +41,18 @@ export class EventComponent implements OnInit {
   }
 
   getEvent() {
-    this.eventService.getEvent(this.eventId).
-    subscribe(eventt =>{
+    this.spinner.show();
+
+    this.eventService.getEvent(this.eventId).subscribe(eventt => {
       this.eventt = eventt;
+      this.spinner.hide();
     }, error => {
+      this.spinner.hide();
       this.showError('Unsuccessful event loading', 'Loading error');
     })
   }
 
-  showError(message : string, title: string) {
+  showError(message: string, title: string) {
     this.toastr.error(message, title, {
       timeOut: 3000,
       positionClass: 'toast-bottom-left',
@@ -67,7 +73,7 @@ export class EventComponent implements OnInit {
     console.log(this.currentUserLogin);
     if (this.currentUserLogin !== name.value && !this.alreadyHasParticipant) {
       this.eventService.addParticipant(this.loginInput, this.eventId)
-        .subscribe( participant => {
+        .subscribe(participant => {
           this.eventt.participants.push(participant);
         }, error => {
           this.showError('Unsuccessful participant adding', 'Adding error');

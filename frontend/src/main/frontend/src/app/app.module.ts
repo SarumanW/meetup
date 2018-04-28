@@ -30,6 +30,12 @@ import {ChangePasswordComponent} from "./account/change.password/change.password
 import {UploadFileService} from "./upload.file/upload.file.service";
 import {ToastrModule} from "ngx-toastr";
 import {ThankyouComponent} from "./account/thankyou/thankyou.component";
+import { NgxSpinnerModule } from 'ngx-spinner';
+import {EventListComponent} from "./events/event.list/event.list.component";
+import {Ng2TableModule, NgTableComponent} from "ng2-table";
+import {NgTableFilteringDirective, NgTablePagingDirective, NgTableSortingDirective } from 'ng2-table/ng2-table';
+import {TooltipModule} from "ng2-bootstrap";
+import {PaginationModule} from "ngx-bootstrap";
 
 @NgModule({
   declarations: [
@@ -48,7 +54,8 @@ import {ThankyouComponent} from "./account/thankyou/thankyou.component";
     FriendsListComponent,
     FriendComponent,
     ChangePasswordComponent,
-    ThankyouComponent
+    ThankyouComponent,
+    EventListComponent,
   ],
   imports: [
     ReactiveFormsModule,
@@ -57,7 +64,12 @@ import {ThankyouComponent} from "./account/thankyou/thankyou.component";
     HttpClientModule,
     AppRoutingModule,
     ToastrModule.forRoot(),
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    NgxSpinnerModule,
+    TooltipModule.forRoot(),
+    PaginationModule,
+    Ng2TableModule,
+    PaginationModule.forRoot()
   ],
   providers: [AccountService,
     AuthGuard,

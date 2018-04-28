@@ -8,7 +8,9 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+import org.springframework.core.env.Environment;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -17,15 +19,17 @@ import java.util.Date;
 
 import static java.time.ZoneOffset.UTC;
 
+
+@PropertySource("classpath:image.properties")
+@PropertySource("classpath:jwt.properties")
 @Component
 public class JwtService {
 
-    private static final String SUBJECT = "meetup";
+    @Autowired
+    Environment env;
 
-    private static final String ISSUER = "com.meetup";
 
-    private static final String LOGIN = "login";
-    private static final String EMAIL = "email";
+
 
     private final SecretKeyProvider secretKeyProvider;
     private final UserDao userDao;
@@ -39,23 +43,23 @@ public class JwtService {
     public User verify(String token) throws IOException, URISyntaxException {
         byte[] secretKey = secretKeyProvider.getKey();
         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-        return userDao.findByLogin(claims.getBody().get(LOGIN).toString());
+        return userDao.findByLogin(claims.getBody().get(env.getProperty("jwt.login")).toString());
     }
 
     public User verifyForRecoveryPassword(String token) throws IOException, URISyntaxException {
         byte[] secretKey = secretKeyProvider.getKey();
         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-        return userDao.findByEmail(claims.getBody().get(EMAIL).toString());
+        return userDao.findByEmail(claims.getBody().get(env.getProperty("jwt.email")).toString());
     }
 
     public String tokenFor(User user) throws IOException, URISyntaxException {
         byte[] secretKey = secretKeyProvider.getKey();
         Date expiration = Date.from(LocalDateTime.now(UTC).plusDays(365).toInstant(UTC));
         return Jwts.builder()
-                .setSubject(SUBJECT)
+                .setSubject(env.getProperty("jwt.subject"))
                 .setExpiration(expiration)
-                .setIssuer(ISSUER)
-                .claim(LOGIN, user.getLogin())
+                .setIssuer(env.getProperty("jwt.issuer"))
+                .claim(env.getProperty("jwt.login"), user.getLogin())
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
@@ -64,10 +68,10 @@ public class JwtService {
         byte[] secretKey = secretKeyProvider.getKey();
         Date expiration = Date.from(LocalDateTime.now(UTC).plusMinutes(5).toInstant(UTC));
         return Jwts.builder()
-                .setSubject(SUBJECT)
+                .setSubject(env.getProperty("jwt.subject"))
                 .setExpiration(expiration)
-                .setIssuer(ISSUER)
-                .claim(EMAIL, user.getEmail())
+                .setIssuer(env.getProperty("jwt.issuer"))
+                .claim(env.getProperty("jwt.email"), user.getEmail())
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }

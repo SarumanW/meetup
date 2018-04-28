@@ -4,6 +4,7 @@ import {AccountService} from "../account.service";
 import {Profile} from "../profile";
 import {ActivatedRoute, Router} from "@angular/router"
 import {UploadFileService} from "../../upload.file/upload.file.service";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'edit',
@@ -14,7 +15,6 @@ import {UploadFileService} from "../../upload.file/upload.file.service";
 export class EditComponent implements OnInit {
 
   success: boolean = false;
-  wishList: string;
   error: string;
   selectedFiles: FileList;
   currentFileUpload: File;
@@ -22,16 +22,20 @@ export class EditComponent implements OnInit {
   account: Profile;
   profile: Profile;
   state: string = "profile";
+  errorFileFormat: string;
+
 
   constructor(private accountService: AccountService,
-              private router: Router, private route: ActivatedRoute,
-              private  http: HttpClient, private uploadService: UploadFileService) {
+              private router: Router,
+              private route: ActivatedRoute,
+              private uploadService: UploadFileService,
+              private spinner: NgxSpinnerService) {
+
     this.account = new Profile();
   }
 
   ngOnInit() {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
-
     this.route.params.subscribe(params => {
       this.account.id = params['id'];
     });
@@ -46,19 +50,32 @@ export class EditComponent implements OnInit {
   }
 
   save(){
+    this.spinner.show();
 
     this.accountService.update(this.account).subscribe(
       () => {
         this.success = true;
+        this.spinner.hide();
         this.router.navigate(
           [JSON.parse(localStorage.currentUser).id + '/profile']);
       },
-      response => this.processError(response)
+      response => {
+        this.spinner.hide();
+        this.processError(response)
+      }
     );
   }
 
   selectFile(event) {
     this.selectedFiles = event.target.files;
+    var filename:string = this.selectedFiles.item(0).name.toLowerCase();
+    if(!filename.endsWith(".jpg")&&
+      !filename.endsWith(".png")&&
+      !filename.endsWith(".gif")){
+      this.errorFileFormat = "Bad fromat for file "+this.selectedFiles.item(0).name;
+    } else{
+      this.errorFileFormat = null;
+    }
   }
 
   upload() {
