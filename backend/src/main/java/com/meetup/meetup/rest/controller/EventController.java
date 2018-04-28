@@ -91,4 +91,19 @@ public class EventController {
     public ResponseEntity<List<Event>> getDrafts(@PathVariable int folderId) {
         return new ResponseEntity<>(eventService.getDrafts(folderId), HttpStatus.OK);
     }
+
+    @PostMapping("/{eventId}/participant/add")
+    public ResponseEntity<User> addParticipant(@PathVariable int eventId, @RequestBody String login) {
+        return new ResponseEntity<>(eventService.addParticipant(eventId, login), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{folderId}/getByType/{eventType}")
+    public ResponseEntity<List<Event>> getByType(@PathVariable String eventType, @PathVariable int folderId) {
+        return new ResponseEntity<>(eventService.getEventsByType(eventType, folderId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{folderId}/drafts")
+    public ResponseEntity<List<Event>> getDrafts(@PathVariable int folderId) {
+        return new ResponseEntity<>(eventService.getDrafts(folderId), HttpStatus.OK);
+    }
 }
