@@ -28,7 +28,11 @@ export class EventListComponent implements OnInit {
   columns: Array<any> = [
     {title: 'EventId', name: 'eventId', sort: 'asc'},
     {title: 'Name', name: 'name', filtering: {filterString: '', placeholder: 'Filter by name'}},
-    {title: 'Description', name: 'description', filtering: {filterString: '', placeholder: 'Filter by desc'}}
+    {title: 'Date', name: 'eventDate',
+      filtering: {filterString: '', placeholder: 'Filter by date'}},
+    {title: 'Description', name: 'description', filtering: {filterString: '', placeholder: 'Filter by description'}},
+    {title: 'Place', name: 'place', filtering: {filterString: '', placeholder: 'Filter by place'}},
+    {title: 'Periodicity', name: 'periodicity', filtering: {filterString: '', placeholder: 'Filter by periodicity'}},
   ];
 
   config: any = {
@@ -120,7 +124,7 @@ export class EventListComponent implements OnInit {
     this.columns.forEach((column: any) => {
       if (column.filtering) {
         filteredData = filteredData.filter((item: any) => {
-          return item[column.name].match(column.filtering.filterString);
+            return item[column.name].match(column.filtering.filterString);
         });
       }
     });
@@ -138,11 +142,12 @@ export class EventListComponent implements OnInit {
     filteredData.forEach((item: any) => {
       let flag = false;
 
-      this.columns.forEach((column: any) => {
-        if (item[column.name].toString().match(this.config.filtering.filterString)) {
-          flag = true;
-        }
-      });
+        this.columns.forEach((column: any) => {
+          if (item[column.name].toString().match(this.config.filtering.filterString)) {
+            flag = true;
+          }
+        });
+
 
       if (flag) {
         tempArray.push(item);
@@ -169,7 +174,8 @@ export class EventListComponent implements OnInit {
   }
 
   public onCellClick(data: any): any {
-    console.log(data);
+    console.log(data.row);
+    this.openEvent(data.row);
   }
 
 }
