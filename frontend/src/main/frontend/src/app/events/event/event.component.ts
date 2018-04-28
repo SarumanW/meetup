@@ -73,11 +73,15 @@ export class EventComponent implements OnInit {
 
     this.alreadyHasParticipant = false;
 
-    for (let profile of this.eventt.participants) {
-      if (profile.login === this.loginInput) {
-        this.alreadyHasParticipant = true;
-        break;
+    if (this.eventt.participants !== null) {
+      for (let profile of this.eventt.participants) {
+        if (profile.login === this.loginInput) {
+          this.alreadyHasParticipant = true;
+          break;
+        }
       }
+    } else {
+      this.eventt.participants = [];
     }
 
     if (this.currentUserLogin !== name.value && !this.alreadyHasParticipant) {
