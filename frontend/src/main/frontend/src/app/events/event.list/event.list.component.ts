@@ -5,6 +5,8 @@ import {Profile} from "../../account/profile";
 import {NgxSpinnerService} from "ngx-spinner";
 import {FolderService} from "../../folders/folder.service";
 import {EventService} from "../event.service";
+import {EVENT_COLUMNS} from "./config/event.columns";
+import {NOTE_COLUMNS} from "./config/note.columns";
 
 
 @Component({
@@ -26,17 +28,7 @@ export class EventListComponent implements OnInit {
   length: number = 0;
 
   rows: Array<any> = [];
-  columns: Array<any> = [
-    {title: 'EventId', name: 'eventId', sort: 'asc'},
-    {title: 'Name', name: 'name', filtering: {filterString: '', placeholder: 'Filter by name'}},
-    {
-      title: 'Date', name: 'eventDate',
-      filtering: {filterString: '', placeholder: 'Filter by date'}
-    },
-    {title: 'Description', name: 'description', filtering: {filterString: '', placeholder: 'Filter by description'}},
-    {title: 'Place', name: 'place', filtering: {filterString: '', placeholder: 'Filter by place'}},
-    {title: 'Periodicity', name: 'periodicity', filtering: {filterString: '', placeholder: 'Filter by periodicity'}},
-  ];
+  columns: Array<any> = [];
 
   config: any = {
     paging: true,
@@ -74,18 +66,22 @@ export class EventListComponent implements OnInit {
     switch (this.eventType) {
       case 'public': {
         type = 'EVENT';
+        this.columns = EVENT_COLUMNS;
         break;
       }
       case 'private': {
         type = 'PRIVATE_EVENT';
+        this.columns = EVENT_COLUMNS;
         break;
       }
       case 'drafts': {
         type = 'DRAFT';
+        this.columns = EVENT_COLUMNS;
         break;
       }
       case 'notes': {
         type = 'NOTE';
+        this.columns = NOTE_COLUMNS;
         break;
       }
     }
@@ -117,13 +113,13 @@ export class EventListComponent implements OnInit {
     event.folderId + "/" + this.eventType + "/" + event.eventId])
   }
 
-  public changePage(page: any, data: Array<any> = this.events): Array<any> {
+  changePage(page: any, data: Array<any> = this.events): Array<any> {
     let start = (page.page - 1) * page.itemsPerPage;
     let end = page.itemsPerPage > -1 ? (start + page.itemsPerPage) : data.length;
     return data.slice(start, end);
   }
 
-  public changeSort(data: any, config: any): any {
+  changeSort(data: any, config: any): any {
     if (!config.sorting) {
       return data;
     }
@@ -153,7 +149,7 @@ export class EventListComponent implements OnInit {
     });
   }
 
-  public changeFilter(data: any, config: any): any {
+  changeFilter(data: any, config: any): any {
     let filteredData: Array<any> = data;
 
     this.columns.forEach((column: any) => {
@@ -193,7 +189,7 @@ export class EventListComponent implements OnInit {
     return filteredData;
   }
 
-  public onChangeTable(config: any, page: any = {page: this.page, itemsPerPage: this.itemsPerPage}): any {
+  onChangeTable(config: any, page: any = {page: this.page, itemsPerPage: this.itemsPerPage}): any {
     if (config.filtering) {
       Object.assign(this.config.filtering, config.filtering);
     }
@@ -208,8 +204,7 @@ export class EventListComponent implements OnInit {
     this.length = sortedData.length;
   }
 
-  public onCellClick(data: any): any {
-    console.log(data.row);
+  onCellClick(data: any): any {
     this.openEvent(data.row);
   }
 
