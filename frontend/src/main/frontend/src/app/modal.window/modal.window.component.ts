@@ -1,9 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
-import {Folder} from "../folders/folder";
-import {FolderService} from "../folders/folder.service";
-import {Evento} from "../events/event";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Component, OnInit} from "@angular/core";
 
 @Component({
   selector: 'app-modal-window',

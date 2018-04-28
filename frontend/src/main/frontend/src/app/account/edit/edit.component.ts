@@ -5,6 +5,8 @@ import {Profile} from "../profile";
 import {ActivatedRoute, Router} from "@angular/router"
 import {UploadFileService} from "../../upload.file/upload.file.service";
 import {NgxSpinnerService} from "ngx-spinner";
+import {Popup} from "ng2-opd-popup";
+
 
 @Component({
   selector: 'edit',
@@ -23,15 +25,24 @@ export class EditComponent implements OnInit {
   profile: Profile;
   state: string = "profile";
   errorFileFormat: string;
+  private showModal: boolean;
 
 
   constructor(private accountService: AccountService,
               private router: Router,
               private route: ActivatedRoute,
               private uploadService: UploadFileService,
-              private spinner: NgxSpinnerService) {
+              private spinner: NgxSpinnerService,
+              private popup: Popup) {
 
     this.account = new Profile();
+  }
+
+  clickButton(){
+    this.popup.show();
+  }
+  close(){
+    this.popup.hide();
   }
 
   ngOnInit() {
@@ -102,10 +113,11 @@ export class EditComponent implements OnInit {
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
-      this.error = 'ERROR';
+    this.error = 'ERROR';
   }
 
   changeWishList() {
 
   }
+
 }
