@@ -1,5 +1,5 @@
 <div class="friend-info">
-  <button type="button"
+  <button type="button" routerLink="/{{user.login}}/profile"
           class="list-group-item list-group-item-action"
           [ngClass]="{'list-group-item-primary': confirmed,
                       'list-group-item-warning' : !confirmed}">

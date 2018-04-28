@@ -5,6 +5,8 @@ import {Profile} from "../profile";
 import {ActivatedRoute, Router} from "@angular/router"
 import {UploadFileService} from "../../upload.file/upload.file.service";
 import {NgxSpinnerService} from "ngx-spinner";
+import {Popup} from "ng2-opd-popup";
+
 
 @Component({
   selector: 'edit',
@@ -18,48 +20,63 @@ export class EditComponent implements OnInit {
   error: string;
   selectedFiles: FileList;
   currentFileUpload: File;
-  progress: { percentage: number } = { percentage: 0 };
+  progress: { percentage: number } = {percentage: 0};
   account: Profile;
   profile: Profile;
   state: string = "profile";
   errorFileFormat: string;
+  private showModal: boolean;
 
 
   constructor(private accountService: AccountService,
               private router: Router,
               private route: ActivatedRoute,
               private uploadService: UploadFileService,
-              private spinner: NgxSpinnerService) {
+              private spinner: NgxSpinnerService,
+              private popup: Popup) {
 
     this.account = new Profile();
+  }
+
+  clickButton(){
+    this.popup.show();
+  }
+  close(){
+    this.popup.hide();
   }
 
   ngOnInit() {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
     this.route.params.subscribe(params => {
-      this.account.id = params['id'];
+      this.account.login = params['login'];
     });
 
-    this.accountService.profile(this.account).subscribe(
+    this.accountService.profile(this.account.login).subscribe(
       (data) => {
         this.account = data;
       }
     );
-
-    console.log(this.account);
   }
 
-  save(){
+  save() {
     this.spinner.show();
 
     this.accountService.update(this.account).subscribe(
       () => {
         this.success = true;
         this.spinner.hide();
-        this.router.navigate(
-          [JSON.parse(localStorage.currentUser).id + '/profile']);
       },
       response => {
+        if (response.status === 200) {
+          if (JSON.parse(localStorage.currentUser).login != this.account.login) {
+            let profile = JSON.parse(localStorage.currentUser);
+            profile.login = this.account.login;
+            localStorage.setItem('currentUser', JSON.stringify(profile));
+          }
+
+          this.router.navigate(
+            [JSON.parse(localStorage.currentUser).login + '/profile']);
+        }
         this.spinner.hide();
         this.processError(response)
       }
@@ -68,12 +85,12 @@ export class EditComponent implements OnInit {
 
   selectFile(event) {
     this.selectedFiles = event.target.files;
-    var filename:string = this.selectedFiles.item(0).name.toLowerCase();
-    if(!filename.endsWith(".jpg")&&
-      !filename.endsWith(".png")&&
-      !filename.endsWith(".gif")){
-      this.errorFileFormat = "Bad fromat for file "+this.selectedFiles.item(0).name;
-    } else{
+    var filename: string = this.selectedFiles.item(0).name.toLowerCase();
+    if (!filename.endsWith(".jpg") &&
+      !filename.endsWith(".png") &&
+      !filename.endsWith(".gif")) {
+      this.errorFileFormat = "Bad fromat for file " + this.selectedFiles.item(0).name;
+    } else {
       this.errorFileFormat = null;
     }
   }
@@ -102,10 +119,11 @@ export class EditComponent implements OnInit {
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
-      this.error = 'ERROR';
+    this.error = 'ERROR';
   }
 
   changeWishList() {
 
   }
+
 }

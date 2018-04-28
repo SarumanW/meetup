@@ -4,6 +4,7 @@ import {Evento} from "../event";
 import {Profile} from "../../account/profile";
 import {NgxSpinnerService} from "ngx-spinner";
 import {FolderService} from "../../folders/folder.service";
+import {EventService} from "../event.service";
 
 
 @Component({
@@ -28,7 +29,11 @@ export class EventListComponent implements OnInit {
   columns: Array<any> = [
     {title: 'EventId', name: 'eventId', sort: 'asc'},
     {title: 'Name', name: 'name', filtering: {filterString: '', placeholder: 'Filter by name'}},
-    {title: 'Description', name: 'description', filtering: {filterString: '', placeholder: 'Filter by desc'}}
+    {title: 'Date', name: 'eventDate',
+      filtering: {filterString: '', placeholder: 'Filter by date'}},
+    {title: 'Description', name: 'description', filtering: {filterString: '', placeholder: 'Filter by description'}},
+    {title: 'Place', name: 'place', filtering: {filterString: '', placeholder: 'Filter by place'}},
+    {title: 'Periodicity', name: 'periodicity', filtering: {filterString: '', placeholder: 'Filter by periodicity'}},
   ];
 
   config: any = {
@@ -39,6 +44,7 @@ export class EventListComponent implements OnInit {
   };
 
   constructor(private folderService: FolderService,
+              private eventService: EventService,
               private route: ActivatedRoute,
               private router: Router,
               private spinner: NgxSpinnerService) {
@@ -54,15 +60,49 @@ export class EventListComponent implements OnInit {
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
 
-    this.getEvents();
+    this.getEventsByType();
 
     this.onChangeTable(this.config);
   }
 
-  getEvents() {
-    this.spinner.show();
+  // getEvents() {
+  //   this.spinner.show();
+  //
+  //   this.folderService.getEvents(this.folderId)
+  //     .subscribe(events => {
+  //
+  //       this.events = events;
+  //       this.length = this.events.length;
+  //       this.onChangeTable(this.config);
+  //
+  //       this.spinner.hide();
+  //     })
+  // }
 
-    this.folderService.getEvents(this.folderId)
+  getEventsByType() {
+    this.spinner.show();
+    let type: string;
+
+    switch(this.eventType){
+      case 'public':{
+        type = 'EVENT';
+        break;
+      }
+      case 'private':{
+        type = 'EVENT';
+        break;
+      }
+      case 'draft':{
+        type = 'EVENT';
+        break;
+      }
+      case 'note':{
+        type = 'NOTE';
+        break;
+      }
+    }
+
+    this.eventService.getEventsByType(type, this.folderId)
       .subscribe(events => {
 
         this.events = events;
@@ -120,7 +160,7 @@ export class EventListComponent implements OnInit {
     this.columns.forEach((column: any) => {
       if (column.filtering) {
         filteredData = filteredData.filter((item: any) => {
-          return item[column.name].match(column.filtering.filterString);
+            return item[column.name].match(column.filtering.filterString);
         });
       }
     });
@@ -138,11 +178,12 @@ export class EventListComponent implements OnInit {
     filteredData.forEach((item: any) => {
       let flag = false;
 
-      this.columns.forEach((column: any) => {
-        if (item[column.name].toString().match(this.config.filtering.filterString)) {
-          flag = true;
-        }
-      });
+        this.columns.forEach((column: any) => {
+          if (item[column.name].toString().match(this.config.filtering.filterString)) {
+            flag = true;
+          }
+        });
+
 
       if (flag) {
         tempArray.push(item);
@@ -169,7 +210,8 @@ export class EventListComponent implements OnInit {
   }
 
   public onCellClick(data: any): any {
-    console.log(data);
+    console.log(data.row);
+    this.openEvent(data.row);
   }
 
 }

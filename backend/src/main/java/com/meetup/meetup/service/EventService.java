@@ -35,6 +35,10 @@ public class EventService {
         return event;
     }
 
+    public List<Event> getEventsByType(String eventType, int folderID) {
+        return eventDao.findByType(eventType, folderID);
+    }
+
     public List<Event> getFolderEvents(int folderId) {
         return eventDao.findByFolderId(folderId);
     }
