@@ -24,12 +24,14 @@ export class EventListComponent implements OnInit {
   numPages: number = 1;
   length: number = 0;
 
-  public rows: Array<any> = [];
-  public columns: Array<any> = [
-    {title: 'Name', name: 'name', filtering: {filterString: '', placeholder: 'Filter by name'}}
+  rows: Array<any> = [];
+  columns: Array<any> = [
+    {title: 'EventId', name: 'eventId', sort: 'asc'},
+    {title: 'Name', name: 'name', filtering: {filterString: '', placeholder: 'Filter by name'}},
+    {title: 'Description', name: 'description', filtering: {filterString: '', placeholder: 'Filter by desc'}}
   ];
 
-  public config: any = {
+  config: any = {
     paging: true,
     sorting: {columns: this.columns},
     filtering: {filterString: ''},
@@ -53,6 +55,8 @@ export class EventListComponent implements OnInit {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
 
     this.getEvents();
+
+    this.onChangeTable(this.config);
   }
 
   getEvents() {
@@ -133,11 +137,13 @@ export class EventListComponent implements OnInit {
     let tempArray: Array<any> = [];
     filteredData.forEach((item: any) => {
       let flag = false;
+
       this.columns.forEach((column: any) => {
         if (item[column.name].toString().match(this.config.filtering.filterString)) {
           flag = true;
         }
       });
+
       if (flag) {
         tempArray.push(item);
       }
