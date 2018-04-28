@@ -128,8 +128,7 @@
             </small>
           </div>
         </div>
-
-        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="editForm.form.invalid">
+        <button type="button" class="btn btn-primary"  [disabled]="editForm.form.invalid" data-toggle="modal" data-target="#myModal" (click)="clickButton()">
           Save changes
         </button>
         <button type="button" class="btn btn-primary" routerLink="/{{profile.login}}/profile">
@@ -140,6 +139,13 @@
   </div>
 </div>
 
+<div>
+<popup> Are you really want to edit your profile?
+<br/>
+  <br/>
+<button type="button" class="btn btn-primary" (click)="save()" routerLink="/profile" >yes</button>
+<button id="close_button" class="btn btn-primary" aria-label="Close" (click)="close()">no</button>
+</popup>
 
-
+</div>
 

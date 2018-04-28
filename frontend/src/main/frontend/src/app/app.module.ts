@@ -33,7 +33,9 @@ import {ThankyouComponent} from "./account/thankyou/thankyou.component";
 import { NgxSpinnerModule } from 'ngx-spinner';
 import {EventListComponent} from "./events/event.list/event.list.component";
 import {Ng2TableModule} from "ng2-table";
-import {PaginationModule, TooltipModule} from "ngx-bootstrap";
+import {TooltipModule, PaginationModule} from "ngx-bootstrap";
+import {PopupModule} from "ng2-opd-popup";
+
 
 @NgModule({
   declarations: [
@@ -66,7 +68,8 @@ import {PaginationModule, TooltipModule} from "ngx-bootstrap";
     NgxSpinnerModule,
     TooltipModule.forRoot(),
     Ng2TableModule,
-    PaginationModule.forRoot()
+    PaginationModule.forRoot(),
+    PopupModule.forRoot(),
   ],
   providers: [AccountService,
     AuthGuard,
