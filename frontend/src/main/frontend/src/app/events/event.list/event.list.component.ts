@@ -4,6 +4,7 @@ import {Evento} from "../event";
 import {Profile} from "../../account/profile";
 import {NgxSpinnerService} from "ngx-spinner";
 import {FolderService} from "../../folders/folder.service";
+import {EventService} from "../event.service";
 
 
 @Component({
@@ -43,6 +44,7 @@ export class EventListComponent implements OnInit {
   };
 
   constructor(private folderService: FolderService,
+              private eventService: EventService,
               private route: ActivatedRoute,
               private router: Router,
               private spinner: NgxSpinnerService) {
@@ -58,15 +60,49 @@ export class EventListComponent implements OnInit {
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
 
-    this.getEvents();
+    this.getEventsByType();
 
     this.onChangeTable(this.config);
   }
 
-  getEvents() {
-    this.spinner.show();
+  // getEvents() {
+  //   this.spinner.show();
+  //
+  //   this.folderService.getEvents(this.folderId)
+  //     .subscribe(events => {
+  //
+  //       this.events = events;
+  //       this.length = this.events.length;
+  //       this.onChangeTable(this.config);
+  //
+  //       this.spinner.hide();
+  //     })
+  // }
 
-    this.folderService.getEvents(this.folderId)
+  getEventsByType() {
+    this.spinner.show();
+    let type: string;
+
+    switch(this.eventType){
+      case 'public':{
+        type = 'EVENT';
+        break;
+      }
+      case 'private':{
+        type = 'EVENT';
+        break;
+      }
+      case 'draft':{
+        type = 'EVENT';
+        break;
+      }
+      case 'note':{
+        type = 'NOTE';
+        break;
+      }
+    }
+
+    this.eventService.getEventsByType(type, this.folderId)
       .subscribe(events => {
 
         this.events = events;

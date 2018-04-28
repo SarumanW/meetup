@@ -46,4 +46,9 @@ public class EventController {
     public ResponseEntity<User> addParticipant(@PathVariable int eventId, @RequestBody String login) {
         return new ResponseEntity<>(eventService.addParticipant(eventId, login), HttpStatus.CREATED);
     }
+
+    @GetMapping("/{folderId}/getByType/{eventType}")
+    public ResponseEntity<List<Event>> getByType(@PathVariable String eventType, @PathVariable int folderId) {
+        return new ResponseEntity<>(eventService.getEventsByType(eventType, folderId), HttpStatus.OK);
+    }
 }
