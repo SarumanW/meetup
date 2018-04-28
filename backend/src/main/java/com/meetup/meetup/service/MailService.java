@@ -2,6 +2,8 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.service.mail.MailBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -15,6 +17,8 @@ import org.thymeleaf.TemplateEngine;
 @Service
 @PropertySource("classpath:links.properties")
 public class MailService {
+
+    private static Logger log = LoggerFactory.getLogger(MailService.class);
 
     private static final String HTTP = "http://";
 
@@ -32,6 +36,8 @@ public class MailService {
 
     @Async
     public void sendMailRegistration(User user) throws MailException {
+        log.debug("Trying to build message");
+
         MimeMessagePreparator messagePreparator = new MailBuilder(templateEngine)
                 .setTo(user.getEmail())
                 .setSubject("Meetup successful registration")
@@ -42,11 +48,17 @@ public class MailService {
                         environment.getProperty("mail.login"))
                 .setTemplate(MailBuilder.REGISTER_MAIL_TEMPLATE)
                 .build();
+        log.debug("Trying to send message");
+
         mailSender.send(messagePreparator);
+
+        log.debug("Mail was sent successfully");
     }
 
     @Async
     public void sendMailRecoveryPassword(User user, String token) throws MailException {
+        log.debug("Trying to build message");
+
         MimeMessagePreparator messagePreparator = new MailBuilder(templateEngine)
                 .setTo(user.getEmail())
                 .setSubject("Password recovery")
@@ -56,6 +68,10 @@ public class MailService {
                         environment.getProperty("mail.recovery") + token)
                 .setTemplate(MailBuilder.RECOVERY_PASSWORD_TEMPLATE)
                 .build();
+        log.debug("Trying to send message");
+
         mailSender.send(messagePreparator);
+
+        log.debug("Mail was sent successfully");
     }
 }

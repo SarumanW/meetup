@@ -1,5 +1,8 @@
 package com.meetup.meetup.security.jwt;
 
+import com.meetup.meetup.exception.SecretKeyNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -9,7 +12,23 @@ import java.nio.file.Paths;
 
 @Component
 public class SecretKeyProvider {
-    public byte[] getKey() throws URISyntaxException, IOException {
-        return Files.readAllBytes(Paths.get(this.getClass().getResource("/jwt.key").toURI()));
+
+    private static Logger log = LoggerFactory.getLogger(SecretKeyProvider.class);
+
+    public byte[] getKey() throws Exception {
+        log.debug("Trying to get secret key");
+        try {
+
+            byte[] secretKey = Files.readAllBytes(Paths.get(this.getClass().getResource("/jwt.key").toURI()));
+
+            log.debug("Found secret key");
+
+            return secretKey;
+        } catch (URISyntaxException | IOException e) {
+            log.error("Secret key is not available");
+
+            e.printStackTrace();
+            throw new SecretKeyNotFoundException("System cannot get secret key from file");
+        }
     }
 }
