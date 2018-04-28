@@ -33,7 +33,10 @@ import {ThankyouComponent} from "./account/thankyou/thankyou.component";
 import { NgxSpinnerModule } from 'ngx-spinner';
 import {EventListComponent} from "./events/event.list/event.list.component";
 import {Ng2TableModule} from "ng2-table";
-import {PaginationModule, TooltipModule} from "ngx-bootstrap";
+import {TooltipModule, PaginationModule} from "ngx-bootstrap";
+import {PopupModule} from "ng2-opd-popup";
+import {EventAddComponent} from './events/event.add/event.add.component';
+import {EventAddService} from "./events/event.add.service";
 
 @NgModule({
   declarations: [
@@ -54,6 +57,7 @@ import {PaginationModule, TooltipModule} from "ngx-bootstrap";
     ChangePasswordComponent,
     ThankyouComponent,
     EventListComponent,
+    EventAddComponent,
   ],
   imports: [
     ReactiveFormsModule,
@@ -66,7 +70,8 @@ import {PaginationModule, TooltipModule} from "ngx-bootstrap";
     NgxSpinnerModule,
     TooltipModule.forRoot(),
     Ng2TableModule,
-    PaginationModule.forRoot()
+    PaginationModule.forRoot(),
+    PopupModule.forRoot(),
   ],
   providers: [AccountService,
     AuthGuard,
@@ -74,7 +79,8 @@ import {PaginationModule, TooltipModule} from "ngx-bootstrap";
     FolderService,
     EventService,
     FriendService,
-    UploadFileService],
+    UploadFileService,
+    EventAddService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

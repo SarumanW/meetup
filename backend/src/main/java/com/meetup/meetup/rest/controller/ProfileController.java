@@ -24,12 +24,12 @@ public class ProfileController {
         this.storageService = storageService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable int id) {
-        return new ResponseEntity<>(profileService.getUser(id), HttpStatus.OK);
+    @GetMapping("/{login}")
+    public ResponseEntity<User> getUserByLogin(@PathVariable String login) {
+        return new ResponseEntity<>(profileService.getUserByLogin(login), HttpStatus.OK);
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<String> updateProfile(@RequestBody User newUser) {
         User updatedUser = profileService.updateUser(newUser);
         if (updatedUser != null) {

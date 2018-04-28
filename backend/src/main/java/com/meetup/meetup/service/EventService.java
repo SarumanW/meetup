@@ -49,7 +49,8 @@ public class EventService {
 
     public Event addEvent(Event event) {
         // TODO: 22.04.2018 Check permission
-        return eventDao.insert(event);
+        User user = authenticationFacade.getAuthentication();
+        return eventDao.createEvent(event, user.getId());
     }
 
     public Event updateEvent(Event event) {
