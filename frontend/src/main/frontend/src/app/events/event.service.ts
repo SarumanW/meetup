@@ -32,4 +32,11 @@ export class EventService {
     return this.http.get('api/events/' + folderId + '/getByType/' + eventType, {headers: headers});
   }
 
+  getDrafts(folderId: number): Observable<any> {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.get('api/events/' + folderId + '/drafts', {headers: headers});
+  }
+
 }

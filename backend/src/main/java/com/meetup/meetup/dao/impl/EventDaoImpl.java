@@ -189,6 +189,20 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
+    public List<Event> getDrafts(int folderId) {
+        List<Event> events = null;
+
+        try {
+            events = jdbcTemplate.query(env.getProperty("event.getDrafts"),
+                    new Object[]{folderId}, new EventRowMapper());
+        } catch (DataAccessException e){
+            System.out.println(e.getMessage());
+        }
+
+        return events;
+    }
+
+    @Override
     public List<Event> findByType(String eventType, int folderId) {
         List<Event> events = null;
 

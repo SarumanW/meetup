@@ -43,6 +43,10 @@ public class EventService {
         return eventDao.findByFolderId(folderId);
     }
 
+    public List<Event> getDrafts(int folderId) {
+        return eventDao.getDrafts(folderId);
+    }
+
     public Event addEvent(Event event) {
         // TODO: 22.04.2018 Check permission
         return eventDao.insert(event);

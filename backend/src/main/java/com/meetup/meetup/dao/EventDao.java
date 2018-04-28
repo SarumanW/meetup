@@ -12,6 +12,8 @@ public interface EventDao extends Dao<Event> {
 
     List<Event> findByFolderId(int folderId);
 
+    List<Event> getDrafts(int folderId);
+
     List<Event> findByType(String eventType, int folderId);
 
     List<User> getParticipants(Event event);

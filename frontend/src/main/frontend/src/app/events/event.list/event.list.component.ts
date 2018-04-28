@@ -29,8 +29,10 @@ export class EventListComponent implements OnInit {
   columns: Array<any> = [
     {title: 'EventId', name: 'eventId', sort: 'asc'},
     {title: 'Name', name: 'name', filtering: {filterString: '', placeholder: 'Filter by name'}},
-    {title: 'Date', name: 'eventDate',
-      filtering: {filterString: '', placeholder: 'Filter by date'}},
+    {
+      title: 'Date', name: 'eventDate',
+      filtering: {filterString: '', placeholder: 'Filter by date'}
+    },
     {title: 'Description', name: 'description', filtering: {filterString: '', placeholder: 'Filter by description'}},
     {title: 'Place', name: 'place', filtering: {filterString: '', placeholder: 'Filter by place'}},
     {title: 'Periodicity', name: 'periodicity', filtering: {filterString: '', placeholder: 'Filter by periodicity'}},
@@ -65,52 +67,49 @@ export class EventListComponent implements OnInit {
     this.onChangeTable(this.config);
   }
 
-  // getEvents() {
-  //   this.spinner.show();
-  //
-  //   this.folderService.getEvents(this.folderId)
-  //     .subscribe(events => {
-  //
-  //       this.events = events;
-  //       this.length = this.events.length;
-  //       this.onChangeTable(this.config);
-  //
-  //       this.spinner.hide();
-  //     })
-  // }
-
   getEventsByType() {
     this.spinner.show();
     let type: string;
 
-    switch(this.eventType){
-      case 'public':{
+    switch (this.eventType) {
+      case 'public': {
         type = 'EVENT';
         break;
       }
-      case 'private':{
-        type = 'EVENT';
+      case 'private': {
+        type = 'PRIVATE_EVENT';
         break;
       }
-      case 'draft':{
-        type = 'EVENT';
+      case 'drafts': {
+        type = 'DRAFT';
         break;
       }
-      case 'note':{
+      case 'notes': {
         type = 'NOTE';
         break;
       }
     }
 
-    this.eventService.getEventsByType(type, this.folderId)
-      .subscribe(events => {
+    if (type !== 'DRAFT') {
+      this.eventService.getEventsByType(type, this.folderId)
+        .subscribe(events => {
 
-        this.events = events;
-        this.length = this.events.length;
-        this.onChangeTable(this.config);
+          this.events = events;
+          this.length = this.events.length;
+          this.onChangeTable(this.config);
 
-        this.spinner.hide();
-      })
+          this.spinner.hide();
+        })
+    } else {
+      this.eventService.getDrafts(this.folderId)
+        .subscribe(events => {
+          this.events = events;
+          this.length = this.events.length;
+          this.onChangeTable(this.config);
+
+          this.spinner.hide();
+        })
+    }
   }
 
   openEvent(event: Evento) {
@@ -160,7 +159,7 @@ export class EventListComponent implements OnInit {
     this.columns.forEach((column: any) => {
       if (column.filtering) {
         filteredData = filteredData.filter((item: any) => {
-            return item[column.name].match(column.filtering.filterString);
+          return item[column.name].match(column.filtering.filterString);
         });
       }
     });
@@ -178,11 +177,11 @@ export class EventListComponent implements OnInit {
     filteredData.forEach((item: any) => {
       let flag = false;
 
-        this.columns.forEach((column: any) => {
-          if (item[column.name].toString().match(this.config.filtering.filterString)) {
-            flag = true;
-          }
-        });
+      this.columns.forEach((column: any) => {
+        if (item[column.name].toString().match(this.config.filtering.filterString)) {
+          flag = true;
+        }
+      });
 
 
       if (flag) {

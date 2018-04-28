@@ -51,4 +51,9 @@ public class EventController {
     public ResponseEntity<List<Event>> getByType(@PathVariable String eventType, @PathVariable int folderId) {
         return new ResponseEntity<>(eventService.getEventsByType(eventType, folderId), HttpStatus.OK);
     }
+
+    @GetMapping("/{folderId}/drafts")
+    public ResponseEntity<List<Event>> getDrafts(@PathVariable int folderId) {
+        return new ResponseEntity<>(eventService.getDrafts(folderId), HttpStatus.OK);
+    }
 }
