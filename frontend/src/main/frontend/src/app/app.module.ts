@@ -35,7 +35,8 @@ import {EventListComponent} from "./events/event.list/event.list.component";
 import {Ng2TableModule} from "ng2-table";
 import {TooltipModule, PaginationModule} from "ngx-bootstrap";
 import {PopupModule} from "ng2-opd-popup";
-
+import {EventAddComponent} from './events/event.add/event.add.component';
+import {EventAddService} from "./events/event.add.service";
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import {PopupModule} from "ng2-opd-popup";
     ChangePasswordComponent,
     ThankyouComponent,
     EventListComponent,
+    EventAddComponent,
   ],
   imports: [
     ReactiveFormsModule,
@@ -77,7 +79,8 @@ import {PopupModule} from "ng2-opd-popup";
     FolderService,
     EventService,
     FriendService,
-    UploadFileService],
+    UploadFileService,
+    EventAddService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

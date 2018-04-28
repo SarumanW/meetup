@@ -1,0 +1,129 @@
+<div class="container-fluid" style="margin-top:20px">
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
+<div class="row">
+  <div class="col-2">
+    <home-comp [states]="state"></home-comp>
+  </div>
+
+  <div class="col-6">
+    <div class="container justify-content-center">
+
+      <form name="form" role="form" #addEventForm="ngForm">
+
+        <div class="form-group">
+          <label for="eventType">Event type:</label>
+          <select name="eventType" id="eventType" class="form-control" [(ngModel)]="eventt.eventType">
+            <option value="EVENT">Public event</option>
+            <option value="PRIVATE_EVENT">Private Event</option>
+            <option value="NOTE">Note</option>
+          </select>
+        </div>
+
+        <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
+          <h2>Add event</h2>
+        </div>
+
+        <div  class="form-group">
+          <label for="name">name:</label>
+          <input type="text" class="form-control" [(ngModel)]="eventt.name"
+                 id="name" name="name" #name="ngModel" placeholder="name"
+                 minlength="4" maxlength="250" pattern="^[_.@A-Za-z0-9-]*$" required/>
+          <div *ngIf="name.dirty && name.invalid">
+            <small class="form-text text-danger" *ngIf="name.errors.required">
+              Event name is required.
+            </small>
+            <small class="form-text text-danger" *ngIf="name.errors.minlength">
+              Event name is required to be at least 4 character.
+            </small>
+            <small class="form-text text-danger" *ngIf="name.errors.maxlength">
+              Event name cannot be longer than 50 characters.
+            </small>
+            <small class="form-text text-danger" *ngIf="name.errors.pattern">
+              Event name can only contain letters and digits.
+            </small>
+          </div>
+        </div>
+
+        <div *ngIf="eventt.eventType !== 'NOTE'" class="form-group">
+          <label class="form-control-label" for="eventDate">Choose the day of the event: </label>
+          <input type="date" min="{{currentDate}}" class="form"
+                 id="eventDate" name="eventDate" #eventDate="ngModel" [(ngModel)]="datee"
+                 placeholder="{{currentDate}}">
+        </div>
+
+        <div *ngIf="eventt.eventType !== 'NOTE'" class="form-group">
+          <label class="form-control-label" for="eventDate">Choose the day of the event: </label>
+          <input type="time" class="form"
+                 id="eventTime" name="eventTime" #eventTime="ngModel" [(ngModel)]="time">
+        </div>
+
+        <div class="form-group">
+          <label for="description">description:</label>
+          <input type="text" class="form-control" [(ngModel)]="eventt.description"
+                 id="description" name="description" #description="ngModel" placeholder="description"
+                 minlength="4" maxlength="250" pattern="^[_.@A-Za-z0-9-]*$" required/>
+          <div *ngIf="description.dirty && description.invalid">
+            <small class="form-text text-danger" *ngIf="description.errors.required">
+              Description is required.
+            </small>
+            <small class="form-text text-danger" *ngIf="description.errors.minlength">
+              Description is required to be at least 4 character.
+            </small>
+            <small class="form-text text-danger" *ngIf="description.errors.maxlength">
+              Description can not be longer than 250 characters.
+            </small>
+            <small class="form-text text-danger" *ngIf="description.errors.pattern">
+              Description can only contain letters and digits.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="place">place:</label>
+          <input type="text" class="form-control" [(ngModel)]="eventt.place"
+                 id="place" name="place" #place="ngModel" placeholder="place"
+                 minlength="4" maxlength="250" pattern="^[_.@A-Za-z0-9-]*$" required/>
+          <div *ngIf="place.dirty && place.invalid">
+            <small class="form-text text-danger" *ngIf="place.errors.required">
+              Place is required.
+            </small>
+            <small class="form-text text-danger" *ngIf="place.errors.minlength">
+              Place is required to be at least 4 character.
+            </small>
+            <small class="form-text text-danger" *ngIf="place.errors.maxlength">
+              Place can not be longer than 250 characters.
+            </small>
+            <small class="form-text text-danger" *ngIf="place.errors.pattern">
+              Place can only contain letters and digits.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="periodicity">periodicity:</label>
+          <select name="periodicity" id="periodicity" class="form-control" [(ngModel)]="eventt.periodicity">
+            <option value="ONCE">Once</option>
+            <option value="HOUR">Every hour</option>
+            <option value="DAY">Every day</option>
+            <option value="WEEK">Every week</option>
+            <option value="MONTH">Every month</option>
+            <option value="YEAR">Every year</option>
+          </select>
+        </div>
+
+        <button type="button" (click)="addEvent()" class="btn btn-primary">
+          Add
+        </button>
+        <button type="button" (click)="addDraft()" class="btn btn-primary">
+          Save as draft
+        </button>
+
+      </form>
+  </div>
+</div>
+</div>
+</div>
