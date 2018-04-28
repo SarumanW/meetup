@@ -30,7 +30,7 @@ public class AccountService {
     public UserAndTokenVM login(LoginVM credentials) throws Exception {
         try {
             String md5Pass = HashMD5.hash(credentials.getPassword());
-            //credentials.setPassword(md5Pass);
+            credentials.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
             throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
         }

@@ -1,6 +1,7 @@
 package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.entity.Event;
+import com.meetup.meetup.entity.User;
 import com.meetup.meetup.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,5 +40,10 @@ public class EventController {
     @DeleteMapping
     public ResponseEntity<Event> deleteEvent(@Valid @RequestBody Event event) {
         return new ResponseEntity<>(eventService.deleteEvent(event), HttpStatus.OK);
+    }
+
+    @PostMapping("/{eventId}/participant/add")
+    public ResponseEntity<User> addParticipant(@PathVariable int eventId, @RequestBody String login) {
+        return new ResponseEntity<>(eventService.addParticipant(eventId, login), HttpStatus.CREATED);
     }
 }

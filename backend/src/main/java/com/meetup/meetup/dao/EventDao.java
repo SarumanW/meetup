@@ -17,4 +17,6 @@ public interface EventDao extends Dao<Event> {
     Role getRole(int userId, int eventId);
 
     Event createEvent(Event model, int userId);
+
+    void addParticipant(int participantId, int eventId);
 }

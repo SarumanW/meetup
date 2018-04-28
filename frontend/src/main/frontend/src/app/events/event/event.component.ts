@@ -60,7 +60,18 @@ export class EventComponent implements OnInit {
     });
   }
 
+  showSuccess() {
+    this.toastr.info('Parcicipant was successfully added', 'Attention!', {
+      timeOut: 3000,
+      positionClass: 'toast-bottom-left',
+      closeButton: true
+    });
+  }
+
   addParticipant(name) {
+    this.spinner.show();
+
+    this.alreadyHasParticipant = false;
 
     for (let profile of this.eventt.participants) {
       if (profile.login === this.loginInput) {
@@ -68,18 +79,20 @@ export class EventComponent implements OnInit {
         break;
       }
     }
-    console.log(name.value);
-    console.log(this.loginInput);
-    console.log(this.currentUserLogin);
+
     if (this.currentUserLogin !== name.value && !this.alreadyHasParticipant) {
       this.eventService.addParticipant(this.loginInput, this.eventId)
         .subscribe(participant => {
           this.eventt.participants.push(participant);
+          this.spinner.hide();
+          this.showSuccess();
         }, error => {
           this.showError('Unsuccessful participant adding', 'Adding error');
+          this.spinner.hide();
         });
     } else {
       this.showError('Participant already exists', 'Adding error');
+      this.spinner.hide();
     }
 
   }
