@@ -84,34 +84,6 @@ export class EventAddComponent implements OnInit {
     this.spinner.show();
     this.formatDate();
     this.eventAddService.addEvent(this.eventt);
-    //TODO change switches to loaded data
-    switch (this.eventt.periodicity) {
-      case "ONCE": this.eventt.periodicityId = 7;
-        break;
-      case "HOUR": this.eventt.periodicityId = 1;
-        break;
-      case "DAY": this.eventt.periodicityId = 2;
-        break;
-      case "WEEK": this.eventt.periodicityId = 3;
-        break;
-      case "MONTH": this.eventt.periodicityId = 4;
-        break;
-      case "YEAR": this.eventt.periodicityId = 5;
-        break;
-      default: this.eventt.periodicityId = 7;
-        break;
-    }
-
-    switch (this.eventt.eventType) {
-      case "EVENT": this.eventt.eventTypeId = 1;
-        break;
-      case "NOTE": this.eventt.eventTypeId = 2;
-        break;
-      case "PRIVATE_EVENT": this.eventt.eventTypeId = 3;
-        break;
-      default: this.eventt.periodicityId = 1;
-        break;
-    }
     this.eventAddService.addEvent(this.eventt).subscribe(eventt => {
       this.spinner.hide();
       this.showSuccess();

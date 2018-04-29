@@ -103,7 +103,7 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <div *ngIf="eventt.eventType !== 'NOTE'" class="form-group">
           <label for="periodicity">periodicity:</label>
           <select name="periodicity" id="periodicity" class="form-control" [(ngModel)]="eventt.periodicity">
             <option value="ONCE">Once</option>
