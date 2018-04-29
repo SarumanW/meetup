@@ -36,7 +36,7 @@ public class EventService {
 
         Event event = eventDao.findById(eventId);
 
-        if(event == null) {
+        if (event == null) {
             log.error("Event was not found by eventId '{}'", eventId);
             throw new EntityNotFoundException("Event", "eventId", eventId);
         }
@@ -63,10 +63,6 @@ public class EventService {
         log.debug("Found events '{}'", events.toString());
 
         return events;
-    }
-
-    public List<Event> getDrafts(int folderId) {
-        return eventDao.getDrafts(folderId);
     }
 
     public List<Event> getDrafts(int folderId) {
