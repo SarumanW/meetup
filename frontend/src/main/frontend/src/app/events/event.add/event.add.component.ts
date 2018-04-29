@@ -4,6 +4,7 @@ import {ToastrService} from "ngx-toastr";
 import {ActivatedRoute} from "@angular/router";
 import {Evento} from "../event";
 import {EventAddService} from "../event.add.service";
+import {ImageUploadService} from "../image.upload.service";
 
 @Component({
   selector: 'app-event.add',
@@ -14,15 +15,22 @@ export class EventAddComponent implements OnInit {
 
   folderId: number;
   eventt: Evento;
+  userId: number;
   currentDate: string;
   datee: string;
   time: string;
   state: string = "folders";
+  selectedFiles: FileList;
+  currentFileUpload: File;
+  fileRegexp: RegExp;
+  errorFileFormat: boolean;
+  imageLoaded: boolean;
 
   constructor(private route: ActivatedRoute,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
-              private eventAddService: EventAddService) { }
+              private eventAddService: EventAddService,
+              private uploadService: ImageUploadService) { }
 
   ngOnInit() {
     this.eventt = new Evento;
@@ -33,12 +41,22 @@ export class EventAddComponent implements OnInit {
       this.showError('Unsuccessful parameters loading', 'Loading error');
     });
 
+    this.getCurrentDate();
+    this.resetEvent();
+    this.fileRegexp = new RegExp('^.*\\.(jpg|JPG|gif|GIF|png|PNG)$');
+    this.errorFileFormat = true;
+  }
+
+  resetEvent() {
     this.eventt.folderId = this.folderId;
     this.eventt.ownerId = JSON.parse(localStorage.currentUser).id;
-    this.getCurrentDate();
     this.datee = this.currentDate;
     this.eventt.eventType = "EVENT";
-
+    this.eventt.name = "";
+    this.eventt.description = "";
+    this.eventt.eventDate = "";
+    this.eventt.periodicity = "";
+    this.eventt.place = "";
     this.time = "";
   }
 
@@ -84,37 +102,10 @@ export class EventAddComponent implements OnInit {
     this.spinner.show();
     this.formatDate();
     this.eventAddService.addEvent(this.eventt);
-    //TODO change switches to loaded data
-    switch (this.eventt.periodicity) {
-      case "ONCE": this.eventt.periodicityId = 7;
-        break;
-      case "HOUR": this.eventt.periodicityId = 1;
-        break;
-      case "DAY": this.eventt.periodicityId = 2;
-        break;
-      case "WEEK": this.eventt.periodicityId = 3;
-        break;
-      case "MONTH": this.eventt.periodicityId = 4;
-        break;
-      case "YEAR": this.eventt.periodicityId = 5;
-        break;
-      default: this.eventt.periodicityId = 7;
-        break;
-    }
-
-    switch (this.eventt.eventType) {
-      case "EVENT": this.eventt.eventTypeId = 1;
-        break;
-      case "NOTE": this.eventt.eventTypeId = 2;
-        break;
-      case "PRIVATE_EVENT": this.eventt.eventTypeId = 3;
-        break;
-      default: this.eventt.periodicityId = 1;
-        break;
-    }
     this.eventAddService.addEvent(this.eventt).subscribe(eventt => {
       this.spinner.hide();
       this.showSuccess();
+      this.resetEvent();
     }, error => {
       this.showError('Unsuccessful event adding', 'Adding error');
       this.spinner.hide();
@@ -125,6 +116,36 @@ export class EventAddComponent implements OnInit {
     console.log("addEvent");
     this.eventt.isDraft = false;
     this.addEntity();
+  }
+
+  selectFile(event) {
+    this.selectedFiles = event.target.files;
+    let filename: string = this.selectedFiles.item(0).name.toLowerCase();
+    if (!this.fileRegexp.test(filename)) {
+      this.showError("Incorrect file format " + this.selectedFiles.item(0).name, 'File format error');
+      this.errorFileFormat = true;
+    } else {
+      this.errorFileFormat = false;
+    }
+  }
+
+  upload() {
+    this.spinner.show();
+    this.imageLoaded = false;
+
+    this.currentFileUpload = this.selectedFiles.item(0);
+    this.uploadService.pushFileToStorage(this.currentFileUpload).subscribe(event => {
+      console.log(event);
+        this.imageLoaded = true;
+        this.eventt.imageFilepath = event;
+        console.log(this.eventt.imageFilepath);
+      this.spinner.hide();
+    }, error => {
+      this.showError(error, 'Upload failed');
+      this.spinner.hide();
+    });
+
+    this.selectedFiles = undefined;
   }
 
 }

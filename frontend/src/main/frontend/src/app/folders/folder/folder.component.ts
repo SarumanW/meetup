@@ -36,4 +36,8 @@ export class FolderComponent implements OnInit {
     this.router.navigate(["/" + this.profile.login + "/folders/" + this.folderId + "/" + type])
   }
 
+  addEvent() {
+    this.router.navigate(["/" + this.profile.login + "/event/add/" + this.folderId]);
+  }
+
 }

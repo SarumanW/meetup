@@ -1,8 +1,12 @@
 package com.meetup.meetup.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Calendar;
 import java.util.List;
 
@@ -10,15 +14,29 @@ import java.util.List;
 public class Event {
 
     private int eventId;
+
+    @NotBlank
+    @Size(min = 4, max = 50)
     private String name;
+
     private String eventDate;
+
+    @NotBlank
+    @Size(min = 4, max = 250)
     private String description;
+
     private int periodicityId;
     private EventPeriodicity periodicity;
+
+    @Size(min = 4, max = 100)
     private String place;
     private int eventTypeId;
     private EventType eventType;
+
+    @JsonProperty
     private boolean isDraft;
+
+    @NotNull
     private int folderId;
     private String imageFilepath;
     private int ownerId;

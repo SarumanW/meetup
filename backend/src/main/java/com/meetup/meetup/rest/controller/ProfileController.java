@@ -45,12 +45,11 @@ public class ProfileController {
 
         User updatedUser = profileService.updateUser(newUser);
 
-        log.debug("Send response body user '{}' and status OK", updatedUser);
-
         if (updatedUser != null) {
+            log.debug("Send response body user '{}' and status OK", updatedUser);
             return new ResponseEntity<>("Successfully updated profile", HttpStatus.OK);
         }
-
+        log.debug("Updating user '{}' failed", newUser.toString());
         return new ResponseEntity<>("Updating failed", HttpStatus.NOT_MODIFIED);
     }
 
@@ -76,11 +75,13 @@ public class ProfileController {
         return new ResponseEntity<>(friendRequests, HttpStatus.OK);
     }
 
+    // TODO: 29.04.2018 repair it
     @PostMapping("/friends/add/{friendId}")
     public ResponseEntity<String> addFriend(@PathVariable int friendId) {
         log.debug("Trying to add friend for authenticated user by friendId '{}'", friendId);
 
         if (profileService.addFriend(friendId)) {
+            log.debug("Friend successfully added");
             log.debug("Send response status OK");
             return new ResponseEntity<>(HttpStatus.OK);
         }

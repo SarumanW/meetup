@@ -2,6 +2,7 @@ package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.service.EventImageService;
 import com.meetup.meetup.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -22,6 +24,9 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
+    @Autowired
+    private EventImageService eventImageService;
+
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEvent(@PathVariable int id) {
         log.debug("Trying to get event by id '{}'", id);
@@ -31,6 +36,13 @@ public class EventController {
         log.debug("Send response body event '{}' and status OK", event.toString());
 
         return new ResponseEntity<>(event, HttpStatus.OK);
+    }
+
+    // TODO: 29.04.2018 logs, refactor
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Event>> getEventsByUser(@PathVariable int id){
+        List<Event> userEvents = eventService.getEventsByUser(id);
+        return new ResponseEntity<>(userEvents, HttpStatus.OK);
     }
 
     @GetMapping("/folder/{folderId}")
@@ -92,18 +104,21 @@ public class EventController {
         return new ResponseEntity<>(eventService.getDrafts(folderId), HttpStatus.OK);
     }
 
-    @PostMapping("/{eventId}/participant/add")
-    public ResponseEntity<User> addParticipant(@PathVariable int eventId, @RequestBody String login) {
-        return new ResponseEntity<>(eventService.addParticipant(eventId, login), HttpStatus.CREATED);
-    }
+    @PostMapping("/upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+        log.debug("Trying to upload event image '{}'", file);
 
-    @GetMapping("/{folderId}/getByType/{eventType}")
-    public ResponseEntity<List<Event>> getByType(@PathVariable String eventType, @PathVariable int folderId) {
-        return new ResponseEntity<>(eventService.getEventsByType(eventType, folderId), HttpStatus.OK);
-    }
-
-    @GetMapping("/{folderId}/drafts")
-    public ResponseEntity<List<Event>> getDrafts(@PathVariable int folderId) {
-        return new ResponseEntity<>(eventService.getDrafts(folderId), HttpStatus.OK);
+        String message;
+        HttpStatus httpStatus;
+        try {
+            message = eventImageService.store(file);;
+            log.debug("Image successfully uploaded send response status OK");
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            message = "FAIL to upload " + file.getOriginalFilename() + "!";
+            log.error(message);
+            httpStatus = HttpStatus.EXPECTATION_FAILED;
+        }
+        return new ResponseEntity<>(message, httpStatus);
     }
 }

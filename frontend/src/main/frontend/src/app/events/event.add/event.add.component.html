@@ -28,10 +28,10 @@
         </div>
 
         <div  class="form-group">
-          <label for="name">name:</label>
+          <label for="name">Name:</label>
           <input type="text" class="form-control" [(ngModel)]="eventt.name"
                  id="name" name="name" #name="ngModel" placeholder="name"
-                 minlength="4" maxlength="250" pattern="^[_.@A-Za-z0-9-]*$" required/>
+                 minlength="4" maxlength="50" pattern="^[_.@A-Za-z0-9-]*$" required/>
           <div *ngIf="name.dirty && name.invalid">
             <small class="form-text text-danger" *ngIf="name.errors.required">
               Event name is required.
@@ -52,17 +52,18 @@
           <label class="form-control-label" for="eventDate">Choose the day of the event: </label>
           <input type="date" min="{{currentDate}}" class="form"
                  id="eventDate" name="eventDate" #eventDate="ngModel" [(ngModel)]="datee"
-                 placeholder="{{currentDate}}">
+                 placeholder="{{currentDate}}" required>
         </div>
 
         <div *ngIf="eventt.eventType !== 'NOTE'" class="form-group">
           <label class="form-control-label" for="eventDate">Choose the day of the event: </label>
           <input type="time" class="form"
-                 id="eventTime" name="eventTime" #eventTime="ngModel" [(ngModel)]="time">
+                 id="eventTime" name="eventTime" #eventTime="ngModel" [(ngModel)]="time"
+                 placeholder="00:00" required>
         </div>
 
         <div class="form-group">
-          <label for="description">description:</label>
+          <label for="description">Description:</label>
           <input type="text" class="form-control" [(ngModel)]="eventt.description"
                  id="description" name="description" #description="ngModel" placeholder="description"
                  minlength="4" maxlength="250" pattern="^[_.@A-Za-z0-9-]*$" required/>
@@ -83,10 +84,10 @@
         </div>
 
         <div class="form-group">
-          <label for="place">place:</label>
+          <label for="place">Place:</label>
           <input type="text" class="form-control" [(ngModel)]="eventt.place"
                  id="place" name="place" #place="ngModel" placeholder="place"
-                 minlength="4" maxlength="250" pattern="^[_.@A-Za-z0-9-]*$" required/>
+                 minlength="4" maxlength="100" pattern="^[_.@A-Za-z0-9-]*$" required/>
           <div *ngIf="place.dirty && place.invalid">
             <small class="form-text text-danger" *ngIf="place.errors.required">
               Place is required.
@@ -103,9 +104,10 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="periodicity">periodicity:</label>
-          <select name="periodicity" id="periodicity" class="form-control" [(ngModel)]="eventt.periodicity">
+        <div *ngIf="eventt.eventType !== 'NOTE'" class="form-group">
+          <label for="periodicity">Periodicity:</label>
+          <select name="periodicity" id="periodicity" class="form-control" [(ngModel)]="eventt.periodicity"
+          required>
             <option value="ONCE">Once</option>
             <option value="HOUR">Every hour</option>
             <option value="DAY">Every day</option>
@@ -115,10 +117,31 @@
           </select>
         </div>
 
-        <button type="button" (click)="addEvent()" class="btn btn-primary">
+        <div class="form-group">
+          <label>Add custom image to event:</label>
+
+
+          <label class="btn btn-default">
+            <input type="file" (change)="selectFile($event)">
+          </label>
+
+          <button class="btn btn-success" [disabled]="errorFileFormat || !selectedFiles" (click)="upload()">Upload
+          </button>
+
+          <div>
+          <small class="form-text text-danger" *ngIf="errorFileFormat">
+            Incorrect file format. Only jpg, png, gif enabled.
+          </small>
+          <small class="form-text text-success" *ngIf="imageLoaded">
+            Image successfully loaded
+          </small>
+          </div>
+        </div>
+
+        <button type="button" [disabled]="addEventForm.form.invalid"  (click)="addEvent()" class="btn btn-primary">
           Add
         </button>
-        <button type="button" (click)="addDraft()" class="btn btn-primary">
+        <button type="button" [disabled]="addEventForm.form.invalid" (click)="addDraft()" class="btn btn-primary">
           Save as draft
         </button>
 

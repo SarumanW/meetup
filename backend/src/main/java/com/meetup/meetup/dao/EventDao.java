@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface EventDao extends Dao<Event> {
 
+    List<Event> findByUserId(int userId);
+
     List<Event> findByFolderId(int folderId);
 
     List<Event> getDrafts(int folderId);

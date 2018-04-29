@@ -28,11 +28,11 @@ export class LoginComponent implements OnInit {
   logIn() {
       this.spinner.show();
       this.accountService.login(this.account).subscribe(
-        () => {
+        (profile) => {
             this.success = true;
             this.spinner.hide();
             this.router.navigate(
-              ['/'+JSON.parse(localStorage.currentUser).login + '/profile']);
+              ['/'+ profile.login + '/profile']);
         },
         response => {
           this.processError(response);

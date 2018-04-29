@@ -5,6 +5,7 @@ import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.EventRowMapper;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Event;
+import com.meetup.meetup.entity.EventType;
 import com.meetup.meetup.entity.Role;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.DatabaseWorkException;
@@ -42,6 +43,20 @@ public class EventDaoImpl implements EventDao {
 
 
     @Override
+    public List<Event> findByUserId(int userId) {
+        List<Event> events = null;
+
+        try {
+            events = jdbcTemplate.query(env.getProperty("event.findByUserId"),
+                    new Object[]{userId}, new EventRowMapper());
+        } catch (DataAccessException e){
+            System.out.println(e.getMessage());
+        }
+
+        return events;
+    }
+
+    @Override
     public Event findById(int id) {
         Event event = null;
 
@@ -74,11 +89,14 @@ public class EventDaoImpl implements EventDao {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("NAME", model.getName());
-        parameters.put("EVENT_DATE",  model.getEventDate());
+        if (model.getEventType() != EventType.NOTE) {
+            parameters.put("EVENT_DATE", model.getEventDate());
+            parameters.put("PERIODICITY_ID", model.getPeriodicityId());
+        }
         parameters.put("DESCRIPTION", model.getDescription());
-        parameters.put("PERIODICITY_ID", model.getPeriodicityId());
         parameters.put("PLACE", model.getPlace());
         parameters.put("EVENT_TYPE_ID", model.getEventTypeId());
+        System.out.println(model.isDraft());
         parameters.put("IS_DRAFT", model.isDraft() ? 1 : 0);
         parameters.put("FOLDER_ID", model.getFolderId());
         parameters.put("IMAGE_FILEPATH", model.getImageFilepath());
