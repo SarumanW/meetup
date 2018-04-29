@@ -9,7 +9,6 @@
       <home-comp [states]="state"></home-comp>
     </div>
 
-
     <div class="col-10 py-4">
       <calendar-header
         [(view)]="view"
@@ -24,7 +23,7 @@
         <small style="margin: 5px">There are {{ day.events.length }} events on this day</small>
       </ng-template>
 
-      <div [ngSwitch]="view">
+      <div [ngSwitch]="view" *ngIf="events.length">
         <mwl-calendar-month-view
           *ngSwitchCase="'month'"
           [viewDate]="viewDate"

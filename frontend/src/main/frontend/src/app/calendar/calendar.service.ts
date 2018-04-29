@@ -13,7 +13,7 @@ export class CalendarService {
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
     return this.http
-      .get<any>('api/events/' + userId, {headers: headers});
+      .get<any>('api/events/user/' + userId, {headers: headers});
 
   }
 

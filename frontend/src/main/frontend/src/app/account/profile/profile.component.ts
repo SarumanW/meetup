@@ -26,10 +26,11 @@ export class ProfileComponent {
     this.route.params.subscribe(params => {
       this.accountService.profile(params['login']).subscribe(
         (profile) => {
-          this.spinner.hide();
           this.profile = profile;
 
           this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).id === this.profile.id;
+
+          this.spinner.hide();
         })})
   }
 }

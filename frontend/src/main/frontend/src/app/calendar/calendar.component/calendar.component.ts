@@ -1,17 +1,17 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
-import {EventService} from "../../events/event.service";
 import { CalendarEvent } from 'angular-calendar';
 import {startOfDay, addDays} from 'date-fns';
 import {isSameDay, isSameMonth} from "ngx-bootstrap/chronos/utils/date-getters";
 import {CalendarService} from '../calendar.service';
+import {Evento} from "../../events/event";
+import {colors} from "../calendar.utils/colors";
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
@@ -19,24 +19,8 @@ export class CalendarComponent implements OnInit {
   state: string = "calendar";
   view: string = 'month';
   viewDate: Date = new Date();
-  events: CalendarEvent[] = [
-    {
-      id : 1,
-      title: "First event",
-      start: new Date(),
-    },
-    {
-      title: "Second event",
-      start: new Date(),
-    },
-    {
-      title: "Third event",
-      start: addDays(new Date(), 1),
-    },
-    {
-      title: "Fourth event",
-      start: addDays(new Date(), 1),
-    }];
+  realEvents: Evento[];
+  events: CalendarEvent[] = [];
 
   activeDayIsOpen: boolean = true;
 
@@ -46,7 +30,44 @@ export class CalendarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getRealEvents();
+  }
 
+  filterEvents(){
+    for(let realEvent of this.realEvents){
+      let calendarEvent : any;
+      calendarEvent = {};
+
+      calendarEvent.id = realEvent.eventId;
+      calendarEvent.title = realEvent.name;
+      calendarEvent.start = new Date(realEvent.eventDate);
+
+      switch(realEvent.eventTypeId){
+        case 1:
+          calendarEvent.color = colors.blue;
+          break;
+        case 3:
+          calendarEvent.color = colors.red;
+      }
+
+      if(realEvent.isDraft){
+        calendarEvent.color = colors.yellow;
+      }
+
+      this.events.push(calendarEvent);
+    }
+  }
+
+  getRealEvents(){
+    this.spinner.show();
+    let id = JSON.parse(localStorage.currentUser).id;
+
+    this.calendarService.getUserEvents(id)
+      .subscribe((events) => {
+        this.realEvents = events;
+        this.filterEvents();
+        this.spinner.hide();
+      })
   }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
