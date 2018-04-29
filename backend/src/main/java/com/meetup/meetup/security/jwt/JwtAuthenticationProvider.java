@@ -2,9 +2,7 @@ package com.meetup.meetup.security.jwt;
 
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.JwtAuthenticationException;
-import com.meetup.meetup.service.FolderService;
 import com.meetup.meetup.service.JwtService;
-import jdk.internal.org.objectweb.asm.tree.TryCatchBlockNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

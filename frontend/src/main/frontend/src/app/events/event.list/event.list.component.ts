@@ -47,6 +47,8 @@ export class EventListComponent implements OnInit {
 
   ngOnInit() {
 
+    this.spinner.show();
+
     this.route.params.subscribe(params => {
       this.folderId = params['folderId'];
       this.eventType = params['type'];
@@ -56,11 +58,12 @@ export class EventListComponent implements OnInit {
 
     this.getEventsByType();
 
+    this.spinner.hide();
+
     this.onChangeTable(this.config);
   }
 
   getEventsByType() {
-    this.spinner.show();
     let type: string;
 
     switch (this.eventType) {
@@ -93,8 +96,6 @@ export class EventListComponent implements OnInit {
           this.events = events;
           this.length = this.events.length;
           this.onChangeTable(this.config);
-
-          this.spinner.hide();
         })
     } else {
       this.eventService.getDrafts(this.folderId)
@@ -102,8 +103,6 @@ export class EventListComponent implements OnInit {
           this.events = events;
           this.length = this.events.length;
           this.onChangeTable(this.config);
-
-          this.spinner.hide();
         })
     }
   }
