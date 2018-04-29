@@ -1,5 +1,6 @@
 package com.meetup.meetup.dao.impl;
 
+import com.meetup.meetup.Keys.Key;
 import com.meetup.meetup.dao.EventDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.EventRowMapper;
@@ -17,6 +18,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import static com.meetup.meetup.Keys.Key.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +49,7 @@ public class EventDaoImpl implements EventDao {
         List<Event> events = null;
 
         try {
-            events = jdbcTemplate.query(env.getProperty("event.findByUserId"),
+            events = jdbcTemplate.query(EVENT_FIND_BY_USER_ID,
                     new Object[]{userId}, new EventRowMapper());
         } catch (DataAccessException e){
             System.out.println(e.getMessage());
@@ -62,7 +64,7 @@ public class EventDaoImpl implements EventDao {
 
         try {
             event = jdbcTemplate.queryForObject(
-                    env.getProperty("event.findById"),
+                    EVENT_FIND_BY_ID,
                     new Object[]{id}, new EventRowMapper()
             );
         } catch (DataAccessException e) {
@@ -134,7 +136,7 @@ public class EventDaoImpl implements EventDao {
 
         try {
             String roleString = jdbcTemplate.queryForObject(
-                    env.getProperty("role.getRole"), new Object[] { userId, eventId },
+                    GET_ROLE, new Object[] { userId, eventId },
                     String.class);
 
             role = Role.valueOf(roleString);
@@ -171,7 +173,7 @@ public class EventDaoImpl implements EventDao {
     @Override
     public Event update(Event model) {
         try {
-            jdbcTemplate.update(env.getProperty("event.update"),
+            jdbcTemplate.update(EVENT_UPDATE,
                     model.getName(), model.getEventDate(), model.getDescription(), model.getPeriodicityId(),
                     model.getPlace(), model.getEventTypeId(), model.isDraft() ? 1 : 0, model.getFolderId(), model.getImageFilepath(), model.getEventId());
         } catch (DataAccessException e) {
@@ -184,7 +186,7 @@ public class EventDaoImpl implements EventDao {
     @Override
     public Event delete(Event model) {
         try {
-            jdbcTemplate.update(env.getProperty("event.delete"), model.getEventId());
+            jdbcTemplate.update(EVENT_DELETE, model.getEventId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
             throw new DatabaseWorkException();
@@ -197,7 +199,7 @@ public class EventDaoImpl implements EventDao {
         List<Event> events = null;
 
         try {
-            events = jdbcTemplate.query(env.getProperty("event.findByFolderId"),
+            events = jdbcTemplate.query(EVENT_FIND__BY_FOLDER_ID,
                     new Object[]{folderId}, new EventRowMapper());
         } catch (DataAccessException e){
             System.out.println(e.getMessage());
@@ -211,7 +213,7 @@ public class EventDaoImpl implements EventDao {
         List<Event> events = null;
 
         try {
-            events = jdbcTemplate.query(env.getProperty("event.getDrafts"),
+            events = jdbcTemplate.query(EVENT_GET_DRAFTS,
                     new Object[]{folderId}, new EventRowMapper());
         } catch (DataAccessException e){
             System.out.println(e.getMessage());
@@ -225,7 +227,7 @@ public class EventDaoImpl implements EventDao {
         List<Event> events = null;
 
         try {
-            events = jdbcTemplate.query(env.getProperty("event.findByTypeInFolder"),
+            events = jdbcTemplate.query(EVENT_FIND_BY_TYPE_IN_FOLDER,
                     new Object[]{eventType, folderId}, new EventRowMapper());
         } catch (DataAccessException e){
             System.out.println(e.getMessage());
@@ -242,7 +244,7 @@ public class EventDaoImpl implements EventDao {
         List<User> participants = new ArrayList<>();
 
         try {
-            participants = jdbcTemplate.query(env.getProperty("event.getParticipants"),
+            participants = jdbcTemplate.query(EVENT_GET_PARTICIPANTS,
                     new Object[]{event.getEventId()}, new UserRowMapper());
         } catch (DataAccessException e) {
             // TODO: 26/04/18  Add logs

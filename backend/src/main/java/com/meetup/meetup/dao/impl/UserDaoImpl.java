@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import static com.meetup.meetup.Keys.Key.*;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -41,7 +42,7 @@ public class UserDaoImpl implements UserDao {
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(
-                env.getProperty("user.findByLogin"),
+                    USER_FIND_BY_LOGIN,
                 new Object[]{login}, new UserRowMapper() {
                 }
             );
@@ -59,7 +60,7 @@ public class UserDaoImpl implements UserDao {
 
         try {
             user = jdbcTemplate.queryForObject(
-                env.getProperty("user.findByEmail"),
+                    USER_FIND_BY_EMAIL,
                 new Object[]{email}, new UserRowMapper() {
                 }
             );
@@ -99,7 +100,7 @@ public class UserDaoImpl implements UserDao {
         List<Map<String, Object>> list = new ArrayList<>();
 
         try {
-            list = jdbcTemplate.queryForList(env.getProperty("user.getFriendsIds"),
+            list = jdbcTemplate.queryForList(USER_GET_FRIENDS_IDS,
                 userId, userId);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
@@ -179,7 +180,7 @@ public class UserDaoImpl implements UserDao {
         List<Integer> unConfirmedIds = new ArrayList<>();
 
         try {
-            unConfirmedIds = jdbcTemplate.queryForList(env.getProperty("user.getUnconfirmedIds"),
+            unConfirmedIds = jdbcTemplate.queryForList(USER_GET_UNCONFIRMED_IDS,
                 new Object[] {userId},Integer.class);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
@@ -192,7 +193,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public int confirmFriend(int userId, int friendId) {
         try {
-            jdbcTemplate.update(env.getProperty("user.confirmFriend"), friendId, userId);
+            jdbcTemplate.update(USER_CONFIRM_FRIEND, friendId, userId);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
@@ -203,7 +204,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public int deleteFriend(int userId, int friendId) {
         try {
-            jdbcTemplate.update(env.getProperty("user.deleteFriend"), userId, friendId, friendId, userId);
+            jdbcTemplate.update(USER_DELETE_FRIEND, userId, friendId, friendId, userId);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
@@ -217,7 +218,7 @@ public class UserDaoImpl implements UserDao {
 
         try {
             user = jdbcTemplate.queryForObject(
-                env.getProperty("user.findById"),
+                    USER_FIND_BY_ID,
                 new Object[]{id}, new UserRowMapper() {
                 }
             );
@@ -268,7 +269,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User update(User model) {
         try {
-            jdbcTemplate.update(env.getProperty("user.update"),
+            jdbcTemplate.update(USER_UPDATE,
                 model.getLogin(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
                 model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
         } catch (DataAccessException e) {
@@ -280,7 +281,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean updatePassword(User user) {
         try {
-            jdbcTemplate.update(env.getProperty("user.updatePassword"), user.getPassword(), user.getId());
+            jdbcTemplate.update(USER_UPDATE_PASSWORD, user.getPassword(), user.getId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
             return false;
@@ -291,7 +292,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User delete(User model) {
         try {
-            jdbcTemplate.update(env.getProperty("user.delete"), model.getId());
+            jdbcTemplate.update(USER_DELETE, model.getId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
