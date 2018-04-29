@@ -4,6 +4,7 @@ import {ToastrService} from "ngx-toastr";
 import {ActivatedRoute} from "@angular/router";
 import {Evento} from "../event";
 import {EventAddService} from "../event.add.service";
+import {ImageUploadService} from "../image.upload.service";
 
 @Component({
   selector: 'app-event.add',
@@ -19,11 +20,17 @@ export class EventAddComponent implements OnInit {
   datee: string;
   time: string;
   state: string = "folders";
+  selectedFiles: FileList;
+  currentFileUpload: File;
+  fileRegexp: RegExp;
+  errorFileFormat: boolean;
+  imageLoaded: boolean;
 
   constructor(private route: ActivatedRoute,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
-              private eventAddService: EventAddService) { }
+              private eventAddService: EventAddService,
+              private uploadService: ImageUploadService) { }
 
   ngOnInit() {
     this.eventt = new Evento;
@@ -36,6 +43,8 @@ export class EventAddComponent implements OnInit {
 
     this.getCurrentDate();
     this.resetEvent();
+    this.fileRegexp = new RegExp('^.*\\.(jpg|JPG|gif|GIF|png|PNG)$');
+    this.errorFileFormat = true;
   }
 
   resetEvent() {
@@ -107,6 +116,36 @@ export class EventAddComponent implements OnInit {
     console.log("addEvent");
     this.eventt.isDraft = false;
     this.addEntity();
+  }
+
+  selectFile(event) {
+    this.selectedFiles = event.target.files;
+    let filename: string = this.selectedFiles.item(0).name.toLowerCase();
+    if (!this.fileRegexp.test(filename)) {
+      this.showError("Incorrect file format " + this.selectedFiles.item(0).name, 'File format error');
+      this.errorFileFormat = true;
+    } else {
+      this.errorFileFormat = false;
+    }
+  }
+
+  upload() {
+    this.spinner.show();
+    this.imageLoaded = false;
+
+    this.currentFileUpload = this.selectedFiles.item(0);
+    this.uploadService.pushFileToStorage(this.currentFileUpload).subscribe(event => {
+      console.log(event);
+        this.imageLoaded = true;
+        this.eventt.imageFilepath = event;
+        console.log(this.eventt.imageFilepath);
+      this.spinner.hide();
+    }, error => {
+      this.showError(error, 'Upload failed');
+      this.spinner.hide();
+    });
+
+    this.selectedFiles = undefined;
   }
 
 }

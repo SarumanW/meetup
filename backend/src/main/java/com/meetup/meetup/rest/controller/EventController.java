@@ -2,6 +2,7 @@ package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.service.EventImageService;
 import com.meetup.meetup.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -21,6 +23,9 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private EventImageService eventImageService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEvent(@PathVariable int id) {
@@ -97,5 +102,23 @@ public class EventController {
     @GetMapping("/{folderId}/drafts")
     public ResponseEntity<List<Event>> getDrafts(@PathVariable int folderId) {
         return new ResponseEntity<>(eventService.getDrafts(folderId), HttpStatus.OK);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+        log.debug("Trying to upload event image '{}'", file);
+
+        String message;
+        HttpStatus httpStatus;
+        try {
+            message = eventImageService.store(file);;
+            log.debug("Image successfully uploaded send response status OK");
+            httpStatus = HttpStatus.OK;
+        } catch (Exception e) {
+            message = "FAIL to upload " + file.getOriginalFilename() + "!";
+            log.error(message);
+            httpStatus = HttpStatus.EXPECTATION_FAILED;
+        }
+        return new ResponseEntity<>(message, httpStatus);
     }
 }

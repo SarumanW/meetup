@@ -43,6 +43,7 @@ import {CalendarHeaderComponent} from "./calendar/calendar.utils/calendar.header
 import {UtilsModule} from "./calendar/calendar.utils/utils.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CalendarService} from "./calendar/calendar.service";
+import {ImageUploadService} from "./events/image.upload.service";
 
 @NgModule({
   declarations: [
@@ -91,7 +92,8 @@ import {CalendarService} from "./calendar/calendar.service";
     FriendService,
     UploadFileService,
     EventAddService,
-    CalendarService],
+    CalendarService,
+    ImageUploadService],
   bootstrap: [AppComponent]
 })
 
