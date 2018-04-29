@@ -3,6 +3,8 @@ package com.meetup.meetup.rest.controller;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.service.ProfileService;
 import com.meetup.meetup.service.StorageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,15 +17,35 @@ import java.util.List;
 @RequestMapping(path = "/api/profile")
 public class ProfileController {
 
-    @Autowired
-    private ProfileService profileService;
+    private static Logger log = LoggerFactory.getLogger(ProfileController.class);
+
+    private final ProfileService profileService;
+    private final StorageService storageService;
 
     @Autowired
-    StorageService storageService;
+    public ProfileController(ProfileService profileService, StorageService storageService) {
+        this.profileService = profileService;
+        this.storageService = storageService;
+    }
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable int id) {
         return profileService.getUser(id);
+    }
+
+    @GetMapping("/search")
+    public List<User> searchUsers(@RequestParam(value = "login", required = false) String login,
+                                  @RequestParam(value = "name", required = false) String name,
+                                  @RequestParam(value = "surname", required = false) String surname,
+                                  @RequestParam(value = "limit", required = false) Integer limit) {
+        log.debug("Trying to search users by login '{}', name '{}', surname '{}' and limit '{}'",
+                login, name, surname, limit);
+
+        List<User> users = profileService.searchUsers(login, name, surname, limit);
+
+        log.debug("Found users '{}'", users.toString());
+
+        return users;
     }
 
     @PostMapping("/update")
@@ -47,7 +69,7 @@ public class ProfileController {
 
     @PostMapping("/addFriend")
     public String addFriend(@RequestBody String newFriend) {
-        if(profileService.addFriend(newFriend)){
+        if (profileService.addFriend(newFriend)) {
             return "Success";
         }
         return "Adding new friend failed";
@@ -59,7 +81,7 @@ public class ProfileController {
     }
 
     @PostMapping("/confirmFriend")
-    public int confirmFriend(@RequestBody int friendId){
+    public int confirmFriend(@RequestBody int friendId) {
         return profileService.confirmFriend(friendId);
     }
 

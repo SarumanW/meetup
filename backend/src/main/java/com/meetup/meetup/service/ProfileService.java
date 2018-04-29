@@ -2,7 +2,10 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.exception.DatabaseWorkException;
 import com.meetup.meetup.security.AuthenticationFacade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +14,36 @@ import java.util.List;
 @Service
 public class ProfileService {
 
-    @Autowired
-    private UserDao userDao;
+    private static Logger log = LoggerFactory.getLogger(ProfileService.class);
+
+    private final UserDao userDao;
+    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    private AuthenticationFacade authenticationFacade;
+    public ProfileService(UserDao userDao, AuthenticationFacade authenticationFacade) {
+        this.userDao = userDao;
+        this.authenticationFacade = authenticationFacade;
+    }
 
     public User getUser(int id) {
         return userDao.findById(id);
+    }
+
+    public List<User> searchUsers(String login, String name, String surname, Integer limit) {
+
+        log.debug("Trying to search users by features login '{}', name '{}', surname '{}' and limit '{}'",
+                login, name, surname, limit);
+
+        List<User> users = userDao.findByParams(login, name, surname, limit);
+
+        if (users == null) {
+            log.error("Cannot get user from database");
+            throw new DatabaseWorkException();
+        }
+
+        log.debug("Found users '{}'", users);
+
+        return users;
     }
 
     public User updateUser(User newUser) {

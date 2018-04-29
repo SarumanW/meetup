@@ -4,8 +4,9 @@ import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
@@ -24,15 +25,18 @@ import java.util.Map;
 @PropertySource("classpath:sqlDao.properties")
 public class UserDaoImpl implements UserDao {
 
-    @Autowired
-    private Environment env;
+    private static Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
+
+    private final Environment env;
+    private final JdbcTemplate jdbcTemplate;
+    private final FolderDaoImpl folderDao;
 
     @Autowired
-    @Qualifier("jdbcTemplate")
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private FolderDaoImpl folderDao;
+    public UserDaoImpl(Environment env, JdbcTemplate jdbcTemplate, FolderDaoImpl folderDao) {
+        this.env = env;
+        this.jdbcTemplate = jdbcTemplate;
+        this.folderDao = folderDao;
+    }
 
     @Override
     public User findByLogin(String login) {
@@ -67,6 +71,48 @@ public class UserDaoImpl implements UserDao {
         }
 
         return user;
+    }
+
+    @Override
+    public List<User> findByParams(String login, String name, String surname, Integer limit) {
+
+        List<User> users = null;
+
+        login = (login == null) ? "" : login;
+        name = (name == null) ? "" : name;
+        surname = (surname == null) ? "" : surname;
+        String limitStr = (limit == null) ? env.getProperty("user.limitSearchConst") : limit.toString();
+
+        log.debug("Trying to get users by params " +
+                "login {}, " +
+                "name {}, " +
+                "surname {}, " +
+                "limit '{} " +
+                "from database",
+                '\'' + login + "%'",
+                '\'' + name + "%'",
+                '\'' + surname + "%'",
+                limitStr);
+
+        try {
+            List<Map<String, Object>> userParamsList = jdbcTemplate.queryForList(
+                    env.getProperty("user.findByParams"),
+                    login + "%",
+                    name + "%",
+                    surname + "%",
+                    limitStr);
+
+            log.debug("Trying to convert List<Map<String, Object>> to List<User>");
+
+            users = new UserRowMapper().mapRow(userParamsList);
+        } catch (DataAccessException e) {
+            log.error("Data access error");
+            e.printStackTrace();
+        }
+
+        log.debug("Found users '{}' in database", users);
+
+        return users;
     }
 
     @Override
