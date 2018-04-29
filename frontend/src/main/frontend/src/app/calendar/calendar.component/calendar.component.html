@@ -29,17 +29,23 @@
           *ngSwitchCase="'month'"
           [viewDate]="viewDate"
           [events]="events"
-          [cellTemplate]="customCellTemplate">
+          [cellTemplate]="customCellTemplate"
+          [activeDayIsOpen]="activeDayIsOpen"
+          (dayClicked)="dayClicked($event.day)"
+          (eventClicked)="handleEvent($event.event)">
         </mwl-calendar-month-view>
         <mwl-calendar-week-view
           *ngSwitchCase="'week'"
           [viewDate]="viewDate"
-          [events]="events">
+          [events]="events"
+          (dayClicked)="dayClicked($event.day)"
+          (eventClicked)="handleEvent($event.event)">
         </mwl-calendar-week-view>
         <mwl-calendar-day-view
           *ngSwitchCase="'day'"
           [viewDate]="viewDate"
-          [events]="events">
+          [events]="events"
+          (eventClicked)="handleEvent($event.event)">
         </mwl-calendar-day-view>
       </div>
     </div>

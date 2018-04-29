@@ -14,6 +14,7 @@ export class EventAddComponent implements OnInit {
 
   folderId: number;
   eventt: Evento;
+  userId: number;
   currentDate: string;
   datee: string;
   time: string;
@@ -33,12 +34,20 @@ export class EventAddComponent implements OnInit {
       this.showError('Unsuccessful parameters loading', 'Loading error');
     });
 
+    this.getCurrentDate();
+    this.resetEvent();
+  }
+
+  resetEvent() {
     this.eventt.folderId = this.folderId;
     this.eventt.ownerId = JSON.parse(localStorage.currentUser).id;
-    this.getCurrentDate();
     this.datee = this.currentDate;
     this.eventt.eventType = "EVENT";
-
+    this.eventt.name = "";
+    this.eventt.description = "";
+    this.eventt.eventDate = "";
+    this.eventt.periodicity = "";
+    this.eventt.place = "";
     this.time = "";
   }
 
@@ -87,6 +96,7 @@ export class EventAddComponent implements OnInit {
     this.eventAddService.addEvent(this.eventt).subscribe(eventt => {
       this.spinner.hide();
       this.showSuccess();
+      this.resetEvent();
     }, error => {
       this.showError('Unsuccessful event adding', 'Adding error');
       this.spinner.hide();
