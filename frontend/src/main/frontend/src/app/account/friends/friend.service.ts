@@ -21,7 +21,7 @@ export class FriendService {
   getFriendsRequests(): Observable<any> {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
-    return this.http.get<any>('api/profile/friends/requests', {headers: headers})
+    return this.http.get<any>('api/profile/friendsRequests', {headers: headers})
       .map(requests => {
         return requests;
       })
