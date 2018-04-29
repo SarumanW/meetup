@@ -43,6 +43,20 @@ public class EventDaoImpl implements EventDao {
 
 
     @Override
+    public List<Event> findByUserId(int userId) {
+        List<Event> events = null;
+
+        try {
+            events = jdbcTemplate.query(env.getProperty("event.findByUserId"),
+                    new Object[]{userId}, new EventRowMapper());
+        } catch (DataAccessException e){
+            System.out.println(e.getMessage());
+        }
+
+        return events;
+    }
+
+    @Override
     public Event findById(int id) {
         Event event = null;
 

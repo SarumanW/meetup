@@ -61,6 +61,10 @@ public class EventService {
         return event;
     }
 
+    public List<Event> getEventsByUser(int userId){
+        return eventDao.findByUserId(userId);
+    }
+
     public List<Event> getEventsByType(String eventType, int folderID) {
         return eventDao.findByType(eventType, folderID);
     }

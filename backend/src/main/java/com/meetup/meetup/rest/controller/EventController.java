@@ -33,6 +33,13 @@ public class EventController {
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
+    // TODO: 29.04.2018 logs, refactor
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Event>> getEventsByUser(@PathVariable int id){
+        List<Event> userEvents = eventService.getEventsByUser(id);
+        return new ResponseEntity<>(userEvents, HttpStatus.OK);
+    }
+
     @GetMapping("/folder/{folderId}")
     public ResponseEntity<List<Event>> getFolderEvents(@PathVariable int folderId) {
         log.debug("Trying to get event by folderId '{}'", folderId);
