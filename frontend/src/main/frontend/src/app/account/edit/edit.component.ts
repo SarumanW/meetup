@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, enableProdMode, OnInit} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpResponse, HttpEventType} from "@angular/common/http";
 import {AccountService} from "../account.service";
 import {Profile} from "../profile";
@@ -6,6 +6,8 @@ import {ActivatedRoute, Router} from "@angular/router"
 import {UploadFileService} from "../../upload.file/upload.file.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {Popup} from "ng2-opd-popup";
+import {isLineBreak} from "codelyzer/angular/sourceMappingVisitor";
+import {NgControl, ValidatorFn} from "@angular/forms";
 
 
 @Component({
@@ -25,8 +27,7 @@ export class EditComponent implements OnInit {
   profile: Profile;
   state: string = "profile";
   errorFileFormat: string;
-  private showModal: boolean;
-
+  errorDateFormat: string;
 
   constructor(private accountService: AccountService,
               private router: Router,
@@ -38,10 +39,17 @@ export class EditComponent implements OnInit {
     this.account = new Profile();
   }
 
-  clickButton(){
-    this.popup.show();
+  clickButton() {
+    const maxYear = `${2002}`;
+    const minYear = `${1960}`;
+    if (this.account.birthDay > maxYear || this.account.birthDay < minYear ) {
+      this.errorDateFormat = "Bad date format!";
+    } else {
+      this.popup.show();
+    }
   }
-  close(){
+
+  close() {
     this.popup.hide();
   }
 
@@ -89,7 +97,7 @@ export class EditComponent implements OnInit {
     if (!filename.endsWith(".jpg") &&
       !filename.endsWith(".png") &&
       !filename.endsWith(".gif")) {
-      this.errorFileFormat = "Bad fromat for file " + this.selectedFiles.item(0).name;
+      this.errorFileFormat = "Bad format for file " + this.selectedFiles.item(0).name;
     } else {
       this.errorFileFormat = null;
     }
@@ -110,12 +118,13 @@ export class EditComponent implements OnInit {
     this.selectedFiles = undefined
   }
 
-  formatDate(date: Date) {
+  formatDate(date: Date)  {
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     this.account.birthDay = `${day}-${month}-${year}`;
   }
+
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
