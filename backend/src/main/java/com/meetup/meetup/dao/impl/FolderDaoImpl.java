@@ -29,8 +29,7 @@ import java.util.Map;
 @PropertySource("classpath:sqlDao.properties")
 public class FolderDaoImpl implements FolderDao {
 
-    @Autowired
-    private Environment env;
+
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
