@@ -41,6 +41,8 @@ import {CalendarModule} from "angular-calendar";
 import {CalendarComponent} from "./calendar/calendar.component/calendar.component";
 import {CalendarHeaderComponent} from "./calendar/calendar.utils/calendar.header.component";
 import {UtilsModule} from "./calendar/calendar.utils/utils.module";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {CalendarService} from "./calendar/calendar.service";
 
 @NgModule({
   declarations: [
@@ -78,7 +80,8 @@ import {UtilsModule} from "./calendar/calendar.utils/utils.module";
     PaginationModule.forRoot(),
     PopupModule.forRoot(),
     CalendarModule.forRoot(),
-    UtilsModule
+    UtilsModule,
+    BrowserAnimationsModule
   ],
   providers: [AccountService,
     AuthGuard,
@@ -87,7 +90,8 @@ import {UtilsModule} from "./calendar/calendar.utils/utils.module";
     EventService,
     FriendService,
     UploadFileService,
-    EventAddService],
+    EventAddService,
+    CalendarService],
   bootstrap: [AppComponent]
 })
 
