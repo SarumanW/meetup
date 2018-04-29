@@ -1,6 +1,7 @@
 package com.meetup.meetup.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.Calendar;
@@ -18,6 +19,7 @@ public class Event {
     private String place;
     private int eventTypeId;
     private EventType eventType;
+    @JsonProperty
     private boolean isDraft;
     private int folderId;
     private String imageFilepath;
