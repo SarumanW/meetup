@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
-    private static Logger log = LoggerFactory.getLogger(FolderService.class);
+    private static Logger log = LoggerFactory.getLogger(JwtAuthenticationProvider.class);
 
     @Autowired
     private JwtService jwtService;

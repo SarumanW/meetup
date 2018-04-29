@@ -69,10 +69,6 @@ public class EventService {
         return eventDao.getDrafts(folderId);
     }
 
-    public List<Event> getDrafts(int folderId) {
-        return eventDao.getDrafts(folderId);
-    }
-
     public Event addEvent(Event event) {
         log.debug("Trying to insert event '{}' to database", event.toString());
 
