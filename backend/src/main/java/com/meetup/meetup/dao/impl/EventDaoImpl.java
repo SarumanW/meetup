@@ -58,7 +58,6 @@ public class EventDaoImpl implements EventDao {
                     new Object[]{userId}, new EventRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by finding event by user with id '{}'", userId);
-            System.out.println(e.getMessage());
             throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (events.isEmpty()) {
@@ -81,7 +80,7 @@ public class EventDaoImpl implements EventDao {
             );
         } catch (DataAccessException e) {
             log.error("Query fails by finding event with id '{}'", id);
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
 
         }
         if (event == null) {
@@ -127,7 +126,6 @@ public class EventDaoImpl implements EventDao {
             model.setEventId(id);
         } catch (DataAccessException e) {
             log.error("Query fails by insert event with name '{}' by owner with id '{}'", model.getName(), model.getOwnerId());
-            System.out.println(e.getMessage());
             throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (model.getEventId() != 0) {
@@ -159,7 +157,7 @@ public class EventDaoImpl implements EventDao {
     @Override
     public Role getRole(int userId, int eventId) {
         log.debug("Try to get role for user with id '{}' for event with id '{}'", userId, eventId);
-        Role role = null;
+        Role role;
 
         try {
             String roleString = jdbcTemplate.queryForObject(
@@ -169,11 +167,9 @@ public class EventDaoImpl implements EventDao {
             role = Role.valueOf(roleString);
         } catch (DataAccessException e) {
             log.error("Query fails by get role for user with id '{}' for event with id '{}'", userId, eventId);
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
-        if (role != null) {
-            log.debug("Role for user with id '{}' for event with id '{}' is ", userId, eventId, role.toString());
-        }
+        log.debug("Role for user with id '{}' for event with id '{}' is ", userId, eventId, role.toString());
         return role;
     }
 
@@ -192,7 +188,6 @@ public class EventDaoImpl implements EventDao {
             result = simpleJdbcInsert.execute(parameters);
         } catch (DataAccessException e) {
             log.error("Query fails by insert user event with user id '{}', event id '{}', role id '{}'", userId, eventId, roleId);
-            System.out.println(e.getMessage());
             throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result == 0) {
@@ -216,7 +211,6 @@ public class EventDaoImpl implements EventDao {
                     model.getPlace(), model.getEventTypeId(), model.isDraft() ? 1 : 0, model.getFolderId(), model.getImageFilepath(), model.getEventId());
         } catch (DataAccessException e) {
             log.error("Query fails by update event with id '{}'", model.getEventId());
-            System.out.println(e.getMessage());
             throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result == 0) {
@@ -235,7 +229,6 @@ public class EventDaoImpl implements EventDao {
             result = jdbcTemplate.update(EVENT_DELETE, model.getEventId());
         } catch (DataAccessException e) {
             log.error("Query fails by delete event with id '{}'", model.getEventId());
-            System.out.println(e.getMessage());
             throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result == 0) {
@@ -255,7 +248,7 @@ public class EventDaoImpl implements EventDao {
                     new Object[]{folderId}, new EventRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by find event by folder id '{}'", folderId);
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (events.isEmpty()) {
             log.debug("Event wasnt found with folder id '{}'", folderId);
@@ -275,9 +268,8 @@ public class EventDaoImpl implements EventDao {
             events = jdbcTemplate.query(EVENT_GET_DRAFTS,
                     new Object[]{folderId}, new EventRowMapper());
         } catch (DataAccessException e) {
-            // TODO: 30.04.2018 add exception
             log.error("Query fails by getting drafts with folder id '{}'", folderId);
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (events.isEmpty()) {
             log.debug("Drafts with folder id '{}' were not founded", folderId);
@@ -295,10 +287,10 @@ public class EventDaoImpl implements EventDao {
         try {
             events = jdbcTemplate.query(EVENT_FIND_BY_TYPE_IN_FOLDER,
                     new Object[]{eventType, folderId}, new EventRowMapper());
-            // TODO: 30.04.2018 add exception
+
         } catch (DataAccessException e) {
             log.error("Query fails by finding events with type '{}' with folderId '{}'", eventType, folderId);
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (events.isEmpty()) {
             log.debug("Events not found with type '{}' with wolderId '{}'", eventType, folderId);
@@ -316,10 +308,9 @@ public class EventDaoImpl implements EventDao {
         try {
             participants = jdbcTemplate.query(EVENT_GET_PARTICIPANTS,
                     new Object[]{event.getEventId()}, new UserRowMapper());
-            // TODO: 30.04.2018 add exception
         } catch (DataAccessException e) {
             log.error("Query fails by getting participants for event with id '{}'", event.getEventId());
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
 
         if (participants.isEmpty()) {

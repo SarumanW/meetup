@@ -4,6 +4,7 @@ import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.exception.runtime.DatabaseWorkException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class UserDaoImpl implements UserDao {
 
     private static Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
 
+    @Autowired
+    private Environment env;
 
     @Autowired
     @Qualifier("jdbcTemplate")
@@ -125,10 +128,9 @@ public class UserDaoImpl implements UserDao {
             list = jdbcTemplate.queryForList(USER_GET_FRIENDS_IDS,
                     userId, userId);
 
-            // TODO: 29.04.2018 Create exception
         } catch (DataAccessException e) {
             log.error("Query fails by getFriendsIds by userId '{}'", userId);
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
 
         if (list.isEmpty()) {
@@ -160,7 +162,6 @@ public class UserDaoImpl implements UserDao {
         return friendIds;
     }
 
-    // TODO: 29.04.2018 refactor and add exception
     @Override
     public boolean addFriend(int senderId, int receiverId) {
         log.debug("Try to addFriend from '{}' to '{}'", senderId, receiverId);
@@ -179,8 +180,7 @@ public class UserDaoImpl implements UserDao {
 
         } catch (DataAccessException e) {
             log.error("Query fails by addFriend from '{}' to '{}'", senderId, receiverId);
-            System.out.println(e.getMessage());
-            return false;
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result != 0) {
             log.debug("addFriend from '{}' to '{}' successful", senderId, receiverId);
@@ -233,8 +233,7 @@ public class UserDaoImpl implements UserDao {
 
         } catch (DataAccessException e) {
             log.error("Query fails by finding unconfirmedIds with id '{}'", userId);
-            // TODO: 29.04.2018 Add custom exception
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (unConfirmedIds.isEmpty()) {
             log.debug("unConfirmedIds not found by id '{}'", userId);
@@ -253,8 +252,7 @@ public class UserDaoImpl implements UserDao {
 
         } catch (DataAccessException e) {
             log.error("Query fails by confirmFriend between '{}' and '{}'", userId, friendId);
-            // TODO: 29.04.2018 Add custom exception
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result != 0) {
             log.debug("Friendship confirm between '{}' and '{}'", userId, friendId);
@@ -262,7 +260,6 @@ public class UserDaoImpl implements UserDao {
         return userId;
     }
 
-    //working
     @Override
     public int deleteFriend(int userId, int friendId) {
         log.debug("Try to deleteFriend between '{}' and '{}'", userId, friendId);
@@ -271,8 +268,7 @@ public class UserDaoImpl implements UserDao {
             result = jdbcTemplate.update(USER_DELETE_FRIEND, userId, friendId, friendId, userId);
         } catch (DataAccessException e) {
             log.error("Query fails by deleteFriend between '{}' and '{}'", userId, friendId);
-            // TODO: 29.04.2018 Add custom exception
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result != 0) {
             log.debug("Friendship delete between '{}' and '{}'", userId, friendId);
@@ -296,8 +292,7 @@ public class UserDaoImpl implements UserDao {
 
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with id '{}'", id);
-            // TODO: 29.04.2018 Create custom exception
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (user == null) {
             log.debug("User with id '{}' not found", id);
@@ -331,10 +326,10 @@ public class UserDaoImpl implements UserDao {
             log.debug("Try to execute statement");
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
             model.setId(id);
-            // TODO: 29.04.2018 create exception
+
         } catch (DataAccessException e) {
             log.error("Query fails by insert User");
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (model.getId() != 0) {
             log.debug("user was added with id '{}'", id);
@@ -362,8 +357,7 @@ public class UserDaoImpl implements UserDao {
                     model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
         } catch (DataAccessException e) {
             log.error("Query fails by update user with id '{}'", model.getId());
-            // TODO: 29.04.2018 Create custom exception
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result != 0) {
             log.debug("user with id'{}' was updated", model.getId());
@@ -373,7 +367,6 @@ public class UserDaoImpl implements UserDao {
         return model;
     }
 
-    //todo refactor function to return entity and add exception
     @Override
     public boolean updatePassword(User user) {
         log.debug("Try to update password, user with id '{}'", user.getId());
@@ -382,15 +375,15 @@ public class UserDaoImpl implements UserDao {
             result = jdbcTemplate.update(USER_UPDATE_PASSWORD, user.getPassword(), user.getId());
         } catch (DataAccessException e) {
             log.error("Query fails by update user password with user id '{}'", user.getId());
-            System.out.println(e.getMessage());
-            return false;
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result != 0) {
             log.debug("user with id '{}' update password", user.getId());
+            return true;
         } else {
             log.debug("user with id '{}' not update password", user.getId());
+            return false;
         }
-        return true;
     }
 
     @Override
@@ -399,10 +392,9 @@ public class UserDaoImpl implements UserDao {
         int result = 0;
         try {
             result = jdbcTemplate.update(USER_DELETE, model.getId());
-            // TODO: 29.04.2018 add exception
         } catch (DataAccessException e) {
             log.error("Query fails by delete user with id '{}'", model.getId());
-            System.out.println(e.getMessage());
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
 
         if (result != 0) {
