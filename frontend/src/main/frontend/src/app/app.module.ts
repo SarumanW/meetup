@@ -46,6 +46,7 @@ import {CalendarService} from "./calendar/calendar.service";
 import {ImageUploadService} from "./events/image.upload.service";
 import {AgmCoreModule} from "@agm/core";
 import {environment} from "./environment";
+import { TextMaskModule } from 'angular2-text-mask';
 
 @NgModule({
   declarations: [
@@ -85,6 +86,7 @@ import {environment} from "./environment";
     CalendarModule.forRoot(),
     UtilsModule,
     BrowserAnimationsModule,
+    TextMaskModule,
     AgmCoreModule.forRoot({
       apiKey: environment.googleMapsApiKey
     })

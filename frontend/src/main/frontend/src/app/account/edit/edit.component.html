@@ -12,9 +12,6 @@
     <div class="col-6 py-4">
       <div class="form-group">
         <h1>Profile editor</h1>
-        <div class="alert alert-danger" *ngIf=success>
-          <strong>Profile edited!</strong>
-        </div>
       </div>
 
       <form name="form" role="form" #editForm="ngForm" *ngIf=!success>
@@ -52,7 +49,7 @@
         <div class="form-group">
           <label class="form-control-label" for="lastName">Phone</label>
           <input type="text" class="form-control" [(ngModel)]="account.phone" id="phone" name="phone"
-                 #lastName="ngModel" placeholder="{{account.phone}}">
+                 #lastName="ngModel" placeholder="{{account.phone}}"  [textMask]="{mask: mask}">
         </div>
 
         <div class="form-group">
@@ -151,7 +148,7 @@
 <popup> Are you really want to edit your profile?
 <br/>
   <br/>
-<button type="button" class="btn btn-primary" (click)="save()" routerLink="/profile" >yes</button>
+<button type="button" class="btn btn-primary" (click)="save()" routerLink="/{{profile.login}}/profile" >yes</button>
 <button id="close_button" class="btn btn-primary" aria-label="Close" (click)="close()">no</button>
 </popup>
 
