@@ -5,6 +5,7 @@ import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,38 @@ public class UserDaoImpl implements UserDao {
     @Autowired
     private FolderDaoImpl folderDao;
 
+    /**
+     * Checks if login exists in the database
+     *
+     * @param login
+     * @return true if login is free
+     */
+    @Override
+    public boolean isLoginFree(String login) {
+        log.debug("Try to check, if login '{}' is free", login);
+        Integer numberOfUsers = (Integer) jdbcTemplate.queryForObject(
+                env.getProperty("user.isLoginFree"), new Object[]{login}, Integer.class
+        );
+        log.debug("Number of users with login '{}' is {}", login, numberOfUsers);
+        return numberOfUsers == 0;
+    }
+
+    /**
+     * Checks if login exists in the database
+     *
+     * @param email
+     * @return true if login is free
+     */
+    @Override
+    public boolean isEmailFree(String email) {
+        log.debug("Try to check, if email '{}' is free", email);
+        Integer numberOfUsers = (Integer) jdbcTemplate.queryForObject(
+                env.getProperty("user.isEmailFree"), new Object[]{email}, Integer.class
+        );
+        log.debug("Number of users with email '{}' is {}", email, numberOfUsers);
+        return numberOfUsers == 0;
+    }
+
     @Override
     public User findByLogin(String login) {
         log.debug("Try to find User by login: '{}'", login);
@@ -54,16 +87,12 @@ public class UserDaoImpl implements UserDao {
             );
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with login '{}'", login);
-            // TODO: 29.04.2018 Create a custom exception 
-            System.out.println(e.getMessage());
+            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"), "User", "login", login));
         }
+        log.debug("User with login '{}' was found", login);
 
-        if (user == null) {
-            log.debug("User with login '{}' not found", login);
-        } else {
-            log.debug("User with login '{}' was found", login);
-        }
         return user;
+
     }
 
     @Override
@@ -79,15 +108,10 @@ public class UserDaoImpl implements UserDao {
             );
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with email '{}'", email);
-            // TODO: 29.04.2018 Create custom exception
-            System.out.println(e.getMessage());
+            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"), "User", "email", email));
         }
 
-        if (user == null) {
-            log.debug("User with email '{}' not found", email);
-        } else {
-            log.debug("User with email '{}' was found", email);
-        }
+        log.debug("User with email '{}' was found", email);
         return user;
     }
 

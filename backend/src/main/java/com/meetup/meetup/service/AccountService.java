@@ -4,6 +4,8 @@ import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.BadTokenException;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import com.meetup.meetup.exception.runtime.HashAlgorithmException;
+import com.meetup.meetup.exception.runtime.NoTokenException;
 import com.meetup.meetup.exception.runtime.frontend.detailed.*;
 import com.meetup.meetup.security.utils.HashMD5;
 import com.meetup.meetup.service.vm.LoginVM;
@@ -48,8 +50,7 @@ public class AccountService {
             credentials.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
             log.error("Algorithm can not get hash for password");
-            // TODO: 27.04.2018 Create an custom exception
-            throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
+            throw new HashAlgorithmException(env.getProperty("hash.algorithm.exception"));
         }
 
         log.debug("Hash for password was successfully get");
@@ -71,8 +72,7 @@ public class AccountService {
 
         if (token == null) {
             log.error("Token was not created for user");
-            // TODO: 27.04.2018 Create an custom exception
-            throw new Exception("SendCustomErrorEnable to login. Server Error");
+            throw new NoTokenException(env.getProperty("no.token.exception"));
         }
 
         log.debug("Token successfully created for user");
@@ -89,7 +89,7 @@ public class AccountService {
     public void register(User user) throws Exception {
         log.debug("Trying to get user with login '{}' from database", user.getLogin());
 
-        if (null != userDao.findByLogin(user.getLogin())) {  //checking if user exist in system
+        if (!userDao.isLoginFree(user.getLogin())) {  //checking if user exist in system
             log.error("This login '{}' already exists in database", user.getLogin());
             throw new LoginAlreadyUsedException(env.getProperty("login.used.Exception"));
         }
@@ -97,7 +97,7 @@ public class AccountService {
         log.debug("No user found with this login '{}' in database", user.getLogin());
         log.debug("Trying to get user with email '{}' from database", user.getEmail());
 
-        if (null != userDao.findByEmail(user.getEmail())) { //checking if email exist in system
+        if (!userDao.isEmailFree(user.getEmail())) { //checking if email exist in system
             log.error("This email '{}' already exists in database", user.getEmail());
             throw new EmailAlreadyUsedException(env.getProperty("email.used.exception"));
         }
@@ -110,7 +110,7 @@ public class AccountService {
             user.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
             log.error("Algorithm can not create hash for password");
-            throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
+            throw new HashAlgorithmException(env.getProperty("hash.algorithm.exception"));
         }
 
         log.debug("Has been given a hashed password to the user");
@@ -131,10 +131,8 @@ public class AccountService {
             log.debug("Trying delete user from database");
             
             userDao.delete(user);
-            e.printStackTrace();
-            
-            // TODO: 27.04.2018 Create an custom exception
-            throw new Exception("SendCustomErrorSend mail exception");
+
+            throw new MailServerException(env.getProperty("mail.server.exception"));
         }
 
         log.debug("User '{}' is successfully registered in the system", user.toString());
@@ -156,8 +154,7 @@ public class AccountService {
 
         if (token == null) {
             log.error("Token was not created for user");
-            // TODO: 27.04.2018 Create an custom exception
-            throw new Exception("Token creating error");
+            throw new NoTokenException(env.getProperty("no.token.exception"));
         }
 
         log.debug("Token successfully created for user");
@@ -168,7 +165,7 @@ public class AccountService {
         } catch (MailException e) {
             log.error("Letter can not be sent");
             e.printStackTrace();
-            // TODO: 27.04.2018 throw an custom exception
+            throw new MailServerException(env.getProperty("mail.server.exception"));
         }
 
         log.debug("Letter has been sent successfully");
@@ -192,8 +189,7 @@ public class AccountService {
             user.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
             log.error("Algorithm can not create hash for password");
-            // TODO: 27.04.2018 Create an custom exception
-            throw new NoSuchAlgorithmException("SendCustomErrorEncoding password");
+            throw new HashAlgorithmException(env.getProperty("hash.algorithm.exception"));
         }
 
         log.debug("Hash for password was successfully create");

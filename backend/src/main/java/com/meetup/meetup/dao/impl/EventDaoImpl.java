@@ -60,12 +60,8 @@ public class EventDaoImpl implements EventDao {
             log.error("Query fails by finding event by user with id '{}'", userId);
             throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
-        if (events.isEmpty()) {
-            log.debug("Events for user with id '{}' not found", userId);
-        } else {
-            log.debug("Events for user with id '{}' counted '{}'", userId, events.size());
-        }
 
+            log.debug("Events for user with id '{}' counted '{}'", userId, events.size());
         return events;
     }
 
@@ -83,14 +79,11 @@ public class EventDaoImpl implements EventDao {
             throw new DatabaseWorkException(env.getProperty("database.work.exception"));
 
         }
-        if (event == null) {
-            log.debug("Event with id '{}' not found", id);
-        } else {
+
             log.debug("Event with id '{}' was found", id);
             log.debug("Try to set Participants for event with id '{}'", id);
             event.setParticipants(getParticipants(event));
             log.debug("Setting participants for event with id '{}' successful", id);
-        }
 
         return event;
     }
@@ -117,7 +110,6 @@ public class EventDaoImpl implements EventDao {
         parameters.put("DESCRIPTION", model.getDescription());
         parameters.put("PLACE", model.getPlace());
         parameters.put("EVENT_TYPE_ID", model.getEventTypeId());
-        //System.out.println(model.isDraft());
         parameters.put("IS_DRAFT", model.isDraft() ? 1 : 0);
         parameters.put("FOLDER_ID", model.getFolderId());
         parameters.put("IMAGE_FILEPATH", model.getImageFilepath());
@@ -147,7 +139,7 @@ public class EventDaoImpl implements EventDao {
     public Event createEvent(Event model, int userId) {
         log.debug("Try to create event with name '{}' by user with id '{}'", model.getName(), userId);
         Event event;
-        // TODO: 30.04.2018 maybe add more logging
+
         event = insert(model);
         insertUserEvent(userId, model.getEventId(), ownerId);
 

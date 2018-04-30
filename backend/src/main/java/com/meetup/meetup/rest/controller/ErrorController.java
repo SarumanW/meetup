@@ -26,13 +26,13 @@ public class ErrorController {
         try {
             response.getWriter().print(e.getMessage().replace("SendCustomError", ""));
         } catch (IOException e1) {
-            log.error("exception in ErrorControlle: ", e1);
+            log.error("exception in ErrorController: ", e1);
         }
     }
 
     @ExceptionHandler(CustomRuntimeException.class)
     public void handleCustomException(HttpServletResponse response, Exception e) {
-        log.error("CustomException: ", e);
+        log.error("Custom             Exception: ", e);
     }
 
     @ExceptionHandler(Exception.class)

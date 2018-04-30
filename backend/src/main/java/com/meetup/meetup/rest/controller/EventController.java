@@ -2,11 +2,14 @@ package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.exception.runtime.frontend.detailed.FileUploadException;
 import com.meetup.meetup.service.EventImageService;
 import com.meetup.meetup.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +20,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/events")
+@PropertySource("classpath:strings.properties")
 public class EventController {
 
     private static Logger log = LoggerFactory.getLogger(EventController.class);
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     private EventService eventService;
@@ -39,7 +46,7 @@ public class EventController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Event>> getEventsByUser(@PathVariable int userId){
+    public ResponseEntity<List<Event>> getEventsByUser(@PathVariable int userId) {
         log.debug("Trying to get event by userId '{}'", userId);
 
         List<Event> userEvents = eventService.getEventsByUser(userId);
@@ -114,15 +121,10 @@ public class EventController {
 
         String message;
         HttpStatus httpStatus;
-        try {
-            message = eventImageService.store(file);;
-            log.debug("Image successfully uploaded send response status OK");
-            httpStatus = HttpStatus.OK;
-        } catch (Exception e) {
-            message = "FAIL to upload " + file.getOriginalFilename() + "!";
-            log.error(message);
-            httpStatus = HttpStatus.EXPECTATION_FAILED;
-        }
+        message = eventImageService.store(file);
+        log.debug("Image successfully uploaded send response status OK");
+        httpStatus = HttpStatus.OK;
+
         return new ResponseEntity<>(message, httpStatus);
     }
 }
