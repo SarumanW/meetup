@@ -13,6 +13,7 @@ export class AppComponent {
   showLogout : boolean = true;
   profile : Profile;
 
+
   ngOnInit(){
     this.router.events.subscribe(event => this.modifyHeader(event));
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
