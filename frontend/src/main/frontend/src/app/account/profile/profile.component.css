@@ -1,0 +1,29 @@
+.info1 {
+  width: 65%;
+  margin-top: 20px;
+  margin-left: 10px;
+}
+
+.info2 {
+  width: 95%;
+  margin-top: 20px;
+}
+
+.info1, .info2, .edit, .user, .bt-1{
+  display: inline-block;
+}
+
+.edit{
+  position: absolute;
+  margin-left: 10px;
+}
+
+.avatar {
+  width: 100%;
+  height: auto;
+}
+
+.user {
+  width: 30%;
+}
+
