@@ -80,4 +80,9 @@ public class ProfileService {
         User user = authenticationFacade.getAuthentication();
         return userDao.deleteFriend(user.getId(), id);
     }
+
+    public List<User> getUnknownUsers(String userName){
+        User user = authenticationFacade.getAuthentication();
+        return userDao.getNotFriends(user.getId(),userName);
+    }
 }

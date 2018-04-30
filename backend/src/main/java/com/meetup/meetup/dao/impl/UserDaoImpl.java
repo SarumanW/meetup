@@ -132,6 +132,16 @@ public class UserDaoImpl implements UserDao {
         return friends;
     }
 
+    @Override
+    public List<User> getNotFriends(int userId, String userName) {
+
+        List<User> users;
+
+        users = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"),new Object[] {userId,userId,userName+"%"}, User.class);
+
+        return users;
+    }
+
 
     /**
      * Returns list of user ids where friendship for given user's id is confirmed
