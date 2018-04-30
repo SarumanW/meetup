@@ -35,7 +35,7 @@ public class FolderDaoImpl implements FolderDao {
         List<Folder> userFolders = new ArrayList<>();
 
         try{
-            userFolders = jdbcTemplate.query(GET_USER_FOLDERS,
+            userFolders = jdbcTemplate.query(env.getProperty(FOLDER_GET_USER_FOLDERS),
                     new Object[]{id}, new FolderRowMapper());
         } catch (DataAccessException e){
             System.out.println(e.getMessage());
@@ -50,7 +50,7 @@ public class FolderDaoImpl implements FolderDao {
 
         try{
             folder = jdbcTemplate.queryForObject(
-                    FOLDER_GET_BY_ID,
+                    env.getProperty(FOLDER_GET_BY_ID),
                     new Object[]{id}, new FolderRowMapper()
             );
         } catch (DataAccessException e) {
@@ -66,7 +66,7 @@ public class FolderDaoImpl implements FolderDao {
 
         try{
             folder = jdbcTemplate.queryForObject(
-                    FOLDER_GET_BY_NAME,
+                    env.getProperty(FOLDER_GET_BY_NAME),
                     new Object[]{name}, new FolderRowMapper()
             );
         } catch (DataAccessException e) {
@@ -80,7 +80,7 @@ public class FolderDaoImpl implements FolderDao {
     public boolean moveEventsToGeneral(int id) {
 
         try{
-            jdbcTemplate.update(FOLDER_REMOVE_EVENTS, id);
+            jdbcTemplate.update(env.getProperty(FOLDER_REMOVE_EVENTS), id);
             return true;
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
@@ -95,7 +95,7 @@ public class FolderDaoImpl implements FolderDao {
 
         try{
             folder = jdbcTemplate.queryForObject(
-                    FOLDER_GET_BY_ID,
+                    env.getProperty(FOLDER_GET_BY_ID),
                     new Object[]{id, userId}, new FolderRowMapper()
             );
         } catch (DataAccessException e) {
@@ -132,7 +132,7 @@ public class FolderDaoImpl implements FolderDao {
     @Override
     public Folder update(Folder model) {
         try{
-            jdbcTemplate.update(FOLDER_UPDATE,
+            jdbcTemplate.update(env.getProperty(FOLDER_UPDATE),
                     model.getName(), model.getFolderId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
@@ -145,7 +145,7 @@ public class FolderDaoImpl implements FolderDao {
     @Override
     public Folder delete(Folder model) {
         try {
-            jdbcTemplate.update(FOLDER_DELETE, model.getFolderId());
+            jdbcTemplate.update(env.getProperty(FOLDER_DELETE), model.getFolderId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
             throw new DatabaseWorkException(env.getProperty("database.work.exception"));
