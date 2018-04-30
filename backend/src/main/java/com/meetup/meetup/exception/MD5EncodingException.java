@@ -1,9 +1,8 @@
 package com.meetup.meetup.exception;
 
-import org.springframework.context.annotation.PropertySource;
-
+// TODO: 4/30/2018 Remove if is needless
 public class MD5EncodingException  extends RuntimeException {
     public MD5EncodingException() {
-        super("SendCustomErrorEncoding password");
+        super();
     }
 }

@@ -3,9 +3,11 @@ package com.meetup.meetup.rest.controller;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.service.ProfileService;
 import com.meetup.meetup.service.StorageService;
+import com.meetup.meetup.service.vm.UserAndTokenVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -116,17 +118,10 @@ public class ProfileController {
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
         log.debug("Trying to upload image '{}'", file);
 
-        String message;
-        try {
-            storageService.store(file);
-            message = "You successfully uploaded " + file.getOriginalFilename() + "!";
+        User updatedUser = storageService.store(file);
 
-            log.debug("Image successfully uploaded send response status OK");
-            return ResponseEntity.status(HttpStatus.OK).body(message);
-        } catch (Exception e) {
-            message = "FAIL to upload " + file.getOriginalFilename() + "!";
-            log.error(message);
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
-        }
+        log.debug("Image successfully uploaded send response status OK");
+        return new ResponseEntity<>(updatedUser.getImgPath(),HttpStatus.OK);
+
     }
 }

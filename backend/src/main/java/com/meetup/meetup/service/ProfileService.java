@@ -2,9 +2,11 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.EntityNotFoundException;
+import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ import org.slf4j.Logger;
 import java.util.List;
 
 @Service
+@PropertySource("classpath:strings.properties")
 public class ProfileService {
 
     @Autowired
@@ -20,6 +23,9 @@ public class ProfileService {
     @Autowired
     private AuthenticationFacade authenticationFacade;
 
+    @Autowired
+    private Environment env;
+
     private static Logger log = LoggerFactory.getLogger(ProfileService.class);
 
     public User getUserByLogin(String login) {
@@ -27,7 +33,7 @@ public class ProfileService {
 
         if(user == null) {
             log.error("User was not found by userLogin '{}'", login);
-            throw new EntityNotFoundException("User", "userLogin", login);
+            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"User", "userLogin", login));
         }
 
         log.debug("Found user '{}'", user.toString());

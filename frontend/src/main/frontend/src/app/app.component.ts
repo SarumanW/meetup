@@ -45,5 +45,8 @@ export class AppComponent {
     }
   }
 
+  login():string{
+    return JSON.parse(localStorage.currentUser).login
+  }
 
 }

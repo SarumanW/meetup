@@ -24,7 +24,7 @@ export class AccountService {
       .map(user => {
         if(user && user.token){
           localStorage.setItem('currentUser', JSON.stringify(user));
-        }
+  }
         return user;
       })
   }

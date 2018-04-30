@@ -1,8 +1,11 @@
 package com.meetup.meetup.security.jwt;
 
-import com.meetup.meetup.exception.SecretKeyNotFoundException;
+import com.meetup.meetup.exception.runtime.SecretKeyNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -11,11 +14,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @Component
+@PropertySource("classpath:strings.properties")
 public class SecretKeyProvider {
 
     private static Logger log = LoggerFactory.getLogger(SecretKeyProvider.class);
 
-    public byte[] getKey() throws Exception {
+    @Autowired
+    private Environment env;
+
+    public byte[] getKey() {
         log.debug("Trying to get secret key");
         try {
 
@@ -28,7 +35,7 @@ public class SecretKeyProvider {
             log.error("Secret key is not available");
 
             e.printStackTrace();
-            throw new SecretKeyNotFoundException("System cannot get secret key from file");
+            throw new SecretKeyNotFoundException(env.getProperty("key.not.found.exception"));
         }
     }
 }
