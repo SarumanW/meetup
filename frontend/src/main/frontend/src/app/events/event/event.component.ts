@@ -20,6 +20,8 @@ export class EventComponent implements OnInit {
   alreadyHasParticipant: boolean;
   loginInput: string = "";
   state: string = "folders";
+  lat: number;
+  lng: number;
 
   constructor(private eventService: EventService,
               private route: ActivatedRoute,
@@ -45,6 +47,10 @@ export class EventComponent implements OnInit {
 
     this.eventService.getEvent(this.eventId).subscribe(eventt => {
       this.eventt = eventt;
+      let coordinates = this.eventt.place.split(" ");
+      console.log(this.eventt.eventType);
+      this.lat = +coordinates[0];
+      this.lng = +coordinates[1];
       this.spinner.hide();
     }, error => {
       this.spinner.hide();

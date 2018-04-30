@@ -13,28 +13,33 @@
       <div class="col-10">
         <div class="container justify-content-center" *ngIf="eventt !== undefined">
           <div class="row">
-            <div class="col-md-4">
-              <br><br>
+            <br><br>
+
+            <div class="col-md-3">
+
               <ul class="list-group">
-                <li class="list-group-item active">{{eventt.name}} Event</li>
-                <li class="list-group-item">id: {{eventt.eventId}}</li>
-                <li class="list-group-item">Event Date: {{eventt.eventDate}}</li>
+                <li class="list-group-item active">{{eventt.name}} {{eventt.eventType}}</li>
+                <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Event Date: {{eventt.eventDate}}</li>
                 <li class="list-group-item">Description: {{eventt.description}}</li>
-                <li class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
+                <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
                 <li class="list-group-item">Place: {{eventt.place}}</li>
-                <li class="list-group-item">ownerId: {{eventt.ownerId}}</li>
-                <li class="list-group-item">currentUserId: {{this.currentUserLogin}}</li>
               </ul>
             </div>
             <div class="col-md-4">
-              <br><br>
               <div class="thumbnail">
-                <img src="{{eventt.imageFilepath}}" class="img-rounded" alt="Cinque Terre">
+                <img src="{{eventt.imageFilepath}}" class="event-logo">
               </div>
             </div>
+
+            <div class="col-md-4">
+              <agm-map [latitude]="lat" [longitude]="lng">
+                <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+              </agm-map>
+            </div>
+
           </div>
           <br><br>
-          <div class="row">
+          <div *ngIf="eventt.eventType !== 'PRIVATE_EVENT'" class="row">
             <div class="col-md-4" *ngIf="eventt.participants !== null">
             <ul class="list-group">
               <li class="list-group-item active">Participants</li>
@@ -43,9 +48,10 @@
             </div>
             </ul>
             </div>
-            <div class="col-md-4" *ngIf="eventt.ownerId === this.currentUserId">
+            <div class="col-md-2" *ngIf="eventt.ownerId === this.currentUserId">
               <button type="button" class="btn btn-primary" (click)="modal.show()" data-toggle="modal">Add participant</button>
             </div>
+
           </div>
         </div>
       </div>

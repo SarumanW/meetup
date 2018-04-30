@@ -61,3 +61,13 @@ header{
   cursor: pointer;
 }
 
+agm-map {
+  height: 350px;
+}
+
+.event-logo{
+  width: 350px;
+  height: 350px;
+}
+
+

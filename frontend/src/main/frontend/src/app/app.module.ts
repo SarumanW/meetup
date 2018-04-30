@@ -44,6 +44,8 @@ import {UtilsModule} from "./calendar/calendar.utils/utils.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CalendarService} from "./calendar/calendar.service";
 import {ImageUploadService} from "./events/image.upload.service";
+import {AgmCoreModule} from "@agm/core";
+import {environment} from "./environment";
 
 @NgModule({
   declarations: [
@@ -82,7 +84,10 @@ import {ImageUploadService} from "./events/image.upload.service";
     PopupModule.forRoot(),
     CalendarModule.forRoot(),
     UtilsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    AgmCoreModule.forRoot({
+      apiKey: environment.googleMapsApiKey
+    })
   ],
   providers: [AccountService,
     AuthGuard,

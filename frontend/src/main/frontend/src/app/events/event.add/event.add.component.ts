@@ -25,6 +25,8 @@ export class EventAddComponent implements OnInit {
   fileRegexp: RegExp;
   errorFileFormat: boolean;
   imageLoaded: boolean;
+  lat: number;
+  lng: number;
 
   constructor(private route: ActivatedRoute,
               private toastr: ToastrService,
@@ -57,7 +59,9 @@ export class EventAddComponent implements OnInit {
     this.eventt.eventDate = "";
     this.eventt.periodicity = "";
     this.eventt.place = "";
-    this.time = "";
+    this.time = "00:00";
+    this.lat = 50.447011182312195;
+    this.lng = 30.456780195127067;
   }
 
   formatDate() {
@@ -101,7 +105,7 @@ export class EventAddComponent implements OnInit {
   addEntity() {
     this.spinner.show();
     this.formatDate();
-    this.eventAddService.addEvent(this.eventt);
+    this.eventt.place = this.lat + " " + this.lng;
     this.eventAddService.addEvent(this.eventt).subscribe(eventt => {
       this.spinner.hide();
       this.showSuccess();
@@ -146,6 +150,13 @@ export class EventAddComponent implements OnInit {
     });
 
     this.selectedFiles = undefined;
+  }
+
+  placeMarker(event){
+    console.log(event.coords.lat);
+    console.log(event.coords.lng);
+    this.lng = event.coords.lng;
+    this.lat = event.coords.lat;
   }
 
 }
