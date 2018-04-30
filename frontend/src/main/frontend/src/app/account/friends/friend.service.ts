@@ -9,10 +9,10 @@ export class FriendService {
   constructor(private http: HttpClient) {
   }
 
-  getFriends(): Observable<any> {
+  getFriends(login: string): Observable<any> {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
-    return this.http.get<any>('api/profile/friends', {headers: headers})
+    return this.http.get<any>('api/profile/' + login + '/friends', {headers: headers})
       .map(friends => {
         return friends;
       })

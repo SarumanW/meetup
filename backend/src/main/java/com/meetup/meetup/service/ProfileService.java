@@ -39,10 +39,11 @@ public class ProfileService {
         return userDao.update(newUser);
     }
 
-    public List<User> getFriends() {
-        User user = authenticationFacade.getAuthentication();
+    public List<User> getFriends(String login) {
 
-        log.debug("Authenticated user '{}'", user.toString());
+        User user = userDao.findByLogin(login);
+
+        log.debug("User for finding friends '{}'", user.toString());
 
         return userDao.getFriends(user.getId());
     }
