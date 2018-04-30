@@ -40,7 +40,7 @@
 
         <div class="form-group">
           <label class="form-control-label" for="birthDay">Choose the day of your birth: </label>
-          <input type="date" min="1960-12-31" max="2002-12-31" class="form" id="birthDay" name="birthDay" #birthDay="ngModel" [(ngModel)]="account.birthDay" placeholder="{{account.birthDay}}" (click)="formatDate()">
+          <input type="date" min="1960-12-31" max="2012-12-31" class="form" id="birthDay" name="birthDay" #birthDay="ngModel" [(ngModel)]="account.birthDay" placeholder="{{account.birthDay}}" (click)="formatDate()">
         </div>
         <div class="alert alert-danger" *ngIf="errorDateFormat">
           {{errorDateFormat}}
@@ -50,10 +50,6 @@
           <label class="form-control-label" for="lastName">Phone</label>
           <input type="text" class="form-control" [(ngModel)]="account.phone" id="phone" name="phone"
                  #lastName="ngModel" placeholder="{{account.phone}}"  [textMask]="{mask: mask}">
-        </div>
-
-        <div class="form-group">
-          <label class="form-control-label" (click)="changeWishList()">Change your Wishlist: </label>
         </div>
 
         <div class="form-group">

@@ -89,7 +89,7 @@ export class EventAddComponent implements OnInit {
   showError(message: string, title: string) {
     this.toastr.error(message, title, {
       timeOut: 3000,
-      positionClass: 'toast-bottom-left',
+      positionClass: 'toast-top-right',
       closeButton: true
     });
   }
@@ -97,7 +97,7 @@ export class EventAddComponent implements OnInit {
   showSuccess() {
     this.toastr.info('Event was successfully added', 'Attention!', {
       timeOut: 3000,
-      positionClass: 'toast-bottom-left',
+      positionClass: 'toast-top-right',
       closeButton: true
     });
   }
