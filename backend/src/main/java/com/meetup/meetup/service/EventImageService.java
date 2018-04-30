@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static com.meetup.meetup.Keys.Key.EXCEPTION_FILE_UPLOAD;
+
 @Service
 @PropertySource("classpath:links.properties")
 @PropertySource("classpath:strings.properties")
@@ -32,7 +34,7 @@ public class EventImageService {
             Files.deleteIfExists(rootLocation.resolve(currentTime + inFileFormat));
             Files.copy(file.getInputStream(), rootLocation.resolve(currentTime + inFileFormat));
         } catch (Exception e) {
-            throw new FileUploadException(String.format(env.getProperty("file.upload.exception"),file.getOriginalFilename()));
+            throw new FileUploadException(String.format(env.getProperty(EXCEPTION_FILE_UPLOAD),file.getOriginalFilename()));
         }
 
         return filePath;

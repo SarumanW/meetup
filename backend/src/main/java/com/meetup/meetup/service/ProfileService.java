@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 
 import java.util.List;
 
+import static com.meetup.meetup.Keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
+
 @Service
 @PropertySource("classpath:strings.properties")
 public class ProfileService {
@@ -33,7 +35,7 @@ public class ProfileService {
 
         if(user == null) {
             log.error("User was not found by userLogin '{}'", login);
-            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"User", "userLogin", login));
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"User", "userLogin", login));
         }
 
         log.debug("Found user '{}'", user.toString());

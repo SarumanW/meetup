@@ -52,8 +52,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean isLoginFree(String login) {
         log.debug("Try to check, if login '{}' is free", login);
-        Integer numberOfUsers = (Integer) jdbcTemplate.queryForObject(
-                env.getProperty("user.isLoginFree"), new Object[]{login}, Integer.class
+        Integer numberOfUsers = jdbcTemplate.queryForObject(
+                env.getProperty(USER_IS_LOGIN_FREE), new Object[]{login}, Integer.class
         );
         log.debug("Number of users with login '{}' is {}", login, numberOfUsers);
         return numberOfUsers == 0;
@@ -68,8 +68,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean isEmailFree(String email) {
         log.debug("Try to check, if email '{}' is free", email);
-        Integer numberOfUsers = (Integer) jdbcTemplate.queryForObject(
-                env.getProperty("user.isEmailFree"), new Object[]{email}, Integer.class
+        Integer numberOfUsers = jdbcTemplate.queryForObject(
+                env.getProperty(USER_IS_EMAIL_FREE), new Object[]{email}, Integer.class
         );
         log.debug("Number of users with email '{}' is {}", email, numberOfUsers);
         return numberOfUsers == 0;
@@ -87,7 +87,7 @@ public class UserDaoImpl implements UserDao {
             );
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with login '{}'", login);
-            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"), "User", "login", login));
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "login", login));
         }
         log.debug("User with login '{}' was found", login);
 
@@ -108,7 +108,7 @@ public class UserDaoImpl implements UserDao {
             );
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with email '{}'", email);
-            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"), "User", "email", email));
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "email", email));
         }
 
         log.debug("User with email '{}' was found", email);
@@ -154,7 +154,7 @@ public class UserDaoImpl implements UserDao {
 
         } catch (DataAccessException e) {
             log.error("Query fails by getFriendsIds by userId '{}'", userId);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
         if (list.isEmpty()) {
@@ -168,14 +168,14 @@ public class UserDaoImpl implements UserDao {
 
         for (Map<String, Object> row : list) {
 
-            b = (BigDecimal) row.get("SENDER_ID");
+            b = (BigDecimal) row.get(FRIEND_SENDER_ID);
             if (b == null) log.debug("Map contains no mapping for the key SENDER_ID");
             if (b.intValue() != userId) {
                 log.debug("Try to add friend's id '{}' to friend list of user with id '{}'", b.intValue(), userId);
                 friendIds.add(b.intValue());
             }
 
-            b = (BigDecimal) row.get("RECEIVER_ID");
+            b = (BigDecimal) row.get(FRIEND_RECEIVER_ID);
             if (b == null) log.debug("Map contains no mapping for the key RECEIVER_ID");
             if (b.intValue() != userId) {
                 log.debug("Try to add friend's id '{}' to friend list of user with id '{}'", b.intValue(), userId);
@@ -192,19 +192,19 @@ public class UserDaoImpl implements UserDao {
         int result = 0;
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName("FRIEND");
+                .withTableName(TABLE_FRIEND);
 
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("SENDER_ID", senderId);
-        parameters.put("RECEIVER_ID", receiverId);
-        parameters.put("IS_CONFIRMED", 0);
+        parameters.put(FRIEND_SENDER_ID, senderId);
+        parameters.put(FRIEND_RECEIVER_ID, receiverId);
+        parameters.put(FRIEND_IS_CONFIRMED, 0);
 
         try {
             result = simpleJdbcInsert.execute((parameters));
 
         } catch (DataAccessException e) {
             log.error("Query fails by addFriend from '{}' to '{}'", senderId, receiverId);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (result != 0) {
             log.debug("addFriend from '{}' to '{}' successful", senderId, receiverId);
@@ -257,7 +257,7 @@ public class UserDaoImpl implements UserDao {
 
         } catch (DataAccessException e) {
             log.error("Query fails by finding unconfirmedIds with id '{}'", userId);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (unConfirmedIds.isEmpty()) {
             log.debug("unConfirmedIds not found by id '{}'", userId);
@@ -276,7 +276,7 @@ public class UserDaoImpl implements UserDao {
 
         } catch (DataAccessException e) {
             log.error("Query fails by confirmFriend between '{}' and '{}'", userId, friendId);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (result != 0) {
             log.debug("Friendship confirm between '{}' and '{}'", userId, friendId);
@@ -292,7 +292,7 @@ public class UserDaoImpl implements UserDao {
             result = jdbcTemplate.update(env.getProperty(USER_DELETE_FRIEND), userId, friendId, friendId, userId);
         } catch (DataAccessException e) {
             log.error("Query fails by deleteFriend between '{}' and '{}'", userId, friendId);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (result != 0) {
             log.debug("Friendship delete between '{}' and '{}'", userId, friendId);
@@ -316,7 +316,7 @@ public class UserDaoImpl implements UserDao {
 
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with id '{}'", id);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (user == null) {
             log.debug("User with id '{}' not found", id);
@@ -331,21 +331,21 @@ public class UserDaoImpl implements UserDao {
         log.debug("Try to insert user with login '{}'", model.getLogin());
         int id = 0;
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName("UUSER")
-                .usingGeneratedKeyColumns("USER_ID");
+                .withTableName(TABLE_UUSER)
+                .usingGeneratedKeyColumns(UUSER_USER_ID);
 
 
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("USER_ID", model.getId());
-        parameters.put("login", model.getLogin());
-        parameters.put("password", model.getPassword());
-        parameters.put("name", model.getName());
-        parameters.put("surname", model.getLastname());
-        parameters.put("email", model.getEmail());
-        parameters.put("timezone", model.getTimeZone());
-        parameters.put("image_filepath", model.getImgPath());
-        parameters.put("bday", (model.getBirthDay() != null ? Date.valueOf(model.getBirthDay()) : null));
-        parameters.put("phone", model.getPhone());
+        parameters.put(UUSER_USER_ID, model.getId());
+        parameters.put(UUSER_LOGIN, model.getLogin());
+        parameters.put(UUSER_PASSWORD, model.getPassword());
+        parameters.put(UUSER_NAME, model.getName());
+        parameters.put(UUSER_SURNAME, model.getLastname());
+        parameters.put(UUSER_EMAIL, model.getEmail());
+        parameters.put(UUSER_TIMEZONE, model.getTimeZone());
+        parameters.put(UUSER_IMAGE_FILEPATH, model.getImgPath());
+        parameters.put(UUSER_BDAY, (model.getBirthDay() != null ? Date.valueOf(model.getBirthDay()) : null));
+        parameters.put(UUSER_PHONE, model.getPhone());
         try {
             log.debug("Try to execute statement");
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
@@ -353,7 +353,7 @@ public class UserDaoImpl implements UserDao {
 
         } catch (DataAccessException e) {
             log.error("Query fails by insert User");
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (model.getId() != 0) {
             log.debug("user was added with id '{}'", id);
@@ -381,7 +381,7 @@ public class UserDaoImpl implements UserDao {
                     model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
         } catch (DataAccessException e) {
             log.error("Query fails by update user with id '{}'", model.getId());
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (result != 0) {
             log.debug("user with id'{}' was updated", model.getId());
@@ -399,7 +399,7 @@ public class UserDaoImpl implements UserDao {
             result = jdbcTemplate.update(env.getProperty(USER_UPDATE_PASSWORD), user.getPassword(), user.getId());
         } catch (DataAccessException e) {
             log.error("Query fails by update user password with user id '{}'", user.getId());
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (result != 0) {
             log.debug("user with id '{}' update password", user.getId());
@@ -418,7 +418,7 @@ public class UserDaoImpl implements UserDao {
             result = jdbcTemplate.update(env.getProperty(USER_DELETE), model.getId());
         } catch (DataAccessException e) {
             log.error("Query fails by delete user with id '{}'", model.getId());
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
         if (result != 0) {

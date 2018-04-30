@@ -8,11 +8,7 @@ import org.thymeleaf.context.Context;
 
 
 
-//@PropertySource("classpath:strings.properties")
 public class MailBuilder {
-    //public static final String REGISTER_MAIL_TEMPLATE = "registerMailTemplate";
-    //public static final String RECOVERY_PASSWORD_TEMPLATE = "recoveryPasswordTemplate";
-
 
     private TemplateEngine templateEngine;
 

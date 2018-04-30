@@ -58,7 +58,7 @@ public class EventDaoImpl implements EventDao {
                     new Object[]{userId}, new EventRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by finding event by user with id '{}'", userId);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
             log.debug("Events for user with id '{}' counted '{}'", userId, events.size());
@@ -76,7 +76,7 @@ public class EventDaoImpl implements EventDao {
             );
         } catch (DataAccessException e) {
             log.error("Query fails by finding event with id '{}'", id);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
 
         }
 
@@ -93,32 +93,32 @@ public class EventDaoImpl implements EventDao {
         int id;
         log.debug("Try to insert event with name '{}' by owner with id '{}'", model.getName(), model.getOwnerId());
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName("EVENT")
-                .usingGeneratedKeyColumns("EVENT_ID");
+                .withTableName(TABLE_EVENT)
+                .usingGeneratedKeyColumns(EVENT_EVENT_ID);
 
         if (model.getImageFilepath() == null) {
             model.setImageFilepath(env.getProperty("image.default.filepath"));
         }
 
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("NAME", model.getName());
+        parameters.put(EVENT_NAME, model.getName());
 
         if (model.getEventType() != EventType.NOTE) {
-            parameters.put("EVENT_DATE", model.getEventDate());
-            parameters.put("PERIODICITY_ID", model.getPeriodicityId());
+            parameters.put(EVENT_EVENT_DATE, model.getEventDate());
+            parameters.put(EVENT_PERIODICITY_ID, model.getPeriodicityId());
         }
-        parameters.put("DESCRIPTION", model.getDescription());
-        parameters.put("PLACE", model.getPlace());
-        parameters.put("EVENT_TYPE_ID", model.getEventTypeId());
-        parameters.put("IS_DRAFT", model.isDraft() ? 1 : 0);
-        parameters.put("FOLDER_ID", model.getFolderId());
-        parameters.put("IMAGE_FILEPATH", model.getImageFilepath());
+        parameters.put(EVENT_DESCRIPTION, model.getDescription());
+        parameters.put(EVENT_PLACE, model.getPlace());
+        parameters.put(EVENT_EVENT_TYPE_ID, model.getEventTypeId());
+        parameters.put(EVENT_IS_DRAFT, model.isDraft() ? 1 : 0);
+        parameters.put(EVENT_FOLDER_ID, model.getFolderId());
+        parameters.put(EVENT_IMAGE_FILEPATH, model.getImageFilepath());
         try {
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
             model.setEventId(id);
         } catch (DataAccessException e) {
             log.error("Query fails by insert event with name '{}' by owner with id '{}'", model.getName(), model.getOwnerId());
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (model.getEventId() != 0) {
             log.debug("Event with name '{}' by owner with id '{}' was inserted with id '{}'", model.getName(), model.getOwnerId(), id);
@@ -159,7 +159,7 @@ public class EventDaoImpl implements EventDao {
             role = Role.valueOf(roleString);
         } catch (DataAccessException e) {
             log.error("Query fails by get role for user with id '{}' for event with id '{}'", userId, eventId);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         log.debug("Role for user with id '{}' for event with id '{}' is ", userId, eventId, role.toString());
         return role;
@@ -169,18 +169,18 @@ public class EventDaoImpl implements EventDao {
         log.debug("Try to insert user event with user id '{}', event id '{}', role id '{}'", userId, eventId, roleId);
         int result = 0;
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName("USER_EVENT");
+                .withTableName(TABLE_USER_EVENT);
 
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("USER_ID", userId);
-        parameters.put("EVENT_ID", eventId);
-        parameters.put("ROLE_ID", roleId);
+        parameters.put(USER_EVENT_USER_ID, userId);
+        parameters.put(USER_EVENT_EVENT_ID, eventId);
+        parameters.put(USER_EVENT_ROLE_ID, roleId);
 
         try {
             result = simpleJdbcInsert.execute(parameters);
         } catch (DataAccessException e) {
             log.error("Query fails by insert user event with user id '{}', event id '{}', role id '{}'", userId, eventId, roleId);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (result == 0) {
             log.debug("Insert user event with user id '{}', event id '{}', role id '{}' not successful", userId, eventId, roleId);
@@ -203,7 +203,7 @@ public class EventDaoImpl implements EventDao {
                     model.getPlace(), model.getEventTypeId(), model.isDraft() ? 1 : 0, model.getFolderId(), model.getImageFilepath(), model.getEventId());
         } catch (DataAccessException e) {
             log.error("Query fails by update event with id '{}'", model.getEventId());
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (result == 0) {
             log.debug("Update event with id '{}' not successful", model.getEventId());
@@ -221,7 +221,7 @@ public class EventDaoImpl implements EventDao {
             result = jdbcTemplate.update(env.getProperty(EVENT_DELETE), model.getEventId());
         } catch (DataAccessException e) {
             log.error("Query fails by delete event with id '{}'", model.getEventId());
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (result == 0) {
             log.debug("Event with id '{}' was not deleted successful", model.getEventId());
@@ -240,7 +240,7 @@ public class EventDaoImpl implements EventDao {
                     new Object[]{folderId}, new EventRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by find event by folder id '{}'", folderId);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (events.isEmpty()) {
             log.debug("Event wasnt found with folder id '{}'", folderId);
@@ -261,7 +261,7 @@ public class EventDaoImpl implements EventDao {
                     new Object[]{folderId}, new EventRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by getting drafts with folder id '{}'", folderId);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (events.isEmpty()) {
             log.debug("Drafts with folder id '{}' were not founded", folderId);
@@ -282,7 +282,7 @@ public class EventDaoImpl implements EventDao {
 
         } catch (DataAccessException e) {
             log.error("Query fails by finding events with type '{}' with folderId '{}'", eventType, folderId);
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (events.isEmpty()) {
             log.debug("Events not found with type '{}' with wolderId '{}'", eventType, folderId);
@@ -302,7 +302,7 @@ public class EventDaoImpl implements EventDao {
                     new Object[]{event.getEventId()}, new UserRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by getting participants for event with id '{}'", event.getEventId());
-            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
         if (participants.isEmpty()) {

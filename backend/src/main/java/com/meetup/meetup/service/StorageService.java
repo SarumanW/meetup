@@ -15,6 +15,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.meetup.meetup.Keys.Key.EXCEPTION_FILE_UPLOAD;
+
 
 @Service
 @PropertySource("classpath:links.properties")
@@ -43,7 +45,7 @@ public class StorageService {
             Files.copy(file.getInputStream(), this.rootLocation.resolve(user.getId()+inFileFormat));
             return user;
         } catch (Exception e) {
-            throw new FileUploadException(String.format(env.getProperty("file.upload.exception"),file.getOriginalFilename()));        }
+            throw new FileUploadException(String.format(env.getProperty(EXCEPTION_FILE_UPLOAD),file.getOriginalFilename()));        }
     }
 
 }

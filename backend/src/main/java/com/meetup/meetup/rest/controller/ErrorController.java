@@ -32,7 +32,7 @@ public class ErrorController {
 
     @ExceptionHandler(CustomRuntimeException.class)
     public void handleCustomException(HttpServletResponse response, Exception e) {
-        log.error("Custom             Exception: ", e);
+        log.error("CustomException: ", e);
     }
 
     @ExceptionHandler(Exception.class)

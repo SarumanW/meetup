@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.meetup.meetup.Keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
+import static com.meetup.meetup.Keys.Key.EXCEPTION_LOGIN_NOT_FOUND;
+
 @Service
 @PropertySource("classpath:strings.properties")
 public class EventService {
@@ -59,7 +62,7 @@ public class EventService {
 
         if (event == null) {
             log.error("Event was not found by eventId '{}'", eventId);
-            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"Event", "eventId", eventId));
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Event", "eventId", eventId));
         }
 
         log.debug("Found event '{}'", event.toString());
@@ -82,7 +85,7 @@ public class EventService {
 
         if (events == null) {
             log.error("Events was not found by   folderId '{}'", folderId);
-            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"Events", "folderId", folderId));
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "folderId", folderId));
         }
 
         log.debug("Found events '{}'", events.toString());
@@ -135,7 +138,7 @@ public class EventService {
 
         if (user == null) {
             log.debug("Can not find user with login '{}'", login);
-            throw new LoginNotFoundException(env.getProperty("login.not.found.exception"));
+            throw new LoginNotFoundException(env.getProperty(EXCEPTION_LOGIN_NOT_FOUND));
         }
 
         eventDao.addParticipant(user.getId(), eventId);
@@ -150,7 +153,7 @@ public class EventService {
 
         if (eventDao.getRole(user.getId(), eventId) != Role.OWNER) {
             log.debug("User with id '{}' has not permission to add participant to event '{}'", user.getId(), eventId);
-            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"Event", "eventId", eventId));
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Event", "eventId", eventId));
         }
     }
 }

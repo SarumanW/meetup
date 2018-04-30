@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import static com.meetup.meetup.Keys.Key.EXCEPTION_AUTHENTICATION;
+
 /**
  * Used for get authenticated {@link User}.
  */
@@ -30,7 +32,7 @@ public class AuthenticationFacade {
 
         if (authentication == null || !authentication.isAuthenticated()) {
             log.error("User is not authenticated");
-            throw new AuthenticationException(env.getProperty("authentication.exception"));
+            throw new AuthenticationException(env.getProperty(EXCEPTION_AUTHENTICATION));
         }
 
         User authenticatedUser = (User) authentication.getPrincipal();
