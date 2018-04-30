@@ -1,28 +1,24 @@
 package com.meetup.meetup.dao.impl;
 
 import com.meetup.meetup.dao.FolderDao;
-import com.meetup.meetup.dao.rowMappers.EventRowMapper;
 import com.meetup.meetup.dao.rowMappers.FolderRowMapper;
 import com.meetup.meetup.entity.*;
 import com.meetup.meetup.exception.DatabaseWorkException;
 import oracle.jdbc.OracleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.meetup.meetup.exception.runtime.DatabaseWorkException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import static com.meetup.meetup.Keys.Key.*;
 
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +26,11 @@ import java.util.Map;
 
 @Repository
 @PropertySource("classpath:sqlDao.properties")
+@PropertySource("classpath:strings.properties")
 public class FolderDaoImpl implements FolderDao {
 
+    @Autowired
+    private Environment env;
     private static Logger log = LoggerFactory.getLogger(FolderDaoImpl.class);
 
     @Autowired
@@ -111,7 +110,7 @@ public class FolderDaoImpl implements FolderDao {
         } catch (DataAccessException e) {
             log.error("Query fails by moving events to general with id '{}'", id);
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result == 0) {
             log.debug("Moving events to general with id '{}' was failed", id);
@@ -163,7 +162,7 @@ public class FolderDaoImpl implements FolderDao {
         } catch (DataAccessException e) {
             log.error("Query fails by inserting folder with name '{}' by user with id '{}'", model.getName(), model.getUserId());
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (model.getFolderId() != 0){
             log.debug("Inserting folder with name '{}' by user with id '{}' successful folder id '{}'", model.getName(), model.getUserId(), model.getFolderId());
@@ -181,7 +180,7 @@ public class FolderDaoImpl implements FolderDao {
         } catch (DataAccessException e) {
             log.error("Query fails by updating folder with id '{}'", model.getFolderId());
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result == 0){
             log.debug("Updating folder with id '{}' not successful", model.getFolderId());
@@ -201,7 +200,7 @@ public class FolderDaoImpl implements FolderDao {
         } catch (DataAccessException e) {
             log.error("Query fails by deleting folder with id '{}'", model.getFolderId());
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result == 0){
             log.debug("Deleting folder with id '{}' not successful", model.getFolderId());

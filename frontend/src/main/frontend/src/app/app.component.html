@@ -6,7 +6,7 @@
     </a>
 
     <div *ngIf="showLogout" ngbDropdown class="d-inline-block navbar-right pr-5">
-      <button class="btn btn-default" id="dropdownBasic" ngbDropdownToggle>Actions</button>
+      <button class="btn btn-default" id="dropdownBasic" ngbDropdownToggle>Welcome, {{login()}} </button>
       <div ngbDropdownMenu aria-labelledby="dropdownBasic" class="">
         <button class="dropdown-item" routerLink="/{{profile.login}}/profile">Profile</button>
         <button class="dropdown-item" routerLink="/{{profile.login}}/friends">Friends</button>

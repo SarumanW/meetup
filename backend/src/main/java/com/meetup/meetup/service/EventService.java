@@ -3,12 +3,14 @@ package com.meetup.meetup.service;
 import com.meetup.meetup.dao.EventDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.*;
-import com.meetup.meetup.exception.EntityNotFoundException;
-import com.meetup.meetup.exception.LoginNotFoundException;
+import com.meetup.meetup.exception.runtime.EntityNotFoundException;
+import com.meetup.meetup.exception.runtime.frontend.detailed.LoginNotFoundException;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@PropertySource("classpath:strings.properties")
 public class EventService {
 
     private static Logger log = LoggerFactory.getLogger(EventService.class);
@@ -25,6 +28,9 @@ public class EventService {
     private final UserDao userDao;
     private final Map<EventPeriodicity, Integer> periodicityMap;
     private final Map<EventType, Integer> eventTypeMap;
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     public EventService(EventDao eventDao, AuthenticationFacade authenticationFacade, UserDao userDao) {
@@ -53,7 +59,7 @@ public class EventService {
 
         if (event == null) {
             log.error("Event was not found by eventId '{}'", eventId);
-            throw new EntityNotFoundException("Event", "eventId", eventId);
+            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"Event", "eventId", eventId));
         }
 
         log.debug("Found event '{}'", event.toString());
@@ -75,8 +81,8 @@ public class EventService {
         List<Event> events = eventDao.findByFolderId(folderId);
 
         if (events == null) {
-            log.error("Events was not found by folderId '{}'", folderId);
-            throw new EntityNotFoundException("Events", "folderId", folderId);
+            log.error("Events was not found by   folderId '{}'", folderId);
+            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"Events", "folderId", folderId));
         }
 
         log.debug("Found events '{}'", events.toString());
@@ -129,7 +135,7 @@ public class EventService {
 
         if (user == null) {
             log.debug("Can not find user with login '{}'", login);
-            throw new LoginNotFoundException();
+            throw new LoginNotFoundException(env.getProperty("login.not.found.exception"));
         }
 
         eventDao.addParticipant(user.getId(), eventId);
@@ -144,7 +150,7 @@ public class EventService {
 
         if (eventDao.getRole(user.getId(), eventId) != Role.OWNER) {
             log.debug("User with id '{}' has not permission to add participant to event '{}'", user.getId(), eventId);
-            throw new EntityNotFoundException("Event", "eventId", eventId);
+            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"Event", "eventId", eventId));
         }
     }
 }

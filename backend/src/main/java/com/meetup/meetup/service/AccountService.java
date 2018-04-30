@@ -2,7 +2,9 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.*;
+import com.meetup.meetup.exception.runtime.BadTokenException;
+import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import com.meetup.meetup.exception.runtime.frontend.detailed.*;
 import com.meetup.meetup.security.utils.HashMD5;
 import com.meetup.meetup.service.vm.LoginVM;
 import com.meetup.meetup.service.vm.RecoveryPasswordVM;
@@ -10,12 +12,15 @@ import com.meetup.meetup.service.vm.UserAndTokenVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
 
 import java.security.NoSuchAlgorithmException;
 
 @Component
+@PropertySource("classpath:strings.properties")
 public class AccountService {
 
     private static Logger log = LoggerFactory.getLogger(AccountService.class);
@@ -23,6 +28,9 @@ public class AccountService {
     private final JwtService jwtService;
     private final UserDao userDao;
     private final MailService mailService;
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     public AccountService(JwtService jwtService, UserDao userDao, MailService mailService) {
@@ -53,7 +61,7 @@ public class AccountService {
 
         if (user == null || !user.getPassword().equals(credentials.getPassword())) {
             log.error("User login or password is not correct");
-            throw new FailedToLoginException(credentials.getLogin());
+            throw new FailedToLoginException(String.format(env.getProperty("failed.login.exception"),credentials.getLogin()));
         }
 
         log.debug("Login and password is correct for user '{}'", user.toString());
@@ -83,7 +91,7 @@ public class AccountService {
 
         if (null != userDao.findByLogin(user.getLogin())) {  //checking if user exist in system
             log.error("This login '{}' already exists in database", user.getLogin());
-            throw new LoginAlreadyUsedException();
+            throw new LoginAlreadyUsedException(env.getProperty("login.used.Exception"));
         }
 
         log.debug("No user found with this login '{}' in database", user.getLogin());
@@ -91,7 +99,7 @@ public class AccountService {
 
         if (null != userDao.findByEmail(user.getEmail())) { //checking if email exist in system
             log.error("This email '{}' already exists in database", user.getEmail());
-            throw new EmailAlreadyUsedException();
+            throw new EmailAlreadyUsedException(env.getProperty("email.used.exception"));
         }
 
         log.debug("No user found with this email '{}' in database", user.getEmail());
@@ -110,7 +118,7 @@ public class AccountService {
 
         if (userDao.insert(user).getId() == 0) { //checking adding to DB
             log.error("Error caused by inserting user '{}' to database", user.toString());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
 
         log.debug("User data is successfully saved to database");
@@ -138,7 +146,7 @@ public class AccountService {
         User user = userDao.findByEmail(email);
         if (user == null) {
             log.error("User was not found by email '{}'", email);
-            throw new LoginNotFoundException();
+            throw new EmailNotFoundException(env.getProperty("email.not.found.exception"));
         }
 
         log.debug("User '{}' was successfully found by email", user.toString());
@@ -173,7 +181,7 @@ public class AccountService {
 
         if (user == null) {
             log.error("Bad token was given at request");
-            throw new BadTokenException();
+            throw new BadTokenException(env.getProperty("bad.token.exception"));
         }
 
         log.debug("User '{}' was successfully found by token '{}'", user.toString(), model.getToken());
@@ -193,7 +201,7 @@ public class AccountService {
 
         if (!userDao.updatePassword(user)) {
             log.error("User was not updated");
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
 
         log.debug("Password was successfully updated");

@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.exception.runtime.FileCopyingException;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import javax.xml.bind.SchemaOutputResolver;
 
 @Service
 @PropertySource("classpath:links.properties")
+@PropertySource("classpath:strings.properties")
 public class StorageService {
 
     @Autowired
@@ -35,7 +37,7 @@ public class StorageService {
 
     private Path rootLocation ;
 
-    public void store(MultipartFile file) throws Exception {
+    public User store(MultipartFile file) {
         rootLocation = Paths.get(env.getProperty("profile.img.link"));
         User user = authenticationFacade.getAuthentication();
         String inFileFormat = "."+file.getOriginalFilename().split("\\.")[1];
@@ -44,8 +46,9 @@ public class StorageService {
         try {
             Files.deleteIfExists(this.rootLocation.resolve(user.getId()+inFileFormat));
             Files.copy(file.getInputStream(), this.rootLocation.resolve(user.getId()+inFileFormat));
+            return user;
         } catch (Exception e) {
-            throw new Exception("Problems with file coping");
+            throw new FileCopyingException(env.getProperty("file.copying.exception"));
         }
     }
 

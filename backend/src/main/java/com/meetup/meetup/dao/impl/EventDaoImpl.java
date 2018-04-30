@@ -1,6 +1,5 @@
 package com.meetup.meetup.dao.impl;
 
-import com.meetup.meetup.Keys.Key;
 import com.meetup.meetup.dao.EventDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.EventRowMapper;
@@ -9,7 +8,7 @@ import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.EventType;
 import com.meetup.meetup.entity.Role;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.DatabaseWorkException;
+import com.meetup.meetup.exception.runtime.DatabaseWorkException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ import java.util.Map;
 
 @Repository
 @PropertySource("classpath:sqlDao.properties")
+@PropertySource("classpath:strings.properties")
 @PropertySource("classpath:image.properties")
 public class EventDaoImpl implements EventDao {
 
@@ -59,7 +59,7 @@ public class EventDaoImpl implements EventDao {
         } catch (DataAccessException e) {
             log.error("Query fails by finding event by user with id '{}'", userId);
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (events.isEmpty()) {
             log.debug("Events for user with id '{}' not found", userId);
@@ -82,7 +82,7 @@ public class EventDaoImpl implements EventDao {
         } catch (DataAccessException e) {
             log.error("Query fails by finding event with id '{}'", id);
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+
         }
         if (event == null) {
             log.debug("Event with id '{}' not found", id);
@@ -128,7 +128,7 @@ public class EventDaoImpl implements EventDao {
         } catch (DataAccessException e) {
             log.error("Query fails by insert event with name '{}' by owner with id '{}'", model.getName(), model.getOwnerId());
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (model.getEventId() != 0) {
             log.debug("Event with name '{}' by owner with id '{}' was inserted with id '{}'", model.getName(), model.getOwnerId(), id);
@@ -193,7 +193,7 @@ public class EventDaoImpl implements EventDao {
         } catch (DataAccessException e) {
             log.error("Query fails by insert user event with user id '{}', event id '{}', role id '{}'", userId, eventId, roleId);
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result == 0) {
             log.debug("Insert user event with user id '{}', event id '{}', role id '{}' not successful", userId, eventId, roleId);
@@ -217,7 +217,7 @@ public class EventDaoImpl implements EventDao {
         } catch (DataAccessException e) {
             log.error("Query fails by update event with id '{}'", model.getEventId());
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result == 0) {
             log.debug("Update event with id '{}' not successful", model.getEventId());
@@ -236,7 +236,7 @@ public class EventDaoImpl implements EventDao {
         } catch (DataAccessException e) {
             log.error("Query fails by delete event with id '{}'", model.getEventId());
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         if (result == 0) {
             log.debug("Event with id '{}' was not deleted successful", model.getEventId());

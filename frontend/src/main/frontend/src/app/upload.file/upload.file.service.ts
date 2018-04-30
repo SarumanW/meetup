@@ -5,7 +5,8 @@ import {Observable} from 'rxjs/Observable';
 @Injectable()
 export class UploadFileService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   pushFileToStorage(file: File): Observable<HttpEvent<{}>> {
     let headers = new HttpHeaders()
@@ -17,7 +18,7 @@ export class UploadFileService {
     const req = new HttpRequest('POST', '/api/profile/upload', formdata, {
       reportProgress: true,
       responseType: 'text',
-      headers:headers
+      headers: headers
     });
     return this.http.request(req);
   }

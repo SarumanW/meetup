@@ -12,9 +12,6 @@
     <div class="col-6 py-4">
       <div class="form-group">
         <h1>Profile editor</h1>
-        <div class="alert alert-danger" *ngIf=success>
-          <strong>Profile edited!</strong>
-        </div>
       </div>
 
       <form name="form" role="form" #editForm="ngForm" *ngIf=!success>
@@ -43,7 +40,7 @@
 
         <div class="form-group">
           <label class="form-control-label" for="birthDay">Choose the day of your birth: </label>
-          <input type="date" min="1960-12-31" max="2002-12-31" class="form" id="birthDay" name="birthDay" #birthDay="ngModel" [(ngModel)]="account.birthDay" placeholder="{{account.birthDay}}" (click)="formatDate()">
+          <input type="date" min="1960-12-31" max="2012-12-31" class="form" id="birthDay" name="birthDay" #birthDay="ngModel" [(ngModel)]="account.birthDay" placeholder="{{account.birthDay}}" (click)="formatDate()">
         </div>
         <div class="alert alert-danger" *ngIf="errorDateFormat">
           {{errorDateFormat}}
@@ -52,11 +49,7 @@
         <div class="form-group">
           <label class="form-control-label" for="lastName">Phone</label>
           <input type="text" class="form-control" [(ngModel)]="account.phone" id="phone" name="phone"
-                 #lastName="ngModel" placeholder="{{account.phone}}">
-        </div>
-
-        <div class="form-group">
-          <label class="form-control-label" (click)="changeWishList()">Change your Wishlist: </label>
+                 #lastName="ngModel" placeholder="{{account.phone}}"  [textMask]="{mask: mask}">
         </div>
 
         <div class="form-group">
@@ -151,7 +144,7 @@
 <popup> Are you really want to edit your profile?
 <br/>
   <br/>
-<button type="button" class="btn btn-primary" (click)="save()" routerLink="/profile" >yes</button>
+<button type="button" class="btn btn-primary" (click)="save()" routerLink="/{{profile.login}}/profile" >yes</button>
 <button id="close_button" class="btn btn-primary" aria-label="Close" (click)="close()">no</button>
 </popup>
 

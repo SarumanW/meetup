@@ -27,6 +27,7 @@ export class EditComponent implements OnInit {
   errorFileFormat: string;
   emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   errorDateFormat: string;
+  mask: any[] = ['+', '3', ' ', '8', ' ', '(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
   editForm = this.fb.group({
     email: ['', [Validators.required, Validators.pattern(this.emailPattern)]]
   });
@@ -43,10 +44,10 @@ export class EditComponent implements OnInit {
   }
 
   clickButton() {
-    const maxYear = `${2002}`;
+    const maxYear = `${2012}`;
     const minYear = `${1960}`;
     if (this.account.birthDay > maxYear || this.account.birthDay < minYear ) {
-      this.errorDateFormat = "Bad date format!";
+      this.errorDateFormat = "Please enter your real birthday!";
     } else {
       this.popup.show();
     }
@@ -120,10 +121,16 @@ export class EditComponent implements OnInit {
         this.progress.percentage = Math.round(100 * event.loaded / event.total);
       } else if (event instanceof HttpResponse) {
         console.log('File is completely uploaded!');
+        console.log(event.body);
+        let profile = JSON.parse(localStorage.currentUser);
+        profile.imgPath = event.body;
+        localStorage.setItem('currentUser', JSON.stringify(profile));
       }
     })
 
     this.selectedFiles = undefined
+
+    this.accountService.login(this.account);
   }
 
   formatDate(date: Date)  {
