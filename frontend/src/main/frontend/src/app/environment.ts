@@ -1,3 +1,3 @@
 export const environment = {
-  googleMapsApiKey: 'api'
+  googleMapsApiKey: 'AIzaSyBpO6cj0UaKyKsENS3lP22gVOPviEAL4PA'
 };

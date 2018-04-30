@@ -21,7 +21,6 @@ export class RegisterComponent implements OnInit {
   account: RegisterAccount;
   lastName: string;
   isValidFormSubmitted = null;
-  // emailPattern = "^[a-z0-9._%+-]@[a-z0-9.-]\.[a-z]{2,4}$";
   emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   registerForm = this.fb.group({
     email: ['', [Validators.required, Validators.pattern(this.emailPattern)]]

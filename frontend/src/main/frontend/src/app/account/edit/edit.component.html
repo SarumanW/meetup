@@ -118,7 +118,12 @@
           <label class="form-control-label" for="email">Email</label>
           <input type="email" class="form-control" id="email" name="email" #email="ngModel"
                  placeholder="{{account.email}}"
-                 [(ngModel)]="account.email" minlength=5 maxlength=100 email>
+                 [(ngModel)]="account.email" minlength=5 maxlength=100 email required [pattern]="emailPattern">
+          <div *ngIf="email.dirty && email.errors && !isValidFormSubmitted"  >
+            <small class="form-text text-danger"  *ngIf="email.errors.pattern">
+              Your email must be in format: mail@example.com
+            </small>
+          </div>
           <div *ngIf="email.dirty && email.invalid">
             <small class="form-text text-danger" *ngIf="email.errors.invalid">
               Your email is invalid.
@@ -131,7 +136,7 @@
             </small>
           </div>
         </div>
-        <button type="button" class="btn btn-primary"  [disabled]="editForm.form.invalid" data-toggle="modal" data-target="#myModal" (click)="clickButton()">
+        <button type="button" class="btn btn-primary"  [disabled]="editForm.form.invalid || email.errors?.pattern" data-toggle="modal" data-target="#myModal" (click)="clickButton()">
           Save changes
         </button>
         <button type="button" class="btn btn-primary" routerLink="/{{profile.login}}/profile">

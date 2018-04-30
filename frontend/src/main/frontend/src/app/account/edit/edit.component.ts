@@ -6,9 +6,7 @@ import {ActivatedRoute, Router} from "@angular/router"
 import {UploadFileService} from "../../upload.file/upload.file.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {Popup} from "ng2-opd-popup";
-import {isLineBreak} from "codelyzer/angular/sourceMappingVisitor";
-import {NgControl, ValidatorFn} from "@angular/forms";
-
+import {FormBuilder, Validators} from "@angular/forms";
 
 @Component({
   selector: 'edit',
@@ -27,10 +25,15 @@ export class EditComponent implements OnInit {
   profile: Profile;
   state: string = "profile";
   errorFileFormat: string;
+  emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   errorDateFormat: string;
+  editForm = this.fb.group({
+    email: ['', [Validators.required, Validators.pattern(this.emailPattern)]]
+  });
 
   constructor(private accountService: AccountService,
               private router: Router,
+              private fb: FormBuilder,
               private route: ActivatedRoute,
               private uploadService: UploadFileService,
               private spinner: NgxSpinnerService,
@@ -55,6 +58,7 @@ export class EditComponent implements OnInit {
 
   ngOnInit() {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
+    this.editForm.get('email').setValidators(Validators.email);
     this.route.params.subscribe(params => {
       this.account.login = params['login'];
     });
@@ -89,6 +93,10 @@ export class EditComponent implements OnInit {
         this.processError(response)
       }
     );
+  }
+
+  get email() {
+    return this.editForm.get('email');
   }
 
   selectFile(event) {
@@ -132,7 +140,6 @@ export class EditComponent implements OnInit {
   }
 
   changeWishList() {
-
   }
 
 }
