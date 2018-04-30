@@ -73,7 +73,8 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
-    @Override
+    // TODO for further improvements of user search
+    /*@Override
     public List<User> findByParams(String login, String name, String surname, Integer limit) {
 
         List<User> users = null;
@@ -113,7 +114,7 @@ public class UserDaoImpl implements UserDao {
         log.debug("Found users '{}' in database", users);
 
         return users;
-    }
+    }*/
 
     @Override
     public List<User> getFriends(int userId) {
@@ -132,6 +133,12 @@ public class UserDaoImpl implements UserDao {
         return friends;
     }
 
+    /**
+     * Actual method of searching unknown users for specific user.
+     * @param userId    id of specific user.
+     * @param userName  username pattern of unknown users
+     * @return
+     */
     @Override
     public List<User> getNotFriends(int userId, String userName) {
 

@@ -10,7 +10,7 @@ public interface UserDao extends Dao<User> {
 
     User findByEmail(String email);
 
-    List<User> findByParams(String login, String name, String surname, Integer limit);
+//    List<User> findByParams(String login, String name, String surname, Integer limit);
 
     User update(User model);
 

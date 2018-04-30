@@ -2,7 +2,6 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.DatabaseWorkException;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +28,9 @@ public class ProfileService {
         return userDao.findById(id);
     }
 
-    public List<User> searchUsers(String login, String name, String surname, Integer limit) {
+
+    // TODO for further improvements of user search
+    /*public List<User> searchUsers(String login, String name, String surname, Integer limit) {
 
         log.debug("Trying to search users by features login '{}', name '{}', surname '{}' and limit '{}'",
                 login, name, surname, limit);
@@ -44,7 +45,7 @@ public class ProfileService {
         log.debug("Found users '{}'", users);
 
         return users;
-    }
+    }*/
 
     public User updateUser(User newUser) {
         User updatedUser = userDao.findByLogin(newUser.getLogin()).setState(newUser);

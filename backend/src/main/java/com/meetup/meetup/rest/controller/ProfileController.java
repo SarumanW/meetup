@@ -34,14 +34,11 @@ public class ProfileController {
     }
 
     @GetMapping("/search")
-    public List<User> searchUsers(@RequestParam(value = "login", required = false) String login,
-                                  @RequestParam(value = "name", required = false) String name,
-                                  @RequestParam(value = "surname", required = false) String surname,
-                                  @RequestParam(value = "limit", required = false) Integer limit) {
+    public List<User> searchUsers(@RequestParam(value = "login", required = false) String login) {
         log.debug("Trying to search users by login '{}', name '{}', surname '{}' and limit '{}'",
-                login, name, surname, limit);
+                login);
 
-        List<User> users = profileService.searchUsers(login, name, surname, limit);
+        List<User> users = profileService.getUnknownUsers(login);
 
         log.debug("Found users '{}'", users.toString());
 
