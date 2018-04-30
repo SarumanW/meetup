@@ -1,25 +1,19 @@
 package com.meetup.meetup.dao.impl;
 
 import com.meetup.meetup.dao.FolderDao;
-import com.meetup.meetup.dao.rowMappers.EventRowMapper;
 import com.meetup.meetup.dao.rowMappers.FolderRowMapper;
 import com.meetup.meetup.entity.*;
-import com.meetup.meetup.exception.DatabaseWorkException;
-import oracle.jdbc.OracleTypes;
+import com.meetup.meetup.exception.runtime.DatabaseWorkException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import static com.meetup.meetup.Keys.Key.*;
 
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,9 +21,11 @@ import java.util.Map;
 
 @Repository
 @PropertySource("classpath:sqlDao.properties")
+@PropertySource("classpath:strings.properties")
 public class FolderDaoImpl implements FolderDao {
 
-
+    @Autowired
+    private Environment env;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -88,7 +84,7 @@ public class FolderDaoImpl implements FolderDao {
             return true;
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
 
     }
@@ -127,7 +123,7 @@ public class FolderDaoImpl implements FolderDao {
             model.setFolderId(id);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
 
         return model;
@@ -140,7 +136,7 @@ public class FolderDaoImpl implements FolderDao {
                     model.getName(), model.getFolderId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
 
         return model;
@@ -152,7 +148,7 @@ public class FolderDaoImpl implements FolderDao {
             jdbcTemplate.update(FOLDER_DELETE, model.getFolderId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
 
         return model;

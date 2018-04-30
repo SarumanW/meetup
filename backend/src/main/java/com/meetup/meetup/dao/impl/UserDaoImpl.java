@@ -30,9 +30,6 @@ public class UserDaoImpl implements UserDao {
 
     private static Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
 
-
-
-
     @Autowired
     @Qualifier("jdbcTemplate")
     private JdbcTemplate jdbcTemplate;

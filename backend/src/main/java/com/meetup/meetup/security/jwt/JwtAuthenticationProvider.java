@@ -6,6 +6,8 @@ import com.meetup.meetup.service.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -13,12 +15,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
+@PropertySource("classpath:strings.properties")
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private static Logger log = LoggerFactory.getLogger(JwtAuthenticationProvider.class);
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private Environment env;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -37,7 +43,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             return authenticatedProfile;
         } catch (Exception e) {
             log.error("Failed authentication of user with token '{}'", token);
-            throw new JwtAuthenticationException("Failed to verify token", e);
+            throw new JwtAuthenticationException(env.getProperty("jwt.authentication.exception"), e);
         }
     }
 

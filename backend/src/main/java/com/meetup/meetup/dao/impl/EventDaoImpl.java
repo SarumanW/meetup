@@ -1,6 +1,5 @@
 package com.meetup.meetup.dao.impl;
 
-import com.meetup.meetup.Keys.Key;
 import com.meetup.meetup.dao.EventDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.EventRowMapper;
@@ -9,7 +8,7 @@ import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.EventType;
 import com.meetup.meetup.entity.Role;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.DatabaseWorkException;
+import com.meetup.meetup.exception.runtime.DatabaseWorkException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
@@ -27,6 +26,7 @@ import java.util.Map;
 
 @Repository
 @PropertySource("classpath:sqlDao.properties")
+@PropertySource("classpath:strings.properties")
 @PropertySource("classpath:image.properties")
 public class EventDaoImpl implements EventDao {
 
@@ -53,7 +53,7 @@ public class EventDaoImpl implements EventDao {
                     new Object[]{userId}, new EventRowMapper());
         } catch (DataAccessException e){
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
 
         return events;
@@ -108,7 +108,7 @@ public class EventDaoImpl implements EventDao {
             model.setEventId(id);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         return model;
     }
@@ -163,7 +163,7 @@ public class EventDaoImpl implements EventDao {
             simpleJdbcInsert.execute(parameters);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
     }
 
@@ -179,7 +179,7 @@ public class EventDaoImpl implements EventDao {
                     model.getPlace(), model.getEventTypeId(), model.isDraft() ? 1 : 0, model.getFolderId(), model.getImageFilepath(), model.getEventId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         return model;
     }
@@ -190,7 +190,7 @@ public class EventDaoImpl implements EventDao {
             jdbcTemplate.update(EVENT_DELETE, model.getEventId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            throw new DatabaseWorkException();
+            throw new DatabaseWorkException(env.getProperty("database.work.exception"));
         }
         return model;
     }

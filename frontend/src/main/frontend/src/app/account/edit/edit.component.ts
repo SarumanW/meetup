@@ -121,10 +121,16 @@ export class EditComponent implements OnInit {
         this.progress.percentage = Math.round(100 * event.loaded / event.total);
       } else if (event instanceof HttpResponse) {
         console.log('File is completely uploaded!');
+        console.log(event.body);
+        let profile = JSON.parse(localStorage.currentUser);
+        profile.imgPath = event.body;
+        localStorage.setItem('currentUser', JSON.stringify(profile));
       }
     })
 
     this.selectedFiles = undefined
+
+    this.accountService.login(this.account);
   }
 
   formatDate(date: Date)  {

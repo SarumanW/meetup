@@ -5,17 +5,19 @@ import com.meetup.meetup.dao.FolderDao;
 import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.AuthenticationException;
-import com.meetup.meetup.exception.EntityNotFoundException;
+import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@PropertySource("classpath:strings.properties")
 public class FolderService {
 
     private static Logger log = LoggerFactory.getLogger(FolderService.class);
@@ -23,6 +25,9 @@ public class FolderService {
     private final FolderDao folderDao;
     private final EventDao eventDao;
     private final AuthenticationFacade authenticationFacade;
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     public FolderService(FolderDao folderDao, EventDao eventDao, AuthenticationFacade authenticationFacade) {
@@ -55,7 +60,7 @@ public class FolderService {
 
         if (folder == null) {
             log.error("Folder was not found by folderId '{}' for user '{}'", folderId, user.toString());
-            throw new EntityNotFoundException("Folder", "folderId", folderId);
+            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"Folder", "folderId", folderId));
         }
 
         log.debug("Folder was successfully found");
@@ -123,7 +128,7 @@ public class FolderService {
 
         if (folder.getUserId() != user.getId()) {
             log.error("User has no access to this data");
-            throw new EntityNotFoundException("Folder", "userId", folder.getUserId());
+            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"Folder", "userId", folder.getUserId()));
         }
 
         log.debug("Given access to folder '{}' for user '{}'", folder.toString(), user.toString());
