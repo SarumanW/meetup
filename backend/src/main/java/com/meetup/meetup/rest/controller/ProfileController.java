@@ -64,7 +64,7 @@ public class ProfileController {
         return new ResponseEntity<>(friends, HttpStatus.OK);
     }
 
-    @GetMapping("/friends/requests")
+    @GetMapping("/friendsRequests")
     public ResponseEntity<List<User>> getFriendsRequests() {
         log.debug("Trying to get requests from friends of authenticated user");
 
@@ -75,24 +75,23 @@ public class ProfileController {
         return new ResponseEntity<>(friendRequests, HttpStatus.OK);
     }
 
-    // TODO: 29.04.2018 repair it
-    @PostMapping("/friends/add/{friendId}")
-    public ResponseEntity<String> addFriend(@PathVariable int friendId) {
-        log.debug("Trying to add friend for authenticated user by friendId '{}'", friendId);
+    @PostMapping("/addFriend")
+    public ResponseEntity<String> addFriend(@RequestBody String friendLogin) {
+        log.debug("Trying to add friend for authenticated user by friendLogin '{}'", friendLogin);
 
-        if (profileService.addFriend(friendId)) {
+        if (profileService.addFriend(friendLogin)) {
             log.debug("Friend successfully added");
             log.debug("Send response status OK");
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>("Successfully send request to " + friendLogin, HttpStatus.OK);
         }
 
-        log.debug("Send response status OK");
+        log.debug("Send response status EXPECTATION_FAILED");
 
         return new ResponseEntity<>("User does not exist or you have already sent request", HttpStatus.EXPECTATION_FAILED);
     }
 
-    @PostMapping("/friends/confirm/{friendId}")
-    public ResponseEntity confirmFriend(@PathVariable int friendId) {
+    @PostMapping("/confirmFriend")
+    public ResponseEntity confirmFriend(@RequestBody int friendId) {
         log.debug("Trying to confirm friend for authenticated user by friendId '{}'", friendId);
 
         profileService.confirmFriend(friendId);
@@ -102,8 +101,8 @@ public class ProfileController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/friends/{friendId}")
-    public ResponseEntity deleteFriend(@PathVariable int friendId) {
+    @PostMapping("/deleteFriend")
+    public ResponseEntity deleteFriend(@RequestBody int friendId) {
         log.debug("Trying to delete friend for authenticated user by friendId '{}'", friendId);
 
         profileService.deleteFriend(friendId);

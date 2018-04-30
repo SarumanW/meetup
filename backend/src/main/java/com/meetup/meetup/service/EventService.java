@@ -51,7 +51,7 @@ public class EventService {
 
         Event event = eventDao.findById(eventId);
 
-        if(event == null) {
+        if (event == null) {
             log.error("Event was not found by eventId '{}'", eventId);
             throw new EntityNotFoundException("Event", "eventId", eventId);
         }

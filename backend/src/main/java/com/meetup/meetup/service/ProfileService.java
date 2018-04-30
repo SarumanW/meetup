@@ -55,12 +55,12 @@ public class ProfileService {
         return userDao.getFriendsRequests(user.getId());
     }
 
-    public boolean addFriend(int friendId){
+    public boolean addFriend(String friendLogin){
         User user = authenticationFacade.getAuthentication();
 
         log.debug("Authenticated user '{}'", user.toString());
 
-        User friend = userDao.findById(friendId);
+        User friend = userDao.findByLogin(friendLogin);
 
         log.debug("Friend found '{}'", friend.toString());
 

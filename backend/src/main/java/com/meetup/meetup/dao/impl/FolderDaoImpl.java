@@ -15,6 +15,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import static com.meetup.meetup.Keys.Key.*;
+
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,8 +29,7 @@ import java.util.Map;
 @PropertySource("classpath:sqlDao.properties")
 public class FolderDaoImpl implements FolderDao {
 
-    @Autowired
-    private Environment env;
+
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -38,7 +39,7 @@ public class FolderDaoImpl implements FolderDao {
         List<Folder> userFolders = new ArrayList<>();
 
         try{
-            userFolders = jdbcTemplate.query(env.getProperty("folder.getUserFolders"),
+            userFolders = jdbcTemplate.query(GET_USER_FOLDERS,
                     new Object[]{id}, new FolderRowMapper());
         } catch (DataAccessException e){
             System.out.println(e.getMessage());
@@ -53,7 +54,7 @@ public class FolderDaoImpl implements FolderDao {
 
         try{
             folder = jdbcTemplate.queryForObject(
-                    env.getProperty("folder.getById"),
+                    FOLDER_GET_BY_ID,
                     new Object[]{id}, new FolderRowMapper()
             );
         } catch (DataAccessException e) {
@@ -69,7 +70,7 @@ public class FolderDaoImpl implements FolderDao {
 
         try{
             folder = jdbcTemplate.queryForObject(
-                    env.getProperty("folder.getByName"),
+                    FOLDER_GET_BY_NAME,
                     new Object[]{name}, new FolderRowMapper()
             );
         } catch (DataAccessException e) {
@@ -83,7 +84,7 @@ public class FolderDaoImpl implements FolderDao {
     public boolean moveEventsToGeneral(int id) {
 
         try{
-            jdbcTemplate.update(env.getProperty("folder.removeEvents"), id);
+            jdbcTemplate.update(FOLDER_REMOVE_EVENTS, id);
             return true;
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
@@ -98,7 +99,7 @@ public class FolderDaoImpl implements FolderDao {
 
         try{
             folder = jdbcTemplate.queryForObject(
-                    env.getProperty("folder.getById"),
+                    FOLDER_GET_BY_ID,
                     new Object[]{id, userId}, new FolderRowMapper()
             );
         } catch (DataAccessException e) {
@@ -135,7 +136,7 @@ public class FolderDaoImpl implements FolderDao {
     @Override
     public Folder update(Folder model) {
         try{
-            jdbcTemplate.update(env.getProperty("folder.update"),
+            jdbcTemplate.update(FOLDER_UPDATE,
                     model.getName(), model.getFolderId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
@@ -148,7 +149,7 @@ public class FolderDaoImpl implements FolderDao {
     @Override
     public Folder delete(Folder model) {
         try {
-            jdbcTemplate.update(env.getProperty("folder.delete"), model.getFolderId());
+            jdbcTemplate.update(FOLDER_DELETE, model.getFolderId());
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
             throw new DatabaseWorkException();

@@ -38,10 +38,14 @@ public class EventController {
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
-    // TODO: 29.04.2018 logs, refactor
-    @GetMapping("/user/{id}")
-    public ResponseEntity<List<Event>> getEventsByUser(@PathVariable int id){
-        List<Event> userEvents = eventService.getEventsByUser(id);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Event>> getEventsByUser(@PathVariable int userId){
+        log.debug("Trying to get event by userId '{}'", userId);
+
+        List<Event> userEvents = eventService.getEventsByUser(userId);
+
+        log.debug("Send response body events '{}' and status OK", userEvents.toString());
+
         return new ResponseEntity<>(userEvents, HttpStatus.OK);
     }
 
