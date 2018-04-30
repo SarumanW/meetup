@@ -81,7 +81,7 @@ public class UserDaoImpl implements UserDao {
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(
-                    USER_FIND_BY_LOGIN,
+                    env.getProperty(USER_FIND_BY_LOGIN),
                     new Object[]{login}, new UserRowMapper() {
                     }
             );
@@ -102,7 +102,7 @@ public class UserDaoImpl implements UserDao {
 
         try {
             user = jdbcTemplate.queryForObject(
-                    USER_FIND_BY_EMAIL,
+                    env.getProperty(USER_FIND_BY_EMAIL),
                     new Object[]{email}, new UserRowMapper() {
                     }
             );
@@ -149,7 +149,7 @@ public class UserDaoImpl implements UserDao {
         List<Map<String, Object>> list = new ArrayList<>();
 
         try {
-            list = jdbcTemplate.queryForList(USER_GET_FRIENDS_IDS,
+            list = jdbcTemplate.queryForList(env.getProperty(USER_GET_FRIENDS_IDS),
                     userId, userId);
 
         } catch (DataAccessException e) {
@@ -252,7 +252,7 @@ public class UserDaoImpl implements UserDao {
         List<Integer> unConfirmedIds = new ArrayList<>();
 
         try {
-            unConfirmedIds = jdbcTemplate.queryForList(USER_GET_UNCONFIRMED_IDS,
+            unConfirmedIds = jdbcTemplate.queryForList(env.getProperty(USER_GET_UNCONFIRMED_IDS),
                     new Object[]{userId}, Integer.class);
 
         } catch (DataAccessException e) {
@@ -272,7 +272,7 @@ public class UserDaoImpl implements UserDao {
         log.debug("Try to confirmFriend between '{}' and '{}'", userId, friendId);
         int result = 0;
         try {
-            result = jdbcTemplate.update(USER_CONFIRM_FRIEND, friendId, userId);
+            result = jdbcTemplate.update(env.getProperty(USER_CONFIRM_FRIEND), friendId, userId);
 
         } catch (DataAccessException e) {
             log.error("Query fails by confirmFriend between '{}' and '{}'", userId, friendId);
@@ -289,7 +289,7 @@ public class UserDaoImpl implements UserDao {
         log.debug("Try to deleteFriend between '{}' and '{}'", userId, friendId);
         int result = 0;
         try {
-            result = jdbcTemplate.update(USER_DELETE_FRIEND, userId, friendId, friendId, userId);
+            result = jdbcTemplate.update(env.getProperty(USER_DELETE_FRIEND), userId, friendId, friendId, userId);
         } catch (DataAccessException e) {
             log.error("Query fails by deleteFriend between '{}' and '{}'", userId, friendId);
             throw new DatabaseWorkException(env.getProperty("database.work.exception"));
@@ -309,7 +309,7 @@ public class UserDaoImpl implements UserDao {
 
         try {
             user = jdbcTemplate.queryForObject(
-                    USER_FIND_BY_ID,
+                    env.getProperty(USER_FIND_BY_ID),
                     new Object[]{id}, new UserRowMapper() {
                     }
             );
@@ -376,7 +376,7 @@ public class UserDaoImpl implements UserDao {
         log.debug("Try to update user with id '{}'", model.getId());
         int result = 0;
         try {
-            result = jdbcTemplate.update(USER_UPDATE,
+            result = jdbcTemplate.update(env.getProperty(USER_UPDATE),
                     model.getLogin(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
                     model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getId());
         } catch (DataAccessException e) {
@@ -396,7 +396,7 @@ public class UserDaoImpl implements UserDao {
         log.debug("Try to update password, user with id '{}'", user.getId());
         int result = 0;
         try {
-            result = jdbcTemplate.update(USER_UPDATE_PASSWORD, user.getPassword(), user.getId());
+            result = jdbcTemplate.update(env.getProperty(USER_UPDATE_PASSWORD), user.getPassword(), user.getId());
         } catch (DataAccessException e) {
             log.error("Query fails by update user password with user id '{}'", user.getId());
             throw new DatabaseWorkException(env.getProperty("database.work.exception"));
@@ -415,7 +415,7 @@ public class UserDaoImpl implements UserDao {
         log.debug("Try to delete user with id '{}'", model.getId());
         int result = 0;
         try {
-            result = jdbcTemplate.update(USER_DELETE, model.getId());
+            result = jdbcTemplate.update(env.getProperty(USER_DELETE), model.getId());
         } catch (DataAccessException e) {
             log.error("Query fails by delete user with id '{}'", model.getId());
             throw new DatabaseWorkException(env.getProperty("database.work.exception"));

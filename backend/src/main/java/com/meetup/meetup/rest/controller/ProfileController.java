@@ -55,11 +55,11 @@ public class ProfileController {
         return new ResponseEntity<>("Updating failed", HttpStatus.NOT_MODIFIED);
     }
 
-    @GetMapping("/friends")
-    public ResponseEntity<List<User>> getFriends() {
+    @GetMapping("/{login}/friends")
+    public ResponseEntity<List<User>> getFriends(@PathVariable String login) {
         log.debug("Trying to get friends of authenticated user");
 
-        List<User> friends = profileService.getFriends();
+        List<User> friends = profileService.getFriends(login);
 
         log.debug("Send response body friends '{}' and status OK", friends);
 

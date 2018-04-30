@@ -43,7 +43,7 @@ public class FolderDaoImpl implements FolderDao {
         List<Folder> userFolders = new ArrayList<>();
 
         try {
-            userFolders = jdbcTemplate.query(GET_USER_FOLDERS,
+            userFolders = jdbcTemplate.query(env.getProperty(FOLDER_GET_USER_FOLDERS),
                     new Object[]{id}, new FolderRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by getting folders for user with id '{}'", id);
@@ -64,7 +64,7 @@ public class FolderDaoImpl implements FolderDao {
 
         try {
             folder = jdbcTemplate.queryForObject(
-                    FOLDER_GET_BY_ID,
+                    env.getProperty(FOLDER_GET_BY_ID),
                     new Object[]{id}, new FolderRowMapper()
             );
         } catch (DataAccessException e) {
@@ -86,7 +86,7 @@ public class FolderDaoImpl implements FolderDao {
 
         try {
             folder = jdbcTemplate.queryForObject(
-                    FOLDER_GET_BY_NAME,
+                    env.getProperty(FOLDER_GET_BY_NAME),
                     new Object[]{name}, new FolderRowMapper()
             );
         } catch (DataAccessException e) {
@@ -106,7 +106,7 @@ public class FolderDaoImpl implements FolderDao {
         log.debug("Try to move events to general with id '{}'", id);
         int result = 0;
         try {
-            result = jdbcTemplate.update(FOLDER_REMOVE_EVENTS, id);
+            result = jdbcTemplate.update(env.getProperty(FOLDER_REMOVE_EVENTS), id);
 
         } catch (DataAccessException e) {
             log.error("Query fails by moving events to general with id '{}'", id);
@@ -128,7 +128,7 @@ public class FolderDaoImpl implements FolderDao {
 
         try {
             folder = jdbcTemplate.queryForObject(
-                    FOLDER_GET_BY_ID,
+                    env.getProperty(FOLDER_GET_BY_ID),
                     new Object[]{id, userId}, new FolderRowMapper()
             );
         } catch (DataAccessException e) {
@@ -174,7 +174,7 @@ public class FolderDaoImpl implements FolderDao {
         log.debug("Try to update folder with id '{}'", model.getFolderId());
         int result = 0;
         try {
-            result = jdbcTemplate.update(FOLDER_UPDATE,
+            result = jdbcTemplate.update(env.getProperty(FOLDER_UPDATE),
                     model.getName(), model.getFolderId());
         } catch (DataAccessException e) {
             log.error("Query fails by updating folder with id '{}'", model.getFolderId());
