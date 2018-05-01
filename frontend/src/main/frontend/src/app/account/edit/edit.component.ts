@@ -125,7 +125,6 @@ export class EditComponent implements OnInit {
 
     this.selectedFiles = undefined
 
-    this.accountService.login(this.account);
   }
 
   formatDate(date: Date)  {

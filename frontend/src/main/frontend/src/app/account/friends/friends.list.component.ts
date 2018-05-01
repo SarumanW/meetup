@@ -12,13 +12,13 @@ import {ActivatedRoute} from "@angular/router";
   styleUrls: ['./friends.list.component.css']
 })
 
-export class FriendsListComponent implements OnInit{
+export class FriendsListComponent implements OnInit {
   state: string = "friends";
   newFriendName: string;
   friends: Profile[] = [];
   unconfirmedFriends: Profile[] = [];
   message: string;
-  loggedUser:boolean;
+  loggedUser: boolean;
   user: string;
 
   constructor(private friendService: FriendService,
@@ -32,16 +32,15 @@ export class FriendsListComponent implements OnInit{
     this.spinner.hide();
     this.route.params.subscribe(params => {
       this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === params['login'];
-    this.user = params['login'] });
+      this.user = params['login']
+    });
   }
 
   getInfo() {
-    if(this.loggedUser) {
-      this.friendService.getFriendsRequests()
-        .subscribe((requests) => {
-          this.unconfirmedFriends = requests
-        });
-    }
+    this.friendService.getFriendsRequests()
+      .subscribe((requests) => {
+        this.unconfirmedFriends = requests
+      });
     this.route.params.subscribe(params => {
       this.friendService.getFriends(params['login'])
         .subscribe((friends) => {
