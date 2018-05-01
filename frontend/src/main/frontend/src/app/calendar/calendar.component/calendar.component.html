@@ -23,7 +23,7 @@
         <small style="margin: 5px">There are {{ day.events.length }} events on this day</small>
       </ng-template>
 
-      <div [ngSwitch]="view" *ngIf="events.length">
+      <div [ngSwitch]="view" *ngIf="events.length; else elseBlock">
         <mwl-calendar-month-view
           *ngSwitchCase="'month'"
           [viewDate]="viewDate"
@@ -47,6 +47,8 @@
           (eventClicked)="handleEvent($event.event)">
         </mwl-calendar-day-view>
       </div>
+
+      <ng-template #elseBlock>You have no events yet, go to your folders and add one!</ng-template>
     </div>
 
   </div>
