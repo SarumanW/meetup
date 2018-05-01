@@ -4,6 +4,7 @@ import {AccountService} from "../account.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {FriendService} from "../friends/friend.service";
+import {FriendsListComponent} from "../friends/friends.list.component";
 
 @Component({
   templateUrl: './profile.component.html',
@@ -15,55 +16,78 @@ export class ProfileComponent implements OnInit {
   state: string = "profile";
   profile: Profile;
   loggedUser: boolean;
-  user: string;
 
+  friendCount: number;
   isFriend: boolean;
   isConfirmed: boolean;
 
   constructor(private accountService: AccountService,
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
-              private friendService: FriendService) {
+              private friendService: FriendService,) {
+    this.route.params.subscribe(params => {
+      this.accountService.profile(params['login']).subscribe(
+        (profile) => {
+          this.profile = profile;
+          this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === this.profile.login;
+          this.update();
+        });
+    });
   }
 
   ngOnInit() {
-    this.spinner.show();
 
-    this.route.params.subscribe(params => {
-      this.user = params['login']
-    });
-
-    this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === this.user;
-
-    this.accountService.profile(this.user).subscribe(
-      (profile) => {
-        this.profile = profile;
-        this.spinner.hide();
-      });
-    this.getFriends();
   }
 
-  //TODO chang button depending on user
-  getFriends() {
-    this.friendService.getFriends(this.user).subscribe((friends) => {
+  update(){
+    this.spinner.show();
+    this.getButton();
+    this.spinner.hide();
+  }
+
+  // TODO move it to the backend
+  getButton() {
+    this.friendService.getFriends(this.profile.login).subscribe((friends) => {
       this.accountService.profile(JSON.parse(localStorage.getItem('currentUser')).login)
         .subscribe((user) => {
-          if (friends.indexOf(user) != -1) {
-            this.isFriend = true;
-          } else {
+          if(friends.length === 0){
             this.isFriend = false;
           }
-          // console.log(this.isFriend);
-          // console.log(friends);
+          for (let i = 0; i < friends.length; i++) {
+            if(user.id === friends[i].id){
+              this.isFriend = true;
+              break;
+            }
+            else{
+              this.isFriend = false;
+            }
+          }
+          this.friendCount = friends.length;
         });
     });
     this.friendService.getFriendsRequests().subscribe((requests) => {
-      if (requests.include(this.profile)) {
+      if(requests.length === 0){
         this.isConfirmed = true;
       }
-      console.log(this.isConfirmed);
-      console.log(requests);
-      console.log(this.profile);
+      for (let i = 0; i < requests.length; i++) {
+        if(this.profile.id === requests[i].id){
+          this.isConfirmed = false;
+          break;
+        }
+        else{
+          this.isConfirmed = true;
+        }
+      }
     });
+  }
+
+  addFriend(login: string){
+    this.friendService.addFriend(login).subscribe((result)=>{this.update()});
+  }
+  deleteFriend(id: number){
+    this.friendService.deleteFriend(id).subscribe((result)=>{this.update()});
+  }
+  confirmFriend(id: number){
+    this.friendService.confirmFriend(id).subscribe((result)=>{this.update()});
   }
 }

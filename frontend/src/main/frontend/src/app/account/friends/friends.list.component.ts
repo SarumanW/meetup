@@ -28,19 +28,21 @@ export class FriendsListComponent implements OnInit {
 
   ngOnInit() {
     this.spinner.show();
-    this.getInfo();
-    this.spinner.hide();
     this.route.params.subscribe(params => {
       this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === params['login'];
       this.user = params['login']
+      this.getInfo();
+      this.spinner.hide();
     });
   }
 
   getInfo() {
-    this.friendService.getFriendsRequests()
-      .subscribe((requests) => {
-        this.unconfirmedFriends = requests
-      });
+    if (this.loggedUser) {
+      this.friendService.getFriendsRequests()
+        .subscribe((requests) => {
+          this.unconfirmedFriends = requests;
+        });
+    }
     this.route.params.subscribe(params => {
       this.friendService.getFriends(params['login'])
         .subscribe((friends) => {

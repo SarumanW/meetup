@@ -1,12 +1,12 @@
 <div class="friend-info">
   <button type="button" routerLink="/{{user.login}}/profile"
           class="list-group-item list-group-item-action"
-          [ngClass]="{'list-group-item-primary': confirmed,
-                      'list-group-item-warning' : !confirmed}">
+          [ngClass]="{'border-primary': confirmed,
+                      'border-warning' : !confirmed}">
     User name: {{user.name}}
   </button>
 </div>
-<div class="friend-action">
+<div class="friend-action" *ngIf="loggedUser">
   <button *ngIf="!confirmed" type="button" (click)="confirmFriend(user.id)" class="btn btn-success">Confirm</button>
   <button type="button" (click)="modal.show()" class="btn btn-danger">Delete</button>
 </div>

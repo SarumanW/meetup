@@ -12,6 +12,7 @@ import {FriendsListComponent} from "../friends.list.component";
 export class FriendComponent {
   @Input() confirmed: boolean;
   @Input() user: Profile;
+  @Input() loggedUser: boolean;
   state:string="friends"
   constructor(private friendService: FriendService,
               private friendsList: FriendsListComponent){
