@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {FriendService} from "./friend.service";
-import {FormControl, NgForm} from "@angular/forms";
+import {FormControl} from "@angular/forms";
 import {Profile} from "../profile";
 import "rxjs/add/operator/debounceTime";
 import "rxjs/add/operator/distinctUntilChanged";
@@ -35,14 +35,13 @@ export class FriendsListComponent implements OnInit{
           .subscribe((unknownUsers) => this.unknownUsers = unknownUsers)}
         );
   }
-stop
   getInfo(){
     this.friendService.getFriendsRequests().subscribe((requests) => this.unconfirmedFriends = requests);
     this.friendService.getFriends().subscribe((friends) => this.friends = friends);
   }
 
-  addFriend(form: NgForm) {
-    this.friendService.addFriend(form.form.value.newFriendName).subscribe((message) => this.message = message);
+  addFriend(userName : string) {
+    this.friendService.addFriend(userName).subscribe((message) => this.message = message);
     this.newFriendName = "";
   }
 

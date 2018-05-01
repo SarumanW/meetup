@@ -26,20 +26,15 @@
         <ul class="filter-select">
           <li  *ngFor="let result of unknownUsers" class="filter-select-list"><img src="{{result.imgPath}}" alt="" width="50" height="50"><p class="artist-name">{{result.login}}</p>
             <span class="tags"></span>
+            <form (ngSubmit)="addFriend(result.login)" #form="ngForm">
+              <button type="submit" class="btn btn-primary">Add friend</button>
+            </form>
           </li>
         </ul>
-      </section>
-
-      <!--<form class="row" (ngSubmit)="addFriend(form)" #form="ngForm">
-        <div class="form-group mx-4 mb-2">
-          <input type="text" class="form-control" placeholder="Search by username" [(ngModel)]="newFriendName"
-                 name="newFriendName">
-        </div>
-        <button type="submit" class="btn btn-primary mb-2">Add friend</button>
         <div class="message mx-4">
-        {{message}}
+          {{message}}
         </div>
-      </form>-->
+      </section>
       <hr>
       <friend *ngFor="let friend of friends" [user]="friend" [confirmed]="true"></friend>
     </div>
