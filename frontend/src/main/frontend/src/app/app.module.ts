@@ -39,7 +39,6 @@ import {EventAddComponent} from './events/event.add/event.add.component';
 import {EventAddService} from "./events/event.add.service";
 import {CalendarModule} from "angular-calendar";
 import {CalendarComponent} from "./calendar/calendar.component/calendar.component";
-import {CalendarHeaderComponent} from "./calendar/calendar.utils/calendar.header.component";
 import {UtilsModule} from "./calendar/calendar.utils/utils.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CalendarService} from "./calendar/calendar.service";
@@ -47,6 +46,10 @@ import {ImageUploadService} from "./events/image.upload.service";
 import {AgmCoreModule} from "@agm/core";
 import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
+import { Angular2TokenService } from 'angular2-token';
+import {HttpModule} from "@angular/http";
+import {RouterModule} from "@angular/router";
+
 
 @NgModule({
   declarations: [
@@ -69,6 +72,7 @@ import { TextMaskModule } from 'angular2-text-mask';
     EventListComponent,
     EventAddComponent,
     CalendarComponent,
+
   ],
   imports: [
     ReactiveFormsModule,
@@ -87,6 +91,9 @@ import { TextMaskModule } from 'angular2-text-mask';
     UtilsModule,
     BrowserAnimationsModule,
     TextMaskModule,
+    BrowserModule,
+    HttpModule,
+    RouterModule,
     AgmCoreModule.forRoot({
       apiKey: environment.googleMapsApiKey
     })
@@ -100,7 +107,8 @@ import { TextMaskModule } from 'angular2-text-mask';
     UploadFileService,
     EventAddService,
     CalendarService,
-    ImageUploadService],
+    ImageUploadService,
+    Angular2TokenService],
   bootstrap: [AppComponent]
 })
 

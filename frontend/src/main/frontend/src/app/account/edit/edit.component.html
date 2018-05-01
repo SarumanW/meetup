@@ -46,10 +46,15 @@
           {{errorDateFormat}}
         </div>
 
+        <button type="button" class="btn " data-toggle="modal" data-target="#myModal" routerLink="/change.password">
+          Change password
+        </button>
+        <br/>
+        <br/>
         <div class="form-group">
           <label class="form-control-label" for="lastName">Phone</label>
           <input type="text" class="form-control" [(ngModel)]="account.phone" id="phone" name="phone"
-                 #lastName="ngModel" placeholder="{{account.phone}}"  [textMask]="{mask: mask}">
+                 #phone="ngModel" placeholder="{{account.phone}} +3 8 (___) ___-__-__"  [textMask]="{mask: mask}">
         </div>
 
         <div class="form-group">
@@ -129,6 +134,10 @@
             </small>
           </div>
         </div>
+
+      <br/>
+        <br/>
+
         <button type="button" class="btn btn-primary"  [disabled]="editForm.form.invalid || email.errors?.pattern" data-toggle="modal" data-target="#myModal" (click)="clickButton()">
           Save changes
         </button>
@@ -142,8 +151,7 @@
 
 <div>
 <popup> Are you really want to edit your profile?
-<br/>
-  <br/>
+
 <button type="button" class="btn btn-primary" (click)="save()" routerLink="/{{profile.login}}/profile" >yes</button>
 <button id="close_button" class="btn btn-primary" aria-label="Close" (click)="close()">no</button>
 </popup>

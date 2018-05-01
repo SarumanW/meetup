@@ -8,4 +8,5 @@ export class Profile {
   public phone:string;
   public birthDay: string;
   public token : string;
+
 }

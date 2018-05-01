@@ -34,6 +34,7 @@ const routes: Routes = [
   {path: 'change.password', component: ChangePasswordComponent},
   {path: 'thankyou', component: ThankyouComponent},
   {path: ':login/event/add/:folderId', component: EventAddComponent, canActivate: [AuthGuard] },
+
 ];
 
 @NgModule({

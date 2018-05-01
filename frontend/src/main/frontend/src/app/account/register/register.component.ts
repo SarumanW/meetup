@@ -19,11 +19,9 @@ export class RegisterComponent implements OnInit {
   errorLoginExists: string;
   success: boolean;
   account: RegisterAccount;
-  lastName: string;
-  isValidFormSubmitted = null;
   emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   registerForm = this.fb.group({
-    email: ['', [Validators.required, Validators.pattern(this.emailPattern)]]
+    email: [Validators.required, Validators.pattern(this.emailPattern)]
   });
 
   constructor(private accountService: AccountService,
@@ -40,7 +38,7 @@ export class RegisterComponent implements OnInit {
 
   register() {
     this.spinner.show();
-    this.isValidFormSubmitted = false;
+
     if (this.account.password !== this.confirmPassword) {
       this.doNotMatch = 'ERROR';
     }
@@ -61,7 +59,6 @@ export class RegisterComponent implements OnInit {
         }
       );
     }
-    this.registerForm.reset();
   }
 
   get email() {
