@@ -41,7 +41,7 @@ export class AccountService {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.put('/api/profile/update', account, {headers: headers});
+    return this.http.put('/api/profile/', account, {headers: headers});
   }
 
   recovery(data: any):Observable<any>{

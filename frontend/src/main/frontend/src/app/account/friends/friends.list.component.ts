@@ -40,10 +40,9 @@ export class FriendsListComponent implements OnInit {
     if (this.loggedUser) {
       this.friendService.getFriendsRequests()
         .subscribe((requests) => {
-          this.unconfirmedFriends = requests
+          this.unconfirmedFriends = requests;
         });
     }
-
     this.route.params.subscribe(params => {
       this.friendService.getFriends(params['login'])
         .subscribe((friends) => {
