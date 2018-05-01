@@ -15,10 +15,22 @@
       </div>
 
       <div align="center">
-        <h3>Friends List Test Text</h3>
+        <h3>Friends List</h3>
         <hr>
       </div>
-      <form class="row" (ngSubmit)="addFriend(form)" #form="ngForm">
+
+      <section class="filter-wrapper">
+        <div class="keyword-wrapper">
+          <input [formControl]="queryField" type="text" id="keyword" placeholder="Search for users..." autofocus/>
+        </div>
+        <ul class="filter-select">
+          <li  *ngFor="let result of unknownUsers" class="filter-select-list"><img src="{{result.imgPath}}" alt="" width="50" height="50"><p class="artist-name">{{result.login}}</p>
+            <span class="tags"></span>
+          </li>
+        </ul>
+      </section>
+
+      <!--<form class="row" (ngSubmit)="addFriend(form)" #form="ngForm">
         <div class="form-group mx-4 mb-2">
           <input type="text" class="form-control" placeholder="Search by username" [(ngModel)]="newFriendName"
                  name="newFriendName">
@@ -27,7 +39,7 @@
         <div class="message mx-4">
         {{message}}
         </div>
-      </form>
+      </form>-->
       <hr>
       <friend *ngFor="let friend of friends" [user]="friend" [confirmed]="true"></friend>
     </div>

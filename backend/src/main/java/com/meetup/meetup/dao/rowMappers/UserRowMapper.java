@@ -3,6 +3,7 @@ package com.meetup.meetup.dao.rowMappers;
 
 import com.meetup.meetup.entity.User;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+@Component
 public class UserRowMapper implements RowMapper<User> {
     @Override
     public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {

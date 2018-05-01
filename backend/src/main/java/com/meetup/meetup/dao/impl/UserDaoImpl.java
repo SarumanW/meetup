@@ -31,12 +31,14 @@ public class UserDaoImpl implements UserDao {
     private final Environment env;
     private final JdbcTemplate jdbcTemplate;
     private final FolderDaoImpl folderDao;
+    private final UserRowMapper userRowMapper;
 
     @Autowired
-    public UserDaoImpl(Environment env, JdbcTemplate jdbcTemplate, FolderDaoImpl folderDao) {
+    public UserDaoImpl(Environment env, JdbcTemplate jdbcTemplate, FolderDaoImpl folderDao , UserRowMapper rowMapper) {
         this.env = env;
         this.jdbcTemplate = jdbcTemplate;
         this.folderDao = folderDao;
+        this.userRowMapper= rowMapper;
     }
 
     @Override
@@ -143,11 +145,12 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> getNotFriends(int userId, String userName) {
 
-        List<User> users;
+        List<Map<String, Object>> userParamsList;
 
-        users = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"),new Object[] {userId,userId,userName+"%"}, User.class);
+        userParamsList = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"),userId,userId,userName+"%");
 
-        return users;
+        return userRowMapper.mapRow(userParamsList);
+
     }
 
 
