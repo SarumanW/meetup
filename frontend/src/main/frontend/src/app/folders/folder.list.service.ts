@@ -22,13 +22,13 @@ export class FolderListService {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.post('api/folders/add', folder);
+    return this.http.post('api/folders/add', folder, {headers: headers});
   }
 
   deleteFolder(folder : any):Observable<any>{
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.post('api/folders/delete', folder);
+    return this.http.post('api/folders/delete', folder, {headers: headers});
   }
 }

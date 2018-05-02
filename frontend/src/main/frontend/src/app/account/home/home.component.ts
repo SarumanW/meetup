@@ -21,17 +21,6 @@ export class HomeComponent {
 
   ngOnInit() {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
-    console.log("home init "+this.profile.id);
-    // this.profile.imgPath = 'http://meetupnc.ga/img/1.jpg'
-    //  this.accountService.profile(this.profile).subscribe(
-    //    (data) => {
-    //      this.profile = data;
-    //    }
-    //  )
-  }
-
-  openProfile(){
-     this.router.navigate(['/profile/'+JSON.parse(localStorage.currentUser).id]);
   }
 
   logout() {

@@ -1,15 +1,28 @@
 <div class="friend-info">
-  <button type="button"
+  <button type="button" routerLink="/{{user.login}}/profile"
           class="list-group-item list-group-item-action"
-          [ngClass]="{'list-group-item-primary': confirmed,
-                      'list-group-item-warning' : !confirmed}">
+          [ngClass]="{'border-primary': confirmed,
+                      'border-warning' : !confirmed}">
     User name: {{user.name}}
   </button>
 </div>
-<div class="friend-action">
-  <button *ngIf="!confirmed" type="button" (click)="deleteFriend(user.id)" class="btn btn-success">Confirm</button>
-  <button type="button" (click)="confirmFriend(user.id)" class="btn btn-danger">Delete</button>
+<div class="friend-action" *ngIf="loggedUser">
+  <button *ngIf="!confirmed" type="button" (click)="confirmFriend(user.id)" class="btn btn-success">Confirm</button>
+  <button type="button" (click)="modal.show()" class="btn btn-danger">Delete</button>
 </div>
 
+<app-modal-window #modal class="sure-window">
+  <div class="modal-header d-flex justify-content-between align-items-center">
+    <h4 class="modal-title">Delete friend</h4>
+    <img class="close-btn" src="assets/close.svg" (click)="modal.hide()" alt="">
+  </div>
+  <div class="app-modal-body">
+    <p>Are you sure that you want to remove from friends {{user.login}} ?</p>
+    <div class="confidence">
+      <button class="btn btn-danger" (click)="modal.hide(); deleteFriend(user.id)">Delete</button>
+      <button class="btn btn-default" (click)="modal.hide();">Cancel</button>
+    </div>
+  </div>
+</app-modal-window>
 
 

@@ -1,37 +1,93 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Profile} from "../profile";
 import {AccountService} from "../account.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {NgxSpinnerService} from "ngx-spinner";
+import {FriendService} from "../friends/friend.service";
+import {FriendsListComponent} from "../friends/friends.list.component";
 
 @Component({
- templateUrl: './profile.component.html',
+  templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
 
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
 
-  state:string="profile";
+  state: string = "profile";
   profile: Profile;
+  loggedUser: boolean;
 
+  friendCount: number;
+  isFriend: boolean;
+  isConfirmed: boolean;
 
   constructor(private accountService: AccountService,
-              private router: Router) {
-    this.profile = new Profile();
+              private spinner: NgxSpinnerService,
+              private route: ActivatedRoute,
+              private friendService: FriendService,) {
+    this.route.params.subscribe(params => {
+      this.accountService.profile(params['login']).subscribe(
+        (profile) => {
+          this.profile = profile;
+          this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === this.profile.login;
+          this.update();
+        });
+    });
   }
 
   ngOnInit() {
-    this.profile = JSON.parse(localStorage.getItem('currentUser'));
 
-    console.log("profile service working");
-
-      this.accountService.profile(this.profile).subscribe(
-        (data) => {
-          this.profile = data;
-        }
-      )
   }
 
-  logout() {
-    localStorage.clear();
+  update(){
+    this.spinner.show();
+    this.getButton();
+    this.spinner.hide();
+  }
+
+  // TODO move it to the backend
+  getButton() {
+    this.friendService.getFriends(this.profile.login).subscribe((friends) => {
+      this.accountService.profile(JSON.parse(localStorage.getItem('currentUser')).login)
+        .subscribe((user) => {
+          if(friends.length === 0){
+            this.isFriend = false;
+          }
+          for (let i = 0; i < friends.length; i++) {
+            if(user.id === friends[i].id){
+              this.isFriend = true;
+              break;
+            }
+            else{
+              this.isFriend = false;
+            }
+          }
+          this.friendCount = friends.length;
+        });
+    });
+    this.friendService.getFriendsRequests().subscribe((requests) => {
+      if(requests.length === 0){
+        this.isConfirmed = true;
+      }
+      for (let i = 0; i < requests.length; i++) {
+        if(this.profile.id === requests[i].id){
+          this.isConfirmed = false;
+          break;
+        }
+        else{
+          this.isConfirmed = true;
+        }
+      }
+    });
+  }
+
+  addFriend(login: string){
+    this.friendService.addFriend(login).subscribe((result)=>{this.update()});
+  }
+  deleteFriend(id: number){
+    this.friendService.deleteFriend(id).subscribe((result)=>{this.update()});
+  }
+  confirmFriend(id: number){
+    this.friendService.confirmFriend(id).subscribe((result)=>{this.update()});
   }
 }

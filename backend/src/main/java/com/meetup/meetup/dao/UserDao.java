@@ -28,4 +28,8 @@ public interface UserDao extends Dao<User> {
 
     boolean addFriend(int senderId, int receiverId);
 
+    boolean isLoginFree(String login);
+
+    boolean isEmailFree(String email);
+
 }

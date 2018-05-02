@@ -1,6 +1,11 @@
 <article class="container">
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-7">
       <div class="login-main">
         <h4>Share events with your friends easily</h4>
         <span>Some sample description text about the template goes here</span>
@@ -18,24 +23,47 @@
     </div>
 
 
-    <div class="col-md-4 login-main">
-      <h4>LogIn</h4>
+    <div class="col-md-5 login-main">
+      <h2>LogIn</h2>
       <div class="alert alert-danger" *ngIf="errorMessage">
-        <h3>{{errorMessage}}</h3>
+      {{errorMessage}}
       </div>
-      <form name="form" role="form" (ngSubmit)="logIn()" #loginForm="ngForm" *ngIf="!success">
+      <form name="form" role="form" (ngSubmit)="logIn()" #loginForm="ngForm">
 
         <div class="form-group">
           <label class="form-control-label" for="login">Username</label>
           <input type="text" class="form-control" [(ngModel)]="account.login" id="login" name="login"
-                 #login="ngModel" placeholder="username">
+                 #login="ngModel" placeholder="Enter login name" minlength=4 maxlength=50 required>
+          <div *ngIf="login.dirty && login.invalid">
+            <small class="form-text text-danger" *ngIf="login.errors.required">
+              Your login is required.
+            </small>
+            <small class="form-text text-danger" *ngIf="login.errors.minlength">
+              Your login is required to be at least 4 characters.
+            </small>
+            <small class="form-text text-danger" *ngIf="login.errors.maxlength">
+              Your password cannot be longer than 50 characters.
+            </small>
+          </div>
+
         </div>
 
         <div class="form-group">
           <label class="form-control-label" for="password">Password</label>
           <input type="password" class="form-control" id="password" name="password" #password="ngModel"
-                 placeholder="password"
-                 [(ngModel)]="account.password">
+                 placeholder="Enter password" minlength=6 maxlength=50
+                 [(ngModel)]="account.password" required>
+          <div *ngIf="password.dirty && password.invalid">
+            <small class="form-text text-danger" *ngIf="password.errors.required">
+              Your password is required.
+            </small>
+            <small class="form-text text-danger" *ngIf="password.errors.minlength">
+              Your password is required to be at least 6 characters.
+            </small>
+            <small class="form-text text-danger" *ngIf="password.errors.maxlength">
+              Your password cannot be longer than 50 characters.
+            </small>
+          </div>
         </div>
         <a [routerLink]="['/recovery']">Forgot password?</a>
         <div>
