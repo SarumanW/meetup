@@ -35,7 +35,6 @@ public class ProfileService {
     @Autowired
     private Environment env;
 
-    private static Logger log = LoggerFactory.getLogger(ProfileService.class);
 
     public User getUserByLogin(String login) {
         User user = userDao.findByLogin(login);

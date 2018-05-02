@@ -51,24 +51,26 @@ export class FriendsListComponent implements OnInit {
   }
 
   getInfo() {
-    if (this.loggedUser) {
+    // if (this.loggedUser) {
       this.friendService.getFriendsRequests()
         .subscribe((requests) => {
           this.unconfirmedFriends = requests;
         });
-    }
+    // }
     this.route.params.subscribe(params => {
       this.friendService.getFriends(params['login'])
+      // this.friendService.getFriends()
         .subscribe((friends) => {
           this.friends = friends
         });
     });
   }
 
-  addFriend(form: NgForm) {
+  addFriend(login: string) {
     this.spinner.show();
-
-    this.friendService.addFriend(form.form.value.newFriendName)
+    // console.log("adding friend " + form.form.value.newFriendName)
+    // this.friendService.addFriend(form.form.value.newFriendName)
+    this.friendService.addFriend(login)
       .subscribe(
         (message) => {
           this.message = message
