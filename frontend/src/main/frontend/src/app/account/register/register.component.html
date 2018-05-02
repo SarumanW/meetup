@@ -1,8 +1,14 @@
 <div>
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
   <div class="row justify-content-center">
     <div class="col-md-8">
       <h1>Registration</h1>
-      <div class="alert alert-success" *ngIf="success">
+
+      <div class="alert alert-success" *ngIf="success" >
         <strong>Registration saved!</strong> Please check your email for confirmation.
       </div>
 
@@ -25,11 +31,11 @@
   </div>
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <form name="form" role="form" #registerForm="ngForm" *ngIf="!success">
+      <form name="form" role="form" #registerForm="ngForm" (ngSubmit)="register(registerForm)" *ngIf="!success">
         <div class="form-group">
           <label class="form-control-label" for="login">Login</label>
           <input type="text" class="form-control" [(ngModel)]="account.login" id="login" name="login"
-                 #login="ngModel" placeholder="login"
+                 #login="ngModel" placeholder="Enter your login"
                  minlength="4" maxlength="50" pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="login.dirty && login.invalid">
             <small class="form-text text-danger" *ngIf="login.errors.required">
@@ -49,14 +55,14 @@
         <div class="form-group">
           <label class="form-control-label" for="name">Name</label>
           <input type="text" class="form-control" [(ngModel)]="account.name" id="name" name="name"
-                 #name="ngModel" placeholder="name"
+                 #name="ngModel" placeholder="Enter your name"
                  minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="name.dirty && name.invalid">
             <small class="form-text text-danger" *ngIf="name.errors.required">
               Your username is required.
             </small>
             <small class="form-text text-danger" *ngIf="name.errors.minlength">
-              Your username is required to be at least 1 character.
+              Your username is required to be at least 4 character.
             </small>
             <small class="form-text text-danger" *ngIf="name.errors.maxlength">
               Your username cannot be longer than 50 characters.
@@ -69,14 +75,14 @@
         <div class="form-group">
           <label class="form-control-label" for="lastName">Last name</label>
           <input type="text" class="form-control" [(ngModel)]="account.lastname" id="lastName" name="lastName"
-                 #lastName="ngModel" placeholder="lastName"
+                 #lastName="ngModel" placeholder="Enter your last name"
                  minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="lastName.dirty && lastName.invalid">
             <small class="form-text text-danger" *ngIf="lastName.errors.required">
               Your username is required.
             </small>
             <small class="form-text text-danger" *ngIf="lastName.errors.minlength">
-              Your username is required to be at least 1 character.
+              Your username is required to be at least 4 character.
             </small>
             <small class="form-text text-danger" *ngIf="lastName.errors.maxlength">
               Your username cannot be longer than 50 characters.
@@ -86,17 +92,22 @@
             </small>
           </div>
         </div>
+
         <div class="form-group">
           <label class="form-control-label" for="email">Email</label>
-          <input type="email" class="form-control" id="email" name="email" #email="ngModel" placeholder="email@mail.com"
-                 [(ngModel)]="account.email" minlength=5 maxlength=100 email required>
+          <input type="email" class="form-control" name="email" id="email"  [(ngModel)]="account.email"
+                 #email="ngModel" placeholder="Enter your email" minlength=5 maxlength=100 email
+                 required [pattern]="emailPattern">
+          <div *ngIf="email.dirty && email.errors">
+            <small class="form-text text-danger"  *ngIf="email.errors.pattern">
+              Your email must be in format: mail@example.com
+            </small>
+          </div>
           <div *ngIf="email.dirty && email.invalid">
             <small class="form-text text-danger" *ngIf="email.errors.required">
               Your email is required.
             </small>
-            <small class="form-text text-danger" *ngIf="email.errors.invalid">
-              Your email is invalid.
-            </small>
+
             <small class="form-text text-danger" *ngIf="email.errors.minlength">
               Your email is required to be at least 5 characters.
             </small>
@@ -105,10 +116,12 @@
             </small>
           </div>
         </div>
+
         <div class="form-group">
           <label class="form-control-label" for="password">Password</label>
           <input type="password" class="form-control" id="password" name="password" #password="ngModel"
-                 placeholder="password" [(ngModel)]="account.password" minlength=6 maxlength=50  pattern="^[_.@A-Za-z0-9-]*$" required>
+                 placeholder="Enter your password" [(ngModel)]="account.password" minlength=6 maxlength=50
+                 pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="password.dirty && password.invalid">
             <small class="form-text text-danger" *ngIf="password.errors.required">
               Your password is required.
@@ -127,7 +140,7 @@
         <div class="form-group">
           <label class="form-control-label" for="confirmPassword">Password confirmation</label>
           <input type="password" class="form-control" id="confirmPassword" name="confirmPasswordInput"
-                 #confirmPasswordInput="ngModel" placeholder="confirm"
+                 #confirmPasswordInput="ngModel" placeholder="Confirm your password"
                  [(ngModel)]="confirmPassword" minlength=6 maxlength=50 pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">
             <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.required">
@@ -144,7 +157,7 @@
             </small>
           </div>
         </div>
-        <button type="button" (click)="register()" [disabled]="registerForm.form.invalid" class="btn btn-primary">
+        <button type="button" (click)="register()" [disabled]="registerForm.form.invalid || email.errors?.pattern" class="btn btn-primary">
           Register
         </button>
       </form>

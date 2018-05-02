@@ -1,14 +1,14 @@
 package com.meetup.meetup.service.mail;
 
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-public class MailBuilder {
-    public static final String REGISTER_MAIL_TEMPLATE = "registerMailTemplate";
-    public static final String RECOVERY_PASSWORD_TEMPLATE = "recoveryPasswordTemplate";
 
+
+public class MailBuilder {
 
     private TemplateEngine templateEngine;
 

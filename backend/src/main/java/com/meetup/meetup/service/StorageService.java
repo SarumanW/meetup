@@ -1,13 +1,14 @@
 package com.meetup.meetup.service;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
+
+import com.meetup.meetup.exception.runtime.frontend.detailed.FileUploadException;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +18,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.bind.SchemaOutputResolver;
+
+import static com.meetup.meetup.Keys.Key.EXCEPTION_FILE_UPLOAD;
+
 
 @Service
 @PropertySource("classpath:links.properties")
+@PropertySource("classpath:strings.properties")
 public class StorageService {
 
     @Autowired
@@ -32,32 +36,32 @@ public class StorageService {
     @Autowired
     private UserDao userDao;
 
-    Logger log = LoggerFactory.getLogger(this.getClass().getName());
-    private Path rootLocation ;//= Paths.get(env.getProperty("profile.img.link"));
+    private Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
-    public void store(MultipartFile file) {
+    private Path rootLocation;
+
+    public User store(MultipartFile file) {
+        log.debug("Try to receive img");
         rootLocation = Paths.get(env.getProperty("profile.img.link"));
-        try {
-            Files.createDirectory(rootLocation);
-        } catch (IOException e) {
-            System.out.println("Location exists");
-        }
+        log.debug("Try to receive img to path: '{}'", rootLocation.getFileName());
         User user = authenticationFacade.getAuthentication();
-        user.setImgPath(env.getProperty("remote.img.link")+user.getId()+".jpg");
+
+        String inFileFormat = "." + file.getOriginalFilename().split("\\.")[1];
+        log.debug("File format is {}", inFileFormat);
+        user.setImgPath(env.getProperty("remote.img.link") + user.getId() + inFileFormat);
+        log.debug("Update user's image path to '{}'", user.getImgPath());
         userDao.update(user);
+        log.debug("User's image path is updated");
         try {
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(user.getId()+".jpg"));
+            log.debug("Copying file");
+            Files.deleteIfExists(this.rootLocation.resolve(user.getId() + inFileFormat));
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(user.getId() + inFileFormat));
+            log.debug("Copying file finished");
+            return user;
         } catch (Exception e) {
-            throw new RuntimeException("FAIL!");
+            log.debug("Problems with file copying");
+            throw new FileUploadException(String.format(env.getProperty(EXCEPTION_FILE_UPLOAD), file.getOriginalFilename()));
         }
     }
 
-    public void init() {
-        rootLocation = Paths.get(env.getProperty("profile.img.link"));
-        try {
-            Files.createDirectory(rootLocation);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not initialize storage!");
-        }
-    }
 }

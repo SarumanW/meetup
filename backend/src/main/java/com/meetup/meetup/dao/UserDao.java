@@ -10,6 +10,8 @@ public interface UserDao extends Dao<User> {
 
     User findByEmail(String email);
 
+//    List<User> findByParams(String login, String name, String surname, Integer limit);
+
     User update(User model);
 
     boolean updatePassword(User user);
@@ -22,6 +24,12 @@ public interface UserDao extends Dao<User> {
 
     List<User> getFriends(int userId);
 
+    List<User> getNotFriends(int userId, String userName);
+
     boolean addFriend(int senderId, int receiverId);
+
+    boolean isLoginFree(String login);
+
+    boolean isEmailFree(String email);
 
 }

@@ -1,4 +1,9 @@
-<div class="container-fluid" style="margin-top:20px">
+<div class="container-fluid">
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
   <div class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
@@ -14,12 +19,13 @@
           <div *ngFor="let folder of folders" class="card mb-4">
             <div class="head card-body">
               <img class="folder-icon" src="assets/folder-icon.svg" alt="Card image cap">
-              <img *ngIf="folder.name!=='general'" (click)="deleteFolder(folder)" class="close-btn" src="assets/close-white.svg" alt="">
+              <img *ngIf="folder.name!=='general'" (click)="deleteFolder(folder)" class="close-btn"
+                   src="assets/close-white.svg" alt="">
             </div>
             <div class="card-body">
               <h5 class="card-title">{{folder.name}}</h5>
-              <p class="card-text"><b>Id: </b>{{folder.folderId}}</p>
-              <a routerLink="/profile/{{folder.userId}}/folders/{{folder.folderId}}" class="btn btn-primary">Open
+              <!--<p class="card-text"><b>Id: </b>{{folder.folderId}}</p>-->
+              <a routerLink="/{{profile.login}}/folders/{{folder.folderId}}" class="btn btn-primary">Open
                 folder</a>
             </div>
           </div>
@@ -27,7 +33,7 @@
 
         <div class="add-folder">
           <app-modal-window #modal>
-            <div class="modal-header d-flex justify-content-between align-items-center">
+            <div class="modal-header d-flex justify-content-between align-items-right">
               <h4 class="modal-title">Add folder</h4>
               <img class="close-btn" src="assets/close.svg" (click)="modal.hide()" alt="">
             </div>
@@ -47,4 +53,4 @@
     </div>
   </div>
 
-
+</div>

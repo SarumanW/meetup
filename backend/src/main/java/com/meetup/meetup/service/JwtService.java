@@ -7,25 +7,28 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+import org.springframework.core.env.Environment;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 import static java.time.ZoneOffset.UTC;
 
+
+@PropertySource("classpath:image.properties")
+@PropertySource("classpath:jwt.properties")
 @Component
 public class JwtService {
 
-    private static final String SUBJECT = "meetup";
+    private static Logger log = LoggerFactory.getLogger(JwtService.class);
 
-    private static final String ISSUER = "com.meetup";
-
-    private static final String LOGIN = "login";
-    private static final String EMAIL = "email";
+    @Autowired
+    private Environment env;
 
     private final SecretKeyProvider secretKeyProvider;
     private final UserDao userDao;
@@ -36,38 +39,66 @@ public class JwtService {
         this.userDao = userDao;
     }
 
-    public User verify(String token) throws IOException, URISyntaxException {
+    public User verify(String token) throws Exception {
+        log.debug("Trying to get secret key form SecretKeyProvider");
+
         byte[] secretKey = secretKeyProvider.getKey();
+
+        log.debug("Trying to parse email from token '{}'", token);
+
         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-        return userDao.findByLogin(claims.getBody().get(LOGIN).toString());
+        String login = claims.getBody().get(env.getProperty("jwt.login")).toString();
+
+        log.debug("Login '{}' was parsed successfully", login);
+
+        return userDao.findByLogin(login);
     }
 
-    public User verifyForRecoveryPassword(String token) throws IOException, URISyntaxException {
+    public User verifyForRecoveryPassword(String token) throws Exception {
+        log.debug("Trying to get secret key form SecretKeyProvider");
+
         byte[] secretKey = secretKeyProvider.getKey();
+
+        log.debug("Trying to parse email from token '{}'", token);
+
         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-        return userDao.findByEmail(claims.getBody().get(EMAIL).toString());
+        String email = claims.getBody().get(env.getProperty("jwt.email")).toString();
+
+        log.debug("Email '{}' was parsed successfully", email);
+
+        return userDao.findByEmail(email);
     }
 
-    public String tokenFor(User user) throws IOException, URISyntaxException {
+    public String tokenFor(User user) throws Exception {
+        log.debug("Trying to get secret key form SecretKeyProvider");
+
         byte[] secretKey = secretKeyProvider.getKey();
+
+        log.debug("Trying to build a token for user '{}'", user);
+
         Date expiration = Date.from(LocalDateTime.now(UTC).plusDays(365).toInstant(UTC));
         return Jwts.builder()
-                .setSubject(SUBJECT)
+                .setSubject(env.getProperty("jwt.subject"))
                 .setExpiration(expiration)
-                .setIssuer(ISSUER)
-                .claim(LOGIN, user.getLogin())
+                .setIssuer(env.getProperty("jwt.issuer"))
+                .claim(env.getProperty("jwt.login"), user.getLogin())
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
 
-    public String tokenForRecoveryPassword(User user) throws IOException, URISyntaxException {
+    public String tokenForRecoveryPassword(User user) throws Exception {
+        log.debug("Trying to get secret key form SecretKeyProvider");
+
         byte[] secretKey = secretKeyProvider.getKey();
+
+        log.debug("Trying to build a token for user '{}'", user);
+
         Date expiration = Date.from(LocalDateTime.now(UTC).plusMinutes(5).toInstant(UTC));
         return Jwts.builder()
-                .setSubject(SUBJECT)
+                .setSubject(env.getProperty("jwt.subject"))
                 .setExpiration(expiration)
-                .setIssuer(ISSUER)
-                .claim(EMAIL, user.getEmail())
+                .setIssuer(env.getProperty("jwt.issuer"))
+                .claim(env.getProperty("jwt.email"), user.getEmail())
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }

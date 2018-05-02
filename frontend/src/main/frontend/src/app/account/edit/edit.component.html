@@ -1,23 +1,20 @@
-<div class="container-fluid" style="margin-top:20px">
+<div class="container-fluid">
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
   <div class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
     </div>
 
-    <div class="row justify-content-center">
-      <div class="col-10">
-        <div class="form-group">
-          <h1>Profile editor</h1>
-
-          <div class="alert alert-danger" *ngIf=success>
-            <strong>Profile edited!</strong>
-          </div>
-
-        </div>
+    <div class="col-6 py-4">
+      <div class="form-group">
+        <h1>Profile editor</h1>
       </div>
 
-
-      <form name="form" role="form" #editForm="ngForm" *ngIf="!success">
+      <form name="form" role="form" #editForm="ngForm" *ngIf=!success>
         <div class="form-group">
           <label>To change your profile photo:</label>
           <div *ngIf="currentFileUpload" class="progress">
@@ -29,35 +26,41 @@
             </div>
           </div>
 
+          <div class="alert alert-danger" *ngIf="errorFileFormat">
+            {{errorFileFormat}}
+          </div>
+
           <label class="btn btn-default">
             <input type="file" (change)="selectFile($event)">
           </label>
 
-          <button class="btn btn-success" [disabled]="!selectedFiles"
-                  (click)="upload()">Upload
+          <button class="btn btn-success" [disabled]="errorFileFormat || !selectedFiles" (click)="upload()">Upload
           </button>
         </div>
 
         <div class="form-group">
           <label class="form-control-label" for="birthDay">Choose the day of your birth: </label>
-          <input type="date" class="form" id="birthDay" name="birthDay" #birthDay="ngModel"
-                 [(ngModel)]="account.birthDay" placeholder="{{this.user.account.birthDay}}" (click)="formatDate()">
+          <input type="date" min="1960-12-31" max="2012-12-31" class="form" id="birthDay" name="birthDay" #birthDay="ngModel" [(ngModel)]="account.birthDay" placeholder="{{account.birthDay}}" (click)="formatDate()">
+        </div>
+        <div class="alert alert-danger" *ngIf="errorDateFormat">
+          {{errorDateFormat}}
         </div>
 
+        <button type="button" class="btn " data-toggle="modal" data-target="#myModal" routerLink="/change.password">
+          Change password
+        </button>
+        <br/>
+        <br/>
         <div class="form-group">
           <label class="form-control-label" for="lastName">Phone</label>
           <input type="text" class="form-control" [(ngModel)]="account.phone" id="phone" name="phone"
-                 #lastName="ngModel" placeholder="{{this.user.account.phone}}">
-        </div>
-
-        <div class="form-group">
-          <label class="form-control-label" (click)="changeWishList()">Change your Wishlist: </label>
+                 #phone="ngModel" placeholder="{{account.phone}} +3 8 (___) ___-__-__"  [textMask]="{mask: mask}">
         </div>
 
         <div class="form-group">
           <label class="form-control-label" for="login">Login</label>
           <input type="text" class="form-control" [(ngModel)]="account.login" id="login" name="login"
-                 #login="ngModel" placeholder="{{this.user.account.login}}"
+                 #login="ngModel" placeholder="{{account.login}}"
                  minlength="4" maxlength="50" pattern="^[_.@A-Za-z0-9-]*$">
           <div *ngIf="login.dirty && login.invalid">
             <small class="form-text text-danger" *ngIf="login.errors.minlength">
@@ -75,7 +78,7 @@
         <div class="form-group">
           <label class="form-control-label" for="name">Name</label>
           <input type="text" class="form-control" [(ngModel)]="account.name" id="name" name="name"
-                 #name="ngModel" placeholder="{{this.user.account.name}}"
+                 #name="ngModel" placeholder="{{account.name}}"
                  minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$">
           <div *ngIf="name.dirty && name.invalid">
 
@@ -94,7 +97,7 @@
         <div class="form-group">
           <label class="form-control-label" for="lastName">Last name</label>
           <input type="text" class="form-control" [(ngModel)]="account.lastname" id="lastName" name="lastName"
-                 #lastName="ngModel" placeholder="{{this.user.account.lastname}}"
+                 #lastName="ngModel" placeholder="{{account.lastname}}"
                  minlength="4" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$">
           <div *ngIf="lastName.dirty && lastName.invalid">
             <small class="form-text text-danger" *ngIf="lastName.errors.minlength">
@@ -112,8 +115,13 @@
         <div class="form-group">
           <label class="form-control-label" for="email">Email</label>
           <input type="email" class="form-control" id="email" name="email" #email="ngModel"
-                 placeholder="{{this.user.account.email}}"
-                 [(ngModel)]="account.email" minlength=5 maxlength=100 email>
+                 placeholder="{{account.email}}"
+                 [(ngModel)]="account.email" minlength=5 maxlength=100 email required [pattern]="emailPattern">
+          <div *ngIf="email.dirty && email.errors && !isValidFormSubmitted"  >
+            <small class="form-text text-danger"  *ngIf="email.errors.pattern">
+              Your email must be in format: mail@example.com
+            </small>
+          </div>
           <div *ngIf="email.dirty && email.invalid">
             <small class="form-text text-danger" *ngIf="email.errors.invalid">
               Your email is invalid.
@@ -127,10 +135,13 @@
           </div>
         </div>
 
-        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="editForm.form.invalid">
+      <br/>
+        <br/>
+
+        <button type="button" class="btn btn-primary"  [disabled]="editForm.form.invalid || email.errors?.pattern" data-toggle="modal" data-target="#myModal" (click)="clickButton()">
           Save changes
         </button>
-        <button type="button" class="btn btn-primary" [routerLink]="['/profile']">
+        <button type="button" class="btn btn-primary" routerLink="/{{profile.login}}/profile">
           Cancel
         </button>
       </form>
@@ -138,6 +149,12 @@
   </div>
 </div>
 
+<div>
+<popup> Are you really want to edit your profile?
 
+<button type="button" class="btn btn-primary" (click)="save()" >yes</button>
+<button id="close_button" class="btn btn-primary" aria-label="Close" (click)="close()">no</button>
+</popup>
 
+</div>
 

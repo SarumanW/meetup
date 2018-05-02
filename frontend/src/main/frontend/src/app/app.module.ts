@@ -1,8 +1,9 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
-import {FormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 
 import {AppComponent} from './app.component';
 import {RegisterComponent} from "./account/register/register.component";
@@ -28,6 +29,24 @@ import {FriendService} from "./account/friends/friend.service";
 import {ChangePasswordComponent} from "./account/change.password/change.password.component";
 import {UploadFileService} from "./upload.file/upload.file.service";
 import {ToastrModule} from "ngx-toastr";
+import {ThankyouComponent} from "./account/thankyou/thankyou.component";
+import {NgxSpinnerModule} from 'ngx-spinner';
+import {EventListComponent} from "./events/event.list/event.list.component";
+import {Ng2TableModule} from "ng2-table";
+import {TooltipModule, PaginationModule} from "ngx-bootstrap";
+import {PopupModule} from "ng2-opd-popup";
+import {EventAddComponent} from './events/event.add/event.add.component';
+import {EventAddService} from "./events/event.add.service";
+import {CalendarModule} from "angular-calendar";
+import {CalendarComponent} from "./calendar/calendar.component/calendar.component";
+import {CalendarHeaderComponent} from "./calendar/calendar.utils/calendar.header.component";
+import {UtilsModule} from "./calendar/calendar.utils/utils.module";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {CalendarService} from "./calendar/calendar.service";
+import {ImageUploadService} from "./events/image.upload.service";
+import {AgmCoreModule} from "@agm/core";
+import {environment} from "./environment";
+import { TextMaskModule } from 'angular2-text-mask';
 
 @NgModule({
   declarations: [
@@ -46,13 +65,31 @@ import {ToastrModule} from "ngx-toastr";
     FriendsListComponent,
     FriendComponent,
     ChangePasswordComponent,
+    ThankyouComponent,
+    EventListComponent,
+    EventAddComponent,
+    CalendarComponent,
   ],
   imports: [
+    ReactiveFormsModule,
     BrowserModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    NgbModule.forRoot(),
+    NgxSpinnerModule,
+    TooltipModule.forRoot(),
+    Ng2TableModule,
+    PaginationModule.forRoot(),
+    PopupModule.forRoot(),
+    CalendarModule.forRoot(),
+    UtilsModule,
+    BrowserAnimationsModule,
+    TextMaskModule,
+    AgmCoreModule.forRoot({
+      apiKey: environment.googleMapsApiKey
+    })
   ],
   providers: [AccountService,
     AuthGuard,
@@ -60,8 +97,12 @@ import {ToastrModule} from "ngx-toastr";
     FolderService,
     EventService,
     FriendService,
-    UploadFileService],
+    UploadFileService,
+    EventAddService,
+    CalendarService,
+    ImageUploadService],
   bootstrap: [AppComponent]
 })
+
 export class AppModule {
 }

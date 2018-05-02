@@ -1,4 +1,9 @@
 <div class="container-fluid" style="margin-top:20px">
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
   <div class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
@@ -8,27 +13,34 @@
       <div class="col-10">
         <div class="container justify-content-center" *ngIf="eventt !== undefined">
           <div class="row">
-            <div class="col-md-4">
-              <br><br>
+            <br><br>
+
+            <div class="col-md-3">
+
               <ul class="list-group">
-                <li class="list-group-item active">{{eventt.name}} Event</li>
-                <li class="list-group-item">id: {{eventt.eventId}}</li>
-                <li class="list-group-item">Event Date: {{eventt.eventDate}}</li>
+                <li class="list-group-item active">{{eventt.name}} {{eventt.eventType}}</li>
+                <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Event Date: {{eventt.eventDate}}</li>
                 <li class="list-group-item">Description: {{eventt.description}}</li>
-                <li class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
+                <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
                 <li class="list-group-item">Place: {{eventt.place}}</li>
               </ul>
             </div>
             <div class="col-md-4">
-              <br><br>
               <div class="thumbnail">
-                <img src="{{eventt.imageFilepath}}" class="img-rounded" alt="Cinque Terre">
+                <img src="{{eventt.imageFilepath}}" class="event-logo">
               </div>
             </div>
-          </div>
-          <div class="row" *ngIf="eventt.participants !== null">
+
             <div class="col-md-4">
-              <br><br>
+              <agm-map [latitude]="lat" [longitude]="lng">
+                <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+              </agm-map>
+            </div>
+
+          </div>
+          <br><br>
+          <div *ngIf="eventt.eventType !== 'PRIVATE_EVENT'" class="row">
+            <div class="col-md-4" *ngIf="eventt.participants !== null">
             <ul class="list-group">
               <li class="list-group-item active">Participants</li>
             <div *ngFor="let participant of eventt.participants">
@@ -36,9 +48,33 @@
             </div>
             </ul>
             </div>
+            <div class="col-md-2" *ngIf="eventt.ownerId === this.currentUserId">
+              <button type="button" class="btn btn-primary" (click)="modal.show()" data-toggle="modal">Add participant</button>
+            </div>
+
           </div>
         </div>
       </div>
+
+    <div class="add-participant">
+      <app-modal-window #modal>
+        <div class="modal-header d-flex justify-content-between align-items-center">
+          <h4 class="modal-title">Add participant</h4>
+          <img class="close-btn" src="assets/close.svg" (click)="modal.hide()" alt="">
+        </div>
+        <div class="app-modal-body">
+          <form>
+            <div class="form-group">
+              <label for="name">Login:</label>
+              <input class="form-control" id="name" placeholder="Enter participant login" name="name"  #name
+                     [(ngModel)]="loginInput">
+            </div>
+            <button class="btn btn-default" (click)="modal.hide(); addParticipant(name)">Add</button>
+          </form>
+        </div>
+      </app-modal-window>
+    </div>
+
     </div>
 </div>
 

@@ -1,0 +1,9 @@
+.success-popup  {
+  transition: .3s ease all;
+  font-family: 'Roboto', sans-serif;
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

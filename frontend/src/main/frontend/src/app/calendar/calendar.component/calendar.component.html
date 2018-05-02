@@ -1,0 +1,56 @@
+<div class="container-fluid" style="margin-top:20px">
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
+  <div class="row">
+    <div class="col-2">
+      <home-comp [states]="state"></home-comp>
+    </div>
+
+    <div class="col-10 py-4">
+      <calendar-header
+        [(view)]="view"
+        [(viewDate)]="viewDate">
+      </calendar-header>
+
+      <ng-template #customCellTemplate let-day="day" let-locale="locale">
+        <div class="cal-cell-top">
+          <span class="cal-day-badge" *ngIf="day.badgeTotal > 0">{{ day.badgeTotal }}</span>
+          <span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
+        </div>
+        <small style="margin: 5px">There are {{ day.events.length }} events on this day</small>
+      </ng-template>
+
+      <div [ngSwitch]="view" *ngIf="events.length; else elseBlock">
+        <mwl-calendar-month-view
+          *ngSwitchCase="'month'"
+          [viewDate]="viewDate"
+          [events]="events"
+          [cellTemplate]="customCellTemplate"
+          [activeDayIsOpen]="activeDayIsOpen"
+          (dayClicked)="dayClicked($event.day)"
+          (eventClicked)="handleEvent($event.event)">
+        </mwl-calendar-month-view>
+        <mwl-calendar-week-view
+          *ngSwitchCase="'week'"
+          [viewDate]="viewDate"
+          [events]="events"
+          (dayClicked)="dayClicked($event.day)"
+          (eventClicked)="handleEvent($event.event)">
+        </mwl-calendar-week-view>
+        <mwl-calendar-day-view
+          *ngSwitchCase="'day'"
+          [viewDate]="viewDate"
+          [events]="events"
+          (eventClicked)="handleEvent($event.event)">
+        </mwl-calendar-day-view>
+      </div>
+
+      <ng-template #elseBlock>You have no events yet, go to your folders and add one!</ng-template>
+    </div>
+
+  </div>
+</div>
+
