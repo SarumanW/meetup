@@ -5,6 +5,7 @@ import {ActivatedRoute} from "@angular/router"
 import {NgxSpinnerService} from "ngx-spinner";
 import {LoginAccount} from "../login.account";
 import {AccountService} from "../account.service";
+import {Profile} from "../profile";
 
 @Component({
   selector: 'change.password',
@@ -17,9 +18,9 @@ export class ChangePasswordComponent implements OnInit {
   wrongPassword: string;
   error: string;
   success: boolean;
-  profile: RecoveryProfile;
-  output: any;
-  account: LoginAccount;
+  recovery: RecoveryProfile;
+  account: Profile;
+  profile: Profile;
   newPassword: string;
   oldPassword: string;
 
@@ -29,8 +30,9 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.recovery = JSON.parse(localStorage.getItem('currentUser'));
     this.success = false;
-    this.profile = new RecoveryProfile();
+    this.recovery = new RecoveryProfile();
     this.route.params.subscribe(params => {
       this.profile.token = params['token'];
     });
@@ -46,13 +48,12 @@ export class ChangePasswordComponent implements OnInit {
     // }
     else {
       this.doNotMatch = null;
-      this.accountService.update(this.account).subscribe(
+      this.accountService.recovery(this.profile).subscribe(
         () => {
           this.success = true;
           this.spinner.hide();
         },
          response => this.processError(response));
-     this.output = this.error;
      this.spinner.hide();
     }
   }

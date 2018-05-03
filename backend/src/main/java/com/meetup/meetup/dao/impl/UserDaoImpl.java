@@ -17,26 +17,25 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import static com.meetup.meetup.Keys.Key.*;
+import com.meetup.meetup.dao.AbstractDao;
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.meetup.meetup.Keys.Key.*;
-
 
 @Repository
 @PropertySource("classpath:sqlDao.properties")
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private static Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
 
-    @Autowired
-    private Environment env;
 
-    @Autowired
-    @Qualifier("jdbcTemplate")
-    private JdbcTemplate jdbcTemplate;
+
+
 
     @Autowired
     private FolderDaoImpl folderDao;

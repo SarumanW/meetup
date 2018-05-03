@@ -46,7 +46,7 @@
           {{errorDateFormat}}
         </div>
 
-        <button type="button" class="btn " data-toggle="modal" data-target="#myModal" routerLink="/change.password">
+        <button type="button" class="btn " data-toggle="modal" data-target="#myModal" routerLink="/{{profile.login}}/change.password">
           Change password
         </button>
         <br/>
@@ -117,7 +117,7 @@
           <input type="email" class="form-control" id="email" name="email" #email="ngModel"
                  placeholder="{{account.email}}"
                  [(ngModel)]="account.email" minlength=5 maxlength=100 email required [pattern]="emailPattern">
-          <div *ngIf="email.dirty && email.errors && !isValidFormSubmitted"  >
+          <div *ngIf="email.dirty && email.errors"  >
             <small class="form-text text-danger"  *ngIf="email.errors.pattern">
               Your email must be in format: mail@example.com
             </small>
@@ -135,10 +135,7 @@
           </div>
         </div>
 
-      <br/>
-        <br/>
-
-        <button type="button" class="btn btn-primary"  [disabled]="editForm.form.invalid || email.errors?.pattern" data-toggle="modal" data-target="#myModal" (click)="clickButton()">
+        <button type="button" class="btn btn-primary"  [disabled]="editForm.form.invalid || email.errors?.pattern" data-toggle="modal" (click)="clickButton()">
           Save changes
         </button>
         <button type="button" class="btn btn-primary" routerLink="/{{profile.login}}/profile">
@@ -149,12 +146,16 @@
   </div>
 </div>
 
-<div>
-<popup> Are you really want to edit your profile?
-
-<button type="button" class="btn btn-primary" (click)="save()" >yes</button>
-<button id="close_button" class="btn btn-primary" aria-label="Close" (click)="close()">no</button>
-</popup>
-
-</div>
-
+<app-modal-window #modal class="sure-window">
+  <div class="modal-header d-flex justify-content-between align-items-center">
+    <h4 class="modal-title">Edit profile</h4>
+    <img class="close-btn" src="assets/close.svg" (click)="modal.hide()" alt="">
+  </div>
+  <div class="app-modal-body">
+    <p>Are you really want to edit your profile?</p>
+  </div>
+  <div class="app-modal-footer">
+    <button class="btn btn-primary" (click)="modal.hide(); save()" >Yes</button>
+    <button class="btn btn-default" (click)="modal.hide();">Cancel</button>
+  </div>
+</app-modal-window>
