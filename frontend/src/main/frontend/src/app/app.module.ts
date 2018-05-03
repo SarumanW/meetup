@@ -34,7 +34,6 @@ import {NgxSpinnerModule} from 'ngx-spinner';
 import {EventListComponent} from "./events/event.list/event.list.component";
 import {Ng2TableModule} from "ng2-table";
 import {TooltipModule, PaginationModule} from "ngx-bootstrap";
-import {PopupModule} from "ng2-opd-popup";
 import {EventAddComponent} from './events/event.add/event.add.component';
 import {EventAddService} from "./events/event.add.service";
 import {CalendarModule} from "angular-calendar";
@@ -81,7 +80,6 @@ import { TextMaskModule } from 'angular2-text-mask';
     TooltipModule.forRoot(),
     Ng2TableModule,
     PaginationModule.forRoot(),
-    PopupModule.forRoot(),
     CalendarModule.forRoot(),
     UtilsModule,
     BrowserAnimationsModule,

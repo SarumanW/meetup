@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpErrorResponse, HttpResponse, HttpEventType} from "@angular/common/http";
 import {AccountService} from "../account.service";
 import {Profile} from "../profile";
 import {ActivatedRoute, Router} from "@angular/router"
 import {UploadFileService} from "../../upload.file/upload.file.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {Popup} from "ng2-opd-popup";
 import {FormBuilder, Validators} from "@angular/forms";
+import {ModalWindow} from "../../modal.window/modal.window.component";
 
 @Component({
   selector: 'edit',
@@ -32,13 +32,13 @@ export class EditComponent implements OnInit {
     email: [Validators.required, Validators.pattern(this.emailPattern)]
   });
 
+  @ViewChild(ModalWindow) childComponent: ModalWindow
   constructor(private accountService: AccountService,
               private router: Router,
               private fb: FormBuilder,
               private route: ActivatedRoute,
               private uploadService: UploadFileService,
-              private spinner: NgxSpinnerService,
-              private popup: Popup) {
+              private spinner: NgxSpinnerService) {
   }
 
   clickButton() {
@@ -47,12 +47,8 @@ export class EditComponent implements OnInit {
     if (this.account.birthDay > maxYear || this.account.birthDay < minYear ) {
       this.errorDateFormat = "Please enter your real day of birth!";
     } else {
-      this.popup.show();
+     this.childComponent.show();
     }
-  }
-
-  close() {
-    this.popup.hide();
   }
 
   ngOnInit() {
