@@ -55,11 +55,11 @@ public class ProfileController {
         return new ResponseEntity<>("Updating failed", HttpStatus.NOT_MODIFIED);
     }
 
-    @GetMapping("/friends")
-    public ResponseEntity<List<User>> getFriends() {
+    @GetMapping("/{login}/friends")
+    public ResponseEntity<List<User>> getFriends(@PathVariable String login) {
         log.debug("Trying to get friends of authenticated user");
 
-        List<User> friends = profileService.getFriends();
+        List<User> friends = profileService.getFriends(login);
 
         log.debug("Send response body friends '{}' and status OK", friends);
 
@@ -112,6 +112,18 @@ public class ProfileController {
         log.debug("Send response status OK");
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/userRelations/{userId}")
+    public ResponseEntity<String> userRelations(@PathVariable() int userId){
+
+        log.debug("Trying to get relation between user with id '{}' and authenticated user", userId);
+
+        String relation = profileService.userRelations(userId);
+
+        log.debug("Send response body relation '{}' and status OK", relation);
+
+        return new ResponseEntity<>(relation, HttpStatus.OK);
     }
 
     @PostMapping("/upload")

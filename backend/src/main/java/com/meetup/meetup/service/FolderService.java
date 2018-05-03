@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.meetup.meetup.Keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
+
 @Service
 @PropertySource("classpath:strings.properties")
 public class FolderService {
@@ -60,7 +62,7 @@ public class FolderService {
 
         if (folder == null) {
             log.error("Folder was not found by folderId '{}' for user '{}'", folderId, user.toString());
-            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"Folder", "folderId", folderId));
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Folder", "folderId", folderId));
         }
 
         log.debug("Folder was successfully found");
@@ -128,7 +130,7 @@ public class FolderService {
 
         if (folder.getUserId() != user.getId()) {
             log.error("User has no access to this data");
-            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"Folder", "userId", folder.getUserId()));
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Folder", "userId", folder.getUserId()));
         }
 
         log.debug("Given access to folder '{}' for user '{}'", folder.toString(), user.toString());

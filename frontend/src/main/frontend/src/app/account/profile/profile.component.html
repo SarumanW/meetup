@@ -1,43 +1,84 @@
 <div class="container-fluid">
-  <ngx-spinner bdOpacity = 0.9
-               bdColor = "#333"
-               size = "default"
-               color = "#fff"
-               type = "ball-beat"></ngx-spinner>
+  <ngx-spinner bdOpacity=0.9
+               bdColor="#333"
+               size="default"
+               color="#fff"
+               type="ball-beat"></ngx-spinner>
   <div class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
     </div>
 
-    <div class="col-10">
-      <div class="alert alert-danger" *ngIf="!profile.birthDay && loggedUser">
-        Go to "Edit profile" for setting your birth day.
+
+    <div class="col-10 py-4">
+      <div align="center">
+        <h3>{{profile.name}} {{profile.lastname}}</h3>
       </div>
+      <div>
+        <div class="user" *ngIf="!loggedUser">
 
-      <div class="alert alert-danger" *ngIf="!profile.phone && loggedUser">
-        Go to "Edit profile" for setting your phone number.
+          <img *ngIf="!profile.imgPath"
+               src="../../../assets/defoult.jpg"
+               class="profile-logo">
+          <img *ngIf="profile.imgPath" [src]="profile.imgPath" class="profile-logo">
+          <div>
+            <div class="bt-1">
+              <button type="button" class="btn btn-light border-success mt-1" routerLink="/{{profile.login}}/friends">
+                Friends
+                <span class="badge badge-pill badge-info">{{friendCount}}</span></button>
+              <button disabled type="button" class="btn btn-light border-success mt-1">Wish List</button>
+
+              <button *ngIf="relation === 'Not Friends'" (click)="addFriend(profile.login)" type="button" class="btn btn-info mt-1">Add friend</button>
+              <button *ngIf="relation === 'Not Confirmed'" (click)="confirmFriend(profile.id)" type="button" class="btn btn-success mt-1">Confirm</button>
+              <button *ngIf="relation === 'Friends'" (click)="modal.show()" type="button" class="btn btn-danger mt-1">Delete</button>
+            </div>
+          </div>
+        </div>
+        <div [ngClass]="{info1 : !loggedUser, info2 : loggedUser}">
+          <table class="table">
+            <tbody>
+            <tr>
+              <td>Username</td>
+              <td>{{profile.login}}</td>
+            </tr>
+            <tr>
+              <td>Birth day</td>
+              <td>{{profile.birthDay}}</td>
+            </tr>
+            <tr>
+              <td>Phone</td>
+              <td>{{profile.phone}}</td>
+            </tr>
+            <tr>
+              <td>Email</td>
+              <td>{{profile.email}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="edit">
+          <img *ngIf="loggedUser" src="../../../assets/edit.png" routerLink="/{{profile.login}}/edit" height="40"
+               width="40"/>
+        </div>
+        <div class="message">
+          {{message}}
+        </div>
+
+        <app-modal-window #modal class="sure-window">
+          <div class="modal-header d-flex justify-content-between align-items-center">
+            <h4 class="modal-title">Delete friend</h4>
+            <img class="close-btn" src="assets/close.svg" (click)="modal.hide()" alt="">
+          </div>
+          <div class="app-modal-body">
+            <p>Are you sure that you want to remove from friends {{profile.login}} ?</p>
+          </div>
+          <div class="app-modal-footer">
+            <button class="btn btn-danger" (click)="modal.hide(); deleteFriend(profile.id)">Delete</button>
+            <button class="btn btn-default" (click)="modal.hide();">Cancel</button>
+          </div>
+        </app-modal-window>
+
       </div>
-      <dl class="row py-4">
-
-        <dt class="col-sm-3">Your id</dt>
-        <dd class="col-sm-9">{{profile.id}}</dd>
-
-
-        <dt class="col-sm-3">Username</dt>
-        <dd class="col-sm-9">{{profile.login}}</dd>
-
-        <dt class="col-sm-3">First name</dt>
-        <dd class="col-sm-9">{{profile.name}}</dd>
-
-        <dt class="col-sm-3">Last name</dt>
-        <dd class="col-sm-9">{{profile.lastname}}</dd>
-
-        <dt class="col-sm-3">Email</dt>
-        <dd class="col-sm-9">{{profile.email}}</dd>
-
-        <a class="btn btn-primary" *ngIf="loggedUser" routerLink="/{{profile.login}}/edit" role="button">Edit
-          profile</a>
-      </dl>
     </div>
   </div>
 </div>

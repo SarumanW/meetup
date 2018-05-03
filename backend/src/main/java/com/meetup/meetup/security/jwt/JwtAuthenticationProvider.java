@@ -14,6 +14,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import static com.meetup.meetup.Keys.Key.EXCEPTION_JWT_AUTHENTICATION;
+
 @Component
 @PropertySource("classpath:strings.properties")
 public class JwtAuthenticationProvider implements AuthenticationProvider {
@@ -43,7 +45,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             return authenticatedProfile;
         } catch (Exception e) {
             log.error("Failed authentication of user with token '{}'", token);
-            throw new JwtAuthenticationException(env.getProperty("jwt.authentication.exception"), e);
+            throw new JwtAuthenticationException(env.getProperty(EXCEPTION_JWT_AUTHENTICATION), e);
         }
     }
 

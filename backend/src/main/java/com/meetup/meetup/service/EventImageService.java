@@ -1,6 +1,7 @@
 package com.meetup.meetup.service;
 
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.exception.runtime.frontend.detailed.FileUploadException;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -12,14 +13,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static com.meetup.meetup.Keys.Key.EXCEPTION_FILE_UPLOAD;
+
 @Service
 @PropertySource("classpath:links.properties")
+@PropertySource("classpath:strings.properties")
 public class EventImageService {
 
     @Autowired
     private Environment env;
 
-    public String store(MultipartFile file) throws Exception {
+    public String store(MultipartFile file) {
 
         Path rootLocation = Paths.get(env.getProperty("event.local.img.link"));
         long currentTime = System.currentTimeMillis();
@@ -30,7 +34,7 @@ public class EventImageService {
             Files.deleteIfExists(rootLocation.resolve(currentTime + inFileFormat));
             Files.copy(file.getInputStream(), rootLocation.resolve(currentTime + inFileFormat));
         } catch (Exception e) {
-            throw new Exception("Problems with file coping");
+            throw new FileUploadException(String.format(env.getProperty(EXCEPTION_FILE_UPLOAD),file.getOriginalFilename()));
         }
 
         return filePath;

@@ -1,25 +1,22 @@
 package com.meetup.meetup.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.runtime.FileCopyingException;
+import com.meetup.meetup.exception.runtime.frontend.detailed.FileUploadException;
 import com.meetup.meetup.security.AuthenticationFacade;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.bind.SchemaOutputResolver;
+import static com.meetup.meetup.Keys.Key.EXCEPTION_FILE_UPLOAD;
+
 
 @Service
 @PropertySource("classpath:links.properties")
@@ -48,8 +45,7 @@ public class StorageService {
             Files.copy(file.getInputStream(), this.rootLocation.resolve(user.getId()+inFileFormat));
             return user;
         } catch (Exception e) {
-            throw new FileCopyingException(env.getProperty("file.copying.exception"));
-        }
+            throw new FileUploadException(String.format(env.getProperty(EXCEPTION_FILE_UPLOAD),file.getOriginalFilename()));        }
     }
 
 }

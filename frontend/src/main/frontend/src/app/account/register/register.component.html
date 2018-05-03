@@ -98,7 +98,7 @@
           <input type="email" class="form-control" name="email" id="email"  [(ngModel)]="account.email"
                  #email="ngModel" placeholder="Enter your email" minlength=5 maxlength=100 email
                  required [pattern]="emailPattern">
-          <div *ngIf="email.dirty && email.errors && !isValidFormSubmitted">
+          <div *ngIf="email.dirty && email.errors">
             <small class="form-text text-danger"  *ngIf="email.errors.pattern">
               Your email must be in format: mail@example.com
             </small>

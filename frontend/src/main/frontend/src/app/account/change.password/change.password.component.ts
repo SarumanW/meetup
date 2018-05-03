@@ -1,8 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
-import {AccountService} from "../account.service";
-import {ActivatedRoute, Router} from "@angular/router"
 import {RecoveryProfile} from "../recovery.profile";
+import {ActivatedRoute} from "@angular/router"
+import {NgxSpinnerService} from "ngx-spinner";
+import {LoginAccount} from "../login.account";
+import {AccountService} from "../account.service";
+import {Profile} from "../profile";
 
 @Component({
   selector: 'change.password',
@@ -10,43 +13,54 @@ import {RecoveryProfile} from "../recovery.profile";
 })
 
 export class ChangePasswordComponent implements OnInit {
-  success: boolean;
-  confirmPassword: string;
-  password: string;
-  error: string;
-  account: RecoveryProfile;
+  confirmNewPassword: string;
   doNotMatch: string;
-  lastName: string;
+  wrongPassword: string;
+  error: string;
+  success: boolean;
+  recovery: RecoveryProfile;
+  account: Profile;
+  profile: Profile;
+  newPassword: string;
+  oldPassword: string;
 
-  constructor(private accountService: AccountService,
-              private router: Router, private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute,
+              private spinner: NgxSpinnerService,
+              private accountService: AccountService) {
   }
 
-    ngOnInit(): void {
+  ngOnInit() {
+    this.recovery = JSON.parse(localStorage.getItem('currentUser'));
     this.success = false;
-    this.account = new RecoveryProfile();
+    this.recovery = new RecoveryProfile();
     this.route.params.subscribe(params => {
-      this.account.token = params['token'];
+      this.profile.token = params['token'];
     });
   }
 
-  passwordConfirm() {
-    if (this.account.newPassword !== this.confirmPassword) {
+  changePassword() {
+    this.spinner.show();
+    if (this.newPassword !== this.confirmNewPassword) {
       this.doNotMatch = 'ERROR';
-    } else {
+    }
+    // else if (this.oldPassword !== this.account.password) {
+    //   this.wrongPassword = 'ERROR';
+    // }
+    else {
       this.doNotMatch = null;
-      this.accountService.save(this.account).subscribe(
+      this.accountService.recovery(this.profile).subscribe(
         () => {
           this.success = true;
+          this.spinner.hide();
         },
-        response => this.processError(response)
-      );
+         response => this.processError(response));
+     this.spinner.hide();
     }
   }
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
     console.log(response);
-    this.error = 'ERROR';
+    this.error = response.error;
   }
 }

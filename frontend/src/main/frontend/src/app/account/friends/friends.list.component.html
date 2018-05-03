@@ -1,9 +1,9 @@
 <div class="container-fluid">
-  <ngx-spinner bdOpacity = 0.9
-               bdColor = "#333"
-               size = "default"
-               color = "#fff"
-               type = "ball-beat"></ngx-spinner>
+  <ngx-spinner bdOpacity=0.9
+               bdColor="#333"
+               size="default"
+               color="#fff"
+               type="ball-beat"></ngx-spinner>
   <div class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
@@ -15,26 +15,28 @@
           <h3>Friends Requests</h3>
           <hr>
         </div>
-        <friend *ngFor="let unconfirmedFriend of unconfirmedFriends" [user]="unconfirmedFriend"></friend>
+        <friend *ngFor="let unconfirmedFriend of unconfirmedFriends" [user]="unconfirmedFriend" [loggedUser]="loggedUser"></friend>
         <hr>
       </div>
 
       <div align="center">
-        <h3>Friends List</h3>
+        <h3>{{user}} friends list</h3>
         <hr>
       </div>
-      <form class="row" (ngSubmit)="addFriend(form)" #form="ngForm">
-        <div class="form-group mx-4 mb-2">
-          <input type="text" class="form-control" placeholder="User name" [(ngModel)]="newFriendName"
-                 name="newFriendName">
-        </div>
-        <button type="submit" class="btn btn-primary mb-2">Add friend</button>
-        <div class="message mx-4">
-          {{message}}
-        </div>
-      </form>
-      <hr>
-      <friend *ngFor="let friend of friends" [user]="friend" [confirmed]="true"></friend>
+      <div *ngIf="loggedUser">
+        <form class="row" (ngSubmit)="addFriend(form)" #form="ngForm">
+          <div class="form-group mx-4 mb-2">
+            <input type="text" class="form-control" placeholder="User name" [(ngModel)]="newFriendName"
+                   name="newFriendName">
+          </div>
+          <button type="submit" class="btn btn-primary mb-2">Add friend</button>
+          <div class="message mx-4">
+            {{message}}
+          </div>
+        </form>
+        <hr>
+      </div>
+      <friend *ngFor="let friend of friends" [user]="friend" [confirmed]="true" [loggedUser]="loggedUser"></friend>
     </div>
   </div>
 </div>

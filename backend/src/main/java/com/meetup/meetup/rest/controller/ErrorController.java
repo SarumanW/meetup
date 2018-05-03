@@ -26,7 +26,7 @@ public class ErrorController {
         try {
             response.getWriter().print(e.getMessage().replace("SendCustomError", ""));
         } catch (IOException e1) {
-            log.error("exception in ErrorControlle: ", e1);
+            log.error("exception in ErrorController: ", e1);
         }
     }
 

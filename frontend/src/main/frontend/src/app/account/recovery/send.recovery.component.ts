@@ -13,19 +13,16 @@ export class SendRecoveryComponent implements OnInit {
   success: boolean;
   emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   recoveryForm = this.fb.group({
-    email: ['', [Validators.required, Validators.pattern(this.emailPattern)]]
+    email: [Validators.required, Validators.pattern(this.emailPattern)]
   });
 
   constructor(private http: HttpClient,
               private fb: FormBuilder) {
   }
 
-  get email() {
-    return this.recoveryForm.get('email');
-  }
-
   ngOnInit() {
     this.success = false;
+    this.recoveryForm.get('email').setValidators(Validators.email);
   }
 
   sendRecovery() {

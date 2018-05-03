@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 
 import java.util.List;
 
+import static com.meetup.meetup.Keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
+
 @Service
 @PropertySource("classpath:strings.properties")
 public class ProfileService {
@@ -33,7 +35,7 @@ public class ProfileService {
 
         if(user == null) {
             log.error("User was not found by userLogin '{}'", login);
-            throw new EntityNotFoundException(String.format(env.getProperty("entity.not.found.exception"),"User", "userLogin", login));
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"User", "userLogin", login));
         }
 
         log.debug("Found user '{}'", user.toString());
@@ -45,10 +47,11 @@ public class ProfileService {
         return userDao.update(newUser);
     }
 
-    public List<User> getFriends() {
-        User user = authenticationFacade.getAuthentication();
+    public List<User> getFriends(String login) {
 
-        log.debug("Authenticated user '{}'", user.toString());
+        User user = userDao.findByLogin(login);
+
+        log.debug("User for finding friends '{}'", user.toString());
 
         return userDao.getFriends(user.getId());
     }
@@ -67,8 +70,6 @@ public class ProfileService {
         log.debug("Authenticated user '{}'", user.toString());
 
         User friend = userDao.findByLogin(friendLogin);
-
-        log.debug("Friend found '{}'", friend.toString());
 
         return friend != null && userDao.addFriend(user.getId(), friend.getId());
     }
@@ -90,6 +91,20 @@ public class ProfileService {
 
         if(userDao.deleteFriend(user.getId(), friendId)== user.getId()){
             log.debug("Friend successfully deleted ");
+        }
+    }
+
+    public String userRelations(int userId){
+        User user = authenticationFacade.getAuthentication();
+
+        log.debug("Authenticated user '{}'", user.toString());
+
+        if(userDao.getFriends(user.getId()).contains(userDao.findById(userId))){
+            return "Friends";
+        }else if(userDao.getFriendsRequests(user.getId()).contains(userDao.findById(userId))){
+            return "Not Confirmed";
+        }else {
+            return "Not Friends";
         }
     }
 }
