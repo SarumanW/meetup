@@ -16,6 +16,8 @@
       </div>
       <div>
         <div class="user" *ngIf="!loggedUser">
+
+<!--TODO change link-->
           <img *ngIf="!profile.imgPath"
                src="http://tuzikgreet.ru/i/files/stati/9-veshhey-kotorye-hochet-skazat-vam-vasha-sobaka-1.jpg"
                class="profile-logo">
@@ -27,9 +29,9 @@
                 <span class="badge badge-pill badge-info">{{friendCount}}</span></button>
               <button disabled type="button" class="btn btn-light border-success mt-1">Wish List</button>
 
-              <button *ngIf="!isFriend && isConfirmed" (click)="addFriend(profile.login)" type="button" class="btn btn-info mt-1">Add friend</button>
-              <button *ngIf="!isFriend && !isConfirmed" (click)="confirmFriend(profile.id)" type="button" class="btn btn-success mt-1">Confirm</button>
-              <button *ngIf="isFriend && isConfirmed" (click)="deleteFriend(profile.id)" type="button" class="btn btn-danger mt-1">Delete</button>
+              <button *ngIf="relation === 'Not Friends'" (click)="addFriend(profile.login)" type="button" class="btn btn-info mt-1">Add friend</button>
+              <button *ngIf="relation === 'Not Confirmed'" (click)="confirmFriend(profile.id)" type="button" class="btn btn-success mt-1">Confirm</button>
+              <button *ngIf="relation === 'Friends'" (click)="modal.show()" type="button" class="btn btn-danger mt-1">Delete</button>
             </div>
           </div>
         </div>
@@ -59,6 +61,24 @@
           <img *ngIf="loggedUser" src="../../../assets/edit.png" routerLink="/{{profile.login}}/edit" height="40"
                width="40"/>
         </div>
+        <div class="message">
+          {{message}}
+        </div>
+
+        <app-modal-window #modal class="sure-window">
+          <div class="modal-header d-flex justify-content-between align-items-center">
+            <h4 class="modal-title">Delete friend</h4>
+            <img class="close-btn" src="assets/close.svg" (click)="modal.hide()" alt="">
+          </div>
+          <div class="app-modal-body">
+            <p>Are you sure that you want to remove from friends {{profile.login}} ?</p>
+          </div>
+          <div class="app-modal-footer">
+            <button class="btn btn-danger" (click)="modal.hide(); deleteFriend(profile.id)">Delete</button>
+            <button class="btn btn-default" (click)="modal.hide();">Cancel</button>
+          </div>
+        </app-modal-window>
+
       </div>
     </div>
   </div>

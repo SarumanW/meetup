@@ -71,8 +71,6 @@ public class ProfileService {
 
         User friend = userDao.findByLogin(friendLogin);
 
-        log.debug("Friend found '{}'", friend.toString());
-
         return friend != null && userDao.addFriend(user.getId(), friend.getId());
     }
 
@@ -93,6 +91,20 @@ public class ProfileService {
 
         if(userDao.deleteFriend(user.getId(), friendId)== user.getId()){
             log.debug("Friend successfully deleted ");
+        }
+    }
+
+    public String userRelations(int userId){
+        User user = authenticationFacade.getAuthentication();
+
+        log.debug("Authenticated user '{}'", user.toString());
+
+        if(userDao.getFriends(user.getId()).contains(userDao.findById(userId))){
+            return "Friends";
+        }else if(userDao.getFriendsRequests(user.getId()).contains(userDao.findById(userId))){
+            return "Not Confirmed";
+        }else {
+            return "Not Friends";
         }
     }
 }

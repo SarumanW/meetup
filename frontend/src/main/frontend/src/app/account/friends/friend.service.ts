@@ -9,6 +9,13 @@ export class FriendService {
   constructor(private http: HttpClient) {
   }
 
+  getRelation(userId:number): Observable<any>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.get('api/profile/userRelations/' + userId, {headers: headers})
+  }
+
   getFriends(login: string): Observable<any> {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
