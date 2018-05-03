@@ -58,7 +58,7 @@ public final class Key {
     public static final String USER_UPDATE_PASSWORD="user.updatePassword";
     public static final String USER_DELETE="user.delete";
     public static final String USER_GET_FRIENDS="user.getFriends";
-    public static final String USER_GET_UNCONFIRMED_IDS="user.getUnconfirmedIds";
+    public static final String USER_GET_UNCONFIRMED_FRIENDS ="user.getUnconfirmedFriends";
     public static final String USER_CONFIRM_FRIEND="user.confirmFriend";
     public static final String USER_DELETE_FRIEND="user.deleteFriend";
     public static final String USER_IS_LOGIN_FREE ="user.isLoginFree";
