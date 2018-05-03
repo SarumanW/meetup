@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
-import static com.meetup.meetup.Keys.Key.EXCEPTION_LOGIN_NOT_FOUND;
+import static com.meetup.meetup.keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
+import static com.meetup.meetup.keys.Key.EXCEPTION_LOGIN_NOT_FOUND;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -100,8 +100,8 @@ public class EventService {
     public Event addEvent(Event event) {
         log.debug("Trying to insert event '{}' to database", event.toString());
 
-        // TODO: 22.04.2018 Check permission
         User user = authenticationFacade.getAuthentication();
+
         int eventTypeId = eventTypeMap.get(event.getEventType());
 
         if (event.getEventType() != EventType.NOTE) {
@@ -118,21 +118,23 @@ public class EventService {
     public Event updateEvent(Event event) {
         log.debug("Trying to update event '{}' in database", event.toString());
 
-        // TODO: 22.04.2018 Check permission
         return eventDao.update(event);
     }
 
-    public Event deleteEvent(Event event) {
-        log.debug("Trying to delete event '{}' from database", event.toString());
+    public Event deleteEvent(int eventId) {
+        log.debug("Trying to find event by id '{}'", eventId);
 
-        // TODO: 22.04.2018 Check permission
+        Event event = getEvent(eventId);
+
+        log.debug("Found event '{}' with id '{}'", event, eventId);
+
+        log.debug("Trying to delete eventId '{}' from database", eventId);
         return eventDao.delete(event);
     }
 
     public User addParticipant(int eventId, String login) {
 
-        log.debug("Trying to add paritipant with login '{}'", login);
-        checkPermission(eventId);
+        log.debug("Trying to add participant with login '{}'", login);
 
         User user = userDao.findByLogin(login);
 
@@ -145,15 +147,5 @@ public class EventService {
 
         log.debug("Participant with login '{}' was added", login);
         return user;
-    }
-
-    //Check authentication and folder permission
-    private void checkPermission(int eventId) {
-        User user = authenticationFacade.getAuthentication();
-
-        if (eventDao.getRole(user.getId(), eventId) != Role.OWNER) {
-            log.debug("User with id '{}' has not permission to add participant to event '{}'", user.getId(), eventId);
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Event", "eventId", eventId));
-        }
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 
-import static com.meetup.meetup.Keys.Key.*;
+import static com.meetup.meetup.keys.Key.*;
 
 @Component
 public class UserRowMapper implements RowMapper<User> {

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -45,6 +46,7 @@ public class FolderController {
         return new ResponseEntity<>(folder, HttpStatus.OK);
     }
 
+    @PreAuthorize("@folderPermissionChecker.canCreateFolder(#folder)")
     @PostMapping("/add")
     public ResponseEntity<Folder> addFolder(@Valid @RequestBody Folder folder) {
         log.debug("Trying to save folder {}", folder.toString());
@@ -56,8 +58,9 @@ public class FolderController {
         return new ResponseEntity<>(addedFolder, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("@folderPermissionChecker.canUpdateFolder(#folder)")
     @PutMapping
-    public ResponseEntity<Folder> updateEvent(@Valid @RequestBody Folder folder) {
+    public ResponseEntity<Folder> updateFolder(@Valid @RequestBody Folder folder) {
         log.debug("Trying to update folder {}", folder.toString());
 
         Folder updatedFolder = folderService.updateFolder(folder);
@@ -67,12 +70,12 @@ public class FolderController {
         return new ResponseEntity<>(updatedFolder, HttpStatus.OK);
     }
 
-    // TODO: 5/2/2018 Convert to DeleteMapping
-    @PostMapping ("/delete")
-    public ResponseEntity<Folder> deleteFolder(@Valid @RequestBody Folder folder) {
-        log.debug("Trying to delete folder {}", folder.toString());
+    @PreAuthorize("@folderPermissionChecker.canDeleteFolder(#folderId)")
+    @DeleteMapping ("/{folderId}")
+    public ResponseEntity<Folder> deleteFolder(@PathVariable Integer folderId) {
+        log.debug("Trying to delete folder by id '{}'", folderId);
 
-        Folder deletedFolder = folderService.deleteFolder(folder);
+        Folder deletedFolder = folderService.deleteFolder(folderId);
 
         log.debug("Send response body deleted folder '{}' and status OK", deletedFolder.toString());
 

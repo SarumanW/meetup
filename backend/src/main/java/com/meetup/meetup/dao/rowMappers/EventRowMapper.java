@@ -5,12 +5,11 @@ import com.meetup.meetup.entity.EventPeriodicity;
 import com.meetup.meetup.entity.EventType;
 import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import static com.meetup.meetup.Keys.Key.*;
+import static com.meetup.meetup.keys.Key.*;
 
 public class EventRowMapper implements RowMapper<Event> {
     @Override

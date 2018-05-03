@@ -12,6 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,6 +79,7 @@ public class EventController {
         return new ResponseEntity<>(responseEvent, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("@eventPermissionChecker.canUpdateEvent(#event)")
     @PutMapping
     public ResponseEntity<Event> updateEvent(@Valid @RequestBody Event event) {
         log.debug("Trying to update event '{}'", event.toString());
@@ -89,11 +91,12 @@ public class EventController {
         return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Event> deleteEvent(@Valid @RequestBody Event event) {
-        log.debug("Trying to delete event '{}'", event.toString());
+    @PreAuthorize("@eventPermissionChecker.canDeleteEvent(#eventId)")
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<Event> deleteEvent(@PathVariable int eventId) {
+        log.debug("Trying to delete eventId '{}'", eventId);
 
-        Event deletedEvent = eventService.deleteEvent(event);
+        Event deletedEvent = eventService.deleteEvent(eventId);
 
         log.debug("Send response body event '{}' and status OK", deletedEvent.toString());
 

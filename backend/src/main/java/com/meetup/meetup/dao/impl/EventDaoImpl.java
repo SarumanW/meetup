@@ -16,11 +16,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import static com.meetup.meetup.Keys.Key.*;
+import static com.meetup.meetup.keys.Key.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,7 +150,7 @@ public class EventDaoImpl implements EventDao {
     @Override
     public Role getRole(int userId, int eventId) {
         log.debug("Try to get role for user with id '{}' for event with id '{}'", userId, eventId);
-        Role role;
+        Role role = Role.NULL;
 
         try {
             String roleString = jdbcTemplate.queryForObject(
@@ -157,10 +158,14 @@ public class EventDaoImpl implements EventDao {
                     String.class);
 
             role = Role.valueOf(roleString);
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("Role for user with id '{}' for event with id '{}' is ", userId, eventId, role);
+            return role;
         } catch (DataAccessException e) {
             log.error("Query fails by get role for user with id '{}' for event with id '{}'", userId, eventId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
+
         log.debug("Role for user with id '{}' for event with id '{}' is ", userId, eventId, role.toString());
         return role;
     }
