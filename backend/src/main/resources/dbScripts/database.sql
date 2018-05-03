@@ -35,6 +35,7 @@ CREATE TABLE uuser (
 CREATE TABLE user_item (
   user_id number NOT NULL,
   item_id number NOT NULL,
+  id_who_booked number,
   priority_id number,
   UNIQUE (user_id, item_id)
 );
@@ -47,8 +48,8 @@ CREATE TABLE priority (
 
 CREATE TABLE llike (
   like_id number,
-  item_id number,
-  user_id number,
+  item_id number NOT NULL,
+  user_id number NOT NULL,
   PRIMARY KEY (like_id),
   UNIQUE (item_id, user_id)
 );
@@ -56,24 +57,28 @@ CREATE TABLE llike (
 CREATE TABLE item (
   item_id number,
   name varchar2(50) NOT NULL,
-  description varchar2(200),
-  id_who_booked number,
-  image_filepath varchar2(200),
-  link varchar2(200),
-  due_date timestamp,
+  description varchar2(200) NOT NULL,
+  image_filepath varchar2(200) NOT NULL,
+  link varchar2(200) NOT NULL,
+  due_date timestamp NOT NULL,
   PRIMARY KEY (item_id)
+);
+
+CREATE TABLE tag_item (
+  tag_id number NOT NULL,
+  item_id number NOT NULL,
+  UNIQUE (tag_id, item_id)
 );
 
 CREATE TABLE tag (
   tag_id number,
-  item_id number,
-  name varchar2(20),
+  name varchar2(20) NOT NULL ,
   PRIMARY KEY (tag_id)
 );
 
 CREATE TABLE friend (
-  sender_id number,
-  receiver_id number,
+  sender_id number NOT NULL,
+  receiver_id number NOT NULL,
   is_Confirmed number(1) NOT NULL,
   UNIQUE (sender_id, receiver_id)
 );
@@ -114,10 +119,10 @@ CREATE TABLE event (
 
 CREATE TABLE message (
   message_id number,
-  sender_id number,
+  sender_id number NOT NULL,
   text varchar2(250) NOT NULL,
   message_date Date NOT NULL,
-  chat_id number,
+  chat_id number NOT NULL,
   PRIMARY KEY (message_id)
 );
 
@@ -135,8 +140,8 @@ CREATE TABLE event_type (
 
 CREATE TABLE chat (
   chat_id number,
-  chat_type_id number,
-  event_id number,
+  chat_type_id number NOT NULL,
+  event_id number NOT NULL,
   PRIMARY KEY (chat_id)
 );
 

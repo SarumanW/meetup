@@ -17,9 +17,8 @@
       <div>
         <div class="user" *ngIf="!loggedUser">
 
-<!--TODO change link-->
           <img *ngIf="!profile.imgPath"
-               src="http://tuzikgreet.ru/i/files/stati/9-veshhey-kotorye-hochet-skazat-vam-vasha-sobaka-1.jpg"
+               src="../../../assets/defoult.jpg"
                class="profile-logo">
           <img *ngIf="profile.imgPath" [src]="profile.imgPath" class="profile-logo">
           <div>

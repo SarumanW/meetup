@@ -31,7 +31,7 @@ const routes: Routes = [
   {path: ':login/folders/:folderId', component: FolderComponent, canActivate: [AuthGuard]},
   {path: ':login/folders/:folderId/:type', component: EventListComponent, canActivate: [AuthGuard]},
   {path: ':login/folders/:folderId/:type/:eventId', component: EventComponent, canActivate: [AuthGuard]},
-  {path: 'change.password', component: ChangePasswordComponent},
+  {path: ':login/change.password', component: ChangePasswordComponent, canActivate: [AuthGuard]},
   {path: 'thankyou', component: ThankyouComponent},
   {path: ':login/event/add/:folderId', component: EventAddComponent, canActivate: [AuthGuard] },
 
