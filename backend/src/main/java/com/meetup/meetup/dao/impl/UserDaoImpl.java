@@ -1,5 +1,6 @@
 package com.meetup.meetup.dao.impl;
 
+import com.meetup.meetup.dao.AbstractDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Folder;
@@ -9,22 +10,17 @@ import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import static com.meetup.meetup.Keys.Key.*;
-import com.meetup.meetup.dao.AbstractDao;
-import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.meetup.meetup.Keys.Key.*;
 
 
 @Repository
@@ -32,9 +28,6 @@ import java.util.Map;
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     private static Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
-
-
-
 
 
     @Autowired
