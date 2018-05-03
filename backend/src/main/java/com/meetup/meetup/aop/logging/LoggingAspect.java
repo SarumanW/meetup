@@ -36,7 +36,7 @@ public class LoggingAspect {
      */
     @Pointcut("within(com.meetup.meetup.dao..*)" +
             "             || within(com.meetup.meetup.service..*)" +
-//            "             || within(com.meetup.meetup.security..*)" +
+            "             || within(com.meetup.meetup.security..*)" +
             "             || within(com.meetup.meetup.rest..*)")
     public void applicationPackagePointcut() {
         // Method is empty as this is just a Pointcut, the implementations are in the advices.
@@ -53,7 +53,7 @@ public class LoggingAspect {
         log.error("Exception in {}.{}() with cause = {}",
                 joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(),
-                e.getCause() != null? e.getCause() : "NULL");
+                e.getMessage() != null? e.getMessage() : "Cause is not declared");
     }
 
     /**

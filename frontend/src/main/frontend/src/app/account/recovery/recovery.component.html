@@ -3,7 +3,8 @@
     <div class="col-md-8">
       <h1>Recovery</h1>
       <div class="alert alert-success" *ngIf="success">
-        <strong>Password was changed</strong>
+        <strong>Password was changed. Go to <a href="#/login">login page</a> for using service</strong>
+        <br>Auto redirect in 10 seconds.
       </div>
 
       <div class="alert alert-danger" *ngIf="error">
@@ -33,11 +34,10 @@
             <small class="form-text text-danger" *ngIf="password.errors.maxlength">
               Your password cannot be longer than 50 characters.
             </small>
-            <small class="form-text text-danger" *ngIf="lastName.errors.pattern">
-              Your username can only contain letters and digits.
-            </small>
           </div>
         </div>
+
+
         <div class="form-group">
           <label class="form-control-label" for="confirmPassword">Password confirmation</label>
           <input type="password" class="form-control" id="confirmPassword" name="confirmPasswordInput"
@@ -53,14 +53,12 @@
             <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.maxlength">
               Your confirmation password cannot be longer than 50 characters.
             </small>
-            <small class="form-text text-danger" *ngIf="lastName.errors.pattern">
-              Your username can only contain letters and digits.
-            </small>
           </div>
         </div>
-        <button type="button" (click)="recover()" [disabled]="registerForm.form.invalid" class="btn btn-primary">
+        <button type="button" (click)="recover();" [disabled]="registerForm.form.invalid" class="btn btn-primary">
           Recover
         </button>
+
       </form>
     </div>
   </div>

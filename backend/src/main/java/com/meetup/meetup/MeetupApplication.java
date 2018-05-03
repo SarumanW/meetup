@@ -1,5 +1,6 @@
 package com.meetup.meetup;
 
+import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import com.meetup.meetup.service.StorageService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

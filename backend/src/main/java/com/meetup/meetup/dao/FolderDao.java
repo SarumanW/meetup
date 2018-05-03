@@ -15,4 +15,6 @@ public interface FolderDao extends Dao<Folder> {
 
     Folder findByName(String name);
 
+    boolean moveEventsToGeneral(int id);
+
 }

@@ -1,26 +1,26 @@
 package com.meetup.meetup.service;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.exception.runtime.frontend.detailed.FileUploadException;
 import com.meetup.meetup.security.AuthenticationFacade;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.bind.SchemaOutputResolver;
+import static com.meetup.meetup.Keys.Key.EXCEPTION_FILE_UPLOAD;
+
 
 @Service
 @PropertySource("classpath:links.properties")
+@PropertySource("classpath:strings.properties")
 public class StorageService {
 
     @Autowired
@@ -32,32 +32,20 @@ public class StorageService {
     @Autowired
     private UserDao userDao;
 
-    Logger log = LoggerFactory.getLogger(this.getClass().getName());
-    private Path rootLocation ;//= Paths.get(env.getProperty("profile.img.link"));
+    private Path rootLocation ;
 
-    public void store(MultipartFile file) {
+    public User store(MultipartFile file) {
         rootLocation = Paths.get(env.getProperty("profile.img.link"));
-        try {
-            Files.createDirectory(rootLocation);
-        } catch (IOException e) {
-            System.out.println("Location exists");
-        }
         User user = authenticationFacade.getAuthentication();
-        user.setImgPath(env.getProperty("remote.img.link")+user.getId()+".jpg");
+        String inFileFormat = "."+file.getOriginalFilename().split("\\.")[1];
+        user.setImgPath(env.getProperty("remote.img.link")+user.getId()+inFileFormat);
         userDao.update(user);
         try {
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(user.getId()+".jpg"));
+            Files.deleteIfExists(this.rootLocation.resolve(user.getId()+inFileFormat));
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(user.getId()+inFileFormat));
+            return user;
         } catch (Exception e) {
-            throw new RuntimeException("FAIL!");
-        }
+            throw new FileUploadException(String.format(env.getProperty(EXCEPTION_FILE_UPLOAD),file.getOriginalFilename()));        }
     }
 
-    public void init() {
-        rootLocation = Paths.get(env.getProperty("profile.img.link"));
-        try {
-            Files.createDirectory(rootLocation);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not initialize storage!");
-        }
-    }
 }

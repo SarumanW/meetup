@@ -11,6 +11,7 @@ export class Evento{
   eventType : string;
   isDraft : boolean;
   folderId : number;
-  imageFiepath : string;
+  imageFilepath : string;
+  ownerId : number;
   participants : Profile[]
 }

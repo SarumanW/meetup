@@ -14,11 +14,16 @@
   </div>
   <div class="row justify-content-center" *ngIf="!success">
     <div class="col-md-8">
-      <form name="form" role="form" #registerForm="ngForm" *ngIf="!success">
+      <form name="form" role="form" #recoveryForm="ngForm" (ngSubmit)="recovery(recoveryForm)"  *ngIf="!success">
         <div class="form-group">
           <label class="form-control-label" for="email">Email</label>
           <input type="email" class="form-control" id="email" name="email" #email="ngModel" placeholder="email@mail.com"
-                 [(ngModel)]="emailAddr" minlength=5 maxlength=100 email required>
+                 [(ngModel)]="emailAddr" minlength=5 maxlength=100 email required [pattern]="emailPattern">
+          <div *ngIf="email.dirty && email.errors ">
+            <small class="form-text text-danger"  *ngIf="email.errors.pattern">
+              Your email must be in format: mail@example.com
+            </small>
+          </div>
           <div *ngIf="email.dirty && email.invalid">
             <small class="form-text text-danger" *ngIf="email.errors.required">
               Your email is required.
@@ -34,7 +39,7 @@
             </small>
           </div>
         </div>
-        <button type="button" (click)="sendRecovery()" class="btn btn-primary">
+        <button type="button" (click)="sendRecovery()" [disabled]="email.errors?.pattern" class="btn btn-primary">
           Send
         </button>
       </form>

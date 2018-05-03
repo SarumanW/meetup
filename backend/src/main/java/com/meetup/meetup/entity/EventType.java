@@ -3,5 +3,6 @@ package com.meetup.meetup.entity;
 
 public enum EventType {
     EVENT,
-    NOTE
+    NOTE,
+    PRIVATE_EVENT
 }

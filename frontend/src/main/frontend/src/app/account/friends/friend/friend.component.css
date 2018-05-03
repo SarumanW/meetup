@@ -1,6 +1,18 @@
-.friend-info, .friend-action{
+.friend-info, .friend-action {
   display: inline-block;
 }
-.friend-info{
+
+.friend-info {
   width: 80%;
+  margin-bottom: 10px;
+}
+
+.close-btn {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.confidence{
+  text-align: center;
 }
