@@ -17,14 +17,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import static com.meetup.meetup.Keys.Key.*;
-
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.meetup.meetup.Keys.Key.*;
 
 
 @Repository
@@ -119,71 +118,10 @@ public class UserDaoImpl implements UserDao {
     public List<User> getFriends(int userId) {
         log.debug("Try to getFriends by userId '{}'", userId);
 
-        log.debug("Try to create list with FriendsIds by userId '{}'", userId);
-        List<Integer> friendIds = getFriendsIds(userId);
-        log.debug("List with FriendsIds by userId '{}' was created", userId);
-
-        List<User> friends = new ArrayList<>();
-
-        for (int id : friendIds) {
-
-            log.debug("Try to find user entity by id '{}'", id);
-            User friend = findById(id);
-
-            if (friend != null) {
-                friends.add(friend);
-            }
-        }
+        List<User> friends = jdbcTemplate.query(env.getProperty(USER_GET_FRIENDS),new Object[] {userId,userId}, new UserRowMapper());
+        log.debug("Friends found: '{}'",friends);
 
         return friends;
-    }
-
-    /**
-     * Returns list of user ids where friendship for given user's id is confirmed
-     *
-     * @param userId
-     * @return
-     */
-    private List<Integer> getFriendsIds(int userId) {
-        log.debug("Try to getFriendsIds with userId '{}'", userId);
-        List<Map<String, Object>> list = new ArrayList<>();
-
-        try {
-            list = jdbcTemplate.queryForList(env.getProperty(USER_GET_FRIENDS_IDS),
-                    userId, userId);
-
-        } catch (DataAccessException e) {
-            log.error("Query fails by getFriendsIds by userId '{}'", userId);
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
-
-        if (list.isEmpty()) {
-            log.debug("list with friendsIds was not found by userId '{}'", userId);
-        } else {
-            log.debug("list with friendsIds was found by userId '{}'", userId);
-        }
-
-        BigDecimal b;
-        List<Integer> friendIds = new ArrayList<>();
-
-        for (Map<String, Object> row : list) {
-
-            b = (BigDecimal) row.get(FRIEND_SENDER_ID);
-            if (b == null) log.debug("Map contains no mapping for the key SENDER_ID");
-            if (b.intValue() != userId) {
-                log.debug("Try to add friend's id '{}' to friend list of user with id '{}'", b.intValue(), userId);
-                friendIds.add(b.intValue());
-            }
-
-            b = (BigDecimal) row.get(FRIEND_RECEIVER_ID);
-            if (b == null) log.debug("Map contains no mapping for the key RECEIVER_ID");
-            if (b.intValue() != userId) {
-                log.debug("Try to add friend's id '{}' to friend list of user with id '{}'", b.intValue(), userId);
-                friendIds.add(b.intValue());
-            }
-        }
-
-        return friendIds;
     }
 
     @Override
