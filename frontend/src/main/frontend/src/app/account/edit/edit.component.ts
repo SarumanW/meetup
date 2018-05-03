@@ -42,8 +42,8 @@ export class EditComponent implements OnInit {
   }
 
   clickButton() {
-    const maxYear = `${2012}`;
-    const minYear = `${1960}`;
+    const maxYear = "2012";
+    const minYear = "1960";
     if (this.account.birthDay > maxYear || this.account.birthDay < minYear ) {
       this.errorDateFormat = "Please enter your real day of birth!";
     } else {

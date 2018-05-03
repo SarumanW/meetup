@@ -46,7 +46,7 @@
           {{errorDateFormat}}
         </div>
 
-        <button type="button" class="btn " data-toggle="modal" data-target="#myModal" routerLink="/change.password">
+        <button type="button" class="btn " data-toggle="modal" data-target="#myModal" routerLink="/{{profile.login}}/change.password">
           Change password
         </button>
         <br/>
@@ -117,7 +117,7 @@
           <input type="email" class="form-control" id="email" name="email" #email="ngModel"
                  placeholder="{{account.email}}"
                  [(ngModel)]="account.email" minlength=5 maxlength=100 email required [pattern]="emailPattern">
-          <div *ngIf="email.dirty && email.errors && !isValidFormSubmitted"  >
+          <div *ngIf="email.dirty && email.errors"  >
             <small class="form-text text-danger"  *ngIf="email.errors.pattern">
               Your email must be in format: mail@example.com
             </small>
@@ -134,9 +134,6 @@
             </small>
           </div>
         </div>
-
-      <br/>
-        <br/>
 
         <button type="button" class="btn btn-primary"  [disabled]="editForm.form.invalid || email.errors?.pattern" data-toggle="modal" data-target="#myModal" (click)="clickButton()">
           Save changes

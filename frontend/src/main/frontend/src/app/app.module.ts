@@ -39,7 +39,6 @@ import {EventAddComponent} from './events/event.add/event.add.component';
 import {EventAddService} from "./events/event.add.service";
 import {CalendarModule} from "angular-calendar";
 import {CalendarComponent} from "./calendar/calendar.component/calendar.component";
-import {CalendarHeaderComponent} from "./calendar/calendar.utils/calendar.header.component";
 import {UtilsModule} from "./calendar/calendar.utils/utils.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CalendarService} from "./calendar/calendar.service";
