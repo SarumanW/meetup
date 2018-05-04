@@ -1,9 +1,9 @@
 <div class="container-fluid">
-  <ngx-spinner bdOpacity = 0.9
-               bdColor = "#333"
-               size = "default"
-               color = "#fff"
-               type = "ball-beat"></ngx-spinner>
+  <ngx-spinner bdOpacity=0.9
+               bdColor="#333"
+               size="default"
+               color="#fff"
+               type="ball-beat"></ngx-spinner>
   <div class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
@@ -13,8 +13,18 @@
       <div class="container justify-content-center">
         <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
           <h2>Folders:</h2>
-          <button type="button" class="btn btn-primary" (click)="modal.show()" data-toggle="modal">Add folder</button>
+          <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <button type="button" class="btn btn-primary mr-2" (click)="modal.show()" data-toggle="modal">Add folder</button>
+            <button type="button" (click)="modalexport.show()" class="btn btn-primary">
+              Export events
+            </button>
+          </div>
         </div>
+
+        <div class="download">
+          <h1>My first text!</h1>
+        </div>
+
         <div class="folder d-flex flex-wrap">
           <div *ngFor="let folder of folders" class="card mb-4">
             <div class="head card-body">
@@ -24,7 +34,6 @@
             </div>
             <div class="card-body">
               <h5 class="card-title">{{folder.name}}</h5>
-              <!--<p class="card-text"><b>Id: </b>{{folder.folderId}}</p>-->
               <a routerLink="/{{profile.login}}/folders/{{folder.folderId}}" class="btn btn-primary">Open
                 folder</a>
             </div>
@@ -46,6 +55,45 @@
                 </div>
                 <button class="btn btn-default" (click)="modal.hide(); addFolder(name)">Add</button>
               </form>
+            </div>
+          </app-modal-window>
+        </div>
+
+        <div class="export-events">
+          <app-modal-window #modalexport>
+            <div class="modal-header d-flex justify-content-between align-items-right">
+              <h4 class="modal-title">Export events</h4>
+              <img class="close-btn" src="assets/close.svg" (click)="modalexport.hide()" alt="">
+            </div>
+
+            <div class="app-modal-body">
+              <form role="form" #exportEventForm="ngForm">
+
+                <div class="form-group">
+                  <label class="form-control-label lbl" for="firstDate">Choose start date: </label>
+                  <input type="date" min="{{currentDate}}" class="form"
+                         id="firstDate" name="firstDate" #eventDate="ngModel" [(ngModel)]="startDate"
+                         placeholder="{{currentDate}}" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-control-label lbl" for="endDate">Choose end date: </label>
+                  <input type="date" min="{{currentDate}}" class="form"
+                         id="endDate" name="endDate" #eventDate="ngModel" [(ngModel)]="endDate"
+                         placeholder="{{currentDate}}" required>
+                </div>
+
+                <div *ngIf="endDate < startDate">
+                  <small class="form-text text-danger">
+                    End date must be bigger than start.
+                  </small>
+                </div>
+
+              </form>
+            </div>
+
+            <div class="app-modal-footer">
+              <button class="btn btn-primary" (click)="modalexport.hide(); downloadPlan()">Export to pdf</button>
             </div>
           </app-modal-window>
         </div>

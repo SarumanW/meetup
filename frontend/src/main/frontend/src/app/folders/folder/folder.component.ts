@@ -1,11 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Folder} from "../folder";
-import {FolderService} from "../folder.service";
 import {Evento} from "../../events/event";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Profile} from "../../account/profile";
-import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-folder',
@@ -17,6 +13,13 @@ export class FolderComponent implements OnInit {
   folderId: number;
   state: string = "folders";
   profile: Profile;
+
+  margins = {
+    top: 25,
+    bottom: 60,
+    left: 20,
+    width: 522
+  };
 
   constructor(private route: ActivatedRoute,
               private router: Router) {
@@ -30,7 +33,6 @@ export class FolderComponent implements OnInit {
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
-
 
   openEventList(type : string) {
     this.router.navigate(["/" + this.profile.login + "/folders/" + this.folderId + "/" + type])

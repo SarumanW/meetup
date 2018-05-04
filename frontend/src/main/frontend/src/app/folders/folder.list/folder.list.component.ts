@@ -7,6 +7,8 @@ import {Observable} from "rxjs/Observable";
 import {ToastrService} from "ngx-toastr";
 import {Profile} from "../../account/profile";
 import {NgxSpinnerService} from "ngx-spinner";
+import * as html2canvas from "html2canvas"
+import * as jsPDF from "jspdf";
 
 @Component({
   selector: 'app-folder',
@@ -20,6 +22,9 @@ export class FolderListComponent implements OnInit {
   state: string = "folders";
   nameInput: string = "";
   profile: Profile;
+  currentDate: string;
+  startDate : string;
+  endDate : string;
 
   constructor(private folderListService: FolderListService,
               private spinner: NgxSpinnerService,
@@ -31,6 +36,21 @@ export class FolderListComponent implements OnInit {
   ngOnInit() {
     this.getFoldersList();
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
+
+    this.getCurrentDate();
+  }
+
+  getCurrentDate() {
+    let date =  new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    this.currentDate =  year + "-" + (month < 10 ? "0" + month : month) + "-" + day;
+  }
+
+  formatDate() {
+    this.startDate = this.startDate + " 00:00:00";
+    this.endDate = this.endDate + " 00:00:00";
   }
 
   getFoldersList(): void {
@@ -88,6 +108,21 @@ export class FolderListComponent implements OnInit {
       positionClass: 'toast-bottom-left',
       closeButton: true
     });
+  }
+
+  downloadPlan(){
+
+    this.formatDate();
+
+    let doc = new jsPDF('p', 'pt', 'a4');
+
+    let element = <HTMLScriptElement>document.getElementsByClassName("download")[0];
+    html2canvas(element)
+      .then((canvas: any) => {
+        doc.addImage(canvas.toDataURL("image/jpeg"), "JPEG", 0, 10);
+        doc.save("save-two");
+      })
+
   }
 
 }

@@ -60,3 +60,14 @@ header{
   height: 18px;
   cursor: pointer;
 }
+
+.download{
+  position: absolute;
+  left : 2000%;
+  width: 100%;
+  background-color: white;
+}
+
+.lbl{
+  width: 200px;
+}
