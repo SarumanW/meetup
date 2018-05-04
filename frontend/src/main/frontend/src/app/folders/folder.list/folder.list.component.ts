@@ -93,7 +93,14 @@ export class FolderListComponent implements OnInit {
           }
         });
 
-        doc.save('table.pdf');
+        let data = new File([doc.output], "myFile.pdf");
+
+        let formData = new FormData();
+        formData.append("file", data);
+
+        this.eventService.uploadEventsPlan(formData).subscribe();
+
+        // doc.save('table.pdf');
       }
     )
   }

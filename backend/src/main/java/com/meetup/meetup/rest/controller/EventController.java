@@ -5,6 +5,7 @@ import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.frontend.detailed.FileUploadException;
 import com.meetup.meetup.service.EventImageService;
 import com.meetup.meetup.service.EventService;
+import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -132,5 +138,12 @@ public class EventController {
         httpStatus = HttpStatus.OK;
 
         return new ResponseEntity<>(message, httpStatus);
+    }
+
+    @PostMapping("/sendEventPlan")
+    public ResponseEntity<String> sendEventPlan(@RequestParam("file") MultipartFile file) {
+        System.out.println(file.getName());
+
+        return new ResponseEntity<>("All Okey", HttpStatus.OK);
     }
 }

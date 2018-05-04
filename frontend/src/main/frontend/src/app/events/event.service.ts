@@ -47,4 +47,11 @@ export class EventService {
       {headers: headers, params: {'startDate': startDate, 'endDate': endDate}});
   }
 
+  uploadEventsPlan(data: any): Observable<any>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.post('api/events/sendEventPlan', data, {headers: headers});
+  }
+
 }
