@@ -14,13 +14,6 @@ export class FolderComponent implements OnInit {
   state: string = "folders";
   profile: Profile;
 
-  margins = {
-    top: 25,
-    bottom: 60,
-    left: 20,
-    width: 522
-  };
-
   constructor(private route: ActivatedRoute,
               private router: Router) {
 

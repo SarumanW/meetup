@@ -1,19 +1,17 @@
 import {Component, OnInit} from "@angular/core";
-import {Router} from "@angular/router";
 import {Folder} from "../folder";
 import {FolderListService} from "../folder.list.service";
-import {FolderService} from "../folder.service";
-import {Observable} from "rxjs/Observable";
 import {ToastrService} from "ngx-toastr";
 import {Profile} from "../../account/profile";
 import {NgxSpinnerService} from "ngx-spinner";
-import * as html2canvas from "html2canvas"
-import * as jsPDF from "jspdf";
 import {Evento} from "../../events/event";
 import {EventService} from "../../events/event.service";
+import 'jspdf-autotable';
+
+declare let jsPDF;
 
 @Component({
-  selector: 'app-folder',
+  selector: 'app-folders',
   templateUrl: './folder.list.component.html',
   styleUrls: ['./folder.list.component.css']
 })
@@ -24,11 +22,13 @@ export class FolderListComponent implements OnInit {
   state: string = "folders";
   nameInput: string = "";
   profile: Profile;
+  rows : any[] = [];
+  columns = ["Name", "Description", "Date"];
 
   currentDate: string;
   startDate: string;
   endDate: string;
-  periodEvents: Evento[];
+  periodEvents: Evento[] = [];
 
   constructor(private folderListService: FolderListService,
               private spinner: NgxSpinnerService,
@@ -72,6 +72,28 @@ export class FolderListComponent implements OnInit {
     this.eventService.getEventsInPeriod(start, end).subscribe(
       events => {
         this.periodEvents = events;
+        let doc = new jsPDF('p', 'pt');
+
+        for (let i = 0; i < events.length; i++) {
+          let forceEvent : any[] = [];
+
+          forceEvent.push(this.periodEvents[i].name);
+          forceEvent.push(this.periodEvents[i].description);
+          forceEvent.push(this.periodEvents[i].eventDate);
+
+          this.rows.push(forceEvent);
+        }
+
+        let s = this.startDate.split(' ')[0];
+        let e = this.endDate.split(' ')[0];
+
+        doc.autoTable(this.columns, this.rows, {
+          addPageContent: function() {
+            doc.text("Your events on period: " + s + " to " + e, 40, 30);
+          }
+        });
+
+        doc.save('table.pdf');
       }
     )
   }
@@ -124,21 +146,8 @@ export class FolderListComponent implements OnInit {
   }
 
   downloadPlan() {
-
     this.formatDate();
     this.getPeriodEvents(this.startDate, this.endDate);
-
-    console.log(this.periodEvents);
-
-    // let doc = new jsPDF('p', 'pt', 'a4');
-    //
-    // let element = <HTMLScriptElement>document.getElementsByClassName("download")[0];
-    // html2canvas(element)
-    //   .then((canvas: any) => {
-    //     doc.addImage(canvas.toDataURL("image/jpeg"), "JPEG", 0, 10);
-    //     doc.save("save-two");
-    //   })
-
   }
 
 }
