@@ -134,6 +134,6 @@ export class EditComponent implements OnInit {
   private processError(response: HttpErrorResponse) {
     this.success = null;
     console.log(response);
-    this.error = 'ERROR';
+    this.error = response.error;
   }
 }

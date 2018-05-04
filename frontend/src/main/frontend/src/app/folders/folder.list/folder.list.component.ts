@@ -76,8 +76,7 @@ export class FolderListComponent implements OnInit {
           () => {
             this.spinner.hide();
           });
-    }
-
+  }
 
   showSuccess() {
     this.toastr.info('Your events were moved to general folder', 'Attention!', {

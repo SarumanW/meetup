@@ -47,4 +47,11 @@ export class AccountService {
   recovery(data: any):Observable<any>{
     return this.http.post('api/recovery/',data);
   }
+
+  changePassword(account:any):Observable<any>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.post('/api/change.password/', account, {headers: headers});
+  }
 }
