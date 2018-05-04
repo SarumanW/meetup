@@ -15,7 +15,8 @@
           <h3>Friends Requests</h3>
           <hr>
         </div>
-        <friend *ngFor="let unconfirmedFriend of unconfirmedFriends" [user]="unconfirmedFriend" [loggedUser]="loggedUser"></friend>
+        <friend *ngFor="let unconfirmedFriend of unconfirmedFriends" [user]="unconfirmedFriend"
+                [loggedUser]="loggedUser"></friend>
         <hr>
       </div>
 
@@ -23,19 +24,21 @@
         <h3>{{user}} friends list</h3>
         <hr>
       </div>
-      <div *ngIf="loggedUser">
-        <form class="row" (ngSubmit)="addFriend(form)" #form="ngForm">
-          <div class="form-group mx-4 mb-2">
-            <input type="text" class="form-control" placeholder="User name" [(ngModel)]="newFriendName"
-                   name="newFriendName">
-          </div>
-          <button type="submit" class="btn btn-primary mb-2">Add friend</button>
-          <div class="message mx-4">
-            {{message}}
-          </div>
-        </form>
-        <hr>
-      </div>
+
+      <section>
+        <div>
+          <input [formControl]="queryField" type="text" id="keyword" placeholder="Search for users..." autofocus/>
+        </div>
+        <ul>
+          <li *ngFor="let result of unknownUsers" class="filter-select-list">
+            <p (click)="addFriend(result.login)">{{result.login}}</p>
+          </li>
+        </ul>
+        <div class="message mx-4">
+          {{message}}
+        </div>
+      </section>
+      <hr>
       <friend *ngFor="let friend of friends" [user]="friend" [confirmed]="true" [loggedUser]="loggedUser"></friend>
     </div>
   </div>

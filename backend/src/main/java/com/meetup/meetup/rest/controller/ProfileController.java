@@ -124,4 +124,16 @@ public class ProfileController {
         return new ResponseEntity<>(updatedUser.getImgPath(),HttpStatus.OK);
 
     }
+
+    @GetMapping("/search")
+    public List<User> searchUsers(@RequestParam String username) {
+        log.debug("Trying to search users by username '{}'",
+                username);
+
+        List<User> users = profileService.getUnknownUsers(username);
+
+        log.debug("Found users '{}'", users.toString());
+
+        return users;
+    }
 }

@@ -67,7 +67,8 @@ public class FolderController {
         return new ResponseEntity<>(updatedFolder, HttpStatus.OK);
     }
 
-    @DeleteMapping
+    // TODO: 5/2/2018 Convert to DeleteMapping
+    @PostMapping ("/delete")
     public ResponseEntity<Folder> deleteFolder(@Valid @RequestBody Folder folder) {
         log.debug("Trying to delete folder {}", folder.toString());
 
