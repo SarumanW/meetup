@@ -39,4 +39,12 @@ export class EventService {
     return this.http.get('api/events/' + folderId + '/drafts', {headers: headers});
   }
 
+  getEventsInPeriod(startDate: string, endDate: string): Observable<any> {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.get('api/events/getInPeriod',
+      {headers: headers, params: {'startDate': startDate, 'endDate': endDate}});
+  }
+
 }

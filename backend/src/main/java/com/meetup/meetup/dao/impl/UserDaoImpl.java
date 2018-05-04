@@ -149,7 +149,7 @@ public class UserDaoImpl implements UserDao {
      */
     private List<Integer> getFriendsIds(int userId) {
         log.debug("Try to getFriendsIds with userId '{}'", userId);
-        List<Map<String, Object>> list = new ArrayList<>();
+        List<Map<String, Object>> list;
 
         try {
             list = jdbcTemplate.queryForList(env.getProperty(USER_GET_FRIENDS_IDS),

@@ -9,6 +9,8 @@ import {Profile} from "../../account/profile";
 import {NgxSpinnerService} from "ngx-spinner";
 import * as html2canvas from "html2canvas"
 import * as jsPDF from "jspdf";
+import {Evento} from "../../events/event";
+import {EventService} from "../../events/event.service";
 
 @Component({
   selector: 'app-folder',
@@ -22,13 +24,16 @@ export class FolderListComponent implements OnInit {
   state: string = "folders";
   nameInput: string = "";
   profile: Profile;
+
   currentDate: string;
-  startDate : string;
-  endDate : string;
+  startDate: string;
+  endDate: string;
+  periodEvents: Evento[];
 
   constructor(private folderListService: FolderListService,
               private spinner: NgxSpinnerService,
-              private toastr: ToastrService) {
+              private toastr: ToastrService,
+              private eventService: EventService) {
 
     this.selectedFolder = new Folder;
   }
@@ -41,11 +46,11 @@ export class FolderListComponent implements OnInit {
   }
 
   getCurrentDate() {
-    let date =  new Date();
+    let date = new Date();
     let year = date.getFullYear();
     let month = date.getMonth() + 1;
     let day = date.getDate();
-    this.currentDate =  year + "-" + (month < 10 ? "0" + month : month) + "-" + day;
+    this.currentDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + day;
   }
 
   formatDate() {
@@ -61,6 +66,14 @@ export class FolderListComponent implements OnInit {
         this.folders = folders
         this.spinner.hide();
       })
+  }
+
+  getPeriodEvents(start: string, end: string): void {
+    this.eventService.getEventsInPeriod(start, end).subscribe(
+      events => {
+        this.periodEvents = events;
+      }
+    )
   }
 
   addFolder(folderName) {
@@ -83,7 +96,7 @@ export class FolderListComponent implements OnInit {
   deleteFolder(folder) {
     let isSure = confirm("Are you sure?");
 
-    if(isSure) {
+    if (isSure) {
       this.spinner.show();
 
       this.folderListService.deleteFolder(folder)
@@ -110,18 +123,21 @@ export class FolderListComponent implements OnInit {
     });
   }
 
-  downloadPlan(){
+  downloadPlan() {
 
     this.formatDate();
+    this.getPeriodEvents(this.startDate, this.endDate);
 
-    let doc = new jsPDF('p', 'pt', 'a4');
+    console.log(this.periodEvents);
 
-    let element = <HTMLScriptElement>document.getElementsByClassName("download")[0];
-    html2canvas(element)
-      .then((canvas: any) => {
-        doc.addImage(canvas.toDataURL("image/jpeg"), "JPEG", 0, 10);
-        doc.save("save-two");
-      })
+    // let doc = new jsPDF('p', 'pt', 'a4');
+    //
+    // let element = <HTMLScriptElement>document.getElementsByClassName("download")[0];
+    // html2canvas(element)
+    //   .then((canvas: any) => {
+    //     doc.addImage(canvas.toDataURL("image/jpeg"), "JPEG", 0, 10);
+    //     doc.save("save-two");
+    //   })
 
   }
 

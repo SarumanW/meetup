@@ -203,6 +203,7 @@ public class EventDaoImpl implements EventDao {
                     new Object[]{userId, startDate, endDate}, new EventRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by finding event by user with id '{}'", userId);
+            e.printStackTrace();
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 

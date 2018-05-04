@@ -110,6 +110,12 @@ public class EventController {
         return new ResponseEntity<>(eventService.getEventsByType(eventType, folderId), HttpStatus.OK);
     }
 
+    @GetMapping("/getInPeriod")
+    public ResponseEntity<List<Event>> getInPeriod(@RequestParam("startDate") String startDate,
+                                                   @RequestParam("endDate") String endDate) {
+        return new ResponseEntity<>(eventService.getEventsByPeriod(startDate, endDate), HttpStatus.OK);
+    }
+
     @GetMapping("/{folderId}/drafts")
     public ResponseEntity<List<Event>> getDrafts(@PathVariable int folderId) {
         return new ResponseEntity<>(eventService.getDrafts(folderId), HttpStatus.OK);
