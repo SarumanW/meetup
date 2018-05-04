@@ -30,8 +30,9 @@ import java.util.Map;
 public class FolderDaoImpl extends AbstractDao<Folder>  implements FolderDao {
 
 
-
-    private static Logger log = LoggerFactory.getLogger(FolderDaoImpl.class);
+    public FolderDaoImpl(){
+        log=LoggerFactory.getLogger(FolderDaoImpl.class);
+    }
 
 
     @Override

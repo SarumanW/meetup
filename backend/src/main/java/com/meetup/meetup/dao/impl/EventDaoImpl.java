@@ -33,12 +33,14 @@ import java.util.Map;
 @PropertySource("classpath:image.properties")
 public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
 
-    private static Logger log = LoggerFactory.getLogger(EventDaoImpl.class);
+
+    public EventDaoImpl(){
+        log=LoggerFactory.getLogger(EventDaoImpl.class);
+    }
+
 
     @Autowired
     private UserDao userDao;
-
-
 
     private final int ownerId = 1;
     private final int participantId = 2;

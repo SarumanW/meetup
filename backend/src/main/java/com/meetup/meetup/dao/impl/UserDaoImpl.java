@@ -1,5 +1,6 @@
 package com.meetup.meetup.dao.impl;
 
+import com.meetup.meetup.dao.AbstractDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Folder;
@@ -27,22 +28,18 @@ import static com.meetup.meetup.Keys.Key.*;
 
 @Repository
 @PropertySource("classpath:sqlDao.properties")
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
-    private static Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
-
-    @Autowired
-    private Environment env;
-
-    @Autowired
-    @Qualifier("jdbcTemplate")
-    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private FolderDaoImpl folderDao;
 
     @Autowired
     private UserRowMapper userRowMapper;
+
+    public UserDaoImpl(){
+        log=LoggerFactory.getLogger(UserDaoImpl.class);
+    }
 
     /**
      * Checks if login exists in the database
