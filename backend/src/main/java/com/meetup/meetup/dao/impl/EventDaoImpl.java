@@ -194,6 +194,23 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
+    public List<Event> getPeriodEvents(int userId, String startDate, String endDate) {
+        List<Event> events;
+        log.debug("Try to find list of events by user between dates with id '{}' and dates '{}' '{}'",
+                userId, startDate, endDate);
+        try {
+            events = jdbcTemplate.query(env.getProperty(EVENT_GET_IN_PERIOD),
+                    new Object[]{userId, startDate, endDate}, new EventRowMapper());
+        } catch (DataAccessException e) {
+            log.error("Query fails by finding event by user with id '{}'", userId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        log.debug("Events between dates for user with id '{}' counted '{}'", userId, events.size());
+        return events;
+    }
+
+    @Override
     public Event update(Event model) {
         log.debug("Try to update event with id '{}'", model.getEventId());
         int result = 0;

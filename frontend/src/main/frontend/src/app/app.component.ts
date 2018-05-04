@@ -28,7 +28,7 @@ export class AppComponent {
 
   modifyHeader(location) {
     if (location.url === "/login" || location.url === "/register" || location.url === '/' || location.url === '/continueReg'
-    || location.url === "/recovery" || location.url['token'])
+    || location.url === "/recovery")
     {
       this.showLogout = false;
     } else {

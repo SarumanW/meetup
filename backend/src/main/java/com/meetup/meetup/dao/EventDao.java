@@ -25,4 +25,6 @@ public interface EventDao extends Dao<Event> {
     Event createEvent(Event model, int userId);
 
     void addParticipant(int participantId, int eventId);
+
+    List<Event> getPeriodEvents(int userId, String startDate, String endDate);
 }
