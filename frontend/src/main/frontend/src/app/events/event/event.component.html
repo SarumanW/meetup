@@ -1,60 +1,65 @@
 <div class="container-fluid" style="margin-top:20px">
-  <ngx-spinner bdOpacity = 0.9
-               bdColor = "#333"
-               size = "default"
-               color = "#fff"
-               type = "ball-beat"></ngx-spinner>
+  <ngx-spinner bdOpacity=0.9
+               bdColor="#333"
+               size="default"
+               color="#fff"
+               type="ball-beat"></ngx-spinner>
   <div class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
     </div>
 
 
-      <div class="col-10">
-        <div class="container justify-content-center" *ngIf="eventt !== undefined">
-          <div class="row">
-            <br><br>
+    <div class="col-10">
+      <div class="container justify-content-center" *ngIf="eventt !== undefined">
+        <div class="row">
+          <br><br>
 
-            <div class="col-md-3">
+          <div class="col-md-3">
+
+            <ul class="list-group">
+              <li class="list-group-item active">{{eventt.name}} {{eventt.eventType}}</li>
+              <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Event Date: {{eventt.eventDate}}</li>
+              <li class="list-group-item">Description: {{eventt.description}}</li>
+              <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
+              <li class="list-group-item">Place: {{eventt.place}}</li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <div class="thumbnail">
+              <img src="{{eventt.imageFilepath}}" class="event-logo">
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <agm-map [latitude]="lat" [longitude]="lng">
+              <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+            </agm-map>
+          </div>
+
+        </div>
+        <br><br>
+        <div *ngIf="eventt.eventType !== 'PRIVATE_EVENT'" class="row">
+          <div class="col-md-4" *ngIf="eventt.participants !== null">
 
               <ul class="list-group">
-                <li class="list-group-item active">{{eventt.name}} {{eventt.eventType}}</li>
-                <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Event Date: {{eventt.eventDate}}</li>
-                <li class="list-group-item">Description: {{eventt.description}}</li>
-                <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
-                <li class="list-group-item">Place: {{eventt.place}}</li>
+                <li class="list-group-item active">Participants</li>
+                <div data-spy="scroll" class="scrollspy">
+                <div *ngFor="let participant of eventt.participants">
+                  <li class="list-group-item">name: {{participant.login}}</li>
+                </div>
+                </div>
               </ul>
-            </div>
-            <div class="col-md-4">
-              <div class="thumbnail">
-                <img src="{{eventt.imageFilepath}}" class="event-logo">
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <agm-map [latitude]="lat" [longitude]="lng">
-                <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
-              </agm-map>
-            </div>
 
           </div>
-          <br><br>
-          <div *ngIf="eventt.eventType !== 'PRIVATE_EVENT'" class="row">
-            <div class="col-md-4" *ngIf="eventt.participants !== null">
-            <ul class="list-group">
-              <li class="list-group-item active">Participants</li>
-            <div *ngFor="let participant of eventt.participants">
-              <li class="list-group-item">name: {{participant.login}}</li>
-            </div>
-            </ul>
-            </div>
-            <div class="col-md-2" *ngIf="eventt.ownerId === this.currentUserId">
-              <button type="button" class="btn btn-primary" (click)="modal.show()" data-toggle="modal">Add participant</button>
-            </div>
-
+          <div class="col-md-2" *ngIf="eventt.ownerId === this.currentUserId">
+            <button type="button" class="btn btn-primary" (click)="modal.show()" data-toggle="modal">Add participant
+            </button>
           </div>
+
         </div>
       </div>
+    </div>
 
     <div class="add-participant">
       <app-modal-window #modal>
@@ -66,7 +71,7 @@
           <form>
             <div class="form-group">
               <label for="name">Login:</label>
-              <input class="form-control" id="name" placeholder="Enter participant login" name="name"  #name
+              <input class="form-control" id="name" placeholder="Enter participant login" name="name" #name
                      [(ngModel)]="loginInput">
             </div>
             <button class="btn btn-default" (click)="modal.hide(); addParticipant(name)">Add</button>
@@ -75,6 +80,6 @@
       </app-modal-window>
     </div>
 
-    </div>
+  </div>
 </div>
 

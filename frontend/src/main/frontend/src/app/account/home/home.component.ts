@@ -23,7 +23,8 @@ export class HomeComponent {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
 
-  logout() {
+  logout(){
     localStorage.clear();
+    this.router.navigate(["/login"]);
   }
 }

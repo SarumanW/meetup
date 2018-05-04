@@ -25,6 +25,10 @@ export class ProfileComponent implements OnInit {
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
               private friendService: FriendService,) {
+    this.profile = new Profile();
+  }
+
+  ngOnInit() {
     this.route.params.subscribe(params => {
       this.accountService.profile(params['login']).subscribe(
         (profile) => {
@@ -33,10 +37,6 @@ export class ProfileComponent implements OnInit {
           this.update();
         });
     });
-  }
-
-  ngOnInit() {
-
   }
 
   update(){
