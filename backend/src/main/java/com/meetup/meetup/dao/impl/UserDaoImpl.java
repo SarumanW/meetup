@@ -43,6 +43,9 @@ public class UserDaoImpl implements UserDao {
     @Autowired
     private FolderDaoImpl folderDao;
 
+    @Autowired
+    private UserRowMapper userRowMapper;
+
     /**
      * Checks if login exists in the database
      *
@@ -427,5 +430,22 @@ public class UserDaoImpl implements UserDao {
             log.debug("user with id '{}' was not deleted", model.getId());
         }
         return model;
+    }
+
+    /**
+     * Actual method of searching unknown users for specific user.
+     * @param userId    id of specific user.
+     * @param userName  username pattern of unknown users
+     * @return
+     */
+    @Override
+    public List<User> getNotFriends(int userId, String userName) {
+
+        List<Map<String, Object>> userParamsList;
+
+        userParamsList = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"),userId,userId,userName+"%");
+
+        return userRowMapper.mapRow(userParamsList);
+
     }
 }

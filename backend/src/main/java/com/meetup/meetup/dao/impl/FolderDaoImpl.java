@@ -193,7 +193,7 @@ public class FolderDaoImpl implements FolderDao {
         log.debug("Try to delete folder with id '{}'", model.getFolderId());
         int result = 0;
         try {
-            result = jdbcTemplate.update(FOLDER_DELETE, model.getFolderId());
+            result = jdbcTemplate.update(env.getProperty(FOLDER_DELETE), model.getFolderId());
         } catch (DataAccessException e) {
             log.error("Query fails by deleting folder with id '{}'", model.getFolderId());
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));

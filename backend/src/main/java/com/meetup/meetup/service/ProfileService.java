@@ -4,6 +4,8 @@ import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import com.meetup.meetup.security.AuthenticationFacade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -19,16 +21,20 @@ import static com.meetup.meetup.Keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
 @PropertySource("classpath:strings.properties")
 public class ProfileService {
 
-    @Autowired
-    private UserDao userDao;
+    private static Logger log = LoggerFactory.getLogger(ProfileService.class);
+
+    private final UserDao userDao;
+    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    private AuthenticationFacade authenticationFacade;
+    public ProfileService(UserDao userDao, AuthenticationFacade authenticationFacade) {
+        this.userDao = userDao;
+        this.authenticationFacade = authenticationFacade;
+    }
 
     @Autowired
     private Environment env;
 
-    private static Logger log = LoggerFactory.getLogger(ProfileService.class);
 
     public User getUserByLogin(String login) {
         User user = userDao.findByLogin(login);
@@ -42,6 +48,25 @@ public class ProfileService {
 
         return user;
     }
+
+
+    // TODO for further improvements of user search
+    /*public List<User> searchUsers(String login, String name, String surname, Integer limit) {
+
+        log.debug("Trying to search users by features login '{}', name '{}', surname '{}' and limit '{}'",
+                login, name, surname, limit);
+
+        List<User> users = userDao.findByParams(login, name, surname, limit);
+
+        if (users == null) {
+            log.error("Cannot get user from database");
+            throw new DatabaseWorkException();
+        }
+
+        log.debug("Found users '{}'", users);
+
+        return users;
+    }*/
 
     public User updateUser(User newUser) {
         return userDao.update(newUser);
@@ -94,5 +119,10 @@ public class ProfileService {
         if(userDao.deleteFriend(user.getId(), friendId)== user.getId()){
             log.debug("Friend successfully deleted ");
         }
+    }
+
+    public List<User> getUnknownUsers(String userName){
+        User user = authenticationFacade.getAuthentication();
+        return userDao.getNotFriends(user.getId(),userName);
     }
 }
