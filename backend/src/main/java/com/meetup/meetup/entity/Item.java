@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class Item {
 
-    private int id;
+    private int itemId;
 
     @NotBlank
     @Size(min = 3, max = 50)
@@ -21,17 +21,17 @@ public class Item {
     private String description;
 
     @NotNull
-    private int owner;
+    private int ownerId;
 
     private int bookerId;
-
-    private String priority;
 
     private String imageFilepath;
 
     private String link;
 
     private String dueDate;
+
+    private String priority;
 
     private int likes;
 
