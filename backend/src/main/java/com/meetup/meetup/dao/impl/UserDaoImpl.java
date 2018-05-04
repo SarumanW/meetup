@@ -1,6 +1,5 @@
 package com.meetup.meetup.dao.impl;
 
-import com.meetup.meetup.dao.AbstractDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Folder;
@@ -10,8 +9,11 @@ import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -25,13 +27,22 @@ import static com.meetup.meetup.Keys.Key.*;
 
 @Repository
 @PropertySource("classpath:sqlDao.properties")
-public class UserDaoImpl extends AbstractDao<User> implements UserDao {
+public class UserDaoImpl implements UserDao {
 
     private static Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
 
+    @Autowired
+    private Environment env;
+
+    @Autowired
+    @Qualifier("jdbcTemplate")
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private FolderDaoImpl folderDao;
+
+    @Autowired
+    private UserRowMapper userRowMapper;
 
     /**
      * Checks if login exists in the database
@@ -109,11 +120,12 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     public List<User> getFriends(int userId) {
         log.debug("Try to getFriends by userId '{}'", userId);
 
-        List<User> friends = jdbcTemplate.query(env.getProperty(USER_GET_FRIENDS), new Object[]{userId, userId}, new UserRowMapper());
-        log.debug("Friends found: '{}'", friends);
+        List<User> friends = jdbcTemplate.query(env.getProperty(USER_GET_FRIENDS), new Object[]{userId,userId}, new UserRowMapper());
+        log.debug("Freinds found: '{}'", friends);
 
         return friends;
     }
+
 
     @Override
     public boolean addFriend(int senderId, int receiverId) {
@@ -150,10 +162,10 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     public List<User> getFriendsRequests(int userId) {
         log.debug("Try to getUnconfirmedIds by userId '{}'", userId);
 
-        List<User> friends = jdbcTemplate.query(env.getProperty(USER_GET_UNCONFIRMED_FRIENDS), new Object[]{userId}, new UserRowMapper());
-        log.debug("Friend's request found: '{}'", friends);
+        List<User> friendsRequests = jdbcTemplate.query(env.getProperty(USER_GET_UNCONFIRMED_FRIENDS), new Object[] {userId}, new UserRowMapper());
+        log.debug("Friends request found '{}'", friendsRequests);
 
-        return friends;
+        return friendsRequests;
     }
 
 
@@ -317,5 +329,22 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             log.debug("user with id '{}' was not deleted", model.getId());
         }
         return model;
+    }
+
+    /**
+     * Actual method of searching unknown users for specific user.
+     * @param userId    id of specific user.
+     * @param userName  username pattern of unknown users
+     * @return
+     */
+    @Override
+    public List<User> getNotFriends(int userId, String userName) {
+
+        List<Map<String, Object>> userParamsList;
+
+        userParamsList = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"),userId,userId,userName+"%");
+
+        return userRowMapper.mapRow(userParamsList);
+
     }
 }

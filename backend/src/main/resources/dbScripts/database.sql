@@ -18,6 +18,7 @@ DROP TABLE folder;
 DROP TABLE periodicity;
 DROP TABLE event_type;
 DROP TABLE uuser;
+DROP TABLE tag_item;
 
 CREATE TABLE uuser (
   user_id NUMBER(11) PRIMARY KEY,

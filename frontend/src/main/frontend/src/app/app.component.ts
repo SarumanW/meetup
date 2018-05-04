@@ -28,7 +28,7 @@ export class AppComponent {
 
   modifyHeader(location) {
     if (location.url === "/login" || location.url === "/register" || location.url === '/' || location.url === '/continueReg'
-    || location.url === "/recovery")
+    || location.url === "/recovery" || location.url === "/thankyou")
     {
       this.showLogout = false;
     } else {
@@ -39,14 +39,14 @@ export class AppComponent {
   goToProfile(){
 
     if(localStorage.currentUser){
-      this.router.navigate(['/' + JSON.parse(localStorage.currentUser).login + "/profile"]);
+      this.router.navigate(['/' + this.profile.login + "/profile"]);
     } else {
       this.router.navigate(['/login']);
     }
   }
 
   login():string{
-    return JSON.parse(localStorage.currentUser).login
+    return this.profile.login;
   }
 
 }
