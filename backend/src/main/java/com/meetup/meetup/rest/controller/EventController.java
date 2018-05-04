@@ -68,6 +68,7 @@ public class EventController {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
+    @PreAuthorize("@eventPermissionChecker.canCreateEvent(#event)")
     @PostMapping("/add")
     public ResponseEntity<Event> addEvent(@Valid @RequestBody Event event) {
         log.debug("Trying to save event '{}'", event.toString());

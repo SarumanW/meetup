@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -37,7 +38,6 @@ public class UserDaoImpl implements UserDao {
     private Environment env;
 
     @Autowired
-    @Qualifier("jdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -81,17 +81,21 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findByLogin(String login) {
         log.debug("Try to find User by login: '{}'", login);
-        User user = null;
+        User user;
         try {
             user = jdbcTemplate.queryForObject(
                     env.getProperty(USER_FIND_BY_LOGIN),
                     new Object[]{login}, new UserRowMapper() {
                     }
             );
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("User with login '{}' was not found", login);
+            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with login '{}'", login);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "login", login));
         }
+
         log.debug("User with login '{}' was found", login);
 
         return user;
@@ -101,7 +105,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findByEmail(String email) {
         log.debug("Try to find User by email: '{}'", email);
-        User user = null;
+        User user;
 
         try {
             user = jdbcTemplate.queryForObject(
@@ -109,6 +113,9 @@ public class UserDaoImpl implements UserDao {
                     new Object[]{email}, new UserRowMapper() {
                     }
             );
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("User with email '{}' was not found", email);
+            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with email '{}'", email);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "email", email));
@@ -155,6 +162,9 @@ public class UserDaoImpl implements UserDao {
             list = jdbcTemplate.queryForList(env.getProperty(USER_GET_FRIENDS_IDS),
                     userId, userId);
 
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("Friends for user with userId '{}' was not found", userId);
+            return new ArrayList<>();
         } catch (DataAccessException e) {
             log.error("Query fails by getFriendsIds by userId '{}'", userId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -258,6 +268,9 @@ public class UserDaoImpl implements UserDao {
             unConfirmedIds = jdbcTemplate.queryForList(env.getProperty(USER_GET_UNCONFIRMED_IDS),
                     new Object[]{userId}, Integer.class);
 
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("Unconfirmed friends for user with userId '{}' was not found", userId);
+            return unConfirmedIds;
         } catch (DataAccessException e) {
             log.error("Query fails by finding unconfirmedIds with id '{}'", userId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -308,7 +321,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findById(int id) {
         log.debug("Try to find User by id: '{}'", id);
-        User user = null;
+        User user;
 
         try {
             user = jdbcTemplate.queryForObject(
@@ -317,6 +330,9 @@ public class UserDaoImpl implements UserDao {
                     }
             );
 
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("User with userId '{}' was not found", id);
+            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with id '{}'", id);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -436,14 +452,22 @@ public class UserDaoImpl implements UserDao {
      * Actual method of searching unknown users for specific user.
      * @param userId    id of specific user.
      * @param userName  username pattern of unknown users
-     * @return
+     * @return List<User>
      */
     @Override
     public List<User> getNotFriends(int userId, String userName) {
 
         List<Map<String, Object>> userParamsList;
 
-        userParamsList = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"),userId,userId,userName+"%");
+        try {
+            userParamsList = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"), userId, userId, userName + "%");
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("Users with username like '{}' was not found", userName);
+            return new ArrayList<>();
+        } catch (DataAccessException e) {
+            log.error("Query fails by delete user with id '{}'", userName);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
 
         return userRowMapper.mapRow(userParamsList);
 

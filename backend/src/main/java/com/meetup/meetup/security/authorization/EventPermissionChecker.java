@@ -2,6 +2,7 @@ package com.meetup.meetup.security.authorization;
 
 import com.meetup.meetup.dao.EventDao;
 import com.meetup.meetup.entity.Event;
+import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.Role;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.security.AuthenticationFacade;
@@ -21,16 +22,61 @@ public class EventPermissionChecker {
     @Autowired
     private AuthenticationFacade authenticationFacade;
 
+    @Autowired
+    private FolderPermissionChecker folderPermissionChecker;
+
+    /**
+     * Check if current user can create event
+     *
+     * @param event entity of event for create
+     * @return true if event has owner id as in authenticated user
+     * and user has permission for write in folder
+     * @see Event
+     * @see FolderPermissionChecker
+     * @see AuthenticationFacade
+     */
+    public boolean canCreateEvent(Event event) {
+        log.debug("Check permission for update event '{}'", event);
+
+        User user = authenticationFacade.getAuthentication();
+
+        boolean permission = event.getOwnerId() == user.getId() &&
+                folderPermissionChecker.checkPermission(event.getFolderId());
+
+        log.info("Create permission '{}'", permission);
+
+        return permission;
+    }
+
+    /**
+     * Check if current user can update event
+     *
+     * @param event entity of event for update
+     * @return true if authenticated user is owner of event
+     * and user has permission for write in folder
+     * @see Event
+     * @see FolderPermissionChecker
+     * @see AuthenticationFacade
+     */
     public boolean canUpdateEvent(Event event) {
         log.debug("Check permission for update event '{}'", event);
 
-        boolean permission = checkPermission(event.getEventId());
+        boolean permission = checkPermission(event.getEventId()) &&
+                folderPermissionChecker.checkPermission(event.getFolderId());
 
         log.info("Update permission '{}'", permission);
 
         return permission;
     }
 
+    /**
+     * Check if current user can delete event
+     *
+     * @param eventId id of event
+     * @return true if authenticated user is owner of event
+     * @see Event
+     * @see AuthenticationFacade
+     */
     public boolean canDeleteEvent(int eventId) {
         log.debug("Check permission for delete event '{}'", eventId);
 
