@@ -9,4 +9,6 @@ public interface ItemDao extends Dao<Item> {
     List<Item> findByUserId(int userId);
 
     List<Item> getPopularItems();
+
+    List<Item> getUserWishList(int userId);
 }
