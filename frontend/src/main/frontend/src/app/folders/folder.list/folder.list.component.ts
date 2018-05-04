@@ -61,9 +61,6 @@ export class FolderListComponent implements OnInit {
   }
 
   deleteFolder(folder) {
-    let isSure = confirm("Are you sure?");
-
-    if(isSure) {
       this.spinner.show();
 
       this.folderListService.deleteFolder(folder)
@@ -79,13 +76,12 @@ export class FolderListComponent implements OnInit {
           () => {
             this.spinner.hide();
           });
-    }
   }
 
   showSuccess() {
     this.toastr.info('Your events were moved to general folder', 'Attention!', {
       timeOut: 3000,
-      positionClass: 'toast-bottom-left',
+      positionClass: 'toast-top-right',
       closeButton: true
     });
   }

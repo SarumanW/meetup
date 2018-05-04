@@ -1,10 +1,10 @@
 import {Component, OnInit} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RecoveryProfile} from "../recovery.profile";
-import {ActivatedRoute} from "@angular/router"
+import {ActivatedRoute, Router} from "@angular/router"
 import {NgxSpinnerService} from "ngx-spinner";
-import {LoginAccount} from "../login.account";
 import {AccountService} from "../account.service";
+import {Profile} from "../profile";
 
 @Component({
   selector: 'change.password',
@@ -17,23 +17,32 @@ export class ChangePasswordComponent implements OnInit {
   wrongPassword: string;
   error: string;
   success: boolean;
-  profile: RecoveryProfile;
-  output: any;
-  account: LoginAccount;
+  recovery: RecoveryProfile;
+  account: Profile;
+  profile: Profile;
+  loggedUser: boolean;
   newPassword: string;
   oldPassword: string;
 
   constructor(private route: ActivatedRoute,
               private spinner: NgxSpinnerService,
+              private router: Router,
               private accountService: AccountService) {
   }
 
   ngOnInit() {
-    this.success = false;
-    this.profile = new RecoveryProfile();
+    this.profile = JSON.parse(localStorage.getItem('currentUser'));
+    this.account = new Profile();
     this.route.params.subscribe(params => {
-      this.profile.token = params['token'];
+      this.account.login = params['login'];
     });
+
+    this.accountService.profile(this.account.login).subscribe(
+      (data) => {
+        this.account = data;
+        this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === this.profile.login;
+      }
+    );
   }
 
   changePassword() {
@@ -46,20 +55,19 @@ export class ChangePasswordComponent implements OnInit {
     // }
     else {
       this.doNotMatch = null;
-      this.accountService.update(this.account).subscribe(
+      this.accountService.changePassword(this.account).subscribe(
         () => {
           this.success = true;
           this.spinner.hide();
         },
-         response => this.processError(response));
-     this.output = this.error;
-     this.spinner.hide();
+        response => this.processError(response)
+      );
     }
   }
 
   private processError(response: HttpErrorResponse) {
-    this.success = null;
-    console.log(response);
-    this.error = response.error;
-  }
+      this.success = null;
+      console.log(response);
+      this.error = response.error;
+    }
 }

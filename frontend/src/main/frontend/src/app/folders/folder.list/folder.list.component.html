@@ -19,9 +19,24 @@
           <div *ngFor="let folder of folders" class="card mb-4">
             <div class="head card-body">
               <img class="folder-icon" src="assets/folder-icon.svg" alt="Card image cap">
-              <img *ngIf="folder.name!=='general'" (click)="deleteFolder(folder)" class="close-btn"
+              <img *ngIf="folder.name!=='general'" (click)="delete.show()" class="close-btn"
                    src="assets/close-white.svg" alt="">
             </div>
+
+            <app-modal-window #delete class="sure-window">
+              <div class="modal-header d-flex justify-content-between align-items-center">
+                <h4 class="modal-title">Delete folder</h4>
+                <img class="close-btn" src="assets/close.svg" (click)="delete.hide()" alt="">
+              </div>
+              <div class="app-modal-body">
+                <p>Are you really want to delete this folder?</p>
+              </div>
+              <div class="app-modal-footer">
+                <button class="btn btn-primary" (click)="delete.hide(); deleteFolder(folder)" >Yes</button>
+                <button class="btn btn-default" (click)="delete.hide();">Cancel</button>
+              </div>
+            </app-modal-window>
+
             <div class="card-body">
               <h5 class="card-title">{{folder.name}}</h5>
               <a routerLink="/{{profile.login}}/folders/{{folder.folderId}}" class="btn btn-primary">Open
