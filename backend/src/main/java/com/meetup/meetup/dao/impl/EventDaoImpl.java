@@ -110,15 +110,12 @@ public class EventDaoImpl implements EventDao {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(EVENT_NAME, model.getName());
-
-        if (model.getEventType() != EventType.NOTE) {
-            parameters.put(EVENT_EVENT_DATE, model.getEventDate());
-            parameters.put(EVENT_PERIODICITY_ID, model.getPeriodicityId());
-        }
+        parameters.put(EVENT_EVENT_DATE, model.getEventDate());
+        parameters.put(EVENT_PERIODICITY_ID, model.getPeriodicityId());
         parameters.put(EVENT_DESCRIPTION, model.getDescription());
         parameters.put(EVENT_PLACE, model.getPlace());
         parameters.put(EVENT_EVENT_TYPE_ID, model.getEventTypeId());
-        parameters.put(EVENT_IS_DRAFT, model.isDraft() ? 1 : 0);
+        parameters.put(EVENT_IS_DRAFT, model.getIsDraft() ? 1 : 0);
         parameters.put(EVENT_FOLDER_ID, model.getFolderId());
         parameters.put(EVENT_IMAGE_FILEPATH, model.getImageFilepath());
         try {
@@ -206,13 +203,31 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
+    public Event deleteParticipants(Event model) {
+        log.debug("Try to delete event with eventId '{}'", model.getEventId());
+
+        try {
+            jdbcTemplate.update(env.getProperty(EVENT_DELETE_PARTICIPANTS), model.getEventId());
+            model.setParticipants(null);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            log.error("Query fails by delete participants of event with id '{}'", model.getEventId());
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        log.debug("Participants of event with id '{}' was deleted successfully", model.getEventId());
+
+        return model;
+    }
+
+    @Override
     public Event update(Event model) {
         log.debug("Try to update event with id '{}'", model.getEventId());
         int result = 0;
         try {
             result = jdbcTemplate.update(env.getProperty(EVENT_UPDATE),
                     model.getName(), model.getEventDate(), model.getDescription(), model.getPeriodicityId(),
-                    model.getPlace(), model.getEventTypeId(), model.isDraft() ? 1 : 0, model.getFolderId(), model.getImageFilepath(), model.getEventId());
+                    model.getPlace(), model.getEventTypeId(), model.getIsDraft() ? 1 : 0, model.getFolderId(), model.getImageFilepath(), model.getEventId());
         } catch (DataAccessException e) {
             log.error("Query fails by update event with id '{}'", model.getEventId());
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));

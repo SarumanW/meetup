@@ -36,7 +36,7 @@ public class Event {
     private int eventTypeId;
     private EventType eventType;
 
-    @JsonProperty
+    @JsonProperty()
     private boolean isDraft;
 
     @NotNull
@@ -46,4 +46,11 @@ public class Event {
 
     private List<User> participants;
 
+    public boolean getIsDraft() {
+        return isDraft;
+    }
+
+    public void setIsDraft(boolean isDraft) {
+        this.isDraft = isDraft;
+    }
 }

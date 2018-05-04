@@ -124,11 +124,21 @@ public class EventController {
         log.debug("Trying to upload event image '{}'", file);
 
         String message;
-        HttpStatus httpStatus;
         message = eventImageService.store(file);
         log.debug("Image successfully uploaded send response status OK");
-        httpStatus = HttpStatus.OK;
 
-        return new ResponseEntity<>(message, httpStatus);
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    @PreAuthorize("@eventPermissionChecker.canDeleteEvent(#eventId)")
+    @DeleteMapping("/participants/{eventId}")
+    public ResponseEntity<Event> deleteParticipants(@PathVariable int eventId) {
+        log.debug("Trying to delete participants of eventId '{}'", eventId);
+
+        Event deletedParticipantsEvent = eventService.deleteParticipants(eventId);
+
+        log.debug("Send response body event '{}' and status OK", deletedParticipantsEvent);
+
+        return new ResponseEntity<>(deletedParticipantsEvent, HttpStatus.OK);
     }
 }

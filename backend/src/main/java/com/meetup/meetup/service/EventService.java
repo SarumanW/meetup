@@ -104,11 +104,10 @@ public class EventService {
 
         int eventTypeId = eventTypeMap.get(event.getEventType());
 
-        if (event.getEventType() != EventType.NOTE) {
-            int eventPeriodicityId = periodicityMap.get(event.getPeriodicity());
-            event.setPeriodicityId(eventPeriodicityId);
-            log.debug("Set eventPeriodicity id '{}'", eventPeriodicityId);
-        }
+        int eventPeriodicityId = periodicityMap.get(event.getPeriodicity());
+        event.setPeriodicityId(eventPeriodicityId);
+        log.debug("Set eventPeriodicity id '{}'", eventPeriodicityId);
+
 
         event.setEventTypeId(eventTypeId);
         log.debug("Set eventType id '{}'", eventTypeId);
@@ -117,6 +116,16 @@ public class EventService {
 
     public Event updateEvent(Event event) {
         log.debug("Trying to update event '{}' in database", event.toString());
+
+        int eventTypeId = eventTypeMap.get(event.getEventType());
+
+        int eventPeriodicityId = periodicityMap.get(event.getPeriodicity());
+        event.setPeriodicityId(eventPeriodicityId);
+        log.debug("Set eventPeriodicity id '{}'", eventPeriodicityId);
+
+
+        event.setEventTypeId(eventTypeId);
+        log.debug("Set eventType id '{}'", eventTypeId);
 
         return eventDao.update(event);
     }
@@ -139,7 +148,7 @@ public class EventService {
         User user = userDao.findByLogin(login);
 
         if (user == null) {
-            log.debug("Can not find user with login '{}'", login);
+            log.error("Can not find user with login '{}'", login);
             throw new LoginNotFoundException(env.getProperty(EXCEPTION_LOGIN_NOT_FOUND));
         }
 
@@ -148,4 +157,15 @@ public class EventService {
         log.debug("Participant with login '{}' was added", login);
         return user;
     }
+
+    public Event deleteParticipants(int eventId) {
+        log.debug("Trying to find event by id '{}'", eventId);
+
+        Event event = getEvent(eventId);
+
+        log.debug("Trying to delete eventId '{}' from database", eventId);
+
+        return eventDao.deleteParticipants(event);
+    }
+
 }

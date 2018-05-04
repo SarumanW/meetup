@@ -47,6 +47,7 @@ export class EventAddComponent implements OnInit {
     this.resetEvent();
     this.fileRegexp = new RegExp('^.*\\.(jpg|JPG|gif|GIF|png|PNG)$');
     this.errorFileFormat = true;
+    console.log(this.eventt);
   }
 
   resetEvent() {
@@ -56,8 +57,8 @@ export class EventAddComponent implements OnInit {
     this.eventt.eventType = "EVENT";
     this.eventt.name = "";
     this.eventt.description = "";
-    this.eventt.eventDate = "";
-    this.eventt.periodicity = "";
+    this.eventt.eventDate = this.currentDate;
+    this.eventt.periodicity = "ONCE";
     this.eventt.place = "";
     this.time = "00:00";
     this.lat = 50.447011182312195;
@@ -76,7 +77,7 @@ export class EventAddComponent implements OnInit {
     let year = date.getFullYear();
     let month = date.getMonth() + 1;
     let day = date.getDate();
-    this.currentDate =  year + "-" + (month < 10 ? "0" + month : month) + "-" + day;
+    this.currentDate =  year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
     console.log(this.currentDate);
   }
 
@@ -120,6 +121,7 @@ export class EventAddComponent implements OnInit {
     console.log("addEvent");
     this.eventt.isDraft = false;
     this.addEntity();
+    console.log(this.eventt);
   }
 
   selectFile(event) {

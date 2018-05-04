@@ -39,4 +39,19 @@ export class EventService {
     return this.http.get('api/events/' + folderId + '/drafts', {headers: headers});
   }
 
+  updateEvent(eventt: Evento) {
+
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.put('api/events', eventt, {headers: headers});
+  }
+
+  deleteParticipants(eventt: Evento) {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.delete('api/events/participants/' + eventt.eventId, {headers: headers});
+  }
+
 }

@@ -22,6 +22,11 @@ export class EventComponent implements OnInit {
   state: string = "folders";
   lat: number;
   lng: number;
+  currentDate: string;
+  datee: string;
+  time: string;
+  tempType: string;
+  shouldShow: boolean;
 
   constructor(private eventService: EventService,
               private route: ActivatedRoute,
@@ -36,6 +41,10 @@ export class EventComponent implements OnInit {
       this.currentUserId = JSON.parse(localStorage.currentUser).id;
       this.currentUserLogin = JSON.parse(localStorage.currentUser).login;
       this.alreadyHasParticipant = false;
+      this.getCurrentDate();
+      this.time = "00:00";
+      this.shouldShow = false;
+      this.datee = this.currentDate;
     }, error => {
       this.showError('Unsuccessful event loading', 'Loading error');
     });
@@ -51,6 +60,7 @@ export class EventComponent implements OnInit {
       console.log(this.eventt.eventType);
       this.lat = +coordinates[0];
       this.lng = +coordinates[1];
+      this.tempType = eventt.eventType;
       this.spinner.hide();
     }, error => {
       this.spinner.hide();
@@ -66,8 +76,8 @@ export class EventComponent implements OnInit {
     });
   }
 
-  showSuccess() {
-    this.toastr.info('Parcicipant was successfully added', 'Attention!', {
+  showSuccess(message: string, title: string) {
+    this.toastr.info(message, title, {
       timeOut: 3000,
       positionClass: 'toast-bottom-left',
       closeButton: true
@@ -94,8 +104,9 @@ export class EventComponent implements OnInit {
       this.eventService.addParticipant(this.loginInput, this.eventId)
         .subscribe(participant => {
           this.eventt.participants.push(participant);
+          this.loginInput = "";
           this.spinner.hide();
-          this.showSuccess();
+          this.showSuccess('Participant was successfully added', 'Attention!');
         }, error => {
           this.showError('Unsuccessful participant adding', 'Adding error');
           this.spinner.hide();
@@ -105,6 +116,93 @@ export class EventComponent implements OnInit {
       this.spinner.hide();
     }
 
+  }
+
+  formatDate() {
+    console.log(this.datee);
+    console.log(this.time);
+    console.log(this.eventt.periodicity);
+    this.eventt.eventDate = this.datee + " " + this.time + ":00";
+  }
+
+  getCurrentDate() {
+    let date =  new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    this.currentDate =  year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
+    console.log(this.currentDate);
+  }
+
+  updateEvent() {
+    this.spinner.show();
+    this.eventt.eventType = this.tempType;
+
+    this.eventService.updateEvent(this.eventt).subscribe(
+      updated => {
+        this.showSuccess('Event is successfully updated', 'Success!');
+        this.spinner.hide();
+      }, error => {
+        this.showError('Can not update event', 'Attention!');
+        this.spinner.hide();
+      }
+    );
+    this.shouldShow = false;
+  }
+
+  convertToDraft() {
+    this.eventt.isDraft = !this.eventt.isDraft;
+    this.tempType = this.eventt.eventType;
+    console.log(this.eventt);
+  }
+
+  convertToPrivate() {
+    if (this.eventt.eventType === 'EVENT') {
+      if (this.eventt.participants.length !== 0) {
+        this.deleteParticipants();
+      }
+    } else {
+      this.shouldShow = true;
+    }
+    this.tempType = 'PRIVATE_EVENT';
+
+  }
+
+  convertToPublic() {
+    let show = false;
+    if (this.eventt.eventType === 'PRIVATE_EVENT') {
+      if (this.eventt.participants.length !== 0) {
+        this.deleteParticipants();
+      }
+    } else {
+      this.shouldShow = true;
+    }
+    this.tempType = 'EVENT';
+  }
+
+  convertToNote() {
+    if (this.eventt.eventType === 'EVENT') {
+      if (this.eventt.participants.length !== 0) {
+        this.deleteParticipants();
+      }
+    }
+
+    this.tempType = 'NOTE';
+
+  }
+
+  deleteParticipants() {
+    this.spinner.show();
+    this.eventService.deleteParticipants(this.eventt).subscribe(
+      updated => {
+        this.showSuccess('Participants removed successfully', 'Success!');
+        this.eventt.participants = [];
+        this.spinner.hide();
+      }, error => {
+        this.showError('Can not delete participants', 'Error!');
+        this.spinner.hide();
+      }
+    );
   }
 
 }
