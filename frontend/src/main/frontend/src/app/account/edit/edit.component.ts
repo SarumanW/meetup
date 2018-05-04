@@ -27,7 +27,9 @@ export class EditComponent implements OnInit {
   errorFileFormat: string;
   emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   errorDateFormat: string;
+  errorPhoneFormat: string;
   mask: any[] = ['+', '3', ' ', '8', ' ', '(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
+  phonePattern = /\+3\s8\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}/;
   editForm = this.fb.group({
     email: [Validators.required, Validators.pattern(this.emailPattern)]
   });
@@ -80,11 +82,14 @@ export class EditComponent implements OnInit {
       },
       response => {
         if (response.status === 200) {
-          if (JSON.parse(localStorage.currentUser).login != this.account.login) {
-            let profile = JSON.parse(localStorage.currentUser);
-            profile.login = this.account.login;
-            localStorage.setItem('currentUser', JSON.stringify(profile));
-          }
+          let profile = JSON.parse(localStorage.currentUser);
+          profile.name = this.account.name;
+          profile.lastname = this.account.lastname;
+          profile.email = this.account.email;
+          profile.birthDay = this.account.birthDay;
+          profile.phone = this.account.phone;
+          //profile.imgPath = .body;
+          localStorage.setItem('currentUser', JSON.stringify(profile));
 
           this.router.navigate(
             [JSON.parse(localStorage.currentUser).login + '/profile']);
@@ -125,6 +130,15 @@ export class EditComponent implements OnInit {
 
     this.selectedFiles = undefined
 
+  }
+
+  checkPhone(phone: String){
+    if (!phone.match(this.phonePattern)){
+      this.errorPhoneFormat = "error";
+    }
+    else {
+      this.errorPhoneFormat = '';
+    }
   }
 
   formatDate(date: Date)  {

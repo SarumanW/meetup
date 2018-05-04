@@ -54,26 +54,12 @@
         <div class="form-group">
           <label class="form-control-label" for="lastName">Phone</label>
           <input type="text" class="form-control" [(ngModel)]="account.phone" id="phone" name="phone"
-                 #phone="ngModel" placeholder="{{account.phone}} +3 8 (___) ___-__-__"  [textMask]="{mask: mask}">
+                 #phone="ngModel" placeholder="{{account.phone}} +3 8 (___) ___-__-__"  [textMask]="{mask: mask}" [pattern]="phonePattern" (focusout)="checkPhone(account.phone)">
+          <small class="form-text text-danger" *ngIf="errorPhoneFormat">
+            Enter real phone number
+          </small>
         </div>
 
-        <div class="form-group">
-          <label class="form-control-label" for="login">Login</label>
-          <input type="text" class="form-control" [(ngModel)]="account.login" id="login" name="login"
-                 #login="ngModel" placeholder="{{account.login}}"
-                 minlength="4" maxlength="50" pattern="^[_.@A-Za-z0-9-]*$">
-          <div *ngIf="login.dirty && login.invalid">
-            <small class="form-text text-danger" *ngIf="login.errors.minlength">
-              Your username is required to be at least 4 character.
-            </small>
-            <small class="form-text text-danger" *ngIf="login.errors.maxlength">
-              Your username cannot be longer than 50 characters.
-            </small>
-            <small class="form-text text-danger" *ngIf="login.errors.pattern">
-              Your username can only contain letters and digits.
-            </small>
-          </div>
-        </div>
 
         <div class="form-group">
           <label class="form-control-label" for="name">Name</label>

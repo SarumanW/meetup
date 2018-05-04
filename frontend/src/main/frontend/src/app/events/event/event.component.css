@@ -70,4 +70,11 @@ agm-map {
   height: 350px;
 }
 
+.scrollspy {
+  position: relative;
+  height: 200px;
+  margin-top: .5rem;
+  overflow: auto;
+}
+
 
