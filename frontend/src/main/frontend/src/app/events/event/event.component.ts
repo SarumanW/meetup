@@ -119,10 +119,12 @@ export class EventComponent implements OnInit {
   }
 
   formatDate() {
-    console.log(this.datee);
-    console.log(this.time);
-    console.log(this.eventt.periodicity);
-    this.eventt.eventDate = this.datee + " " + this.time + ":00";
+    if (this.shouldShow) {
+      console.log(this.datee);
+      console.log(this.time);
+      console.log(this.eventt.periodicity);
+      this.eventt.eventDate = this.datee + " " + this.time + ":00";
+    }
   }
 
   getCurrentDate() {
@@ -136,8 +138,6 @@ export class EventComponent implements OnInit {
 
   updateEvent() {
     this.spinner.show();
-    this.eventt.eventType = this.tempType;
-
     this.eventService.updateEvent(this.eventt).subscribe(
       updated => {
         this.showSuccess('Event is successfully updated', 'Success!');
@@ -147,48 +147,52 @@ export class EventComponent implements OnInit {
         this.spinner.hide();
       }
     );
+  }
+
+  convertEvent() {
+
+    if (this.eventt.eventType === 'EVENT') {
+      if (this.eventt.participants.length !== 0) {
+        this.deleteParticipants();
+      }
+    }
+
+    this.eventt.eventType = this.tempType;
+
+    this.updateEvent();
     this.shouldShow = false;
   }
 
   convertToDraft() {
     this.eventt.isDraft = !this.eventt.isDraft;
     this.tempType = this.eventt.eventType;
+    this.updateEvent();
+    this.shouldShow = false;
     console.log(this.eventt);
   }
 
   convertToPrivate() {
-    if (this.eventt.eventType === 'EVENT') {
-      if (this.eventt.participants.length !== 0) {
-        this.deleteParticipants();
-      }
-    } else {
+
+    if (this.eventt.eventType === 'NOTE') {
       this.shouldShow = true;
     }
+
     this.tempType = 'PRIVATE_EVENT';
 
   }
 
   convertToPublic() {
-    let show = false;
-    if (this.eventt.eventType === 'PRIVATE_EVENT') {
-      if (this.eventt.participants.length !== 0) {
-        this.deleteParticipants();
-      }
-    } else {
+
+    if (this.eventt.eventType === 'NOTE') {
       this.shouldShow = true;
     }
+
+    this.eventt.participants = [];
     this.tempType = 'EVENT';
   }
 
   convertToNote() {
-    if (this.eventt.eventType === 'EVENT') {
-      if (this.eventt.participants.length !== 0) {
-        this.deleteParticipants();
-      }
-    }
-
     this.tempType = 'NOTE';
-
   }
 
   deleteParticipants() {

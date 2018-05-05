@@ -46,7 +46,7 @@
                     <a class="dropdown-item">Private event</a></li>
                   <li role="menuitem" *ngIf="eventt.eventType !== 'NOTE'" (click)="convertToNote(); addDate.show()">
                     <a class="dropdown-item">Note</a></li>
-                  <li role="menuitem" (click)="convertToDraft(); addDate.show()">
+                  <li role="menuitem" (click)="convertToDraft()">
                     <a class="dropdown-item">Draft enable/disable</a></li>
                 </ul>
               </div>
@@ -79,7 +79,7 @@
         </div>
       </div>
 
-    <div class="add-participant">
+    <div class="participant">
       <app-modal-window #modal>
         <div class="modal-header d-flex justify-content-between align-items-center">
           <h4 class="modal-title">Add participant</h4>
@@ -92,38 +92,44 @@
               <input class="form-control" id="name" placeholder="Enter participant login" name="name"  #name
                      [(ngModel)]="loginInput">
             </div>
-            <button class="btn btn-default" (click)="modal.hide(); addParticipant(name)">Add</button>
+            <button class="btn btn-success" (click)="modal.hide(); addParticipant(name)">Add</button>
           </form>
         </div>
       </app-modal-window>
     </div>
 
-    <div class="add-date">
+    <div class="participant">
       <app-modal-window #addDate id="add-date">
         <div class="modal-header d-flex justify-content-between align-items-center">
-          <h4 class="modal-title">Add date for successful convert</h4>
+          <h4 class="modal-title">Finish conversion</h4>
           <img class="close-btn" src="assets/close.svg" (click)="addDate.hide()" alt="">
         </div>
+
         <div class="app-modal-body">
           <form name="form" role="form" #addDateForm="ngForm">
             <div *ngIf = "shouldShow">
-            <div class="form-group">
-              <label class="form-control-label" for="eventDate">Choose the day of the event: </label>
-              <input type="date" min="{{currentDate}}" class="form"
-                     id="eventDate" name="eventDate" #eventDate="ngModel" [(ngModel)]="datee"
-                     placeholder="{{currentDate}}" required>
-            </div>
+              <div class="form-group">
+                <label class="form-control-label" for="eventDate">Choose the day of the event: </label>
+                <input type="date" min="{{currentDate}}" class="form"
+                       id="eventDate" name="eventDate" #eventDate="ngModel" [(ngModel)]="datee"
+                       placeholder="{{currentDate}}" required>
+              </div>
 
-            <div class="form-group">
-              <label class="form-control-label" for="eventDate">Choose the time of the event: </label>
-              <input type="time" class="form"
-                     id="eventTime" name="eventTime" #eventTime="ngModel" [(ngModel)]="time" required>
-            </div>
-            </div>
+              <div class="form-group">
+                <label class="form-control-label" for="eventDate">Choose the time of the event: </label>
+                <input type="time" class="form"
+                       id="eventTime" name="eventTime" #eventTime="ngModel" [(ngModel)]="time" required>
+              </div>
 
-            <button class="btn btn-default" [disabled]="addDateForm.form.invalid" (click)="addDate.hide();formatDate(); updateEvent()">Confirm</button>
+            </div>
           </form>
         </div>
+
+        <div class="app-modal-footer">
+          <button class="btn btn-success" [disabled]="shouldShow && addDateForm.form.invalid"
+                  (click)="addDate.hide();formatDate(); convertEvent()">Confirm</button>
+        </div>
+
       </app-modal-window>
     </div>
 
