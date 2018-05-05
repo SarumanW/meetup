@@ -16,6 +16,7 @@ import {ThankyouComponent} from "./account/thankyou/thankyou.component";
 import {EventListComponent} from "./events/event.list/event.list.component";
 import {EventAddComponent} from "./events/event.add/event.add.component";
 import {CalendarComponent} from "./calendar/calendar.component/calendar.component";
+import {ItemComponent} from "./item/item.component";
 
 const routes: Routes = [
   {path: 'register', component: RegisterComponent},
@@ -34,6 +35,7 @@ const routes: Routes = [
   {path: 'change.password', component: ChangePasswordComponent},
   {path: 'thankyou', component: ThankyouComponent},
   {path: ':login/event/add/:folderId', component: EventAddComponent, canActivate: [AuthGuard] },
+  {path: 'item', component: ItemComponent}
 
 ];
 
