@@ -61,4 +61,11 @@ export class EventService {
     return this.http.delete('api/events/' + eventt.eventId, {headers: headers});
   }
 
+  deleteParticipant(eventt: Evento, login: string) : Observable<any> {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.delete('api/events/' + eventt.eventId + "/participant/" + login, {headers: headers});
+  }
+
 }

@@ -141,4 +141,26 @@ public class EventController {
 
         return new ResponseEntity<>(deletedParticipantsEvent, HttpStatus.OK);
     }
+
+    @PreAuthorize("@eventPermissionChecker.canDeleteEvent(#eventId)")
+    @DeleteMapping("{eventId}/participant/{login}")
+    public ResponseEntity<String> deleteParticipant(@PathVariable int eventId, @PathVariable String login) {
+        HttpStatus httpStatus;
+        String message;
+        log.debug("Trying to delete participant with login {} of eventId '{}'", login, eventId);
+
+        int result = eventService.deleteParticipant(eventId, login);
+
+        if (result == 0) {
+            httpStatus = HttpStatus.NOT_FOUND;
+            message = "\"Participant with this login does not exist\"";
+        } else {
+            httpStatus = HttpStatus.OK;
+            message = "\"Participant was deleted successfully\"";
+        }
+
+        log.debug("Send response body event '{}' and status {}", message, httpStatus);
+
+        return new ResponseEntity<String>(message, httpStatus);
+    }
 }

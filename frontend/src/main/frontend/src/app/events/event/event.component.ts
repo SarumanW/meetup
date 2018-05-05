@@ -19,6 +19,7 @@ export class EventComponent implements OnInit {
   currentUserLogin: string;
   alreadyHasParticipant: boolean;
   loginInput: string = "";
+  deleteLogin: string = "";
   state: string = "folders";
   lat: number;
   lng: number;
@@ -221,6 +222,22 @@ export class EventComponent implements OnInit {
         this.spinner.hide();
       }
     );
+  }
+
+  deleteParticipant(login: any) {
+    console.log(login.value);
+    console.log(this.deleteLogin);
+    this.spinner.show();
+    this.eventService.deleteParticipant(this.eventt, login.value).subscribe(
+      deleted => {
+        this.showSuccess(deleted.toString(), 'Success!');
+        this.spinner.hide();
+      }, error => {
+        this.showError('Participant with this login does not exist', 'Error!');
+        this.spinner.hide();
+      }
+    );
+
   }
 
 }

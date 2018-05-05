@@ -229,7 +229,6 @@ public class EventDaoImpl implements EventDao {
             event.setParticipants(null);
             event.setOwnerId(0);
         } catch (DataAccessException e) {
-            e.printStackTrace();
             log.error("Query fails by delete participants of event with id '{}'", event.getEventId());
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
@@ -237,6 +236,25 @@ public class EventDaoImpl implements EventDao {
         log.debug("Members of event with id '{}' was deleted successfully", event.getEventId());
 
         return event;
+    }
+
+    @Override
+    public int deleteParticipant(int eventId, String login) {
+
+        int result;
+
+        log.debug("Try to delete event members with eventId '{}'", eventId);
+
+        try {
+            result = jdbcTemplate.update(env.getProperty(EVENT_DELETE_PARTICIPANT), eventId, login);
+        } catch (DataAccessException e) {
+            log.error("Query fails by delete participants of event with id '{}'", eventId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        log.debug("Members of event with id '{}' was deleted successfully", eventId);
+
+        return result;
     }
 
     @Override

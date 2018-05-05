@@ -83,6 +83,7 @@ public final class Key {
     public static final String EVENT_GET_DRAFTS="event.getDrafts";
     public static final String EVENT_DELETE_PARTICIPANTS="event.deleteParticipants";
     public static final String EVENT_DELETE_MEMBERS="event.deleteMembers";
+    public static final String EVENT_DELETE_PARTICIPANT="event.deleteParticipant";
 
     //RoleDao
     public static final String GET_ROLE="role.getRole";

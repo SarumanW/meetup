@@ -29,4 +29,6 @@ public interface EventDao extends Dao<Event> {
     Event deleteParticipants(Event event);
 
     Event deleteMembers(Event event);
+
+    int deleteParticipant(int eventId, String login);
 }

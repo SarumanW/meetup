@@ -137,6 +137,10 @@ public class EventService {
 
         log.debug("Found event '{}' with id '{}'", event, eventId);
 
+        log.debug("Trying to delete members with eventId '{}' from database", eventId);
+
+        event = eventDao.deleteMembers(event);
+
         log.debug("Trying to delete eventId '{}' from database", eventId);
         return eventDao.delete(event);
     }
@@ -166,6 +170,10 @@ public class EventService {
         log.debug("Trying to delete eventId '{}' from database", eventId);
 
         return eventDao.deleteParticipants(event);
+    }
+
+    public int deleteParticipant(int eventId, String login) {
+        return eventDao.deleteParticipant(eventId, login);
     }
 
 }

@@ -68,6 +68,8 @@
             <div class="col-md-4" *ngIf="eventt.ownerId === this.currentUserId && eventt.eventType === 'EVENT'">
               <button type="button" class="btn btn-primary" (click)="modal.show()"
                       data-toggle="modal">Add participant</button>
+              <button type="button" class="btn btn-danger" (click)="deleteParticipantt.show()">
+                Delete participant</button>
             </div>
 
             <div class="col-md-4">
@@ -90,7 +92,7 @@
         </div>
 
         <div class="app-modal-body">
-          <form name="form" role="form" #addParticipant="ngForm">
+          <form name="form" role="form" #addParticipantForm="ngForm">
             <div class="form-group">
               <label for="name">Login:</label>
               <input class="form-control" id="name" placeholder="Enter participant login" name="name"  #name
@@ -100,7 +102,7 @@
         </div>
 
         <div class="app-modal-footer">
-          <button class="btn btn-success" [disabled]="addParticipant.form.invalid"
+          <button class="btn btn-success" [disabled]="addParticipantForm.form.invalid"
                   (click)="modal.hide(); addParticipant(name)">Add</button>
         </div>
       </app-modal-window>
@@ -158,6 +160,30 @@
           <button class="btn btn-default" (click)="deleteEventt.hide();">Cancel</button>
         </div>
 
+      </app-modal-window>
+    </div>
+
+    <div class="participant">
+      <app-modal-window #deleteParticipantt>
+        <div class="modal-header d-flex justify-content-between align-items-center">
+          <h4 class="modal-title">Delete participant</h4>
+          <img class="close-btn" src="assets/close.svg" (click)="deleteParticipantt.hide()" alt="">
+        </div>
+
+        <div class="app-modal-body">
+          <form name="form" role="form" #deleteParticipantForm="ngForm">
+            <div class="form-group">
+              <label for="login">Login:</label>
+              <input class="form-control" id="login" placeholder="Enter participant login" #login
+                     [(ngModel)]="deleteLogin" #ctrl="ngModel" required>
+            </div>
+          </form>
+        </div>
+
+        <div class="app-modal-footer">
+          <button class="btn btn-danger" [disabled]="deleteParticipantForm.form.invalid"
+                  (click)="deleteParticipantt.hide(); deleteParticipant(login)">Delete</button>
+        </div>
       </app-modal-window>
     </div>
 
