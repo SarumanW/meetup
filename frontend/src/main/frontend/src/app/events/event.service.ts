@@ -54,4 +54,11 @@ export class EventService {
     return this.http.delete('api/events/participants/' + eventt.eventId, {headers: headers});
   }
 
+  deleteEvent(eventt: Evento) {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.delete('api/events/' + eventt.eventId, {headers: headers});
+  }
+
 }

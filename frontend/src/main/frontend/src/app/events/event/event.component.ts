@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {EventService} from "../event.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Evento} from "../event";
 import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
@@ -31,7 +31,8 @@ export class EventComponent implements OnInit {
   constructor(private eventService: EventService,
               private route: ActivatedRoute,
               private toastr: ToastrService,
-              private spinner: NgxSpinnerService) {
+              private spinner: NgxSpinnerService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -204,6 +205,19 @@ export class EventComponent implements OnInit {
         this.spinner.hide();
       }, error => {
         this.showError('Can not delete participants', 'Error!');
+        this.spinner.hide();
+      }
+    );
+  }
+
+  deleteEvent() {
+    this.eventService.deleteEvent(this.eventt).subscribe(
+      deleted => {
+        this.showSuccess('Event removed successfully', 'Success!');
+        this.spinner.hide();
+        this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId])
+      }, error => {
+        this.showError('Can not delete event', 'Error!');
         this.spinner.hide();
       }
     );
