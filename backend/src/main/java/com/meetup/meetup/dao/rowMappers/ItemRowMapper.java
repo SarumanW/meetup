@@ -22,8 +22,7 @@ public class ItemRowMapper implements RowMapper<Item> {
         item.setLink(resultSet.getString(ITEM_LINK));
         date = resultSet.getTimestamp(ITEM_DUE_DATE);
         item.setDueDate(date == null ? null : date.toString());
-        item.setOwnerId(resultSet.getInt(ITEM_USER_ID));
-        item.setBookerId(resultSet.getInt(ITEM_BOOKER_ID));
+        //item.setLikes(resultSet.getInt(ITEM_LIKES));
 
         return item;
     }

@@ -20,20 +20,20 @@ public class Item {
     @Size(min = 4, max = 250)
     private String description;
 
-    @NotNull
-    private int ownerId;
-
-    private int bookerId;
-
     private String imageFilepath;
 
     private String link;
 
     private String dueDate;
 
-    private String priority;
-
     private int likes;
 
     List<String> tags;
+
+    @NotNull
+    private int ownerId;
+
+    private int bookerId;
+
+    private ItemPriority priority;
 }

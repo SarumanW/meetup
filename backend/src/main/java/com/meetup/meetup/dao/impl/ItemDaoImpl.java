@@ -3,6 +3,7 @@ package com.meetup.meetup.dao.impl;
 import com.meetup.meetup.dao.ItemDao;
 import com.meetup.meetup.dao.rowMappers.ItemRowMapper;
 import com.meetup.meetup.entity.Item;
+import com.meetup.meetup.entity.ItemPriority;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -32,76 +33,56 @@ public class ItemDaoImpl implements ItemDao {
     @Autowired
     private Environment env;
 
+    // TODO: 05.05.2018 performance optimization
     @Override
     public List<Item> findByUserId(int userId) {
         List<Item> items = new ArrayList<>();
-        getUserItemsId(userId).forEach(itemId -> items.add(findById(itemId)));
+        getUserItemsId(userId).forEach((itemId) -> {
+            Item item = findById(itemId);
+            item.setPriority(getItemPriorityByUserIdItemId(userId, itemId));
+            item.setOwnerId(userId);
+            item.setBookerId(jdbcTemplate.queryForObject(
+                    env.getProperty(ITEM_GET_BOOKER_ID_BY_ITEM_ID_USER_ID), new Object[]{itemId, userId}, Integer.class));
+            items.add(item);
+        });
         return items;
     }
 
     @Override
-    public Item findById(int id) {
+    public Item findById(int itemId) {
         Item item;
         try {
-            item = jdbcTemplate.queryForObject(
-                    env.getProperty(ITEM_FIND_BY_ID),
-                    new Object[]{id}, new ItemRowMapper()
-            );
+            item = jdbcTemplate.queryForObject(env.getProperty(ITEM_FIND_BY_ID), new Object[]{itemId}, new ItemRowMapper());
+            item.setTags(jdbcTemplate.queryForList(env.getProperty(ITEM_GET_TAG_BY_ITEM_ID), new Object[]{itemId}, String.class));
         } catch (DataAccessException e) {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return item;
     }
 
+    // TODO: 05.05.2018 insert tags
     @Override
     public Item insert(Item model) {
         int id;
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
+        SimpleJdbcInsert insertItem = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName(TABLE_ITEM)
                 .usingGeneratedKeyColumns(ITEM_ITEM_ID);
-
         if (model.getImageFilepath() == null) {
             model.setImageFilepath(env.getProperty("image.default.filepath"));
         }
-
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put(ITEM_ITEM_ID, model.getItemId());
-        parameters.put(ITEM_NAME, model.getName());
-        parameters.put(ITEM_DESCRIPTION, model.getDescription());
-        parameters.put(ITEM_USER_ID, model.getOwnerId());
-        parameters.put(ITEM_IMAGE_FILEPATH, model.getImageFilepath());
-        parameters.put(ITEM_LINK, model.getLink());
-        parameters.put(ITEM_DUE_DATE, model.getDueDate() != null ? Date.valueOf(model.getDueDate()) : null);
+        Map<String, Object> itemParameters = new HashMap<>();
+        itemParameters.put(ITEM_ITEM_ID, model.getItemId());
+        itemParameters.put(ITEM_NAME, model.getName());
+        itemParameters.put(ITEM_DESCRIPTION, model.getDescription());
+        itemParameters.put(ITEM_IMAGE_FILEPATH, model.getImageFilepath());
+        itemParameters.put(ITEM_LINK, model.getLink());
+        itemParameters.put(ITEM_DUE_DATE, model.getDueDate() != null ? Date.valueOf(model.getDueDate()) : null);
         try {
-            id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
+            id = insertItem.executeAndReturnKey(itemParameters).intValue();
             model.setItemId(id);
         } catch (DataAccessException e) {
-
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
-        return model;
-    }
-
-    @Override
-    public Item update(Item model) {
-        try {
-            jdbcTemplate.update(env.getProperty(ITEM_UPDATE),
-                    model.getName(), model.getDescription(), model.getImageFilepath(), model.getLink(),
-                    model.getDueDate(), model.getItemId());
-        } catch (DataAccessException e) {
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
-        return model;
-    }
-
-    // TODO: 04.05.2018 item deleting in all users, need userId in signature !!
-    // TODO: 04.05.2018 delete item if it don't have references from users
-    @Override
-    public Item delete(Item model) {try {
-        jdbcTemplate.update(env.getProperty(ITEM_DELETE), model.getItemId());
-    } catch (DataAccessException e) {
-        throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-    }
         return model;
     }
 
@@ -110,6 +91,60 @@ public class ItemDaoImpl implements ItemDao {
         List<Item> items = new ArrayList<>();
         getPopularItemsId().forEach(itemId -> items.add(findById(itemId)));
         return items;
+    }
+
+    // TODO: 05.05.2018 priority
+    @Override
+    public Item addToUserWishList(int userId, int itemId, ItemPriority priority) {
+        jdbcTemplate.update(env.getProperty(ITEM_UPDATE_USER_ITEM),
+                userId, userId, priority.ordinal() + 1);
+        return findById(itemId);
+    }
+
+    @Override
+    public Item deleteFromUserWishList(int userId, int itemId) {
+        Item deletedItem = findById(itemId);
+        jdbcTemplate.update(env.getProperty(ITEM_DELETE_FROM_WISH_LIST), userId, itemId);
+        return deletedItem;
+    }
+
+    @Override
+    public Item addBookerForItem(int ownerId, int itemId, int bookerId) {
+        jdbcTemplate.update(env.getProperty(ITEM_SET_BOOKER_ID_FOR_ITEM),
+                bookerId, ownerId, itemId);
+        return findById(itemId);
+    }
+
+    @Override
+    public Item removeBookerForItem(int ownerId, int itemId) {
+        jdbcTemplate.update(env.getProperty(ITEM_SET_BOOKER_ID_FOR_ITEM),
+                null, ownerId, itemId);
+        return findById(itemId);
+    }
+
+    // TODO: 05.05.2018 if any user change item it change in all users who have it item
+    @Override
+    public Item update(Item model) {
+//        try {
+//            jdbcTemplate.update(env.getProperty(ITEM_UPDATE),
+//                    model.getName(), model.getDescription(), model.getImageFilepath(), model.getLink(),
+//                    model.getDueDate(), model.getItemId());
+//        } catch (DataAccessException e) {
+//            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+//        }
+        return model;
+    }
+
+    // TODO: 04.05.2018 item deleting in all users, need userId in signature !!
+    // TODO: 04.05.2018 delete item if it don't have references from users
+    @Override
+    public Item delete(Item model) {
+//        try {
+//            jdbcTemplate.update(env.getProperty(ITEM_DELETE), model.getItemId());
+//        } catch (DataAccessException e) {
+//            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+//        }
+        return model;
     }
 
     private List<Integer> getUserItemsId(int userId) {
@@ -132,5 +167,16 @@ public class ItemDaoImpl implements ItemDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return itemsIds;
+    }
+
+    private ItemPriority getItemPriorityByUserIdItemId(int userId, int itemId) {
+        ItemPriority priority;
+        try {
+            priority = ItemPriority.valueOf(jdbcTemplate.queryForObject(env.getProperty(ITEM_GET_PRIORITY_BY_USER_ID),
+                    new Object[]{userId, itemId}, String.class));
+        } catch (DataAccessException e) {
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+        return priority;
     }
 }

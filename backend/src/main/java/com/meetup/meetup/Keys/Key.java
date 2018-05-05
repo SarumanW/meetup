@@ -11,16 +11,22 @@ public final class Key {
     public static final String TABLE_USER_EVENT = "USER_EVENT";
     public static final String TABLE_FOLDER = "FOLDER";
     public static final String TABLE_ITEM = "ITEM";
+    public static final String TABLE_USER_ITEM = "USER_ITEM";
 
     //ITEM table fields
     public static final String ITEM_ITEM_ID = "ITEM_ID";
     public static final String ITEM_NAME = "NAME";
     public static final String ITEM_DESCRIPTION = "DESCRIPTION";
-    public static final String ITEM_BOOKER_ID = "ID_WHO_BOOKED";
-    public static final String ITEM_USER_ID = "USER_ID";
     public static final String ITEM_IMAGE_FILEPATH = "IMAGE_FILEPATH";
     public static final String ITEM_LINK = "LINK";
     public static final String ITEM_DUE_DATE = "DUE_DATE";
+    public static final String ITEM_LIKES = "LIKES";
+
+    //USER_ITEM
+    public static final String ITEM_BOOKER_ID = "ID_WHO_BOOKED";
+    public static final String ITEM_USER_ID = "USER_ID";
+    public static final String ITEM_PRIORITY_ID = "PRIORITY_ID";
+
 
     //UUSER table fields
     public static final String UUSER_USER_ID = "USER_ID";
@@ -101,7 +107,13 @@ public final class Key {
     public static final String ITEM_GET_ITEMS_ID_BY_USER_ID = "item.getItemsIdByUserId";
     public static final String ITEM_DELETE = "item.delete";
     public static final String ITEM_UPDATE = "item.update";
+    public static final String ITEM_GET_TAG_BY_ITEM_ID = "item.getTagByItemId";
     public static final String ITEM_GET_POPULAR_ITEMS_ID ="item.getPopularItemsIds";
+    public static final String ITEM_GET_PRIORITY_BY_USER_ID ="item.getPriorityByUserId";
+    public static final String ITEM_GET_BOOKER_ID_BY_ITEM_ID_USER_ID = "item.getBookerIdByUserIdIntemId";
+    public static final String ITEM_UPDATE_USER_ITEM = "item.updateUserItem";
+    public static final String ITEM_DELETE_FROM_WISH_LIST = "item.deleteFromWishList";
+    public static final String ITEM_SET_BOOKER_ID_FOR_ITEM = "item.setBookerId";
 
     //Exceptions
     public static final String EXCEPTION_AUTHENTICATION = "authentication.exception";
