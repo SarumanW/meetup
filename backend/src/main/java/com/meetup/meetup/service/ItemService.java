@@ -55,7 +55,7 @@ public class ItemService {
         return itemDao.update(item);
     }
 
-    public Item deleteItem(Item item){
+    public Item deleteItem(Item item) {
         log.debug("Try to check permission for item '{}'", item);
         checkPermission(item);
         log.debug("Permission for delete was received");
@@ -83,9 +83,9 @@ public class ItemService {
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
         log.debug("User was successfully received");
-        System.out.println("user.getid="+user.getId()+ " itemId="+ itemId);
-        log.debug("Trying to add item with id '{}' in user '{}' wish list", itemId,user.getId());
-        return itemDao.addToUserWishList(user.getId(),itemId,itemPriority);
+
+        log.debug("Trying to add item with id '{}' in user '{}' wish list", itemId, user.getId());
+        return itemDao.addToUserWishList(user.getId(), itemId, itemPriority);
     }
 
     public Item deleteItemFromUserWishList(int itemId) {
@@ -93,7 +93,7 @@ public class ItemService {
         User user = authenticationFacade.getAuthentication();
         log.debug("User was successfully received");
 
-        log.debug("Trying to delete item with id '{}' from user '{}' wish list", itemId,user.getId());
+        log.debug("Trying to delete item with id '{}' from user '{}' wish list", itemId, user.getId());
         return itemDao.deleteFromUserWishList(user.getId(), itemId);
     }
 }
