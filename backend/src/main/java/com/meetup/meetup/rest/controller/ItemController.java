@@ -1,7 +1,9 @@
 package com.meetup.meetup.rest.controller;
 
 
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.meetup.meetup.entity.Item;
+import com.meetup.meetup.entity.ItemPriority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,23 @@ public class ItemController {
 
         log.debug("Send response body saved item '{}' and status CREATED", addedItem);
         return new ResponseEntity<>(addedItem, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{id}/add")
+    public @ResponseBody ResponseEntity<Item> addItemToUserWishList(@PathVariable int id,@Valid @RequestBody String itemPriority){
+        log.debug("Trying to add item with id '{}' to user wish list", id);
+        System.out.println("!!!" + itemPriority);
+        itemService.addItemToUserWishList(id, itemPriority);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public @ResponseBody ResponseEntity deleteItem(@PathVariable int id) {
+        log.debug("Trying to delete item with id '{}' to user wish list", id);
+        Item deletedItem = itemService.deleteItemFromUserWishList(id);
+
+        log.debug("Send response status OK");
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PutMapping
