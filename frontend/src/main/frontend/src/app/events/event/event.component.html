@@ -32,7 +32,7 @@
               </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-4" *ngIf="eventt.ownerId === this.currentUserId">
               <div class="btn-group" dropdown>
                 <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
                         aria-controls="dropdown-basic">
@@ -68,7 +68,8 @@
             <div class="col-md-4" *ngIf="eventt.ownerId === this.currentUserId && eventt.eventType === 'EVENT'">
               <button type="button" class="btn btn-primary" (click)="modal.show()"
                       data-toggle="modal">Add participant</button>
-              <button type="button" class="btn btn-danger" (click)="deleteParticipantt.show()">
+              <button type="button" class="btn btn-danger" (click)="deleteParticipantt.show()"
+                      *ngIf="eventt.participants !== null && eventt.participants.length !== 0">
                 Delete participant</button>
             </div>
 
@@ -175,7 +176,7 @@
             <div class="form-group">
               <label for="login">Login:</label>
               <input class="form-control" id="login" placeholder="Enter participant login" #login
-                     [(ngModel)]="deleteLogin" #ctrl="ngModel" required>
+                     required>
             </div>
           </form>
         </div>

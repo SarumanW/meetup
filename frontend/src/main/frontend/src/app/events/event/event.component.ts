@@ -19,7 +19,6 @@ export class EventComponent implements OnInit {
   currentUserLogin: string;
   alreadyHasParticipant: boolean;
   loginInput: string = "";
-  deleteLogin: string = "";
   state: string = "folders";
   lat: number;
   lng: number;
@@ -28,6 +27,7 @@ export class EventComponent implements OnInit {
   time: string;
   tempType: string;
   shouldShow: boolean;
+  hasParticipant: boolean;
 
   constructor(private eventService: EventService,
               private route: ActivatedRoute,
@@ -73,7 +73,7 @@ export class EventComponent implements OnInit {
   showError(message: string, title: string) {
     this.toastr.error(message, title, {
       timeOut: 3000,
-      positionClass: 'toast-bottom-left',
+      positionClass: 'toast-top-right',
       closeButton: true
     });
   }
@@ -81,7 +81,7 @@ export class EventComponent implements OnInit {
   showSuccess(message: string, title: string) {
     this.toastr.info(message, title, {
       timeOut: 3000,
-      positionClass: 'toast-bottom-left',
+      positionClass: 'toast-top-right',
       closeButton: true
     });
   }
@@ -225,19 +225,40 @@ export class EventComponent implements OnInit {
   }
 
   deleteParticipant(login: any) {
-    console.log(login.value);
-    console.log(this.deleteLogin);
-    this.spinner.show();
-    this.eventService.deleteParticipant(this.eventt, login.value).subscribe(
-      deleted => {
-        this.showSuccess(deleted.toString(), 'Success!');
-        this.spinner.hide();
-      }, error => {
-        this.showError('Participant with this login does not exist', 'Error!');
-        this.spinner.hide();
-      }
-    );
 
+    this.spinner.show();
+
+    let deletedProfileIndex;
+
+    this.hasParticipant = false;
+
+    if (this.eventt.participants !== null && this.eventt.participants.length !== 0) {
+      for (let profile of this.eventt.participants) {
+        if (profile.login === login.value) {
+          this.hasParticipant = true;
+          deletedProfileIndex = this.eventt.participants.indexOf(profile, 0);
+          break;
+        }
+      }
+    }
+
+    if (this.currentUserLogin !== login.value && this.hasParticipant) {
+      this.eventService.deleteParticipant(this.eventt, login.value).subscribe(
+        deleted => {
+          this.showSuccess(deleted.toString(), 'Success!');
+          this.eventt.participants.splice(deletedProfileIndex, 1);
+          this.spinner.hide();
+        }, error => {
+          this.showError('Participant with this login does not exist', 'Error!');
+          this.spinner.hide();
+        }
+      );
+    } else {
+      this.showError('Participant with this login does not exist', 'Error!');
+      this.spinner.hide();
+    }
+
+    login.value="";
   }
 
 }
