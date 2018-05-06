@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
 import {Evento} from "../event";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {ToastrService} from "ngx-toastr";
 import {EventService} from "../event.service";
 import {ImageUploadService} from "../image.upload.service";
+import {FormControl} from "@angular/forms";
+import {MapsAPILoader} from "@agm/core";
+import {$} from "protractor";
 
 @Component({
   selector: 'app-event.edit',
@@ -29,13 +32,19 @@ export class EventEditComponent implements OnInit {
   imageLoaded: boolean;
   type: string;
   currentUserLogin: string;
+  public searchControl: FormControl;
+
+  @ViewChild("searchh")
+  public searchElementRef: ElementRef;
 
   constructor(private eventService: EventService,
               private route: ActivatedRoute,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
               private router: Router,
-              private uploadService: ImageUploadService) { }
+              private uploadService: ImageUploadService,
+              private mapsAPILoader: MapsAPILoader,
+              private ngZone: NgZone) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -48,6 +57,40 @@ export class EventEditComponent implements OnInit {
       this.showError('Unsuccessful event loading', 'Loading error');
     });
     this.getEvent();
+
+    this.searchControl = new FormControl();
+    console.log(this.searchControl);
+    console.log(this.searchElementRef);
+
+    this.setCurrentPosition();
+
+    this.mapsAPILoader.load().then(() => {
+      let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement,
+        { types:['address']
+      });
+      autocomplete.addListener("place_changed", () => {
+        this.ngZone.run(() => {
+
+          let place: google.maps.places.PlaceResult = autocomplete.getPlace();
+
+          if (place.geometry === undefined || place.geometry === null) {
+            return;
+          }
+
+          this.lat = place.geometry.location.lat();
+          this.lng = place.geometry.location.lng();
+        });
+      });
+    });
+  }
+
+  setCurrentPosition() {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
+      });
+    }
   }
 
   getEvent() {

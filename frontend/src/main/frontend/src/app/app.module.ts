@@ -76,6 +76,7 @@ import {EventEditComponent} from "./events/event.edit/event.edit.component";
     ReactiveFormsModule,
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
     ToastrModule.forRoot(),
@@ -90,7 +91,8 @@ import {EventEditComponent} from "./events/event.edit/event.edit.component";
     BrowserAnimationsModule,
     TextMaskModule,
     AgmCoreModule.forRoot({
-      apiKey: environment.googleMapsApiKey
+      apiKey: environment.googleMapsApiKey,
+      libraries: ["places"]
     }),
     BsDropdownModule.forRoot(),
   ],
