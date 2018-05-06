@@ -1,0 +1,46 @@
+<div class="container-fluid">
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
+  <div class="row">
+    <div class="col-2">
+      <home-comp [states]="state"></home-comp>
+    </div>
+
+    <div class="col-10">
+      <div class="container justify-content-center">
+        <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
+          <h2>Wish list:</h2>
+          <a routerLink="/{{profile.login}}/wishes/add" class="btn btn-primary">Add item</a>
+        </div>
+        <div class="folder d-flex flex-wrap">
+          <div *ngFor="let item of items" class="card mb-4">
+            <div class="head card-body">
+              <img class="folder-icon" src="assets/folder-icon.svg" alt="Card image cap">
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{item.name}}</h5>
+              <p class="card-text"><b>Priority: </b>{{item.priority}}</p>
+              <p class="card-text"><b>Due date: </b>{{item.dueDate}}</p>
+              <p class="card-text"><b>Owner: </b>{{item.ownerId}}</p>
+
+              <div class="container">
+                <div class="row">
+                  <div *ngFor="let tag of item.tags">
+                    <a class="badge badge-pill badge-primary m-1">#{{ tag.name }}</a>
+                  </div>
+                </div>
+              </div>
+
+              <a routerLink="/{{profile.login}}/wishes/{{item.itemId}}" class="btn btn-primary">Open
+                item</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

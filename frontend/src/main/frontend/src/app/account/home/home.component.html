@@ -13,8 +13,8 @@
      href="#/{{profile.login}}/folders/">Folders</a>
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'calendar'}"
      href="#/{{profile.login}}/calendar/">Calendar</a>
-  <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'wishlist'}"
-     >Wish List</a>
+  <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'wishes'}"
+     href="#/{{profile.login}}/wishes/">Wish List</a>
   <a class="list-group-item list-group-item-action"  (click)="logout()"
      routerLink="/login"> Log Out</a>
 </div>
