@@ -79,21 +79,13 @@ public class ItemService {
 //        log.debug("Given access to item '{}' for user '{}'", item, user);
     }
 
-    public Item addItemToUserWishList(int itemId, String itemPriority) {
+    public Item addItemToUserWishList(int itemId, ItemPriority itemPriority) {
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
         log.debug("User was successfully received");
-        if (itemPriority.equals("Normal")){
-            return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.NORMAL);
-        }
-        if (itemPriority.equals("Low")){
-            return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.LOW);
-        }
-        if (itemPriority.equals("High")){
-            return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.URGENT);
-        }
+        System.out.println("user.getid="+user.getId()+ " itemId="+ itemId);
         log.debug("Trying to add item with id '{}' in user '{}' wish list", itemId,user.getId());
-        return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.NORMAL);
+        return itemDao.addToUserWishList(user.getId(),itemId,itemPriority);
     }
 
     public Item deleteItemFromUserWishList(int itemId) {

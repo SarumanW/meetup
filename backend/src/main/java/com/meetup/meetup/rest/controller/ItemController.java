@@ -46,10 +46,9 @@ public class ItemController {
     }
 
     @PostMapping("/{id}/add")
-    public @ResponseBody ResponseEntity<Item> addItemToUserWishList(@PathVariable int id,@Valid @RequestBody String itemPriority){
+    public @ResponseBody ResponseEntity<Item> addItemToUserWishList(@PathVariable int id, Item itemPriority){
         log.debug("Trying to add item with id '{}' to user wish list", id);
-        System.out.println("!!!" + itemPriority);
-        itemService.addItemToUserWishList(id, itemPriority);
+        itemService.addItemToUserWishList(id, ItemPriority.NORMAL);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
