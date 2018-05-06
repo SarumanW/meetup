@@ -104,6 +104,7 @@ public class EventController {
         return new ResponseEntity<>(deletedEvent, HttpStatus.OK);
     }
 
+    @PreAuthorize("@eventPermissionChecker.canDeleteEvent(#eventId)")
     @PostMapping("/{eventId}/participant/add")
     public ResponseEntity<User> addParticipant(@PathVariable int eventId, @RequestBody String login) {
         return new ResponseEntity<>(eventService.addParticipant(eventId, login), HttpStatus.CREATED);
