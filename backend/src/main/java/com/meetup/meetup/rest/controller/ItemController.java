@@ -7,11 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.meetup.meetup.service.ItemService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/item")
@@ -27,11 +26,38 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Item> getItemById(@PathVariable int id){
+    public @ResponseBody ResponseEntity<Item> getItemById(@PathVariable int id){
         log.debug("Try to get item with id '{}'", id);
         Item item = itemService.getItemById(id);
 
         log.debug("Send response body item '{}' and status OK", item);
         return new ResponseEntity<>(item, HttpStatus.OK);
+    }
+
+    @PostMapping("/add")
+    public @ResponseBody ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
+        log.debug("Trying to save item {}", item);
+        Item addedItem = itemService.addItem(item);
+
+        log.debug("Send response body saved item '{}' and status CREATED", addedItem);
+        return new ResponseEntity<>(addedItem, HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public @ResponseBody ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
+        log.debug("Trying to update item '{}'", newItem);
+        Item updatedItem = itemService.updateItem(newItem);
+
+       log.debug("Send response body updated '{}' and status OK");
+        return new ResponseEntity<>(updatedItem, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete")
+    public @ResponseBody ResponseEntity deleteItem(@Valid @RequestBody Item item) {
+        log.debug("Trying to delete item '{}'", item);
+        Item deletedItem = itemService.deleteItem(item);
+
+        log.debug("Send response status OK");
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

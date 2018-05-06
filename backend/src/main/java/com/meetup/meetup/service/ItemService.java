@@ -34,19 +34,52 @@ public class ItemService {
     private final Environment env;
 
     public Item getItemById(int id) {
-
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
         log.debug("User was successfully received");
 
         log.debug("Trying to get item with id '{}'", id);
-        Item item = itemDao.findById(id);
+        return itemDao.findById(id);
+    }
 
-        if (item == null) {
-            log.error("Item with id '{}' wasnt founded", id);
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "Item", "itemId", id));
+    public Item addItem(Item item) {
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
+
+        log.debug("Trying to insert item to database");
+        return itemDao.insert(item);
+    }
+
+    public Item updateItem(Item item) {
+        log.debug("Try to check permission for item '{}'", item);
+        checkPermission(item);
+        log.debug("Permission for update was received");
+
+        log.debug("Trying to update item '{}' in database", item);
+        return itemDao.update(item);
+    }
+
+    public Item deleteItem(Item item){
+        log.debug("Try to check permission for item '{}'", item);
+        checkPermission(item);
+        log.debug("Permission for delete was received");
+
+        log.debug("Trying to delete item '{}' from database", item);
+        return itemDao.delete(item);
+    }
+
+    private void checkPermission(Item item) {
+        log.debug("Trying to get user from AuthenticationFacade");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User '{}' was successfully received", user.toString());
+
+        log.debug("Trying to check equivalence of item.getBookerId '{}' and user.getId '{}'", item.getBookerId(), user.getId());
+        if (item.getBookerId() != user.getId()) {
+            log.error("User has no access to this data");
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Item", "userId", item.getBookerId()));
         }
 
-        return item;
+        log.debug("Given access to item '{}' for user '{}'", item, user);
     }
 }
