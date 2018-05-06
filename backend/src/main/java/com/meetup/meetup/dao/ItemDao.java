@@ -1,6 +1,7 @@
 package com.meetup.meetup.dao;
 
 import com.meetup.meetup.entity.Item;
+import com.meetup.meetup.entity.ItemPriority;
 
 import java.util.List;
 
@@ -10,5 +11,11 @@ public interface ItemDao extends Dao<Item> {
 
     List<Item> getPopularItems();
 
-    List<Item> getUserWishList(int userId);
+    Item addToUserWishList(int userId, int itemId, ItemPriority priority);
+
+    Item deleteFromUserWishList(int userId, int itemId);
+
+    Item addBookerForItem(int ownerId, int itemId, int bookerId);
+
+    Item removeBookerForItem(int ownerId, int itemId);
 }
