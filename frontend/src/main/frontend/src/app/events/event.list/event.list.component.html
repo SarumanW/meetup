@@ -19,7 +19,7 @@
                    class="form-control mb-4" type="text"/>
             <ul *ngIf="queryField.value">
               <li *ngFor="let event of publicEvents" class="filter-select-list">
-                <p>{{event.name}}</p>
+                <p (click)="openEvent(event)">{{event.name}}</p>
               </li>
             </ul>
           </section>
@@ -34,7 +34,8 @@
       <ng-table [config]="config"
                 (tableChanged)="onChangeTable(config)"
                 (cellClicked)="onCellClick($event)"
-                [rows]="rows" [columns]="columns">
+                [rows]="rows" [columns]="columns"
+                class="test">
       </ng-table>
       <pagination *ngIf="config.paging"
                   class="pagination-sm"
