@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @PropertySource("classpath:strings.properties")
-@RequestMapping("/api/wish.list")
+@RequestMapping("/api/wishes")
 public class WishListController {
 
     private static Logger log = LoggerFactory.getLogger(FolderController.class);

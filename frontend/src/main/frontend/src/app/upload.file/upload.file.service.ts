@@ -30,7 +30,7 @@ export class UploadFileService {
 
     formdata.append('file', file);
 
-    const req = new HttpRequest('POST', '/api/profile/upload', formdata, {
+    const req = new HttpRequest('POST', '/api/wishes/upload', formdata, {
       reportProgress: true,
       responseType: 'text',
       headers: headers

@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import {LoginAccount} from "../../account/login.account";
+import {Router} from "@angular/router";
+import {NgxSpinnerService} from "ngx-spinner";
+import {Item} from "../../item";
 
 @Component({
   selector: 'app-wish',
@@ -6,11 +10,25 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./wish.component.css']
 })
 export class WishComponent implements OnInit {
-  state: string = "wishes";
+  success: boolean;
+  account: LoginAccount;
+  errorMessage: string;
+  item: Item;
 
-  constructor() { }
+
+  constructor(private router: Router,
+              private spinner: NgxSpinnerService) {}
 
   ngOnInit() {
   }
+
+  createItem(){
+
+  }
+
+  like(){
+
+  }
+
 
 }
