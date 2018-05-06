@@ -179,4 +179,9 @@ public class ItemDaoImpl implements ItemDao {
         }
         return priority;
     }
+
+    @Override
+    public List<Item> getUserWishList(int id) {
+        return null;
+    }
 }

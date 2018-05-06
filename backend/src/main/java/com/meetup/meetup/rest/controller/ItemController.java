@@ -34,7 +34,7 @@ public class ItemController {
         return new ResponseEntity<>(item, HttpStatus.OK);
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public @ResponseBody ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
         log.debug("Trying to save item {}", item);
         Item addedItem = itemService.addItem(item);

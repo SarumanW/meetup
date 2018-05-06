@@ -13,8 +13,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
-
 @Service
 @PropertySource("classpath:strings.properties")
 public class ItemService {
@@ -28,10 +26,7 @@ public class ItemService {
     public ItemService(ItemDao itemDao, AuthenticationFacade authenticationFacade, Environment env) {
         this.itemDao = itemDao;
         this.authenticationFacade = authenticationFacade;
-        this.env = env;
     }
-
-    private final Environment env;
 
     public Item getItemById(int id) {
         log.debug("Trying to get authenticated user");
@@ -69,17 +64,18 @@ public class ItemService {
         return itemDao.delete(item);
     }
 
+    //todo who can update and delete item??
     private void checkPermission(Item item) {
-        log.debug("Trying to get user from AuthenticationFacade");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User '{}' was successfully received", user.toString());
-
-        log.debug("Trying to check equivalence of item.getBookerId '{}' and user.getId '{}'", item.getBookerId(), user.getId());
-        if (item.getBookerId() != user.getId()) {
-            log.error("User has no access to this data");
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Item", "userId", item.getBookerId()));
-        }
-
-        log.debug("Given access to item '{}' for user '{}'", item, user);
+//        log.debug("Trying to get user from AuthenticationFacade");
+//        User user = authenticationFacade.getAuthentication();
+//        log.debug("User '{}' was successfully received", user.toString());
+//
+//        log.debug("Trying to check equivalence of item.getBookerId '{}' and user.getId '{}'", item.getBookerId(), user.getId());
+//        if (item.getBookerId() != user.getId()) {
+//            log.error("User has no access to this data");
+//            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Item", "userId", item.getBookerId()));
+//        }
+//
+//        log.debug("Given access to item '{}' for user '{}'", item, user);
     }
 }

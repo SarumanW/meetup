@@ -53,11 +53,11 @@ public class WishListService {
         User user = authenticationFacade.getAuthentication();
 
         log.debug("User '{}' was successfully received", user.toString());
-        log.debug("Trying to check equivalence of item.getUserId '{}' and user.getId '{}'", item.getOwner(), user.getId());
+        log.debug("Trying to check equivalence of item.getUserId '{}' and user.getId '{}'", item.getOwnerId(), user.getId());
 
-        if (item.getOwner() != user.getId()) {
+        if (item.getOwnerId() != user.getId()) {
             log.error("User has no access to this data");
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Item", "userId", item.getOwner()));
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Item", "userId", item.getOwnerId()));
         }
 
         log.debug("Given access to WishList '{}' for user '{}'", item.toString(), user.toString());
