@@ -19,6 +19,7 @@ import {CalendarComponent} from "./calendar/calendar.component/calendar.componen
 import {WishListComponent} from "./wishes/wish.list/wish.list.component";
 import {WishComponent} from "./wishes/wish/wish.component";
 import {WishAddComponent} from "./wishes/wish.add/wish.add.component";
+import {ItemComponent} from "./item/item.component";
 
 const routes: Routes = [
   {path: 'register', component: RegisterComponent},
@@ -40,6 +41,7 @@ const routes: Routes = [
   {path: 'change.password', component: ChangePasswordComponent},
   {path: 'thankyou', component: ThankyouComponent},
   {path: ':login/event/add/:folderId', component: EventAddComponent, canActivate: [AuthGuard] },
+  {path: 'item', component: ItemComponent}
 
 ];
 

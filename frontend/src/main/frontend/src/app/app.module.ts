@@ -51,6 +51,7 @@ import { WishListComponent } from './wishes/wish.list/wish.list.component';
 import { WishComponent } from './wishes/wish/wish.component';
 import {WishListService} from "./wishes/wish.list.service";
 import { WishAddComponent } from './wishes/wish.add/wish.add.component';
+import { ItemComponent } from './item/item.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { WishAddComponent } from './wishes/wish.add/wish.add.component';
     WishListComponent,
     WishComponent,
     WishAddComponent,
+    ItemComponent,
   ],
   imports: [
     ReactiveFormsModule,
