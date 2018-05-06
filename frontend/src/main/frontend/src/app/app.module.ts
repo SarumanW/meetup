@@ -47,6 +47,11 @@ import {ImageUploadService} from "./events/image.upload.service";
 import {AgmCoreModule} from "@agm/core";
 import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
+import { WishListComponent } from './wishes/wish.list/wish.list.component';
+import { WishComponent } from './wishes/wish/wish.component';
+import {WishListService} from "./wishes/wish.list.service";
+import { WishAddComponent } from './wishes/wish.add/wish.add.component';
+import { ItemComponent } from './item/item.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +74,10 @@ import { TextMaskModule } from 'angular2-text-mask';
     EventListComponent,
     EventAddComponent,
     CalendarComponent,
+    WishListComponent,
+    WishComponent,
+    WishAddComponent,
+    ItemComponent,
   ],
   imports: [
     ReactiveFormsModule,
@@ -100,7 +109,9 @@ import { TextMaskModule } from 'angular2-text-mask';
     UploadFileService,
     EventAddService,
     CalendarService,
-    ImageUploadService],
+    ImageUploadService,
+    WishListService,
+  ],
   bootstrap: [AppComponent]
 })
 
