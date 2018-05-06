@@ -25,27 +25,33 @@ public class WishListService {
     private final ItemDao itemDao;
     private final AuthenticationFacade authenticationFacade;
 
-    @Autowired
-    private Environment env;
+    private final Environment env;
 
     @Autowired
-    public WishListService(ItemDao itemDao, AuthenticationFacade authenticationFacade) {
-        log.info("Initializing WishListService");
+    public WishListService(ItemDao itemDao, AuthenticationFacade authenticationFacade, Environment env) {
         this.itemDao = itemDao;
         this.authenticationFacade = authenticationFacade;
+        this.env = env;
     }
 
-    public List<Item> getUserWishList() {
+    public List<Item> getWishList() {
         log.debug("Trying to get authenticated user");
-
         User user = authenticationFacade.getAuthentication();
-
         log.debug("User was successfully received");
+
         log.debug("Trying to get all WishList for user '{}'", user.toString());
-
-
-        return itemDao.getUserWishList(user.getId());
+        return itemDao.getWishList(user.getId());
     }
+
+    public Item addWishItem(Item item) {
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
+
+        log.debug("Trying to insert item to user wish list");
+        return itemDao.addToUserWishList(user.getId(), item.getItemId(), item.getPriority());
+    }
+
     //Check authentication and folder permission
     private void checkPermission(Item item) {
         log.debug("Trying to get user from AuthenticationFacade");

@@ -3,8 +3,8 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.ItemDao;
 import com.meetup.meetup.entity.Item;
+import com.meetup.meetup.entity.ItemPriority;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,5 +77,31 @@ public class ItemService {
 //        }
 //
 //        log.debug("Given access to item '{}' for user '{}'", item, user);
+    }
+
+    public Item addItemToUserWishList(int itemId, String itemPriority) {
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
+        if (itemPriority.equals("Normal")){
+            return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.NORMAL);
+        }
+        if (itemPriority.equals("Low")){
+            return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.LOW);
+        }
+        if (itemPriority.equals("High")){
+            return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.URGENT);
+        }
+        log.debug("Trying to add item with id '{}' in user '{}' wish list", itemId,user.getId());
+        return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.NORMAL);
+    }
+
+    public Item deleteItemFromUserWishList(int itemId) {
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
+
+        log.debug("Trying to delete item with id '{}' from user '{}' wish list", itemId,user.getId());
+        return itemDao.deleteFromUserWishList(user.getId(), itemId);
     }
 }
