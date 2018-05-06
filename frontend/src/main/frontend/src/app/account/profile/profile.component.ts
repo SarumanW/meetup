@@ -25,6 +25,10 @@ export class ProfileComponent implements OnInit {
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
               private friendService: FriendService,) {
+
+  }
+
+  ngOnInit() {
     this.route.params.subscribe(params => {
       this.accountService.profile(params['login']).subscribe(
         (profile) => {
@@ -35,11 +39,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-
-  }
-
-  update(){
+  update() {
     this.spinner.show();
     this.getButton();
     this.spinner.hide();
@@ -48,18 +48,18 @@ export class ProfileComponent implements OnInit {
   // TODO move it to the backend
   getButton() {
     this.friendService.getFriends(this.profile.login).subscribe((friends) => {
-    // this.friendService.getFriends().subscribe((friends) => {
+      // this.friendService.getFriends().subscribe((friends) => {
       this.accountService.profile(JSON.parse(localStorage.getItem('currentUser')).login)
         .subscribe((user) => {
-          if(friends.length === 0){
+          if (friends.length === 0) {
             this.isFriend = false;
           }
           for (let i = 0; i < friends.length; i++) {
-            if(user.id === friends[i].id){
+            if (user.id === friends[i].id) {
               this.isFriend = true;
               break;
             }
-            else{
+            else {
               this.isFriend = false;
             }
           }
@@ -67,28 +67,36 @@ export class ProfileComponent implements OnInit {
         });
     });
     this.friendService.getFriendsRequests().subscribe((requests) => {
-      if(requests.length === 0){
+      if (requests.length === 0) {
         this.isConfirmed = true;
       }
       for (let i = 0; i < requests.length; i++) {
-        if(this.profile.id === requests[i].id){
+        if (this.profile.id === requests[i].id) {
           this.isConfirmed = false;
           break;
         }
-        else{
+        else {
           this.isConfirmed = true;
         }
       }
     });
   }
 
-  addFriend(login: string){
-    this.friendService.addFriend(login).subscribe((result)=>{this.update()});
+  addFriend(login: string) {
+    this.friendService.addFriend(login).subscribe((result) => {
+      this.update()
+    });
   }
-  deleteFriend(id: number){
-    this.friendService.deleteFriend(id).subscribe((result)=>{this.update()});
+
+  deleteFriend(id: number) {
+    this.friendService.deleteFriend(id).subscribe((result) => {
+      this.update()
+    });
   }
-  confirmFriend(id: number){
-    this.friendService.confirmFriend(id).subscribe((result)=>{this.update()});
+
+  confirmFriend(id: number) {
+    this.friendService.confirmFriend(id).subscribe((result) => {
+      this.update()
+    });
   }
 }

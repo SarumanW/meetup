@@ -212,6 +212,24 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
+    public List<Event> getAllPublic(int userId, String eventName) {
+        List<Event> events;
+        log.debug("Try to find list of public events by user with id '{}' and query '{}'", userId, eventName);
+        try {
+            String qString = '%' + eventName + '%';
+            events = jdbcTemplate.query(env.getProperty(EVENT_GET_ALL_PUBLIC),
+                    new Object[]{userId, qString}, new EventRowMapper());
+        } catch (DataAccessException e) {
+            log.error("Query fails by finding public events by user with id '{}'", userId);
+            e.printStackTrace();
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        log.debug("Public events for user with id '{}' counted '{}'", userId, events.size());
+        return events;
+    }
+
+    @Override
     public Event update(Event model) {
         log.debug("Try to update event with id '{}'", model.getEventId());
         int result = 0;

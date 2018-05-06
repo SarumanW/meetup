@@ -127,6 +127,11 @@ public class EventController {
         return new ResponseEntity<>(eventService.getDrafts(folderId), HttpStatus.OK);
     }
 
+    @GetMapping("/{userId}/public")
+    public ResponseEntity<List<Event>> getPublicEvents(@PathVariable int userId, @RequestParam("name") String name) {
+        return new ResponseEntity<>(eventService.getPublicEvents(userId, name), HttpStatus.OK);
+    }
+
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
         log.debug("Trying to upload event image '{}'", file);

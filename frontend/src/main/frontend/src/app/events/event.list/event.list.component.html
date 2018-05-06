@@ -1,18 +1,29 @@
 <div class="container-fluid">
-  <ngx-spinner bdOpacity = 0.9
-               bdColor = "#333"
-               size = "default"
-               color = "#fff"
-               type = "ball-beat"></ngx-spinner>
+  <ngx-spinner bdOpacity=0.9
+               bdColor="#333"
+               size="default"
+               color="#fff"
+               type="ball-beat"></ngx-spinner>
   <div class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
     </div>
 
     <div class="col-10 py-4">
-      <h1>Type: {{eventType}}</h1>
+      <h1 class="mb-4">Type: {{eventType}}</h1>
       <div class="row">
+
         <div class="col-md-4">
+          <section *ngIf="eventType === 'public'">
+            <input [formControl]="queryField" placeholder="Search for public events"
+                   class="form-control mb-4" type="text"/>
+            <ul *ngIf="queryField.value">
+              <li *ngFor="let event of publicEvents" class="filter-select-list">
+                <p>{{event.name}}</p>
+              </li>
+            </ul>
+          </section>
+
           <input *ngIf="config.filtering" placeholder="Filter all columns"
                  [ngTableFiltering]="config.filtering"
                  class="form-control"

@@ -100,7 +100,7 @@ export class FolderListComponent implements OnInit {
 
         this.eventService.uploadEventsPlan(formData).subscribe();
 
-        // doc.save('table.pdf');
+        doc.save('table.pdf');
       }
     )
   }

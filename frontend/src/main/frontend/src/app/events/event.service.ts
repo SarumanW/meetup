@@ -54,4 +54,12 @@ export class EventService {
     return this.http.post('api/events/sendEventPlan', data, {headers: headers});
   }
 
+  getPublicEvents(userId : number, queryField: string) : Observable<any>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.get('api/events/' + userId + '/public',
+      {headers: headers, params: {'name': queryField}});
+  }
+
 }

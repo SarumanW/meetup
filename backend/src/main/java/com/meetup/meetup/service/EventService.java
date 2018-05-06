@@ -93,6 +93,21 @@ public class EventService {
         return events;
     }
 
+    public List<Event> getPublicEvents(int userId, String eventName) {
+        log.debug("Trying to get public events by userId '{}'", userId);
+
+        List<Event> events = eventDao.getAllPublic(userId, eventName);
+
+        if (events == null) {
+            log.error("Events were not found by userId '{}'", userId);
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "userId", userId));
+        }
+
+        log.debug("Found events '{}'", events.toString());
+
+        return events;
+    }
+
     public List<Event> getEventsByPeriod(String startDate, String endDate) {
         User user = authenticationFacade.getAuthentication();
         int userId = user.getId();
