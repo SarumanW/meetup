@@ -36,7 +36,7 @@ export class FriendsListComponent implements OnInit {
     this.spinner.show();
     this.route.params.subscribe(params => {
       this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === params['login'];
-      this.user = params['login']
+      this.user = params['login'];
       this.getInfo();
       this.queryField.valueChanges
         .debounceTime(1000)

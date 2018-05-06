@@ -11,14 +11,37 @@
 
     <div class="col-10">
       <div class="container justify-content-center">
-        <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
-          <h2>Wish list:</h2>
-          <a routerLink="/{{profile.login}}/wishes/add" class="btn btn-primary">Add item</a>
+
+        <!--Category-->
+
+        <div class="container">
+          <button routerLink="." [queryParams]="{category: WISHES_CATEGORY}"
+                  type="button" class="btn btn-primary"
+                  [disabled]="category === WISHES_CATEGORY">Wishes</button>
+          <button routerLink="." [queryParams]="{category: RECOMMENDATIONS_CATEGORY}" type="button" class="btn btn-primary"
+                  [disabled]="category === RECOMMENDATIONS_CATEGORY">Recommendations</button>
+          <button routerLink="." [queryParams]="{category: POPULAR_CATEGORY}" type="button" class="btn btn-primary"
+                  [disabled]="category === POPULAR_CATEGORY">Popular</button>
         </div>
+
+        <!--Title-->
+
+        <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
+          <h2>{{title}}</h2>
+          <a routerLink="/{{profile.login}}/wishes/add" class="btn btn-primary"
+             *ngIf="category === WISHES_CATEGORY">Add item</a>
+        </div>
+
+        <!--Wish list-->
+
         <div class="folder d-flex flex-wrap">
           <div *ngFor="let item of items" class="card mb-4">
             <div class="head card-body">
               <img class="folder-icon" src="assets/folder-icon.svg" alt="Card image cap">
+              <img *ngIf="item.ownerId === profile.id" (click)="deleteWishItem(item)" class="close-btn"
+                   src="assets/add.svg" alt="">
+              <img *ngIf="item.ownerId !== profile.id" (click)="addWishItem(item)" class="close-btn"
+                   src="assets/close-white.svg" alt="">
             </div>
             <div class="card-body">
               <h5 class="card-title">{{item.name}}</h5>

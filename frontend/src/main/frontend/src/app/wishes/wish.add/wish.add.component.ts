@@ -8,6 +8,7 @@ import {ITEMS} from "../items";
 import {NgxSpinnerService} from "ngx-spinner";
 import {WishListService} from "../wish.list.service";
 import {ToastrService} from "ngx-toastr";
+import {Profile} from "../../account/profile";
 
 @Component({
   selector: 'app-wish-add',
@@ -27,6 +28,9 @@ export class WishAddComponent implements OnInit {
   //Tag
   tag: string;
 
+  //Profile
+  profile: Profile;
+
   constructor(private uploadService: UploadFileService,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
@@ -34,6 +38,7 @@ export class WishAddComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.profile = JSON.parse(localStorage.getItem('currentUser'));
     this.newItem = new Item();
     this.getDueDate();
   }
@@ -117,6 +122,7 @@ export class WishAddComponent implements OnInit {
   }
 
   addWish() {
+    this.newItem.ownerId = this.profile.id;
     this.spinner.show();
     this.wishListService.addWishItem(this.newItem).subscribe(item => {
       this.spinner.hide();
