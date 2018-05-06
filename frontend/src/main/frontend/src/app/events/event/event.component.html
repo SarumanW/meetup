@@ -33,6 +33,10 @@
             </div>
 
             <div class="col-md-4" *ngIf="eventt.ownerId === this.currentUserId">
+              <div>
+                <img src="assets/edit.png" (click)="editEvent()" height="40"
+                     width="40"/>
+              </div>
               <div class="btn-group" dropdown>
                 <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
                         aria-controls="dropdown-basic">

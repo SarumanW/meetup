@@ -47,6 +47,7 @@ import {ImageUploadService} from "./events/image.upload.service";
 import {AgmCoreModule} from "@agm/core";
 import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
+import {EventEditComponent} from "./events/event.edit/event.edit.component";
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { TextMaskModule } from 'angular2-text-mask';
     ThankyouComponent,
     EventListComponent,
     EventAddComponent,
-    CalendarComponent
+    CalendarComponent,
+    EventEditComponent
   ],
   imports: [
     ReactiveFormsModule,

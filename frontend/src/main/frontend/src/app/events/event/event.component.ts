@@ -28,6 +28,7 @@ export class EventComponent implements OnInit {
   tempType: string;
   shouldShow: boolean;
   hasParticipant: boolean;
+  type: string;
 
   constructor(private eventService: EventService,
               private route: ActivatedRoute,
@@ -40,6 +41,7 @@ export class EventComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.eventId = params['eventId'];
       this.folderId = params['folderId'];
+      this.type = params['type'];
       this.currentUserId = JSON.parse(localStorage.currentUser).id;
       this.currentUserLogin = JSON.parse(localStorage.currentUser).login;
       this.alreadyHasParticipant = false;
@@ -259,6 +261,11 @@ export class EventComponent implements OnInit {
     }
 
     login.value="";
+  }
+
+  editEvent() {
+    this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/" +
+    this.type + "/" + this.eventId + "/edit"]);
   }
 
 }
