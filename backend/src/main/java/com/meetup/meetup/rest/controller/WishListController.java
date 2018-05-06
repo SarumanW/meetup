@@ -9,10 +9,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -25,15 +24,23 @@ public class WishListController {
     @Autowired
     private WishListService wishListService;
 
-    @GetMapping
-    public ResponseEntity<List<Item>> getWishList(){
-        log.debug("Trying to get all user items");
-
-        List<Item> items = wishListService.getUserWishList();
+    @GetMapping("/userWishList")
+    public @ResponseBody ResponseEntity<List<Item>> getWishList(){
+        log.debug("Trying to get wish list");
+        List<Item> items = wishListService.getWishList();
 
         log.debug("Send response body items '{}' and status OK", items.toString());
-
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
+
+    @PostMapping("/addToWishList")
+    public @ResponseBody ResponseEntity<Item> addWishItem(@Valid @RequestBody Item item) {
+        log.debug("Trying to add wish item {}", item);
+        Item addWishItem = wishListService.addWishItem(item);
+
+        log.debug("Send response body saved item '{}' and status CREATED", addWishItem);
+        return new ResponseEntity<>(addWishItem, HttpStatus.CREATED);
+    }
+
 
 }
