@@ -93,7 +93,8 @@ body {
 }
 .filter-select-list:hover {
   background:  #C0C0C0;
-  color: #fff
+  color: #fff;
+  cursor: pointer;
 }
 .list-highlight,
 .list-highlight:hover {

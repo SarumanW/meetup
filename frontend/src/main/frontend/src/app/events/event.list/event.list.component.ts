@@ -140,7 +140,7 @@ export class EventListComponent implements OnInit {
     let sort: string = void 0;
 
     for (let i = 0; i < columns.length; i++) {
-      if (columns[i].sort !== '' && columns[i].sort !== false) {
+      if (columns[i].sort !== '' && columns[i].sort !== false && columns[i].sort !== null) {
         columnName = columns[i].name;
         sort = columns[i].sort;
       }
@@ -217,6 +217,10 @@ export class EventListComponent implements OnInit {
 
   onCellClick(data: any): any {
     this.openEvent(data.row);
+  }
+
+  openPublicEvent(eventId : any){
+
   }
 
 }
