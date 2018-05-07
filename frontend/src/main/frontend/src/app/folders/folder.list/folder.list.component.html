@@ -96,7 +96,9 @@
             </div>
 
             <div class="app-modal-footer">
-              <button class="btn btn-primary" (click)="modalexport.hide(); downloadPlan()">Export to pdf</button>
+                <input type="checkbox" [checked]="isSent" (change)="isSent = !isSent">
+                <span>Send to email</span>
+              <button class="btn btn-primary" [disabled]="!endDate"(click)="modalexport.hide(); downloadPlan()">Export to pdf</button>
             </div>
           </app-modal-window>
         </div>

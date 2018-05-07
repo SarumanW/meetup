@@ -23,6 +23,7 @@ export class FolderListComponent implements OnInit {
   state: string = "folders";
   nameInput: string = "";
   profile: Profile;
+  isSent: boolean;
 
   currentDate: string;
   startDate: string;
@@ -30,7 +31,7 @@ export class FolderListComponent implements OnInit {
 
   checkboxes: any[] = [
     {
-      checked: false,
+      checked: true,
       columnName: "Name",
       objectProperty: "name",
     },
@@ -95,6 +96,8 @@ export class FolderListComponent implements OnInit {
   }
 
   getPeriodEvents(start: string, end: string): void {
+    this.spinner.show();
+
     this.eventService.getEventsInPeriod(start, end).subscribe(
       events => {
         let doc = new jsPDF('p', 'pt');
@@ -116,12 +119,16 @@ export class FolderListComponent implements OnInit {
           }
         });
 
-        let data = new File([doc.output], docName);
+        this.spinner.hide();
 
-        let formData = new FormData();
-        formData.append("file", data);
+        if(this.isSent){
+          let data = new File([doc.output], docName);
 
-        this.eventService.uploadEventsPlan(formData).subscribe();
+          let formData = new FormData();
+          formData.append("file", data);
+
+          this.eventService.uploadEventsPlan(formData).subscribe();
+        }
 
         doc.save(docName);
       }
