@@ -127,10 +127,16 @@
           <div class="form-group">
             <label class="form-control-label" for="itemTags">Tags:</label>
             <input type="text" class="form-control" id="itemTags" name="itemTags"
-                   placeholder="Enter tag name and push 'Enter'"
+                   minlength="3" maxlength="30" placeholder="Enter tag name and push 'Enter'"
                    #itemTag="ngModel" (keyup.enter)="addTag()"
                    [(ngModel)]="tag" pattern="^[_A-Za-z0-9]*$">
             <div *ngIf="itemTag.dirty && itemTag.invalid">
+              <small class="form-text text-danger" *ngIf="itemTag.errors.minlength">
+                Wish name must more than 2 chars.
+              </small>
+              <small class="form-text text-danger" *ngIf="itemTag.errors.maxlength">
+                Wish name must less than 31 chars.
+              </small>
               <small class="form-text text-danger" *ngIf="itemTag.errors.pattern">
                 Wish name can only contain letters, digits and '_'.
               </small>
@@ -140,11 +146,9 @@
           <div class="container">
             <div class="row">
               <div *ngFor="let tag of newItem.tags">
-                <h5 style="margin-right: 5px; color: white">
-                  <a class="badge badge-info">
-                    #{{ tag.name }} <span class="glyphicon glyphicon-search" (click)="deleteTag(tag)"></span>
-                  </a>
-                </h5>
+                <a style="margin-right: 5px; color: white;" class="badge badge-info">
+                  #{{ tag.name }} <span class="tag-glyphicon tag-glyphicon-delete" (click)="deleteTag(tag)"></span>
+                </a>
               </div>
             </div>
           </div>

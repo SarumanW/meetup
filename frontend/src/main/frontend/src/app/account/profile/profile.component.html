@@ -25,7 +25,7 @@
               <button type="button" class="btn btn-light border-success mt-1" routerLink="/{{profile.login}}/friends">
                 Friends
                 <span class="badge badge-pill badge-info">{{friendCount}}</span></button>
-              <button disabled type="button" class="btn btn-light border-success mt-1">Wish List</button>
+              <button routerLink="/{{profile.login}}/wishes/" type="button" class="btn btn-light border-success mt-1">Wish List</button>
 
               <button *ngIf="!isFriend && isConfirmed" (click)="addFriend(profile.login)" type="button" class="btn btn-info mt-1">Add friend</button>
               <button *ngIf="!isFriend && !isConfirmed" (click)="confirmFriend(profile.id)" type="button" class="btn btn-success mt-1">Confirm</button>

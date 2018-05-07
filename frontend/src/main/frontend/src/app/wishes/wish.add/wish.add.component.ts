@@ -88,7 +88,7 @@ export class WishAddComponent implements OnInit {
   }
 
   addTag() {
-    if (/^[_A-Za-z0-9]*$/.test(this.tag)) {
+    if (this.tag.length > 2 && this.tag.length < 31 && /^[_A-Za-z0-9]*$/.test(this.tag)) {
       let tag = new Tag();
       tag.name = this.tag;
 

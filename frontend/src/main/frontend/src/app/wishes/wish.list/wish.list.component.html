@@ -14,26 +14,58 @@
 
         <!--Category-->
 
-        <div class="btn-group">
-          <button routerLink="." [queryParams]="{category: WISHES_CATEGORY}"
-                  type="button" class="btn btn-primary"
-                  [disabled]="category === WISHES_CATEGORY">Wishes</button>
-          <button routerLink="." [queryParams]="{category: RECOMMENDATIONS_CATEGORY}" type="button" class="btn btn-primary"
-                  [disabled]="category === RECOMMENDATIONS_CATEGORY">Recommendations</button>
-          <!--<button routerLink="." [queryParams]="{category: POPULAR_CATEGORY}" type="button" class="btn btn-primary"-->
-                  <!--[disabled]="category === POPULAR_CATEGORY">Popular</button>-->
+        <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
+          <div class="btn-group">
+            <button routerLink="." [queryParams]="{category: class.OWN_CATEGORY}"
+                    type="button" class="btn btn-primary"
+                    [disabled]="category === class.OWN_CATEGORY">Wishes
+            </button>
+            <button *ngIf="login === profile.login" routerLink="."
+                    [queryParams]="{category: class.RECOMMENDATIONS_CATEGORY}"
+                    type="button" class="btn btn-primary"
+                    [disabled]="category === class.RECOMMENDATIONS_CATEGORY">Recommendations
+            </button>
+            <button routerLink="." [queryParams]="{category: class.BOOKINGS_CATEGORY}" type="button" class="btn btn-primary"
+                    [disabled]="category === class.BOOKINGS_CATEGORY">Bookings
+            </button>
+          </div>
         </div>
 
         <!--Search-->
 
-
+        <div class="form-group">
+          <input type="text" class="form-control"
+                 placeholder="Enter tag name and push 'Enter'"
+                  #itemTag="ngModel" (keyup.enter)="addSearchTag()" [(ngModel)]="tag"
+                 minlength="3" maxlength="30" pattern="^[_A-Za-z0-9]*$">
+          <div *ngIf="itemTag.dirty && itemTag.invalid">
+            <small class="form-text text-danger" *ngIf="itemTag.errors.minlength">
+              Wish name must more than 2 chars.
+            </small>
+            <small class="form-text text-danger" *ngIf="itemTag.errors.maxlength">
+              Wish name must less than 31 chars.
+            </small>
+            <small class="form-text text-danger" *ngIf="itemTag.errors.pattern">
+              Wish name can only contain letters, digits and '_'.
+            </small>
+          </div>
+        </div>
+        <div class="container">
+          <div class="row">
+            <div *ngFor="let tag of tags">
+              <a style="margin-right: 5px; color: white;" class="badge badge-info">
+                #{{ tag.name }} <span class="tag-glyphicon tag-glyphicon-delete" (click)="deleteSearchTag(tag)"></span>
+                </a>
+            </div>
+          </div>
+        </div>
 
         <!--Title-->
 
         <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
           <h2>{{title}}</h2>
           <a routerLink="/{{profile.login}}/wishes/add" class="btn btn-primary"
-             *ngIf="category === WISHES_CATEGORY">Add item</a>
+             *ngIf="login === profile.login && category === class.OWN_CATEGORY">Add item</a>
         </div>
 
         <!--Wish list-->
