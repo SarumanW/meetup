@@ -40,7 +40,7 @@ public class WishListService {
         log.debug("User was successfully received");
 
         log.debug("Trying to get all WishList for user '{}'", user.toString());
-        return itemDao.getWishList(user.getId());
+        return itemDao.getUserWishList(user.getId());
     }
 
     public Item addWishItem(Item item) {
@@ -51,6 +51,27 @@ public class WishListService {
         log.debug("Trying to insert item to user wish list");
         return itemDao.addToUserWishList(user.getId(), item.getItemId(), item.getPriority());
     }
+
+    public List<Item> getWishesByUser(int userId) {
+        log.debug("Trying to get wishes from dao by userId '{}'", userId);
+            return itemDao.findByUserId(userId);
+        }
+
+    public List<Item> getRecommendations() {
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
+
+        log.debug("Trying to get all recommendations for user '{}'", user.toString());
+        return itemDao.getRecommendations(user.getId());
+    }
+
+    public List<Item> getBookingByUser(int userId) {
+        log.debug("Trying to get booking wishes from dao by userId '{}'", userId);
+        return itemDao.findBookingByUserId(userId);
+    }
+
+
 
     //Check authentication and folder permission
     private void checkPermission(Item item) {

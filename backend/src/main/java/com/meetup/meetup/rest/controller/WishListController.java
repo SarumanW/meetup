@@ -24,7 +24,7 @@ public class WishListController {
     @Autowired
     private WishListService wishListService;
 
-    @GetMapping("/userWishList")
+    @GetMapping
     public @ResponseBody ResponseEntity<List<Item>> getWishList(){
         log.debug("Trying to get wish list");
         List<Item> items = wishListService.getWishList();
@@ -33,7 +33,7 @@ public class WishListController {
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
-    @PostMapping("/addToWishList")
+    @PostMapping("/add")
     public @ResponseBody ResponseEntity<Item> addWishItem(@Valid @RequestBody Item item) {
         log.debug("Trying to add wish item {}", item);
         Item addWishItem = wishListService.addWishItem(item);
@@ -41,6 +41,38 @@ public class WishListController {
         log.debug("Send response body saved item '{}' and status CREATED", addWishItem);
         return new ResponseEntity<>(addWishItem, HttpStatus.CREATED);
     }
+
+    @GetMapping("/{login}")
+    public ResponseEntity<List<Item>> getWishesByUser(@PathVariable int userId) {
+        log.debug("Trying to get wishes by userId '{}'", userId);
+
+        List<Item> userWishes = wishListService.getWishesByUser(userId);
+
+        log.debug("Send response body wishes '{}' and status OK", userWishes.toString());
+
+        return new ResponseEntity<>(userWishes, HttpStatus.OK);
+    }
+
+    @GetMapping("/recommendations")
+    public ResponseEntity<List<Item>> getRecommendations() {
+        log.debug("Trying to get  recommend wishes");
+        List<Item> items = wishListService.getRecommendations();
+
+        log.debug("Send response body items '{}' and status OK", items.toString());
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
+    @GetMapping("/bookings/{login}")
+    public ResponseEntity<List<Item>> getBookingByUser(@PathVariable int userId) {
+        log.debug("Trying to get booking wishes by userId '{}'", userId);
+        List<Item> items = wishListService.getBookingByUser(userId);
+
+        log.debug("Send response body items '{}' and status OK", items.toString());
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
+
+
 
 
 }

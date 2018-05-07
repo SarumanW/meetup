@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {AccountService} from "../account.service";
 import {LoginAccount} from "../login.account";
-import {Router, ActivatedRoute} from "@angular/router";
+import {Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
