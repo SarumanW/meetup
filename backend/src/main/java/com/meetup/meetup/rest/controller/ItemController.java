@@ -23,12 +23,13 @@ public class ItemController {
     private final ItemService itemService;
 
     @Autowired
-    public ItemController(ItemService itemService){
+    public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
 
     @GetMapping("/{id}")
-    public @ResponseBody ResponseEntity<Item> getItemById(@PathVariable int id){
+    public @ResponseBody
+    ResponseEntity<Item> getItemById(@PathVariable int id) {
         log.debug("Try to get item with id '{}'", id);
         Item item = itemService.getItemById(id);
 
@@ -37,24 +38,29 @@ public class ItemController {
     }
 
     @PostMapping
-    public @ResponseBody ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
-        log.debug("Trying to save item {}", item);
+    public @ResponseBody
+    ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
+        log.debug("Trying to save item '{}'", item);
         Item addedItem = itemService.addItem(item);
+
+        log.debug("Trying to save item with id '{}' to user wish list", addedItem.getItemId());
+        itemService.addItemToUserWishList(addedItem.getItemId(), item.getPriority());
 
         log.debug("Send response body saved item '{}' and status CREATED", addedItem);
         return new ResponseEntity<>(addedItem, HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}/add")
-    public @ResponseBody ResponseEntity<Item> addItemToUserWishList(@PathVariable int id,@Valid @RequestBody String itemPriority){
+    public @ResponseBody
+    ResponseEntity<Item> addItemToUserWishList(@PathVariable int id, @Valid @RequestBody ItemPriority itemPriority) {
         log.debug("Trying to add item with id '{}' to user wish list", id);
-        System.out.println("!!!" + itemPriority);
         itemService.addItemToUserWishList(id, itemPriority);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/delete")
-    public @ResponseBody ResponseEntity deleteItem(@PathVariable int id) {
+    public @ResponseBody
+    ResponseEntity deleteItem(@PathVariable int id) {
         log.debug("Trying to delete item with id '{}' to user wish list", id);
         Item deletedItem = itemService.deleteItemFromUserWishList(id);
 
@@ -63,16 +69,18 @@ public class ItemController {
     }
 
     @PutMapping
-    public @ResponseBody ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
+    public @ResponseBody
+    ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
         log.debug("Trying to update item '{}'", newItem);
         Item updatedItem = itemService.updateItem(newItem);
 
-       log.debug("Send response body updated '{}' and status OK");
+        log.debug("Send response body updated '{}' and status OK");
         return new ResponseEntity<>(updatedItem, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
-    public @ResponseBody ResponseEntity deleteItem(@Valid @RequestBody Item item) {
+    public @ResponseBody
+    ResponseEntity deleteItem(@Valid @RequestBody Item item) {
         log.debug("Trying to delete item '{}'", item);
         Item deletedItem = itemService.deleteItem(item);
 

@@ -55,7 +55,7 @@ public class ItemService {
         return itemDao.update(item);
     }
 
-    public Item deleteItem(Item item){
+    public Item deleteItem(Item item) {
         log.debug("Try to check permission for item '{}'", item);
         checkPermission(item);
         log.debug("Permission for delete was received");
@@ -79,21 +79,13 @@ public class ItemService {
 //        log.debug("Given access to item '{}' for user '{}'", item, user);
     }
 
-    public Item addItemToUserWishList(int itemId, String itemPriority) {
+    public Item addItemToUserWishList(int itemId, ItemPriority itemPriority) {
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
         log.debug("User was successfully received");
-        if (itemPriority.equals("Normal")){
-            return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.NORMAL);
-        }
-        if (itemPriority.equals("Low")){
-            return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.LOW);
-        }
-        if (itemPriority.equals("High")){
-            return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.URGENT);
-        }
-        log.debug("Trying to add item with id '{}' in user '{}' wish list", itemId,user.getId());
-        return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.NORMAL);
+
+        log.debug("Trying to add item with id '{}' in user '{}' wish list", itemId, user.getId());
+        return itemDao.addToUserWishList(user.getId(), itemId, itemPriority);
     }
 
     public Item deleteItemFromUserWishList(int itemId) {
@@ -101,7 +93,7 @@ public class ItemService {
         User user = authenticationFacade.getAuthentication();
         log.debug("User was successfully received");
 
-        log.debug("Trying to delete item with id '{}' from user '{}' wish list", itemId,user.getId());
+        log.debug("Trying to delete item with id '{}' from user '{}' wish list", itemId, user.getId());
         return itemDao.deleteFromUserWishList(user.getId(), itemId);
     }
 }
