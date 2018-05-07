@@ -20,4 +20,8 @@ public interface ItemDao extends Dao<Item> {
     Item addBookerForItem(int ownerId, int itemId, int bookerId);
 
     Item removeBookerForItem(int ownerId, int itemId);
+
+    Item addLike(int itemId, int userId);
+
+    Item removeLike(int itemId, int userId);
 }

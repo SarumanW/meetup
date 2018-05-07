@@ -11,7 +11,6 @@ public final class Key {
     public static final String TABLE_USER_EVENT = "USER_EVENT";
     public static final String TABLE_FOLDER = "FOLDER";
     public static final String TABLE_ITEM = "ITEM";
-    public static final String TABLE_USER_ITEM = "USER_ITEM";
     public static final String TABLE_TAG = "TAG";
 
 
@@ -23,11 +22,6 @@ public final class Key {
     public static final String ITEM_LINK = "LINK";
     public static final String ITEM_DUE_DATE = "DUE_DATE";
     public static final String ITEM_LIKES = "LIKES";
-
-    //USER_ITEM
-    public static final String ITEM_BOOKER_ID = "ID_WHO_BOOKED";
-    public static final String ITEM_USER_ID = "USER_ID";
-    public static final String ITEM_PRIORITY_ID = "PRIORITY_ID";
 
     //TAG table fields
     public static final String TAG_TAG_ID = "TAG_ID";
@@ -123,6 +117,12 @@ public final class Key {
     public static final String ITEM_GET_NUMBER_OF_ITEM_USERS = "item.getNumberOfItemUsers";
     public static final String ITEM_GET_TAG_ID = "item.getTagId";
     public static final String ITEM_ADD_TAG_TO_ITEM = "item.addTagToItem";
+    public static final String ITEM_DELETE_TAGS = "item.deleteTags";
+    public static final String ITEM_ADD_LIKE_BY_ITEM_ID_USER_ID = "item.addLikeByItemIdUserId";
+    public static final String ITEM_REMOVE_LIKE_BY_ITEM_ID_USER_ID = "item.removeLikeByItemIdUserId";
+    public static final String ITEM_UPDATE_PRIORITY = "item.updatePriority";
+
+
 
     //Exceptions
     public static final String EXCEPTION_AUTHENTICATION = "authentication.exception";
