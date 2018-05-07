@@ -43,10 +43,10 @@ public class WishListController {
     }
 
     @GetMapping("/{login}")
-    public ResponseEntity<List<Item>> getWishesByUser(@PathVariable int userId) {
-        log.debug("Trying to get wishes by userId '{}'", userId);
+    public ResponseEntity<List<Item>> getWishesByUser(@PathVariable String login) {
+        log.debug("Trying to get wishes by login '{}'", login);
 
-        List<Item> userWishes = wishListService.getWishesByUser(userId);
+        List<Item> userWishes = wishListService.getWishesByUser(login);
 
         log.debug("Send response body wishes '{}' and status OK", userWishes.toString());
 
@@ -63,9 +63,9 @@ public class WishListController {
     }
 
     @GetMapping("/bookings/{login}")
-    public ResponseEntity<List<Item>> getBookingByUser(@PathVariable int userId) {
-        log.debug("Trying to get booking wishes by userId '{}'", userId);
-        List<Item> items = wishListService.getBookingByUser(userId);
+    public ResponseEntity<List<Item>> getBookingByUser(@PathVariable String login) {
+        log.debug("Trying to get booking wishes by user login '{}'", login);
+        List<Item> items = wishListService.getBookingByUser(login);
 
         log.debug("Send response body items '{}' and status OK", items.toString());
         return new ResponseEntity<>(items, HttpStatus.OK);

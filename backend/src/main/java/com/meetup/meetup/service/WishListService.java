@@ -52,9 +52,9 @@ public class WishListService {
         return itemDao.addToUserWishList(user.getId(), item.getItemId(), item.getPriority());
     }
 
-    public List<Item> getWishesByUser(int userId) {
-        log.debug("Trying to get wishes from dao by userId '{}'", userId);
-            return itemDao.findByUserId(userId);
+    public List<Item> getWishesByUser(String login) {
+        log.debug("Trying to get wishes from dao by user login '{}'", login);
+            return itemDao.findByUserLogin(login);
         }
 
     public List<Item> getRecommendations() {
@@ -66,9 +66,9 @@ public class WishListService {
         return itemDao.getRecommendations(user.getId());
     }
 
-    public List<Item> getBookingByUser(int userId) {
-        log.debug("Trying to get booking wishes from dao by userId '{}'", userId);
-        return itemDao.findBookingByUserId(userId);
+    public List<Item> getBookingByUser(String login) {
+        log.debug("Trying to get booking wishes from dao by user login '{}'", login);
+        return itemDao.findBookingByUserLogin(login);
     }
 
 

@@ -23,5 +23,7 @@ public interface ItemDao extends Dao<Item> {
 
     List<Item> getRecommendations(int id);
 
-    List<Item>  findBookingByUserId (int id);
+    List<Item>  findBookingByUserLogin (String login);
+
+    List<Item> findByUserLogin(String login);
 }
