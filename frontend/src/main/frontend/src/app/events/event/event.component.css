@@ -58,7 +58,12 @@ agm-map {
 
 .event-logo{
   width: 350px;
-  height: 350px;
+  height: 330px;
 }
 
+.l-g{
+  max-height: 265px;
+  overflow:scroll;
+  overflow-x: hidden;
+}
 

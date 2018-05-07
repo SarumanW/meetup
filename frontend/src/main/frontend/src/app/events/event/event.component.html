@@ -10,66 +10,20 @@
     </div>
 
 
-      <div class="col-10">
-        <div class="container justify-content-center" *ngIf="eventt !== undefined">
-          <div class="row">
-            <br><br>
+    <div class="col-10">
+      <div class="container justify-content-center" *ngIf="eventt !== undefined">
 
-            <div class="col-md-4">
-
-              <ul class="list-group">
-                <li class="list-group-item active">{{eventt.name}} {{eventt.eventType}}</li>
-                <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Event Date: {{eventt.eventDate}}</li>
-                <li class="list-group-item">Description: {{eventt.description}}</li>
-                <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
-                <li class="list-group-item">Place: {{eventt.place}}</li>
-                <li *ngIf="eventt.isDraft === true" class="list-group-item">Draft</li>
-              </ul>
-            </div>
-            <div class="col-md-4">
-              <div class="thumbnail">
-                <img src="{{eventt.imageFilepath}}" class="event-logo">
-              </div>
-            </div>
-
-            <div class="col-md-4" *ngIf="eventt.ownerId === this.currentUserId">
-              <div>
-                <img src="assets/edit.png" (click)="editEvent()" height="40"
-                     width="40"/>
-              </div>
-              <div class="btn-group" dropdown>
-                <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
-                        aria-controls="dropdown-basic">
-                  Covert to <span class="caret"></span>
-                </button>
-                <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
-                    role="menu" aria-labelledby="button-basic">
-                  <li role="menuitem" *ngIf="eventt.eventType !== 'EVENT'" (click)="convertToPublic(); addDate.show()">
-                    <a class="dropdown-item">Public event</a></li>
-                  <li role="menuitem" *ngIf="eventt.eventType !== 'PRIVATE_EVENT'" (click)="convertToPrivate(); addDate.show()">
-                    <a class="dropdown-item">Private event</a></li>
-                  <li role="menuitem" *ngIf="eventt.eventType !== 'NOTE'" (click)="convertToNote(); addDate.show()">
-                    <a class="dropdown-item">Note</a></li>
-                  <li role="menuitem" (click)="convertToDraft()">
-                    <a class="dropdown-item">Draft enable/disable</a></li>
-                </ul>
-              </div>
-              <button type="button" class="btn btn-danger" (click)="deleteEventt.show()"
-              >Delete Event</button>
-            </div>
-
-            </div>
-          <br><br>
-          <div class="row">
-            <div class="col-md-4" *ngIf="eventt.participants !== null && eventt.participants.length !== 0">
-            <ul class="list-group">
+        <br><br>
+        <div class="row">
+          <div class="col-md-4" >
+            <ul class="list-group l-g" *ngIf="eventt.participants !== null && eventt.participants.length !== 0">
               <li class="list-group-item active">Participants</li>
-            <div *ngFor="let participant of eventt.participants">
-              <li class="list-group-item">name: {{participant.login}}</li>
-            </div>
+              <div *ngFor="let participant of eventt.participants">
+                <li class="list-group-item">name: {{participant.login}}</li>
+              </div>
             </ul>
-            </div>
-            <div class="col-md-4" *ngIf="eventt.ownerId === this.currentUserId && eventt.eventType === 'EVENT'">
+            <br>
+            <div *ngIf="eventt.ownerId === this.currentUserId && eventt.eventType === 'EVENT'">
               <button type="button" class="btn btn-primary" (click)="modal.show()"
                       data-toggle="modal">Add participant</button>
               <button type="button" class="btn btn-danger" (click)="deleteParticipantt.show()"
@@ -77,17 +31,79 @@
                 Delete participant</button>
             </div>
 
-            <div class="col-md-4">
-              <agm-map [latitude]="lat" [longitude]="lng">
-                <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
-              </agm-map>
-            </div>
-
           </div>
 
+          <div class="col-md-4">
+            <div class="thumbnail">
+              <img src="{{eventt.imageFilepath}}" class="event-logo">
+            </div>
+          </div>
+
+          <div class="col-md-4" *ngIf="eventt.ownerId === this.currentUserId">
+            <div>
+              <button type="button" class="btn btn-danger" (click)="deleteEventt.show()"
+              >Delete Event</button>
+            </div>
+
+            <br>
+
+            <div class="btn-group" dropdown>
+              <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
+                      aria-controls="dropdown-basic">
+                Covert to <span class="caret"></span>
+              </button>
+              <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+                  role="menu" aria-labelledby="button-basic">
+                <li role="menuitem" *ngIf="eventt.eventType !== 'EVENT'" (click)="convertToPublic(); addDate.show()">
+                  <a class="dropdown-item">Public event</a></li>
+                <li role="menuitem" *ngIf="eventt.eventType !== 'PRIVATE_EVENT'" (click)="convertToPrivate(); addDate.show()">
+                  <a class="dropdown-item">Private event</a></li>
+                <li role="menuitem" *ngIf="eventt.eventType !== 'NOTE'" (click)="convertToNote(); addDate.show()">
+                  <a class="dropdown-item">Note</a></li>
+                <li role="menuitem" (click)="convertToDraft()">
+                  <a class="dropdown-item">Draft enable/disable</a></li>
+              </ul>
+            </div>
+          </div>
 
         </div>
+
+        <br>
+
+        <div class="row">
+
+          <div class="col-md-8">
+
+            <ul class="list-group">
+              <li class="list-group-item active justify-content-between d-flex">
+                <span>{{eventt.name}} {{eventt.eventType}}</span>
+                <div>
+                  <img src="assets/edit.svg" (click)="editEvent()" height="30"
+                       width="30"/>
+                </div>
+              </li>
+              <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Event Date: {{eventt.eventDate}}</li>
+              <li class="list-group-item">Description: {{eventt.description}}</li>
+              <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
+              <li class="list-group-item">Place: {{eventt.place}}</li>
+              <li *ngIf="eventt.isDraft === true" class="list-group-item">Draft</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <br>
+
+        <div class="row">
+          <div class="col-md-8">
+            <agm-map [latitude]="lat" [longitude]="lng">
+              <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+            </agm-map>
+          </div>
+        </div>
+
       </div>
+    </div>
 
     <div class="participant">
       <app-modal-window #modal>
@@ -117,12 +133,10 @@
       <app-modal-window #addDate id="add-date">
         <div class="modal-header d-flex justify-content-between align-items-center">
           <h4 class="modal-title">Finish conversion</h4>
-
           <img class="close-btn" src="assets/close.svg" (click)="addDate.hide()" alt="">
         </div>
 
         <div class="app-modal-body">
-          <p class="modal-body">Do you realy want to convert the event to {{this.tempTypeShow}}?</p>
           <form name="form" role="form" #addDateForm="ngForm">
             <div *ngIf = "shouldShow">
               <div class="form-group">
@@ -145,8 +159,6 @@
         <div class="app-modal-footer">
           <button class="btn btn-success" [disabled]="shouldShow && addDateForm.form.invalid"
                   (click)="addDate.hide();formatDate(); convertEvent()">Confirm</button>
-          <button class="btn btn-default" [disabled]="shouldShow && addDateForm.form.invalid"
-                  (click)="addDate.hide()">Cancel</button>
         </div>
 
       </app-modal-window>
@@ -193,10 +205,10 @@
           <button class="btn btn-danger" [disabled]="deleteParticipantForm.form.invalid"
                   (click)="deleteParticipantt.hide(); deleteParticipant(login)">Delete</button>
         </div>
-
       </app-modal-window>
     </div>
 
-    </div>
+  </div>
 </div>
+
 

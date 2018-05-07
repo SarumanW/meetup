@@ -32,10 +32,10 @@ export class EventEditComponent implements OnInit {
   imageLoaded: boolean;
   type: string;
   currentUserLogin: string;
-  public searchControl: FormControl;
+  searchControl: FormControl;
 
   @ViewChild("searchh")
-  public searchElementRef: ElementRef;
+  searchElementRef: ElementRef;
 
   constructor(private eventService: EventService,
               private route: ActivatedRoute,
