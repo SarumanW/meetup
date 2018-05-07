@@ -27,7 +27,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_MAIL_SERVER;
+import static com.meetup.meetup.keys.Key.EXCEPTION_MAIL_SERVER;
 
 @RestController
 @RequestMapping(path = "/api/events")

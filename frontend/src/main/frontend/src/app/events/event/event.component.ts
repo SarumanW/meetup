@@ -26,6 +26,7 @@ export class EventComponent implements OnInit {
   datee: string;
   time: string;
   tempType: string;
+  tempTypeShow: string;
   shouldShow: boolean;
   hasParticipant: boolean;
   type: string;
@@ -182,7 +183,7 @@ export class EventComponent implements OnInit {
     }
 
     this.tempType = 'PRIVATE_EVENT';
-
+    this.tempTypeShow = 'Private event'
   }
 
   convertToPublic() {
@@ -193,10 +194,12 @@ export class EventComponent implements OnInit {
 
     this.eventt.participants = [];
     this.tempType = 'EVENT';
+    this.tempTypeShow = 'Public event'
   }
 
   convertToNote() {
     this.tempType = 'NOTE';
+    this.tempTypeShow = 'Note'
   }
 
   deleteParticipants() {

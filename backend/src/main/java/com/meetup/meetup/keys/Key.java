@@ -1,4 +1,4 @@
-package com.meetup.meetup.Keys;
+package com.meetup.meetup.keys;
 
 public final class Key {
 
