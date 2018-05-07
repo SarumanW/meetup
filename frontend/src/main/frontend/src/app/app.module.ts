@@ -33,7 +33,7 @@ import {ThankyouComponent} from "./account/thankyou/thankyou.component";
 import {NgxSpinnerModule} from 'ngx-spinner';
 import {EventListComponent} from "./events/event.list/event.list.component";
 import {Ng2TableModule} from "ng2-table";
-import {TooltipModule, PaginationModule} from "ngx-bootstrap";
+import {TooltipModule, PaginationModule, BsDropdownModule} from "ngx-bootstrap";
 import {PopupModule} from "ng2-opd-popup";
 import {EventAddComponent} from './events/event.add/event.add.component';
 import {EventAddService} from "./events/event.add.service";
@@ -47,6 +47,7 @@ import {ImageUploadService} from "./events/image.upload.service";
 import {AgmCoreModule} from "@agm/core";
 import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
+import {EventEditComponent} from "./events/event.edit/event.edit.component";
 
 @NgModule({
   declarations: [
@@ -69,11 +70,13 @@ import { TextMaskModule } from 'angular2-text-mask';
     EventListComponent,
     EventAddComponent,
     CalendarComponent,
+    EventEditComponent
   ],
   imports: [
     ReactiveFormsModule,
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
     ToastrModule.forRoot(),
@@ -88,8 +91,10 @@ import { TextMaskModule } from 'angular2-text-mask';
     BrowserAnimationsModule,
     TextMaskModule,
     AgmCoreModule.forRoot({
-      apiKey: environment.googleMapsApiKey
-    })
+      apiKey: environment.googleMapsApiKey,
+      libraries: ["places"]
+    }),
+    BsDropdownModule.forRoot(),
   ],
   providers: [AccountService,
     AuthGuard,

@@ -15,7 +15,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_FILE_UPLOAD;
+import static com.meetup.meetup.keys.Key.EXCEPTION_FILE_UPLOAD;
 
 
 @Service

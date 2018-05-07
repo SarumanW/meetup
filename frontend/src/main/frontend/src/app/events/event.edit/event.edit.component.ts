@@ -1,25 +1,27 @@
 import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
+import {Evento} from "../event";
+import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {ToastrService} from "ngx-toastr";
-import {ActivatedRoute} from "@angular/router";
-import {Evento} from "../event";
-import {EventAddService} from "../event.add.service";
+import {EventService} from "../event.service";
 import {ImageUploadService} from "../image.upload.service";
 import {FormControl} from "@angular/forms";
 import {MapsAPILoader} from "@agm/core";
-import {} from '@types/googlemaps';
+import {$} from "protractor";
 
 @Component({
-  selector: 'app-event.add',
-  templateUrl: './event.add.component.html',
-  styleUrls: ['./event.add.component.css']
+  selector: 'app-event.edit',
+  templateUrl: './event.edit.component.html',
+  styleUrls: ['./event.edit.component.css']
 })
-export class EventAddComponent implements OnInit {
+export class EventEditComponent implements OnInit {
 
+  eventId: number;
   folderId: number;
+  currentUserId: number;
   eventt: Evento;
-  userId: number;
-  currentDate: string;
+  lat: number;
+  lng: number;
   datee: string;
   time: string;
   state: string = "folders";
@@ -28,45 +30,47 @@ export class EventAddComponent implements OnInit {
   fileRegexp: RegExp;
   errorFileFormat: boolean;
   imageLoaded: boolean;
-  lat: number;
-  lng: number;
-  searchControl: FormControl;
+  type: string;
+  currentUserLogin: string;
+  public searchControl: FormControl;
 
-  @ViewChild("search")
-  searchElementRef: ElementRef;
+  @ViewChild("searchh")
+  public searchElementRef: ElementRef;
 
-  constructor(private route: ActivatedRoute,
+  constructor(private eventService: EventService,
+              private route: ActivatedRoute,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
-              private eventAddService: EventAddService,
+              private router: Router,
               private uploadService: ImageUploadService,
               private mapsAPILoader: MapsAPILoader,
               private ngZone: NgZone) { }
 
   ngOnInit() {
-    this.eventt = new Evento;
-
     this.route.params.subscribe(params => {
+      this.eventId = params['eventId'];
       this.folderId = params['folderId'];
+      this.type = params['type'];
+      this.currentUserId = JSON.parse(localStorage.currentUser).id;
+      this.currentUserLogin = JSON.parse(localStorage.currentUser).login;
     }, error => {
-      this.showError('Unsuccessful parameters loading', 'Loading error');
+      this.showError('Unsuccessful event loading', 'Loading error');
     });
-
-    this.getCurrentDate();
-    this.resetEvent();
-    this.fileRegexp = new RegExp('^.*\\.(jpg|JPG|gif|GIF|png|PNG)$');
-    this.errorFileFormat = true;
-    console.log(this.eventt);
+    this.getEvent();
 
     this.searchControl = new FormControl();
+    console.log(this.searchControl);
+    console.log(this.searchElementRef);
+
     this.setCurrentPosition();
 
     this.mapsAPILoader.load().then(() => {
-      let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
-        types: ["address"]
+      let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement,
+        { types:['address']
       });
       autocomplete.addListener("place_changed", () => {
         this.ngZone.run(() => {
+
           let place: google.maps.places.PlaceResult = autocomplete.getPlace();
 
           if (place.geometry === undefined || place.geometry === null) {
@@ -89,43 +93,48 @@ export class EventAddComponent implements OnInit {
     }
   }
 
-  resetEvent() {
-    this.eventt.folderId = this.folderId;
-    this.eventt.ownerId = JSON.parse(localStorage.currentUser).id;
-    this.datee = this.currentDate;
-    this.eventt.eventType = "EVENT";
-    this.eventt.name = "";
-    this.eventt.description = "";
-    this.eventt.eventDate = this.currentDate;
-    this.eventt.periodicity = "ONCE";
-    this.eventt.place = "";
-    this.time = "00:00";
-    this.lat = 50.447011182312195;
-    this.lng = 30.456780195127067;
+  getEvent() {
+    this.spinner.show();
+
+    this.eventService.getEvent(this.eventId).subscribe(eventt => {
+      this.eventt = eventt;
+      let coordinates = this.eventt.place.split(" ");
+      console.log(this.eventt.eventType);
+      this.lat = +coordinates[0];
+      this.lng = +coordinates[1];
+      let loadDate =this.eventt.eventDate.split(" ");
+      this.datee = loadDate[0];
+      this.time = loadDate[1].split(".")[0];
+      this.spinner.hide();
+    }, error => {
+      this.spinner.hide();
+      this.showError('Unsuccessful event loading', 'Loading error');
+    })
   }
 
   formatDate() {
-    console.log(this.datee);
-    console.log(this.time);
-    console.log(this.eventt.periodicity);
-    this.eventt.eventDate = this.datee + " " + this.time + ":00";
+      console.log(this.datee);
+      console.log(this.time);
+      console.log(this.eventt.periodicity);
+      this.eventt.eventDate = this.datee + " " + this.time;
   }
 
-  getCurrentDate() {
-    let date =  new Date();
-    let year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-    this.currentDate =  year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
-    console.log(this.currentDate);
+  updateEvent() {
+    this.spinner.show();
+    this.formatDate();
+    this.eventt.place = this.lat + " " + this.lng;
+    this.eventService.updateEvent(this.eventt).subscribe(
+      updated => {
+        this.showSuccess('Event is successfully updated', 'Success!');
+        this.spinner.hide();
+        this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/" + this.type + "/" + this.eventId]);
+      }, error => {
+        this.showError('Can not update event', 'Attention!');
+        this.spinner.hide();
+      }
+    );
   }
 
-  addDraft() {
-    this.eventt.isDraft = true;
-    this.addEntity();
-  }
-
-  //TODO move to general component
   showError(message: string, title: string) {
     this.toastr.error(message, title, {
       timeOut: 3000,
@@ -134,33 +143,12 @@ export class EventAddComponent implements OnInit {
     });
   }
 
-  showSuccess() {
-    this.toastr.info('Event was successfully added', 'Attention!', {
+  showSuccess(message: string, title: string) {
+    this.toastr.info(message, title, {
       timeOut: 3000,
       positionClass: 'toast-top-right',
       closeButton: true
     });
-  }
-
-  addEntity() {
-    this.spinner.show();
-    this.formatDate();
-    this.eventt.place = this.lat + " " + this.lng;
-    this.eventAddService.addEvent(this.eventt).subscribe(eventt => {
-      this.spinner.hide();
-      this.showSuccess();
-      this.resetEvent();
-    }, error => {
-      this.showError('Unsuccessful event adding', 'Adding error');
-      this.spinner.hide();
-    });
-  }
-
-  addEvent() {
-    console.log("addEvent");
-    this.eventt.isDraft = false;
-    this.addEntity();
-    console.log(this.eventt);
   }
 
   selectFile(event) {
@@ -181,9 +169,9 @@ export class EventAddComponent implements OnInit {
     this.currentFileUpload = this.selectedFiles.item(0);
     this.uploadService.pushFileToStorage(this.currentFileUpload).subscribe(event => {
       console.log(event);
-        this.imageLoaded = true;
-        this.eventt.imageFilepath = event;
-        console.log(this.eventt.imageFilepath);
+      this.imageLoaded = true;
+      this.eventt.imageFilepath = event;
+      console.log(this.eventt.imageFilepath);
       this.spinner.hide();
     }, error => {
       this.showError(error, 'Upload failed');

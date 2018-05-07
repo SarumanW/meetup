@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
+import static com.meetup.meetup.keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -51,88 +51,65 @@ public class FolderService {
     }
 
     public Folder getFolder(int folderId){
+        return getFolder(folderId, true);
+    }
+
+    public Folder getFolder(int folderId, boolean withEvents) {
         log.debug("Trying to get authenticated user");
 
         User user = authenticationFacade.getAuthentication();
 
         log.debug("User was successfully received");
-        log.debug("Trying to get folder for user '{}' by folderId '{}'", user.toString(), folderId);
+        log.debug("Trying to get folder for user '{}' by folderId '{}'", user, folderId);
 
         Folder folder = folderDao.findById(folderId, user.getId());
 
         if (folder == null) {
-            log.error("Folder was not found by folderId '{}' for user '{}'", folderId, user.toString());
+            log.error("Folder was not found by folderId '{}' for user '{}'", folderId, user);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Folder", "folderId", folderId));
         }
 
-        log.debug("Folder was successfully found");
-        log.debug("Trying to get events by folderId '{}'", folderId);
+        log.debug("Folder was successfully found '{}'", folder);
 
-        List<Event> events = eventDao.findByFolderId(folderId);
-        folder.setEvents(events);
+        if (withEvents) {
+            log.debug("Trying to get events by folderId '{}'", folderId);
 
-        log.debug("Return folder with events '{}'", folder.toString());
+            List<Event> events = eventDao.findByFolderId(folderId);
+            folder.setEvents(events);
+
+            log.debug("Return folder with events '{}'", folder);
+        }
 
         return folder;
     }
 
     public Folder addFolder(Folder folder) {
-        log.debug("Try to check permission for folder '{}'", folder.toString());
-
-        checkPermission(folder);
-
-        log.debug("Permission for insert was received");
         log.debug("Trying to insert folder to database");
 
         return folderDao.insert(folder);
     }
 
-    public Folder deleteFolder(Folder folder) {
-        log.debug("Try to check permission for folder '{}'", folder.toString());
+    public Folder updateFolder(Folder folder) {
+        log.debug("Trying to update folder '{}' in database", folder);
 
-        checkPermission(folder);
+        return folderDao.update(folder);
+    }
 
-        log.debug("Permission for delete was received");
+    public Folder deleteFolder(int folderId) {
         log.debug("If folder is not general set all events to general");
 
+        Folder folder = getFolder(folderId, false);
+
         if (!folder.getName().equals("general")) {
-            log.debug("Trying set all events from '{}' general folder", folder.toString());
+            log.debug("Trying set all events from '{}' general folder", folder);
 
             folderDao.moveEventsToGeneral(folder.getFolderId());
 
             log.debug("Successful moving all events to general folder");
         }
 
-        log.debug("Trying to delete folder '{}' from database", folder.toString());
+        log.debug("Trying to delete folder '{}' from database", folder);
 
         return folderDao.delete(folder);
-    }
-
-    public Folder updateFolder(Folder folder) {
-        log.debug("Try to check permission for folder '{}'", folder.toString());
-
-        checkPermission(folder);
-
-        log.debug("Permission for update was received");
-        log.debug("Trying to update folder '{}' in database", folder.toString());
-
-        return folderDao.update(folder);
-    }
-
-    //Check authentication and folder permission
-    private void checkPermission(Folder folder) {
-        log.debug("Trying to get user from AuthenticationFacade");
-
-        User user = authenticationFacade.getAuthentication();
-
-        log.debug("User '{}' was successfully received", user.toString());
-        log.debug("Trying to check equivalence of folder.getUserId '{}' and user.getId '{}'", folder.getUserId(), user.getId());
-
-        if (folder.getUserId() != user.getId()) {
-            log.error("User has no access to this data");
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Folder", "userId", folder.getUserId()));
-        }
-
-        log.debug("Given access to folder '{}' for user '{}'", folder.toString(), user.toString());
     }
 }

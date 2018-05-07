@@ -1,4 +1,4 @@
-package com.meetup.meetup.Keys;
+package com.meetup.meetup.keys;
 
 public final class Key {
 
@@ -81,7 +81,12 @@ public final class Key {
     public static final String EVENT_GET_PARTICIPANTS="event.getParticipants";
     public static final String EVENT_FIND_BY_TYPE_IN_FOLDER="event.findByTypeInFolder";
     public static final String EVENT_GET_DRAFTS="event.getDrafts";
-
+    public static final String EVENT_GET_IN_PERIOD="event.getInPeriod";
+    public static final String EVENT_GET_IN_PERIOD_ALL_USERS="event.getInPeriodAllUsers";
+    public static final String EVENT_GET_ALL_PUBLIC="event.getAllPublic";
+    public static final String EVENT_DELETE_PARTICIPANTS="event.deleteParticipants";
+    public static final String EVENT_DELETE_MEMBERS="event.deleteMembers";
+    public static final String EVENT_DELETE_PARTICIPANT="event.deleteParticipant";
     //RoleDao
     public static final String GET_ROLE="role.getRole";
 
