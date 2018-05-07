@@ -73,4 +73,15 @@ public class AccountController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/change.password")
+    public ResponseEntity passwordChange(@Valid @RequestBody RecoveryPasswordVM model) throws Exception{
+        log.debug("Trying to change password by token '{}'", model.getToken());
+
+        accountService.changePassword(model);
+
+        log.debug("Send response status OK");
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
