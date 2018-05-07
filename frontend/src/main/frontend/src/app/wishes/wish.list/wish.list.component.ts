@@ -4,6 +4,7 @@ import {WishListService} from "../wish.list.service";
 import {Profile} from "../../account/profile";
 import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
+import {ITEMS} from "../items";
 
 @Component({
   selector: 'app-wish-list',
@@ -11,7 +12,8 @@ import {NgxSpinnerService} from "ngx-spinner";
   styleUrls: ['./wish.list.component.css']
 })
 export class WishListComponent implements OnInit {
-  items: Item[];
+  //items: Item[];
+  items= ITEMS;
   state: string = "wishes";
   profile: Profile;
 

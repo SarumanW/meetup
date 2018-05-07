@@ -1,8 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import {LoginAccount} from "../../account/login.account";
 import {Router} from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {Item} from "../item";
+import {HttpEventType, HttpResponse} from "@angular/common/http";
+import {UploadFileService} from "../../upload.file/upload.file.service";
+import {HttpClientModule} from "@angular/common/http";
+import {Tag} from "../tag";
+import {ITEMS} from "../items";
 import {NgxSpinnerService} from "ngx-spinner";
-import {Item} from "../../item";
+import {WishListService} from "../wish.list.service";
+import {ToastrService} from "ngx-toastr";
+import {Profile} from "../../account/profile";
 
 @Component({
   selector: 'app-wish',
@@ -10,16 +17,22 @@ import {Item} from "../../item";
   styleUrls: ['./wish.component.css']
 })
 export class WishComponent implements OnInit {
+  state: string = "wishes";
   success: boolean;
-  account: LoginAccount;
   errorMessage: string;
   item: Item;
+  name = "ITEM";
+  profile: Profile;
 
 
   constructor(private router: Router,
-              private spinner: NgxSpinnerService) {}
+              private spinner: NgxSpinnerService,
+              private uploadService: UploadFileService,
+              private toastr: ToastrService,
+              private wishListService: WishListService) {}
 
   ngOnInit() {
+    this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
 
   createItem(){
