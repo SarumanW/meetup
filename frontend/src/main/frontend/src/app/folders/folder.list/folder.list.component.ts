@@ -121,7 +121,7 @@ export class FolderListComponent implements OnInit {
         let formData = new FormData();
         formData.append("file", data);
 
-        //this.eventService.uploadEventsPlan(formData).subscribe();
+        this.eventService.uploadEventsPlan(formData).subscribe();
 
         doc.save(docName);
       }
@@ -179,4 +179,5 @@ export class FolderListComponent implements OnInit {
     this.formatDate();
     this.getPeriodEvents(this.startDate, this.endDate);
   }
+
 }

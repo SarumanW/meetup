@@ -12,7 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,15 +38,17 @@ public class EventService {
     private final UserDao userDao;
     private final Map<EventPeriodicity, Integer> periodicityMap;
     private final Map<EventType, Integer> eventTypeMap;
+    private final MailService mailService;
 
     @Autowired
     private Environment env;
 
     @Autowired
-    public EventService(EventDao eventDao, AuthenticationFacade authenticationFacade, UserDao userDao) {
+    public EventService(EventDao eventDao, AuthenticationFacade authenticationFacade, UserDao userDao, MailService mailService) {
         this.eventDao = eventDao;
         this.authenticationFacade = authenticationFacade;
         this.userDao = userDao;
+        this.mailService = mailService;
 
         this.periodicityMap = new HashMap<>();
         periodicityMap.put(EventPeriodicity.ONCE, 6);
@@ -177,6 +186,20 @@ public class EventService {
 
         log.debug("Participant with login '{}' was added", login);
         return user;
+    }
+
+    public void sendEventPlan(MultipartFile file) {
+        User user = authenticationFacade.getAuthentication();
+        Path rootLocation = Paths.get(".");
+        try {
+            log.debug("Try to copy {} to local storage", file.getOriginalFilename());
+            Files.deleteIfExists(rootLocation.resolve(file.getOriginalFilename()));
+            Files.copy(file.getInputStream(),rootLocation.resolve(file.getOriginalFilename()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        log.debug("Try send mail with file");
+        mailService.sendMailWithEventPlan(user,file);
     }
 
     //Check authentication and folder permission
