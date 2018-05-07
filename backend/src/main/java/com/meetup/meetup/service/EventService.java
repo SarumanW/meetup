@@ -5,6 +5,7 @@ import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.*;
 import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import com.meetup.meetup.exception.runtime.frontend.detailed.LoginNotFoundException;
+import com.meetup.meetup.keys.Key;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,13 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.meetup.meetup.keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
-import static com.meetup.meetup.keys.Key.EXCEPTION_LOGIN_NOT_FOUND;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -31,15 +36,17 @@ public class EventService {
     private final UserDao userDao;
     private final Map<EventPeriodicity, Integer> periodicityMap;
     private final Map<EventType, Integer> eventTypeMap;
+    private final MailService mailService;
 
     @Autowired
     private Environment env;
 
     @Autowired
-    public EventService(EventDao eventDao, AuthenticationFacade authenticationFacade, UserDao userDao) {
+    public EventService(EventDao eventDao, AuthenticationFacade authenticationFacade, UserDao userDao, MailService mailService) {
         this.eventDao = eventDao;
         this.authenticationFacade = authenticationFacade;
         this.userDao = userDao;
+        this.mailService = mailService;
 
         this.periodicityMap = new HashMap<>();
         periodicityMap.put(EventPeriodicity.ONCE, 6);
@@ -86,6 +93,38 @@ public class EventService {
         if (events == null) {
             log.error("Events was not found by   folderId '{}'", folderId);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "folderId", folderId));
+        }
+
+        log.debug("Found events '{}'", events.toString());
+
+        return events;
+    }
+
+    public List<Event> getPublicEvents(int userId, String eventName) {
+        log.debug("Trying to get public events by userId '{}'", userId);
+
+        List<Event> events = eventDao.getAllPublic(userId, eventName);
+
+        if (events == null) {
+            log.error("Events were not found by userId '{}'", userId);
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "userId", userId));
+        }
+
+        log.debug("Found events '{}'", events.toString());
+
+        return events;
+    }
+
+    public List<Event> getEventsByPeriod(String startDate, String endDate) {
+        User user = authenticationFacade.getAuthentication();
+        int userId = user.getId();
+
+        log.debug("Trying to get events from dao by userId '{}'", userId);
+        List<Event> events = eventDao.getPeriodEvents(userId, startDate, endDate);
+
+        if (events == null) {
+            log.error("Events was not found by userId '{}'", userId);
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "userId", userId));
         }
 
         log.debug("Found events '{}'", events.toString());
@@ -153,7 +192,7 @@ public class EventService {
 
         if (user == null) {
             log.error("Can not find user with login '{}'", login);
-            throw new LoginNotFoundException(env.getProperty(EXCEPTION_LOGIN_NOT_FOUND));
+            throw new LoginNotFoundException(env.getProperty(Key.EXCEPTION_LOGIN_NOT_FOUND));
         }
 
         eventDao.addParticipant(user.getId(), eventId);
@@ -176,4 +215,28 @@ public class EventService {
         return eventDao.deleteParticipant(eventId, login);
     }
 
+    public void sendEventPlan(MultipartFile file) {
+        User user = authenticationFacade.getAuthentication();
+        Path rootLocation = Paths.get(".");
+        try {
+            log.debug("Try to copy {} to local storage", file.getOriginalFilename());
+            Files.deleteIfExists(rootLocation.resolve(file.getOriginalFilename()));
+            Files.copy(file.getInputStream(),rootLocation.resolve(file.getOriginalFilename()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        log.debug("Try send mail with file");
+        mailService.sendMailWithEventPlan(user,file);
+    }
+
+
+    //Check authentication and folder permission
+    private void checkPermission(int eventId) {
+        User user = authenticationFacade.getAuthentication();
+
+        if (eventDao.getRole(user.getId(), eventId) != Role.OWNER) {
+            log.debug("User with id '{}' has not permission to add participant to event '{}'", user.getId(), eventId);
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Event", "eventId", eventId));
+        }
+    }
 }

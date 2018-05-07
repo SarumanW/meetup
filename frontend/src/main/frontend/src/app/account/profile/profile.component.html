@@ -10,7 +10,7 @@
     </div>
 
 
-    <div class="col-10 py-4">
+    <div class="col-10 py-4" *ngIf="profile.login">
       <div align="center">
         <h3>{{profile.name}} {{profile.lastname}}</h3>
       </div>

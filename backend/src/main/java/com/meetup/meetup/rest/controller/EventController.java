@@ -3,8 +3,10 @@ package com.meetup.meetup.rest.controller;
 import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.frontend.detailed.FileUploadException;
+import com.meetup.meetup.exception.runtime.frontend.detailed.MailServerException;
 import com.meetup.meetup.service.EventImageService;
 import com.meetup.meetup.service.EventService;
+import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.validation.Valid;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.meetup.meetup.Keys.Key.EXCEPTION_MAIL_SERVER;
 
 @RestController
 @RequestMapping(path = "/api/events")
@@ -115,9 +125,20 @@ public class EventController {
         return new ResponseEntity<>(eventService.getEventsByType(eventType, folderId), HttpStatus.OK);
     }
 
+    @GetMapping("/getInPeriod")
+    public ResponseEntity<List<Event>> getInPeriod(@RequestParam("startDate") String startDate,
+                                                   @RequestParam("endDate") String endDate) {
+        return new ResponseEntity<>(eventService.getEventsByPeriod(startDate, endDate), HttpStatus.OK);
+    }
+
     @GetMapping("/{folderId}/drafts")
     public ResponseEntity<List<Event>> getDrafts(@PathVariable int folderId) {
         return new ResponseEntity<>(eventService.getDrafts(folderId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/public")
+    public ResponseEntity<List<Event>> getPublicEvents(@PathVariable int userId, @RequestParam("name") String name) {
+        return new ResponseEntity<>(eventService.getPublicEvents(userId, name), HttpStatus.OK);
     }
 
     @PostMapping("/upload")
@@ -163,5 +184,12 @@ public class EventController {
         log.debug("Send response body event '{}' and status {}", message, httpStatus);
 
         return new ResponseEntity<String>(message, httpStatus);
+    }
+
+    @PostMapping("/sendEventPlan")
+    public ResponseEntity<String> sendEventPlan(@RequestParam MultipartFile file) {
+        log.debug("Try to send {} to email", file.getOriginalFilename());
+        eventService.sendEventPlan(file);
+        return new ResponseEntity<>("All Okey", HttpStatus.OK);
     }
 }

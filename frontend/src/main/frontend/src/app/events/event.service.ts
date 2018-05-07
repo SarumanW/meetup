@@ -68,4 +68,27 @@ export class EventService {
     return this.http.delete('api/events/' + eventt.eventId + "/participant/" + login, {headers: headers});
   }
 
+  getEventsInPeriod(startDate: string, endDate: string): Observable<any> {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.get('api/events/getInPeriod',
+      {headers: headers, params: {'startDate': startDate, 'endDate': endDate}});
+  }
+
+  uploadEventsPlan(data: any): Observable<any>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.post('api/events/sendEventPlan', data, {headers: headers});
+  }
+
+  getPublicEvents(userId : number, queryField: string) : Observable<any>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.get('api/events/' + userId + '/public',
+      {headers: headers, params: {'name': queryField}});
+  }
+
 }

@@ -1,5 +1,4 @@
 export const EVENT_COLUMNS: Array<any> = [
-  {title: 'EventId', name: 'eventId', sort: 'asc'},
   {title: 'Name', name: 'name', filtering: {filterString: '', placeholder: 'Filter by name'}},
   {
     title: 'Date', name: 'eventDate',
