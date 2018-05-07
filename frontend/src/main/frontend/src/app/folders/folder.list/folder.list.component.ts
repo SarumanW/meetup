@@ -93,7 +93,7 @@ export class FolderListComponent implements OnInit {
           }
         });
 
-        let data = new File([doc.output], "myFile.pdf");
+        let data = new File([doc.output()], "events.pdf");
 
         let formData = new FormData();
         formData.append("file", data);
