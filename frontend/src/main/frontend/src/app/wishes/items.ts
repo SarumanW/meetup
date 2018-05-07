@@ -14,10 +14,8 @@ export const ITEMS: Item[] = [
     likes: 3,
     tags: [
       {name: "runnnnn"},
-      {name: "runnnnn"},
-      {name: "runnnnn"},
-      {name: "runnnnn"},
-      {name: "runnnnn"}
+      {name: "runnnnnnnnnnn"},
+      {name: "ru"}
     ]
   },
   {
@@ -33,9 +31,9 @@ export const ITEMS: Item[] = [
     likes: 2,
     tags: [
       {name: "runnnnn"},
+      {name: "hfgh"},
       {name: "runnnnn"},
-      {name: "runnnnn"},
-      {name: "runnnnn"}
+      {name: "runnnn_77874785n"}
     ]
   }
 ];

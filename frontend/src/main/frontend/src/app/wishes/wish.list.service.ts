@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Item} from "./item";
-import {Profile} from "../account/profile";
 
 @Injectable()
 export class WishListService {
@@ -18,7 +17,7 @@ export class WishListService {
     params.set("category", category);
 
     return this.http
-      .get<any>('api/wishes/', {headers: headers, params: params});
+      .get<any>('api/wishes/', {headers: headers});
   }
 
   addWishItem(item: Item): Observable<any> {

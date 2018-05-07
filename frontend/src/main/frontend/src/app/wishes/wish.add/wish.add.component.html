@@ -128,7 +128,7 @@
             <label class="form-control-label" for="itemTags">Tags:</label>
             <input type="text" class="form-control" id="itemTags" name="itemTags"
                    placeholder="Enter tag name and push 'Enter'"
-                   #itemTag="ngModel" (keyup.enter)="addTag($event)"
+                   #itemTag="ngModel" (keyup.enter)="addTag()"
                    [(ngModel)]="tag" pattern="^[_A-Za-z0-9]*$">
             <div *ngIf="itemTag.dirty && itemTag.invalid">
               <small class="form-text text-danger" *ngIf="itemTag.errors.pattern">
@@ -140,7 +140,11 @@
           <div class="container">
             <div class="row">
               <div *ngFor="let tag of newItem.tags">
-                <a class="badge badge-pill badge-primary m-1">#{{ tag.name }}</a>
+                <h5 style="margin-right: 5px; color: white">
+                  <a class="badge badge-info">
+                    #{{ tag.name }} <span class="glyphicon glyphicon-search" (click)="deleteTag(tag)"></span>
+                  </a>
+                </h5>
               </div>
             </div>
           </div>

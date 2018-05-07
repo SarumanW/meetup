@@ -5,6 +5,7 @@ import {Profile} from "../../account/profile";
 import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
 import {Router, ActivatedRoute, Params} from "@angular/router";
+import {ITEMS} from "../items";
 
 @Component({
   selector: 'app-wish-list',
@@ -14,7 +15,7 @@ import {Router, ActivatedRoute, Params} from "@angular/router";
 export class WishListComponent implements OnInit {
   readonly WISHES_CATEGORY = "wishes";
   readonly RECOMMENDATIONS_CATEGORY = "recommendations";
-  readonly POPULAR_CATEGORY = "popular";
+  //readonly POPULAR_CATEGORY = "popular";
 
   items: Item[];
   state: string = "wishes";
@@ -41,11 +42,6 @@ export class WishListComponent implements OnInit {
           this.title = "Recommendation wishes:";
           break;
         }
-        case this.POPULAR_CATEGORY: {
-          this.category = this.POPULAR_CATEGORY;
-          this.title = "Popular wishes:";
-          break;
-        }
         default: {
           this.category = this.WISHES_CATEGORY;
           this.title = "My wishes:";
@@ -56,27 +52,26 @@ export class WishListComponent implements OnInit {
       this.getWishList();
     });
 
-    this.spinner.show();
-
     this.getWishList();
 
-    this.spinner.hide();
+    console.log(this.items);
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
 
   getWishList() {
-    this.spinner.show();
-
-    this.wishListService.getWishList(this.category).subscribe(
-      itemList => {
-        this.items = itemList;
-        this.spinner.hide();
-      })
+    // this.spinner.show();
+    //
+    // this.wishListService.getWishList(this.category).subscribe(
+    //   itemList => {
+    //     this.items = itemList;
+    //     this.spinner.hide();
+    //   })
+    this.items = ITEMS;
   }
 
-  showSuccess() {
-    this.toastr.info('Wish item was successfully added', 'Attention!', {
+  showSuccess(message: string, title: string) {
+    this.toastr.info(message, title, {
       timeOut: 3000,
       positionClass: 'toast-top-right',
       closeButton: true
@@ -97,7 +92,7 @@ export class WishListComponent implements OnInit {
     this.wishListService.addWishItem(item).subscribe(item => {
       this.spinner.hide();
       this.getWishList();
-      this.showSuccess();
+      this.showSuccess('Wish item was successfully added', 'Attention!');
     }, error => {
       this.showError('Unsuccessful wish item adding', 'Adding error');
       this.spinner.hide();
@@ -109,9 +104,9 @@ export class WishListComponent implements OnInit {
     this.wishListService.deleteWishItem(item).subscribe(item => {
       this.spinner.hide();
       this.getWishList();
-      this.showSuccess();
+      this.showSuccess('Wish item was successfully deleted', 'Attention!');
     }, error => {
-      this.showError('Unsuccessful wish item adding', 'Adding error');
+      this.showError('Unsuccessful wish item deleting', 'Adding error');
       this.spinner.hide();
     });
   }

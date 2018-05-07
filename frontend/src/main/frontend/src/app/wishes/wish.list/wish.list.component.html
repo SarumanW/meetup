@@ -14,15 +14,19 @@
 
         <!--Category-->
 
-        <div class="container">
+        <div class="btn-group">
           <button routerLink="." [queryParams]="{category: WISHES_CATEGORY}"
                   type="button" class="btn btn-primary"
                   [disabled]="category === WISHES_CATEGORY">Wishes</button>
           <button routerLink="." [queryParams]="{category: RECOMMENDATIONS_CATEGORY}" type="button" class="btn btn-primary"
                   [disabled]="category === RECOMMENDATIONS_CATEGORY">Recommendations</button>
-          <button routerLink="." [queryParams]="{category: POPULAR_CATEGORY}" type="button" class="btn btn-primary"
-                  [disabled]="category === POPULAR_CATEGORY">Popular</button>
+          <!--<button routerLink="." [queryParams]="{category: POPULAR_CATEGORY}" type="button" class="btn btn-primary"-->
+                  <!--[disabled]="category === POPULAR_CATEGORY">Popular</button>-->
         </div>
+
+        <!--Search-->
+
+
 
         <!--Title-->
 
@@ -39,11 +43,12 @@
             <div class="head card-body">
               <img class="folder-icon" src="assets/folder-icon.svg" alt="Card image cap">
               <img *ngIf="item.ownerId === profile.id" (click)="deleteWishItem(item)" class="close-btn"
-                   src="assets/add.svg" alt="">
-              <img *ngIf="item.ownerId !== profile.id" (click)="addWishItem(item)" class="close-btn"
                    src="assets/close-white.svg" alt="">
+              <img *ngIf="item.ownerId !== profile.id" (click)="addWishItem(item)" class="close-btn"
+                   src="assets/add.svg" alt="">
             </div>
             <div class="card-body">
+              <a routerLink="/{{profile.login}}/wishes/{{item.itemId}}" class="btn btn-primary">Details</a>
               <h5 class="card-title">{{item.name}}</h5>
               <p class="card-text"><b>Priority: </b>{{item.priority}}</p>
               <p class="card-text"><b>Due date: </b>{{item.dueDate}}</p>
@@ -56,9 +61,6 @@
                   </div>
                 </div>
               </div>
-
-              <a routerLink="/{{profile.login}}/wishes/{{item.itemId}}" class="btn btn-primary">Open
-                item</a>
             </div>
           </div>
         </div>

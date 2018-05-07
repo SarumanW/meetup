@@ -98,6 +98,14 @@ export class WishAddComponent implements OnInit {
     }
   }
 
+  deleteTag(tag: Tag) {
+    const index = this.newItem.tags.indexOf(tag);
+    console.log(index);
+    if (index !== -1) {
+      this.newItem.tags.splice(index, 1)
+    }
+  }
+
   resetItem() {
     this.newItem = new Item();
     this.getDueDate();
