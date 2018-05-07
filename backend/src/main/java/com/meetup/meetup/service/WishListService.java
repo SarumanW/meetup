@@ -1,6 +1,7 @@
 package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.ItemDao;
+import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.EntityNotFoundException;
@@ -24,19 +25,22 @@ public class WishListService {
 
     private final ItemDao itemDao;
     private final AuthenticationFacade authenticationFacade;
-
+    private final UserDao userDao;
     private final Environment env;
 
     @Autowired
-    public WishListService(ItemDao itemDao, AuthenticationFacade authenticationFacade, Environment env) {
+    public WishListService(ItemDao itemDao, AuthenticationFacade authenticationFacade, UserDao userDao, Environment env) {
         this.itemDao = itemDao;
         this.authenticationFacade = authenticationFacade;
+        this.userDao = userDao;
         this.env = env;
     }
+
 
     public List<Item> getWishList() {
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
+
         log.debug("User was successfully received");
 
         log.debug("Trying to get all WishList for user '{}'", user.toString());
@@ -51,6 +55,34 @@ public class WishListService {
         log.debug("Trying to insert item to user wish list");
         return itemDao.addToUserWishList(user.getId(), item.getItemId(), item.getPriority());
     }
+
+    public List<Item> getWishesByUser(String login) {
+        User user = userDao.findByLogin(login);
+
+        if (user == null) {
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "login", login));
+        }
+
+        log.debug("Trying to get wishes from dao by user login '{}'", login);
+
+        return itemDao.findByUserId(user.getId());
+    }
+
+    public List<Item> getRecommendations() {
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
+
+        log.debug("Trying to get all recommendations for user '{}'", user.toString());
+        return itemDao.getRecommendations(user.getId());
+    }
+
+    public List<Item> getBookingByUser(String login) {
+        log.debug("Trying to get booking wishes from dao by user login '{}'", login);
+        return itemDao.findBookingByUserLogin(login);
+    }
+
+
 
     //Check authentication and folder permission
     private void checkPermission(Item item) {

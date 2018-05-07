@@ -184,4 +184,19 @@ public class ItemDaoImpl implements ItemDao {
     public List<Item> getUserWishList(int id) {
         return null;
     }
+
+    @Override
+    public List<Item> getRecommendations(int id) {
+        return null;
+    }
+
+    @Override
+    public List<Item> findBookingByUserLogin(String login) {
+        return null;
+    }
+
+    @Override
+    public List<Item> findByUserLogin(String login) {
+        return null;
+    }
 }

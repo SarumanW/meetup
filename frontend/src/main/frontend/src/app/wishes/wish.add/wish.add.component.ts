@@ -89,17 +89,17 @@ export class WishAddComponent implements OnInit {
 
   addTag() {
     if (this.tag.length > 2 && this.tag.length < 31 && /^[_A-Za-z0-9]*$/.test(this.tag)) {
-      let tag = new Tag();
-      tag.name = this.tag;
+      // let tag = new Tag();
+      // tag.name = this.tag;
 
-      this.newItem.tags.push(tag);
+      this.newItem.tags.push(this.tag);
 
       this.tag = '';
     }
   }
 
-  deleteTag(tag: Tag) {
-    const index = this.newItem.tags.indexOf(tag);
+  deleteTag(tag: string) {
+    const index = this.newItem.tags.indexOf(this.tag);
     console.log(index);
     if (index !== -1) {
       this.newItem.tags.splice(index, 1)

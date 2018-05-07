@@ -26,7 +26,7 @@ export class WishListComponent implements OnInit {
   category: string;
   profile: Profile;
   tag: string;
-  tags: Tag[] = [];
+  tags: string[] = [];
   login: string;
 
   constructor(private wishListService: WishListService,
@@ -75,8 +75,6 @@ export class WishListComponent implements OnInit {
       this.getWishList();
     });
 
-    this.getWishList();
-
     console.log(this.items);
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
@@ -84,25 +82,25 @@ export class WishListComponent implements OnInit {
 
   getWishList() {
     //todo get wish list from database
-    // this.spinner.show();
-    //
-    // this.wishListService.getWishList(this.category).subscribe(
-    //   itemList => {
-    //     this.items = itemList;
-    //     this.spinner.hide();
-    //   })
-    this.items = ITEMS;
+    this.spinner.show();
+
+    this.wishListService.getWishList(this.category, this.login).subscribe(
+      itemList => {
+        this.items = itemList;
+        this.spinner.hide();
+      })
+    // this.items = ITEMS;
   }
 
   addSearchTag() {
     if (this.tag.length > 2 && this.tag.length < 31 && /^[_A-Za-z0-9]*$/.test(this.tag)) {
-      this.tags.push({name: this.tag});
+      this.tags.push(this.tag);
       this.tag = '';
       //todo search items by tag from database
     }
   }
 
-  deleteSearchTag(tag: Tag) {
+  deleteSearchTag(tag: string) {
     const index = this.tags.indexOf(tag);
     console.log(index);
     if (index !== -1) {

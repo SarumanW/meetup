@@ -20,4 +20,10 @@ public interface ItemDao extends Dao<Item> {
     Item removeBookerForItem(int ownerId, int itemId);
 
     List<Item> getUserWishList(int id);
+
+    List<Item> getRecommendations(int id);
+
+    List<Item>  findBookingByUserLogin (String login);
+
+    List<Item> findByUserLogin(String login);
 }

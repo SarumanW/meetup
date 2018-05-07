@@ -11,6 +11,6 @@ export class Item {
   link: string;
   dueDate: string;
   likes: number;
-  tags: Tag[] = [];
+  tags: string[] = [];
 }
 

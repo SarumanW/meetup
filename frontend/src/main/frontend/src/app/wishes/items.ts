@@ -12,11 +12,12 @@ export const ITEMS: Item[] = [
     link: "",
     dueDate: "2018-06-05",
     likes: 3,
-    tags: [
-      {name: "runnnnn"},
-      {name: "runnnnnnnnnnn"},
-      {name: "ru"}
-    ]
+    tags: ["ruha"]
+    // tags: [
+    //   {name: "runnnnn"},
+    //   {name: "runnnnnnnnnnn"},
+    //   {name: "ru"}
+    // ]
   },
   {
     itemId: 4,
@@ -29,11 +30,12 @@ export const ITEMS: Item[] = [
     link: "",
     dueDate: "2018-05-25",
     likes: 2,
-    tags: [
-      {name: "runnnnn"},
-      {name: "hfgh"},
-      {name: "runnnnn"},
-      {name: "runnnn_77874785n"}
-    ]
+    tags: ["runnnn_77874785n"]
+    // tags: [
+    //   {name: "runnnnn"},
+    //   {name: "hfgh"},
+    //   {name: "runnnnn"},
+    //   {name: "runnnn_77874785n"}
+    // ]
   }
 ];
