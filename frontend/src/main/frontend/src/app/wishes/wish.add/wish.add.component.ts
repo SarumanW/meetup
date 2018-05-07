@@ -9,6 +9,8 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {WishListService} from "../wish.list.service";
 import {ToastrService} from "ngx-toastr";
 import {Profile} from "../../account/profile";
+import {Observable} from "rxjs/Observable";
+import {Subscriber} from "rxjs/Subscriber";
 
 @Component({
   selector: 'app-wish-add',
@@ -68,25 +70,6 @@ export class WishAddComponent implements OnInit {
     }
   }
 
-  upload() {
-    if (this.selectedFile !== null) {
-      this.spinner.show();
-      this.uploadService.pushWishFileToStorage(this.selectedFile).subscribe(event => {
-        if (event instanceof HttpResponse) {
-          console.log('File is completely uploaded!');
-          console.log(event.body);
-          //todo Check working
-          //let profile = JSON.parse(localStorage.currentUser);
-          //profile.imgPath = event.body;
-          //this.newItem.imageFilepath = event.body.valueOf();
-          //localStorage.setItem('currentUser', JSON.stringify(profile));
-        }
-      });
-      this.spinner.hide();
-      this.selectedFile = null;
-    }
-  }
-
   addTag() {
     if (this.tag.length > 2 && this.tag.length < 31 && /^[_A-Za-z0-9]*$/.test(this.tag)) {
       // let tag = new Tag();
@@ -113,8 +96,8 @@ export class WishAddComponent implements OnInit {
     this.tag = '';
   }
 
-  showSuccess() {
-    this.toastr.info('Wish item was successfully added', 'Attention!', {
+  showSuccess(message: string, title: string) {
+    this.toastr.info(message, title, {
       timeOut: 3000,
       positionClass: 'toast-top-right',
       closeButton: true
@@ -129,17 +112,52 @@ export class WishAddComponent implements OnInit {
     });
   }
 
-  addWish() {
+  setCorrectDate() {
+    let dateAndTime = this.newItem.dueDate;
+    dateAndTime += ' 00:00:00';
+    this.newItem.dueDate = dateAndTime;
+  }
+
+  onSubmit() {
     this.newItem.ownerId = this.profile.id;
+
+    this.setCorrectDate();
+
     this.spinner.show();
+
+    if(this.selectedFile !== null) {
+      this.uploadImage();
+    } else {
+      this.addWish();
+    }
+  }
+
+  uploadImage() {
+    this.uploadService.pushWishFileToStorage(this.selectedFile).subscribe(event => {
+      if (event instanceof HttpResponse) {
+        this.showError('Unsuccessful image uploaded', 'Adding error');
+        console.log('File is completely uploaded!');
+        console.log(event.body);
+
+        //todo Check working
+        this.newItem.imageFilepath = event.body;
+        this.addWish();
+        this.selectedFile = null;
+      }
+    }, error => {
+      this.showError('Unsuccessful image uploaded', 'Adding error');
+    });
+  }
+
+  addWish() {
+    console.log('run "add wish" method');
     this.wishListService.addWishItem(this.newItem).subscribe(item => {
       this.spinner.hide();
-      this.showSuccess();
+      this.showSuccess('Wish item was successfully added', 'Attention!');
       this.resetItem();
     }, error => {
       this.showError('Unsuccessful wish item adding', 'Adding error');
       this.spinner.hide();
     });
   }
-
 }

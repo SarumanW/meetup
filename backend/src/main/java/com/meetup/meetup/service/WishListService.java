@@ -44,7 +44,7 @@ public class WishListService {
         log.debug("User was successfully received");
 
         log.debug("Trying to get all WishList for user '{}'", user.toString());
-        return itemDao.findByUserId(user.getId());
+        return itemDao.getWishListByUserId(user.getId());
     }
 
     public Item addWishItem(Item item) {
@@ -65,16 +65,13 @@ public class WishListService {
 
         log.debug("Trying to get wishes from dao by user login '{}'", login);
 
-        return itemDao.findByUserId(user.getId());
+        return itemDao.getWishListByUserId(user.getId());
     }
 
     public List<Item> getRecommendations() {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
 
-        log.debug("Trying to get all recommendations for user '{}'", user.toString());
-        return itemDao.getRecommendations(user.getId());
+        log.debug("Trying to get all recommendations");
+        return itemDao.getPopularItems();
     }
 
     public List<Item> getBookingByUser(String login) {

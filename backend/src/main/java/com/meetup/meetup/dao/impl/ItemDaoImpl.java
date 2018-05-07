@@ -5,6 +5,8 @@ import com.meetup.meetup.dao.rowMappers.ItemRowMapper;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.ItemPriority;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -14,10 +16,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.meetup.meetup.Keys.Key.*;
 
@@ -27,43 +26,65 @@ import static com.meetup.meetup.Keys.Key.*;
 @PropertySource("classpath:image.properties")
 public class ItemDaoImpl implements ItemDao {
 
+    private static Logger log = LoggerFactory.getLogger(ItemDaoImpl.class);
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private Environment env;
 
-    // TODO: 05.05.2018 performance optimization
+    private final int numberOfPopularItem = 5;
+
     @Override
-    public List<Item> findByUserId(int userId) {
+    public List<Item> getWishListByUserId(int userId) {
+        log.debug("Try get wish list by user id: '{}'", userId);
+
         List<Item> items = new ArrayList<>();
-        getUserItemsId(userId).forEach((itemId) -> {
-            Item item = findById(itemId);
-            item.setPriority(getItemPriorityByUserIdItemId(userId, itemId));
-            item.setOwnerId(userId);
-            item.setBookerId(jdbcTemplate.queryForObject(
-                    env.getProperty(ITEM_GET_BOOKER_ID_BY_ITEM_ID_USER_ID), new Object[]{itemId, userId}, Integer.class));
-            items.add(item);
-        });
+        getUserItemsId(userId).forEach((itemId) -> items.add(findByUserIdItemId(userId, itemId)));
+
+        if (items.isEmpty()) {
+            log.debug("Wish list don't found by user id: '{}'", userId);
+        } else {
+            log.debug("Wish list was found: '{}'", items);
+        }
         return items;
     }
 
     @Override
-    public Item findById(int itemId) {
-        Item item;
+    public Item findByUserIdItemId(int userId, int itemId) {
+        log.debug("Try find item by user id: '{}' and item id: '{}'", userId, itemId);
+        Item item = findById(itemId);
+        item.setPriority(getItemPriorityByUserIdItemId(userId, itemId));
+        item.setOwnerId(userId);
         try {
-            item = jdbcTemplate.queryForObject(env.getProperty(ITEM_FIND_BY_ID), new Object[]{itemId}, new ItemRowMapper());
-            item.setTags(jdbcTemplate.queryForList(env.getProperty(ITEM_GET_TAG_BY_ITEM_ID), new Object[]{itemId}, String.class));
+            item.setBookerId(jdbcTemplate.queryForObject(
+                    env.getProperty(ITEM_GET_BOOKER_ID_BY_ITEM_ID_USER_ID), new Object[]{itemId, userId}, Integer.class));
         } catch (DataAccessException e) {
+            log.error("Query fails by find item by user id: '{}' and item id: '{}'", userId, itemId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return item;
     }
 
-    // TODO: 05.05.2018 insert tags
+    @Override
+    public Item findById(int itemId) {
+        log.debug("Try find item by item id: '{}'", itemId);
+        Item item;
+        try {
+            item = jdbcTemplate.queryForObject(env.getProperty(ITEM_FIND_BY_ID), new Object[]{itemId}, new ItemRowMapper());
+            item.setTags(jdbcTemplate.queryForList(env.getProperty(ITEM_GET_TAG_BY_ITEM_ID), new Object[]{itemId}, String.class));
+        } catch (DataAccessException e) {
+            log.error("Query fails by find item by item id: '{}'", itemId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+        return item;
+    }
+
+    // TODO: 05.05.2018 transactions !!!
     @Override
     public Item insert(Item model) {
-        int id;
+        log.debug("Try insert item '{}'", model);
         SimpleJdbcInsert insertItem = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName(TABLE_ITEM)
                 .usingGeneratedKeyColumns(ITEM_ITEM_ID);
@@ -76,67 +97,192 @@ public class ItemDaoImpl implements ItemDao {
         itemParameters.put(ITEM_DESCRIPTION, model.getDescription());
         itemParameters.put(ITEM_IMAGE_FILEPATH, model.getImageFilepath());
         itemParameters.put(ITEM_LINK, model.getLink());
-        itemParameters.put(ITEM_DUE_DATE, model.getDueDate() != null ? Date.valueOf(model.getDueDate()) : null);
+        itemParameters.put(ITEM_DUE_DATE, model.getDueDate() /*!= null ? Date.valueOf(model.getDueDate()) : null*/);
         try {
-            id = insertItem.executeAndReturnKey(itemParameters).intValue();
-            model.setItemId(id);
+            model.setItemId(insertItem.executeAndReturnKey(itemParameters).intValue());
+            addTags(model.getTags(), model.getItemId());
+            addToUserWishList(model.getOwnerId(), model.getItemId(), model.getPriority());
         } catch (DataAccessException e) {
+            log.error("Query fails by insert item '{}'", model);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        if (model.getItemId() != 0) {
+            log.debug("Item was added with id '{}'", model.getItemId());
+        } else {
+            log.debug("Item wasn't added item '{}'", model);
         }
         return model;
     }
 
     @Override
     public List<Item> getPopularItems() {
+        log.debug("Try get popular items");
+
         List<Item> items = new ArrayList<>();
         getPopularItemsId().forEach(itemId -> items.add(findById(itemId)));
+
+        if (items.isEmpty()) {
+            log.debug("Popular items don't found");
+        } else {
+            log.debug("Popular items was found: '{}'", items);
+        }
         return items;
     }
 
-    // TODO: 05.05.2018 priority
     @Override
     public Item addToUserWishList(int userId, int itemId, ItemPriority priority) {
-        jdbcTemplate.update(env.getProperty(ITEM_UPDATE_USER_ITEM),
-                userId, userId, priority.ordinal() + 1);
+        log.debug("Try add to wish list by user id: '{}', item id: '{}', priority: '{}'", userId, itemId, priority);
+        try {
+            int result = jdbcTemplate.update(env.getProperty(ITEM_UPDATE_USER_ITEM),
+                    userId, itemId, priority.ordinal() + 1);
+
+            if (result != 0) {
+                log.debug("Item by user id: '{}', item id: '{}', priority: '{}' was added to wish list",
+                        userId, itemId, priority);
+            } else {
+                log.debug("Item by user id: '{}', item id: '{}', priority: '{}' was not added to wish list",
+                        userId, itemId, priority);
+            }
+        } catch (DataAccessException e) {
+            log.error("Query fails by add item to wish list by user id: '{}', item id: '{}', priority: '{}'",
+                    userId, itemId, priority);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
         return findById(itemId);
     }
 
     @Override
     public Item deleteFromUserWishList(int userId, int itemId) {
         Item deletedItem = findById(itemId);
-        jdbcTemplate.update(env.getProperty(ITEM_DELETE_FROM_WISH_LIST), userId, itemId);
+        log.debug("Try to remove from wish list by user id: '{}', item id: '{}'", userId, itemId);
+        try {
+            int result = jdbcTemplate.update(env.getProperty(ITEM_DELETE_FROM_WISH_LIST), userId, itemId);
+
+            if (result != 0) {
+                log.debug("Item by user id: '{}', item id: '{}' was removed from wish list", userId, itemId);
+            } else {
+                log.debug("Item by user id: '{}', item id: '{}' was not removed from wish list", userId, itemId);
+            }
+        } catch (DataAccessException e) {
+            log.error("Query fails by remove item from wish list by user id: '{}', item id: '{}'", userId, itemId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
         return deletedItem;
     }
 
     @Override
     public Item addBookerForItem(int ownerId, int itemId, int bookerId) {
-        jdbcTemplate.update(env.getProperty(ITEM_SET_BOOKER_ID_FOR_ITEM),
-                bookerId, ownerId, itemId);
+        log.debug("Try to add booker by owner id: '{}', item id: '{}'", ownerId, itemId);
+        try {
+            int result = jdbcTemplate.update(env.getProperty(ITEM_SET_BOOKER_ID_FOR_ITEM),
+                    bookerId, ownerId, itemId);
+
+            if (result != 0) {
+                log.debug("Booker by owner id: '{}', item id: '{}' was added", ownerId, itemId);
+            } else {
+                log.debug("Booker by owner id: '{}', item id: '{}' was not added", ownerId, itemId);
+            }
+        } catch (DataAccessException e) {
+            log.error("Query fails by remove booker by owner id: '{}', item id: '{}'", ownerId, itemId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
         return findById(itemId);
     }
 
     @Override
     public Item removeBookerForItem(int ownerId, int itemId) {
-        jdbcTemplate.update(env.getProperty(ITEM_SET_BOOKER_ID_FOR_ITEM),
-                null, ownerId, itemId);
+        log.debug("Try to remove booker by owner id: '{}', item id: '{}'", ownerId, itemId);
+        try {
+            int result = jdbcTemplate.update(env.getProperty(ITEM_SET_BOOKER_ID_FOR_ITEM),
+                    null, ownerId, itemId);
+
+            if (result != 0) {
+                log.debug("Booker by owner id: '{}', item id: '{}' was removed", ownerId, itemId);
+            } else {
+                log.debug("Booker by owner id: '{}', item id: '{}' was not removed", ownerId, itemId);
+            }
+        } catch (DataAccessException e) {
+            log.error("Query fails by remove booker by owner id: '{}', item id: '{}'", ownerId, itemId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
         return findById(itemId);
     }
 
-    // TODO: 05.05.2018 if any user change item it change in all users who have it item
+    @Override
+    public Item addLike(int itemId, int userId) {
+        log.debug("Try to add like by item id: '{}', user id: '{}'", itemId, userId);
+        try {
+            int result = jdbcTemplate.update(env.getProperty(ITEM_ADD_LIKE_BY_ITEM_ID_USER_ID),
+                    itemId, userId);
+
+            if (result != 0) {
+                log.debug("Like by item id: '{}', user id: '{}' was added", itemId, userId);
+            } else {
+                log.debug("Like by item id: '{}', user id: '{}' was not added", itemId, userId);
+            }
+        } catch (DataAccessException e) {
+            log.error("Query fails by add like by item id: '{}', user id: '{}'", itemId, userId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+        return findById(itemId);
+    }
+
+    @Override
+    public Item removeLike(int itemId, int userId) {
+        log.debug("Try to remove like by item id: '{}', user id: '{}'", itemId, userId);
+        try {
+            int result = jdbcTemplate.update(env.getProperty(ITEM_REMOVE_LIKE_BY_ITEM_ID_USER_ID),
+                    itemId, userId);
+
+            if (result != 0) {
+                log.debug("Like by item id: '{}', user id: '{}' was removed", itemId, userId);
+            } else {
+                log.debug("Like by item id: '{}', user id: '{}' was not removed", itemId, userId);
+            }
+        } catch (DataAccessException e) {
+            log.error("Query fails by remove like by item id: '{}', user id: '{}'", itemId, userId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+        return findById(itemId);
+    }
+
     @Override
     public Item update(Item model) {
-//        try {
-//            jdbcTemplate.update(env.getProperty(ITEM_UPDATE),
-//                    model.getName(), model.getDescription(), model.getImageFilepath(), model.getLink(),
-//                    model.getDueDate(), model.getItemId());
-//        } catch (DataAccessException e) {
-//            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-//        }
+        try {
+            int numberOfUsers = jdbcTemplate.queryForObject(
+                    env.getProperty(ITEM_GET_NUMBER_OF_ITEM_USERS), new Object[]{model.getItemId()}, Integer.class);
+            if (numberOfUsers != 1) {
+                log.debug("Try insert altered item '{}'", model);
+                deleteFromUserWishList(model.getOwnerId(), model.getItemId());
+                insert(model);
+            } else {
+                log.debug("Try change existing item");
+                try {
+                    int result = jdbcTemplate.update(env.getProperty(ITEM_UPDATE),
+                            model.getName(), model.getDescription(), model.getImageFilepath(), model.getLink(),
+                            model.getDueDate(), model.getItemId());
+                        result += jdbcTemplate.update(env.getProperty(ITEM_UPDATE_PRIORITY),
+                            model.getPriority().ordinal() + 1, model.getOwnerId(), model.getItemId());
+                    if (result > 0) {
+                        log.debug("Item was updated item: '{}'", model);
+                    } else {
+                        log.debug("Item was not updated item");
+                    }
+                    addTags(model.getTags(), model.getItemId());
+                } catch (DataAccessException e) {
+                    log.error("Query fails by updating item: '{}'", model);
+                    throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+                }
+            }
+        } catch (DataAccessException e) {
+            log.error("Query fails by getting number if user by item id '{}'", model.getItemId());
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
         return model;
     }
 
-    // TODO: 04.05.2018 item deleting in all users, need userId in signature !!
-    // TODO: 04.05.2018 delete item if it don't have references from users
+    // item deleting in all users
     @Override
     public Item delete(Item model) {
 //        try {
@@ -148,55 +294,107 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     private List<Integer> getUserItemsId(int userId) {
-        List<Integer> itemsIds;
+        log.debug("Try to getUserItemsIds by user id '{}'", userId);
 
+        List<Integer> itemsIds;
         try {
             itemsIds = jdbcTemplate.queryForList(env.getProperty(ITEM_GET_ITEMS_ID_BY_USER_ID),
                     new Object[]{userId}, Integer.class);
         } catch (DataAccessException e) {
+            log.error("Query fails by finding user item's ids with user id '{}'", userId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        if (itemsIds.isEmpty()) {
+            log.debug("User item's ids not found by user id '{}'", userId);
+        } else {
+            log.debug("User item's ids were wound by user id '{}'", userId);
         }
         return itemsIds;
     }
 
     private List<Integer> getPopularItemsId() {
+        log.debug("Try to get popular item's id");
+
         List<Integer> itemsIds;
         try {
-            itemsIds = jdbcTemplate.queryForList(env.getProperty(ITEM_GET_POPULAR_ITEMS_ID), Integer.class);
+            itemsIds = jdbcTemplate.queryForList(
+                    env.getProperty(ITEM_GET_POPULAR_ITEMS_ID), new Object[]{numberOfPopularItem}, Integer.class);
         } catch (DataAccessException e) {
+            log.error("Query fails by finding popular item's ids");
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+        if (itemsIds.isEmpty()) {
+            log.debug("Popular item's ids not found by user id ");
+        } else {
+            log.debug("Popular item's ids were wound by user id ");
         }
         return itemsIds;
     }
 
     private ItemPriority getItemPriorityByUserIdItemId(int userId, int itemId) {
+        log.debug("Try to getItemPriorityByUserIdItemId by user id: '{}' and item id: '{}'", userId, itemId);
         ItemPriority priority;
         try {
             priority = ItemPriority.valueOf(jdbcTemplate.queryForObject(env.getProperty(ITEM_GET_PRIORITY_BY_USER_ID),
                     new Object[]{userId, itemId}, String.class));
         } catch (DataAccessException e) {
+            log.error("Query fails by finding item priority by user id: '{}' and item id: '{}'", userId, itemId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return priority;
     }
 
-    @Override
-    public List<Item> getUserWishList(int id) {
-        return null;
-    }
-
-    @Override
-    public List<Item> getRecommendations(int id) {
-        return null;
+    private void addTags(List<String> tags, int itemId) {
+        log.debug("Try to delete tags by item id: '{}'", itemId);
+        try {
+            jdbcTemplate.update(env.getProperty(ITEM_DELETE_TAGS), itemId);
+        } catch (DataAccessException e) {
+            log.error("Query fails by delete item's tags by item id: '{}'", itemId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+        log.debug("Try to delete tags by item id: '{}'", itemId);
+        Map<Integer, String> tagsId = new HashMap<>();
+        tags.forEach((tag) -> {
+            try {
+                int id = jdbcTemplate.queryForObject(env.getProperty(ITEM_GET_TAG_ID), new Object[]{tag}, Integer.class);
+                if (id == 0) {
+                    log.debug("Try to add new tag: '{}'", tag);
+                    SimpleJdbcInsert insertItem = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
+                            .withTableName(TABLE_TAG)
+                            .usingGeneratedKeyColumns(TAG_TAG_ID);
+                    Map<String, Object> itemParameters = new HashMap<>();
+                    itemParameters.put(TAG_TAG_NAME, tag);
+                    try {
+                        id = insertItem.executeAndReturnKey(itemParameters).intValue();
+                        tagsId.put(id, tag);
+                    } catch (DataAccessException e) {
+                        log.error("Query fails by add new tag by tag name: '{}', tag id: '{}'", tag, id);
+                        e.printStackTrace();
+                        throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+                    }
+                } else {
+                    log.debug("Tag: '{}' exist, tag id: '{}'", tag, id);
+                    tagsId.put(id, tag);
+                }
+            } catch (DataAccessException e) {
+                log.error("Query fails by find tag id by tag name: '{}'", tag);
+                throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+            }
+        });
+        log.debug("Try add tag to item: '{}'", itemId);
+        tagsId.forEach((tagId, tagName) -> {
+            try {
+                jdbcTemplate.update(env.getProperty(ITEM_ADD_TAG_TO_ITEM), itemId, tagId);
+            } catch (DataAccessException e) {
+                log.error("Query fails by add tag to item by tag id: '{}', item id: '{}'", tagId, itemId);
+                throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+            }
+        });
     }
 
     @Override
     public List<Item> findBookingByUserLogin(String login) {
-        return null;
-    }
-
-    @Override
-    public List<Item> findByUserLogin(String login) {
         return null;
     }
 }

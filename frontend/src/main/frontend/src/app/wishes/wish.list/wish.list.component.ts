@@ -38,15 +38,15 @@ export class WishListComponent implements OnInit {
   ngOnInit() {
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
+    this.category = WishListComponent.OWN_CATEGORY;
+    this.title = "Own wishes:";
 
     this.route.params.subscribe((params: Params) => {
       this.login = params['login'];
-      console.log(this.login);
       if(this.login === undefined) {
         this.login = this.profile.login;
       }
-      console.log(this.login);
-      console.log(this.profile.login);
+      this.getWishList();
     });
 
     // subscribe to router event
@@ -88,8 +88,7 @@ export class WishListComponent implements OnInit {
       itemList => {
         this.items = itemList;
         this.spinner.hide();
-      })
-    // this.items = ITEMS;
+      });
   }
 
   addSearchTag() {

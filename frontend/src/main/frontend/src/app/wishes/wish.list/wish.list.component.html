@@ -84,12 +84,11 @@
               <h5 class="card-title">{{item.name}}</h5>
               <p class="card-text"><b>Priority: </b>{{item.priority}}</p>
               <p class="card-text"><b>Due date: </b>{{item.dueDate}}</p>
-              <p class="card-text"><b>Owner: </b>{{item.ownerId}}</p>
 
               <div class="container">
                 <div class="row">
                   <div *ngFor="let tag of item.tags">
-                    <a class="badge badge-pill badge-primary m-1">#{{ tag.name }}</a>
+                    <a style="color: white;" class="badge badge-pill badge-primary m-1">#{{ tag }}</a>
                   </div>
                 </div>
               </div>

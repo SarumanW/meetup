@@ -4,6 +4,7 @@ package com.meetup.meetup.rest.controller;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.ItemPriority;
+import com.meetup.meetup.service.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.meetup.meetup.service.ItemService;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -21,11 +23,14 @@ public class ItemController {
     private static Logger log = LoggerFactory.getLogger(ItemController.class);
 
     private final ItemService itemService;
+    private final StorageService storageService;
 
     @Autowired
-    public ItemController(ItemService itemService){
+    public ItemController(ItemService itemService, StorageService storageService) {
         this.itemService = itemService;
+        this.storageService = storageService;
     }
+
 
     @GetMapping("/{id}")
     public @ResponseBody ResponseEntity<Item> getItemById(@PathVariable int id){
@@ -78,5 +83,15 @@ public class ItemController {
 
         log.debug("Send response status OK");
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+        log.debug("Trying to upload image '{}'", file);
+
+        String imagePath = storageService.wishItemImageStore(file);
+
+        log.debug("Image successfully uploaded send response status OK");
+        return new ResponseEntity<>(imagePath, HttpStatus.OK);
     }
 }

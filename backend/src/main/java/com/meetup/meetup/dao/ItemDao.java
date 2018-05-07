@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface ItemDao extends Dao<Item> {
 
-    List<Item> findByUserId(int userId);
+    List<Item> getWishListByUserId(int userId);
+
+    Item findByUserIdItemId(int userId, int itemId);
 
     List<Item> getPopularItems();
 
@@ -19,11 +21,9 @@ public interface ItemDao extends Dao<Item> {
 
     Item removeBookerForItem(int ownerId, int itemId);
 
-    List<Item> getUserWishList(int id);
+    Item addLike(int itemId, int userId);
 
-    List<Item> getRecommendations(int id);
+    Item removeLike(int itemId, int userId);
 
     List<Item>  findBookingByUserLogin (String login);
-
-    List<Item> findByUserLogin(String login);
 }

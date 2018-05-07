@@ -121,7 +121,7 @@ public class ProfileController {
         User updatedUser = storageService.store(file);
 
         log.debug("Image successfully uploaded send response status OK");
-        return new ResponseEntity<>(updatedUser.getImgPath(),HttpStatus.OK);
+        return new ResponseEntity<>(updatedUser.getImgPath(), HttpStatus.OK);
 
     }
 

@@ -37,8 +37,6 @@ export class WishListService {
     }
   }
 
-
-
   addWishItem(item: Item): Observable<any> {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
@@ -52,4 +50,7 @@ export class WishListService {
 
     return this.http.delete(`api/wishes/${item.itemId}`, {headers: headers});
   }
+
+  //todo search by tags
+
 }
