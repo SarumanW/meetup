@@ -40,7 +40,7 @@ public class WishListService {
         log.debug("User was successfully received");
 
         log.debug("Trying to get all WishList for user '{}'", user.toString());
-        return itemDao.getUserWishList(user.getId());
+        return itemDao.getWishListByUserId(user.getId());
     }
 
     public Item addWishItem(Item item) {

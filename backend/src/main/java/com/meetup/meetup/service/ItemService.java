@@ -1,6 +1,7 @@
 package com.meetup.meetup.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meetup.meetup.dao.ItemDao;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.ItemPriority;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -34,7 +37,7 @@ public class ItemService {
         log.debug("User was successfully received");
 
         log.debug("Trying to get item with id '{}'", id);
-        return itemDao.findById(id);
+        return itemDao.findByUserIdItemId(user.getId(),id);
     }
 
     public Item addItem(Item item) {
@@ -79,13 +82,13 @@ public class ItemService {
 //        log.debug("Given access to item '{}' for user '{}'", item, user);
     }
 
-    public Item addItemToUserWishList(int itemId, ItemPriority itemPriority) {
+    public Item addItemToUserWishList(int itemId, Item item) {
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
         log.debug("User was successfully received");
 
         log.debug("Trying to add item with id '{}' in user '{}' wish list", itemId, user.getId());
-        return itemDao.addToUserWishList(user.getId(), itemId, itemPriority);
+        return itemDao.addToUserWishList(user.getId(), itemId, item.getPriority());
     }
 
     public Item deleteItemFromUserWishList(int itemId) {
@@ -95,5 +98,23 @@ public class ItemService {
 
         log.debug("Trying to delete item with id '{}' from user '{}' wish list", itemId, user.getId());
         return itemDao.deleteFromUserWishList(user.getId(), itemId);
+    }
+
+    public Item addLike(int itemId){
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
+
+        log.debug("Try to add like for item with id '{}'", itemId);
+        return itemDao.addLike(itemId, user.getId());
+    }
+
+    public Item removeLike(int itemId){
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
+
+        log.debug("Try to delete like for item with id '{}'", itemId);
+        return itemDao.removeLike(itemId, user.getId());
     }
 }
