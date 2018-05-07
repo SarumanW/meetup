@@ -12,6 +12,8 @@ public final class Key {
     public static final String TABLE_FOLDER = "FOLDER";
     public static final String TABLE_ITEM = "ITEM";
     public static final String TABLE_USER_ITEM = "USER_ITEM";
+    public static final String TABLE_TAG = "TAG";
+
 
     //ITEM table fields
     public static final String ITEM_ITEM_ID = "ITEM_ID";
@@ -26,6 +28,10 @@ public final class Key {
     public static final String ITEM_BOOKER_ID = "ID_WHO_BOOKED";
     public static final String ITEM_USER_ID = "USER_ID";
     public static final String ITEM_PRIORITY_ID = "PRIORITY_ID";
+
+    //TAG table fields
+    public static final String TAG_TAG_ID = "TAG_ID";
+    public static final String TAG_TAG_NAME = "NAME";
 
 
     //UUSER table fields
@@ -114,6 +120,9 @@ public final class Key {
     public static final String ITEM_UPDATE_USER_ITEM = "item.updateUserItem";
     public static final String ITEM_DELETE_FROM_WISH_LIST = "item.deleteFromWishList";
     public static final String ITEM_SET_BOOKER_ID_FOR_ITEM = "item.setBookerId";
+    public static final String ITEM_GET_NUMBER_OF_ITEM_USERS = "item.getNumberOfItemUsers";
+    public static final String ITEM_GET_TAG_ID = "item.getTagId";
+    public static final String ITEM_ADD_TAG_TO_ITEM = "item.addTagToItem";
 
     //Exceptions
     public static final String EXCEPTION_AUTHENTICATION = "authentication.exception";
