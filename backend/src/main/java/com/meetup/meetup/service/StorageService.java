@@ -39,7 +39,7 @@ public class StorageService {
         rootLocation = Paths.get(env.getProperty("profile.img.link"));
         User user = authenticationFacade.getAuthentication();
         String inFileFormat = "." + file.getOriginalFilename().split("\\.")[1];
-        user.setImgPath(env.getProperty("remote.img.link") + user.getId() + inFileFormat);
+        user.setImgPath(env.getProperty("profile.img.link") + user.getId() + inFileFormat);
         userDao.update(user);
         try {
             Files.deleteIfExists(this.rootLocation.resolve(user.getId() + inFileFormat));
@@ -51,11 +51,11 @@ public class StorageService {
     }
 
     public String wishItemImageStore(MultipartFile file) {
-        rootLocation = Paths.get(env.getProperty("wish.img.link"));
+        rootLocation = Paths.get(env.getProperty("wish.local.img.link"));
         String inFileFormat = "." + file.getOriginalFilename().split("\\.")[1];
         try {
             long imageName = System.nanoTime();
-            String imagePath = env.getProperty("wish.remote.img.link") + imageName + inFileFormat;
+            String imagePath = env.getProperty("wish.local.img.link") + '\\' + imageName + inFileFormat;
             Files.deleteIfExists(this.rootLocation.resolve(imageName + inFileFormat));
             Files.copy(file.getInputStream(), this.rootLocation.resolve(imageName + inFileFormat));
             return imagePath;

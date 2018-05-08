@@ -24,13 +24,18 @@ export class UploadFileService {
     return this.http.request(req);
   }
 
-  pushWishFileToStorage(file: File): Observable<any> {
+  pushWishFileToStorage(file: File): Observable<HttpEvent<{}>> {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
     let formdata: FormData = new FormData();
 
     formdata.append('file', file);
 
-    return this.http.post('/api/item/upload', formdata, {headers: headers});
+    const req = new HttpRequest('POST', '/api/item/upload', formdata, {
+      reportProgress: true,
+      responseType: 'text',
+      headers: headers
+    });
+    return this.http.request(req);
   }
 }

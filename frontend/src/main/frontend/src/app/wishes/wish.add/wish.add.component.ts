@@ -23,6 +23,7 @@ export class WishAddComponent implements OnInit {
 
   // Image
   selectedFile = null;
+  selectedImage = null;
 
   //Date
   minDueDate: string;
@@ -67,6 +68,7 @@ export class WishAddComponent implements OnInit {
       };
 
       reader.readAsDataURL(event.target.files[0]);
+      this.selectedImage = event.target.files[0];
     }
   }
 
@@ -133,19 +135,21 @@ export class WishAddComponent implements OnInit {
   }
 
   uploadImage() {
-    this.uploadService.pushWishFileToStorage(this.selectedFile).subscribe(event => {
+    this.uploadService.pushWishFileToStorage(this.selectedImage).subscribe(event => {
       if (event instanceof HttpResponse) {
-        this.showError('Unsuccessful image uploaded', 'Adding error');
+        this.showSuccess('Successful image uploaded', 'Attention!');
         console.log('File is completely uploaded!');
         console.log(event.body);
 
         //todo Check working
-        this.newItem.imageFilepath = event.body;
+        this.newItem.imageFilepath = event.body.toString();
         this.addWish();
         this.selectedFile = null;
+        this.selectedImage = null;
       }
     }, error => {
       this.showError('Unsuccessful image uploaded', 'Adding error');
+      this.spinner.hide();
     });
   }
 

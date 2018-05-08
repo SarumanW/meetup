@@ -11,6 +11,8 @@ export class WishListService {
   readonly GET_RECOMMENDATIONS_WISH_LIST = 'api/wishes/recommendations/';
   readonly GET_BOOKINGS_WISH_LIST = 'api/wishes/bookings/';
   readonly POST_ADD_ITEM = 'api/item/';
+  readonly POST_BOOK_WISH_ITEM = 'api/item/';
+  readonly POST_UNBOOK_WISH_ITEM = 'api/item/';
 
   constructor(private http: HttpClient) {}
 
@@ -48,7 +50,21 @@ export class WishListService {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.delete(`api/wishes/${item.itemId}`, {headers: headers});
+    return this.http.delete(`api/item/${item.itemId}/delete`, {headers: headers});
+  }
+
+  bookWishItem(item: Item): Observable<any> {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.post(this.POST_ADD_ITEM, item, {headers: headers});
+  }
+
+  unbookWishItem(item: Item): Observable<any> {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.delete(`api/item/${item.itemId}/delete`, {headers: headers});
   }
 
   //todo search by tags

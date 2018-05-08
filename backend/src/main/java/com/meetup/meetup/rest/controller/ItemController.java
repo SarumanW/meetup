@@ -58,15 +58,6 @@ public class ItemController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}/delete")
-    public @ResponseBody ResponseEntity deleteItem(@PathVariable int id) {
-        log.debug("Trying to delete item with id '{}' to user wish list", id);
-        Item deletedItem = itemService.deleteItemFromUserWishList(id);
-
-        log.debug("Send response status OK");
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
     @PutMapping
     public @ResponseBody ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
         log.debug("Trying to update item '{}'", newItem);
@@ -74,6 +65,15 @@ public class ItemController {
 
        log.debug("Send response body updated '{}' and status OK");
         return new ResponseEntity<>(updatedItem, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public @ResponseBody ResponseEntity deleteItem(@PathVariable int id) {
+        log.debug("Trying to delete item with id '{}' to user wish list", id);
+        Item deletedItem = itemService.deleteItemFromUserWishList(id);
+
+        log.debug("Send response status OK");
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
@@ -86,7 +86,7 @@ public class ItemController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> handleFileUpload(@RequestParam MultipartFile file) {
         log.debug("Trying to upload image '{}'", file);
 
         String imagePath = storageService.wishItemImageStore(file);

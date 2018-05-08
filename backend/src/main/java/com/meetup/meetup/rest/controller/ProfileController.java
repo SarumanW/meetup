@@ -126,7 +126,7 @@ public class ProfileController {
     }
 
     @GetMapping("/search")
-    public List<User> searchUsers(@RequestParam String username) {
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String username) {
         log.debug("Trying to search users by username '{}'",
                 username);
 
@@ -134,6 +134,6 @@ public class ProfileController {
 
         log.debug("Found users '{}'", users.toString());
 
-        return users;
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

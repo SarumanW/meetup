@@ -72,18 +72,22 @@
 
         <div class="folder d-flex flex-wrap">
           <div *ngFor="let item of items" class="card mb-4">
-            <div class="head card-body">
-              <img class="folder-icon" src="assets/folder-icon.svg" alt="Card image cap">
+            <div class="card-header head">
+              <img class="card-img-top" [src]="item.imageFilepath" alt="Card image cap">
               <img *ngIf="item.ownerId === profile.id" (click)="deleteWishItem(item)" class="close-btn"
                    src="assets/close-white.svg" alt="">
               <img *ngIf="item.ownerId !== profile.id" (click)="addWishItem(item)" class="close-btn"
                    src="assets/add.svg" alt="">
             </div>
             <div class="card-body">
-              <a routerLink="/{{profile.login}}/wishes/{{item.itemId}}" class="btn btn-primary">Details</a>
+              <a *ngIf="item.ownerId !== profile.id && item.bookerId !== profile.id"
+                 (click)="bookWishItem(item)" class="btn btn-success">Book</a>
+              <a *ngIf="item.ownerId !== profile.id && item.bookerId === profile.id"
+                 (click)="unbookWishItem(item)" class="btn btn-danger">Unbook</a>
+              <br>
               <h5 class="card-title">{{item.name}}</h5>
               <p class="card-text"><b>Priority: </b>{{item.priority}}</p>
-              <p class="card-text"><b>Due date: </b>{{item.dueDate}}</p>
+              <p class="card-text"><b>Due date: </b>{{item.dueDate.split(' ')[0]}}</p>
 
               <div class="container">
                 <div class="row">
@@ -93,6 +97,7 @@
                 </div>
               </div>
             </div>
+            <a routerLink="/{{profile.login}}/wishes/{{item.itemId}}" class="btn btn-primary">Details</a>
           </div>
         </div>
       </div>

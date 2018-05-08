@@ -37,7 +37,6 @@ header{
   margin-right: 0;
 }
 .folder .card .head{
-  height: 150px;
   background-color: #007bff;
   display: flex;
   align-items: center;

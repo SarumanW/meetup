@@ -80,9 +80,11 @@ export class WishListComponent implements OnInit {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
 
-  getWishList() {
+  getWishList(withSpinner = true) {
     //todo get wish list from database
-    this.spinner.show();
+    if (withSpinner) {
+      this.spinner.show();
+    }
 
     this.wishListService.getWishList(this.category, this.login).subscribe(
       itemList => {
@@ -128,7 +130,8 @@ export class WishListComponent implements OnInit {
     this.spinner.show();
     this.wishListService.addWishItem(item).subscribe(item => {
       this.spinner.hide();
-      this.getWishList();
+      this.items.splice(item);
+      //this.getWishList(false);
       this.showSuccess('Wish item was successfully added', 'Attention!');
     }, error => {
       this.showError('Unsuccessful wish item adding', 'Adding error');
@@ -140,7 +143,34 @@ export class WishListComponent implements OnInit {
     this.spinner.show();
     this.wishListService.deleteWishItem(item).subscribe(item => {
       this.spinner.hide();
-      this.getWishList();
+      this.items.splice(item);
+      //this.getWishList(false);
+      this.showSuccess('Wish item was successfully deleted', 'Attention!');
+    }, error => {
+      this.showError('Unsuccessful wish item deleting', 'Adding error');
+      this.spinner.hide();
+    });
+  }
+
+  bookWishItem(item: Item) {
+    this.spinner.show();
+    this.wishListService.deleteWishItem(item).subscribe(item => {
+      this.spinner.hide();
+      this.items.splice(item);
+      //this.getWishList(false);
+      this.showSuccess('Wish item was successfully deleted', 'Attention!');
+    }, error => {
+      this.showError('Unsuccessful wish item deleting', 'Adding error');
+      this.spinner.hide();
+    });
+  }
+
+  unbookWishItem(item: Item) {
+    this.spinner.show();
+    this.wishListService.deleteWishItem(item).subscribe(item => {
+      this.spinner.hide();
+      this.items.splice(item);
+      //this.getWishList(false);
       this.showSuccess('Wish item was successfully deleted', 'Attention!');
     }, error => {
       this.showError('Unsuccessful wish item deleting', 'Adding error');
