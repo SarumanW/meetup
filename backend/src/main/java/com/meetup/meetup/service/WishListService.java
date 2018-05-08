@@ -56,8 +56,8 @@ public class WishListService {
         return itemDao.addToUserWishList(user.getId(), item.getItemId(), item.getPriority());
     }
 
-    public List<Item> getWishesByUser(String login) {
-        User user = userDao.findByLogin(login);
+    public List<Item> getWishesByUser(String login, String[] tagArray) {
+        User user = userDao.findByLogin(login, tagArray);
 
         if (user == null) {
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "login", login));
@@ -68,15 +68,15 @@ public class WishListService {
         return itemDao.getWishListByUserId(user.getId());
     }
 
-    public List<Item> getRecommendations() {
+    public List<Item> getRecommendations(String[] tagArray) {
 
         log.debug("Trying to get all recommendations");
-        return itemDao.getPopularItems();
+        return itemDao.getPopularItems(tagArray);
     }
 
-    public List<Item> getBookingByUser(String login) {
+    public List<Item> getBookingByUser(String login, String[] tagArray) {
         log.debug("Trying to get booking wishes from dao by user login '{}'", login);
-        return itemDao.findBookingByUserLogin(login);
+        return itemDao.findBookingByUserLogin(login, tagArray);
     }
 
 

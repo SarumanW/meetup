@@ -43,10 +43,10 @@ public class WishListController {
     }
 
     @GetMapping("/{login}")
-    public ResponseEntity<List<Item>> getWishesByUser(@PathVariable String login) {
+    public ResponseEntity<List<Item>> getWishesByUser(@PathVariable String login,@RequestParam(value="tag") String[] tagArray) {
         log.debug("Trying to get wishes by login '{}'", login);
 
-        List<Item> userWishes = wishListService.getWishesByUser(login);
+        List<Item> userWishes = wishListService.getWishesByUser(login, tagArray);
 
         log.debug("Send response body wishes '{}' and status OK", userWishes.toString());
 
@@ -54,18 +54,18 @@ public class WishListController {
     }
 
     @GetMapping("/recommendations")
-    public ResponseEntity<List<Item>> getRecommendations() {
+    public ResponseEntity<List<Item>> getRecommendations(@RequestParam(value="tag") String[] tagArray) {
         log.debug("Trying to get  recommend wishes");
-        List<Item> items = wishListService.getRecommendations();
+        List<Item> items = wishListService.getRecommendations(tagArray);
 
         log.debug("Send response body items '{}' and status OK", items.toString());
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
     @GetMapping("/bookings/{login}")
-    public ResponseEntity<List<Item>> getBookingByUser(@PathVariable String login) {
+    public ResponseEntity<List<Item>> getBookingByUser(@PathVariable String login, @RequestParam(value="tag") String[] tagArray) {
         log.debug("Trying to get booking wishes by user login '{}'", login);
-        List<Item> items = wishListService.getBookingByUser(login);
+        List<Item> items = wishListService.getBookingByUser(login, tagArray);
 
         log.debug("Send response body items '{}' and status OK", items.toString());
         return new ResponseEntity<>(items, HttpStatus.OK);
