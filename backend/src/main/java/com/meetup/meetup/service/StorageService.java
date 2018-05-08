@@ -55,9 +55,9 @@ public class StorageService {
         String inFileFormat = "." + file.getOriginalFilename().split("\\.")[1];
         try {
             long imageName = System.nanoTime();
-            String imagePath = env.getProperty("wish.local.img.link") + '\\' + imageName + inFileFormat;
+            String imagePath = env.getProperty("wish.remote.img.link") + imageName + inFileFormat;
             Files.deleteIfExists(this.rootLocation.resolve(imageName + inFileFormat));
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(imageName + inFileFormat));
+//            Files.copy(file.getInputStream(), this.rootLocation.resolve(imageName + inFileFormat));
             return imagePath;
         } catch (Exception e) {
             throw new FileUploadException(String.format(env.getProperty(EXCEPTION_FILE_UPLOAD), file.getOriginalFilename()));

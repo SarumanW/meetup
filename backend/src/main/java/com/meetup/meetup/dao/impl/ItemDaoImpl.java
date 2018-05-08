@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Date;
 import java.util.*;
 
-import static com.meetup.meetup.Keys.Key.*;
+import static com.meetup.meetup.keys.Key.*;
 
 @Repository
 @PropertySource("classpath:sqlDao.properties")
@@ -65,6 +65,11 @@ public class ItemDaoImpl implements ItemDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return item;
+    }
+
+    @Override
+    public List<Item> getPopularItems(String[] tagArray) {
+        return null;
     }
 
     @Override
@@ -145,6 +150,7 @@ public class ItemDaoImpl implements ItemDao {
                         userId, itemId, priority);
             }
         } catch (DataAccessException e) {
+            e.printStackTrace();
             log.error("Query fails by add item to wish list by user id: '{}', item id: '{}', priority: '{}'",
                     userId, itemId, priority);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -245,6 +251,11 @@ public class ItemDaoImpl implements ItemDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return findById(itemId);
+    }
+
+    @Override
+    public List<Item> findBookingByUserLogin(String login, String[] tagArray) {
+        return null;
     }
 
     @Override

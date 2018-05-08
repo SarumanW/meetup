@@ -26,4 +26,8 @@ public interface ItemDao extends Dao<Item> {
     Item removeLike(int itemId, int userId);
 
     List<Item>  findBookingByUserLogin (String login, String[] tagArray);
+
+    List<Item> findBookingByUserLogin(String login);
+
+    List<Item> getPopularItems();
 }

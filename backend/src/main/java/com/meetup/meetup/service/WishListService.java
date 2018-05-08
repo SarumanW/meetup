@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
+import static com.meetup.meetup.keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -57,7 +57,7 @@ public class WishListService {
     }
 
     public List<Item> getWishesByUser(String login, String[] tagArray) {
-        User user = userDao.findByLogin(login, tagArray);
+        User user = userDao.findByLogin(login);
 
         if (user == null) {
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "login", login));
