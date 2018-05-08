@@ -4,18 +4,42 @@
       <home-comp [states]="state"></home-comp>
     </div>
 
-    <div class="col-10">
+    <div class="col-10 py-4">
       <div class="container justify-content-center">
-        <div class="chat">
-          Chat goes here
+
+        <div id="connect" [ngClass]="{'hidden': isButtonHidden}">
+          <button class="btn btn-primary" (click)="connect()">Join this chat</button>
         </div>
-        <form class="form-inline">
-          <div class="form-group mx-sm-3 mb-2">
-            <input type="text" class="form-control" id="input" name="message"
-                   placeholder="message" [(ngModel)]="message">
+
+        <div id="chat-page" [ngClass]="{'hidden': !isButtonHidden}">
+          <div class="chat-container">
+            <div class="chat-header">
+              <h2>Chat room</h2>
+            </div>
+
+            <ul id="messageArea">
+
+            </ul>
+
+            <form id="messageForm" name="messageForm">
+              <div class="form-group">
+                <div class="input-group clearfix">
+                  <input type="text" id="message" placeholder="Type a message..."
+                         [(ngModel)]="messageText" name="inputMessage" autocomplete="off" class="form-control"/>
+                  <button (click)="sendMessage()" class="btn btn-primary">Send</button>
+                </div>
+              </div>
+            </form>
           </div>
-          <button (click)="sendMessage(message)" class="btn btn-primary mb-2">Send</button>
-        </form>
+        </div>
+
+        <!--<form class="form-inline">-->
+          <!--<div class="form-group mx-sm-3 mb-2">-->
+            <!--<input type="text" class="form-control" id="input" name="message"-->
+                   <!--placeholder="message" [(ngModel)]="message">-->
+          <!--</div>-->
+          <!--<button (click)="sendMessage(message)" class="btn btn-primary mb-2">Send</button>-->
+        <!--</form>-->
       </div>
     </div>
   </div>
