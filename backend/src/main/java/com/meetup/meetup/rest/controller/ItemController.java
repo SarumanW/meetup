@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.ItemPriority;
+import com.meetup.meetup.service.EventImageService;
+import com.meetup.meetup.service.ItemImageService;
+import com.meetup.meetup.service.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.meetup.meetup.service.ItemService;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -23,10 +27,12 @@ public class ItemController {
     private static Logger log = LoggerFactory.getLogger(ItemController.class);
 
     private final ItemService itemService;
+    private final ItemImageService itemImageService;
 
     @Autowired
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, ItemImageService itemImageService) {
         this.itemService = itemService;
+        this.itemImageService = itemImageService;
     }
 
     @GetMapping("/{id}")
@@ -52,6 +58,8 @@ public class ItemController {
         log.debug("Send response body saved item '{}' and status CREATED", addedItem);
         return new ResponseEntity<>(addedItem, HttpStatus.CREATED);
     }
+
+
 
     @PostMapping("/{id}/add")
     public @ResponseBody
@@ -112,5 +120,17 @@ public class ItemController {
 
         log.debug("Send response status OK");
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+        log.debug("Trying to upload image '{}'", file);
+
+        String message = itemImageService.store(file);
+
+        log.debug("Image successfully uploaded send response status OK");
+        return new ResponseEntity<>(message,HttpStatus.OK);
+
     }
 }

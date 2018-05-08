@@ -67,21 +67,6 @@ public class ItemService {
         return itemDao.delete(item);
     }
 
-    //todo who can update and delete item??
-    private void checkPermission(Item item) {
-//        log.debug("Trying to get user from AuthenticationFacade");
-//        User user = authenticationFacade.getAuthentication();
-//        log.debug("User '{}' was successfully received", user.toString());
-//
-//        log.debug("Trying to check equivalence of item.getBookerId '{}' and user.getId '{}'", item.getBookerId(), user.getId());
-//        if (item.getBookerId() != user.getId()) {
-//            log.error("User has no access to this data");
-//            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Item", "userId", item.getBookerId()));
-//        }
-//
-//        log.debug("Given access to item '{}' for user '{}'", item, user);
-    }
-
     public Item addItemToUserWishList(int itemId, Item item) {
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
