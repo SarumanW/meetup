@@ -39,7 +39,6 @@ import {EventAddComponent} from './events/event.add/event.add.component';
 import {EventAddService} from "./events/event.add.service";
 import {CalendarModule} from "angular-calendar";
 import {CalendarComponent} from "./calendar/calendar.component/calendar.component";
-import {CalendarHeaderComponent} from "./calendar/calendar.utils/calendar.header.component";
 import {UtilsModule} from "./calendar/calendar.utils/utils.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CalendarService} from "./calendar/calendar.service";
@@ -48,6 +47,7 @@ import {AgmCoreModule} from "@agm/core";
 import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
 import {EventEditComponent} from "./events/event.edit/event.edit.component";
+import { ChatComponent } from './chat/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +70,8 @@ import {EventEditComponent} from "./events/event.edit/event.edit.component";
     EventListComponent,
     EventAddComponent,
     CalendarComponent,
-    EventEditComponent
+    EventEditComponent,
+    ChatComponent
   ],
   imports: [
     ReactiveFormsModule,

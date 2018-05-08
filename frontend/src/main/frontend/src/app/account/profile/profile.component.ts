@@ -66,6 +66,8 @@ export class ProfileComponent implements OnInit {
           this.friendCount = friends.length;
         });
     });
+
+
     this.friendService.getFriendsRequests().subscribe((requests) => {
       if (requests.length === 0) {
         this.isConfirmed = true;

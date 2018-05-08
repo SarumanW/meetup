@@ -1,0 +1,22 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-2">
+      <home-comp [states]="state"></home-comp>
+    </div>
+
+    <div class="col-10">
+      <div class="container justify-content-center">
+        <div class="chat">
+          Chat goes here
+        </div>
+        <form class="form-inline">
+          <div class="form-group mx-sm-3 mb-2">
+            <input type="text" class="form-control" id="input" name="message"
+                   placeholder="message" [(ngModel)]="message">
+          </div>
+          <button (click)="sendMessage(message)" class="btn btn-primary mb-2">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
