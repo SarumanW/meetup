@@ -106,6 +106,7 @@ public final class Key {
     public static final String EXCEPTION_HASH_ALGORITHM = "hash.algorithm.exception";
     public static final String EXCEPTION_NO_TOKEN = "no.token.exception";
     public static final String EXCEPTION_MAIL_SERVER = "mail.server.exception";
+    public static final String EXCEPTION_PARSE_DATE = "parse.date.exception";
 
     private Key(){}
 
