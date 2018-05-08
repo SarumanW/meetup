@@ -128,7 +128,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     public List<User> getFriends(int userId) {
         log.debug("Try to getFriends by userId '{}'", userId);
 
-        List<User> friends = jdbcTemplate.query(env.getProperty(USER_GET_FRIENDS_IDS), new Object[]{userId,userId}, new UserRowMapper());
+        List<User> friends = jdbcTemplate.query(env.getProperty(USER_GET_FRIENDS), new Object[]{userId,userId}, new UserRowMapper());
         log.debug("Freinds found: '{}'", friends);
 
         return friends;
@@ -170,7 +170,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     public List<User> getFriendsRequests(int userId) {
         log.debug("Try to getUnconfirmedIds by userId '{}'", userId);
 
-        List<User> friendsRequests = jdbcTemplate.query(env.getProperty(USER_GET_UNCONFIRMED_IDS), new Object[] {userId}, new UserRowMapper());
+        List<User> friendsRequests = jdbcTemplate.query(env.getProperty(USER_GET_UNCONFIRMED), new Object[] {userId}, new UserRowMapper());
         log.debug("Friends request found '{}'", friendsRequests);
 
         return friendsRequests;

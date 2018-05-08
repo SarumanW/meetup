@@ -57,7 +57,7 @@ public class StorageService {
             long imageName = System.nanoTime();
             String imagePath = env.getProperty("wish.remote.img.link") + imageName + inFileFormat;
             Files.deleteIfExists(this.rootLocation.resolve(imageName + inFileFormat));
-//            Files.copy(file.getInputStream(), this.rootLocation.resolve(imageName + inFileFormat));
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(imageName + inFileFormat));
             return imagePath;
         } catch (Exception e) {
             throw new FileUploadException(String.format(env.getProperty(EXCEPTION_FILE_UPLOAD), file.getOriginalFilename()));

@@ -27,6 +27,8 @@ public interface ItemDao extends Dao<Item> {
 
     List<Item> findBookingByUserLogin(String login);
 
+    List<Item> getPopularItems(String[] tagArray);
+
     List<Item> getPopularItems();
 
     List<Item> findBookedItemsByUserId(int userId);

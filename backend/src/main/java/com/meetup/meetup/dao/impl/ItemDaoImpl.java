@@ -67,6 +67,7 @@ public class ItemDaoImpl implements ItemDao {
         return item;
     }
 
+    @Override
     public List<Item> getPopularItems(String[] tagArray) {
         return null;
     }
