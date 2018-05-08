@@ -16,25 +16,29 @@ export class WishListService {
 
   constructor(private http: HttpClient) {}
 
-  getWishList(category: string, login?: string): Observable<Item[]> {
+  getWishList(category: string, login = '', tags: string[] = []): Observable<Item[]> {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    // let params = new HttpParams();
-    // params.set("category", category);
+    let params = new HttpParams();
+    if (tags.length !== 0) {
+      tags.forEach(function (tag) {
+        params.set("tag", tag);
+      });
+    }
 
     switch (category) {
       case WishListComponent.BOOKINGS_CATEGORY: {
         return this.http
-          .get<any>(this.GET_BOOKINGS_WISH_LIST + login, {headers: headers});
+          .get<any>(this.GET_BOOKINGS_WISH_LIST + login, {headers: headers, params: params});
       }
       case WishListComponent.RECOMMENDATIONS_CATEGORY: {
         return this.http
-          .get<any>(this.GET_RECOMMENDATIONS_WISH_LIST, {headers: headers});
+          .get<any>(this.GET_RECOMMENDATIONS_WISH_LIST, {headers: headers, params: params});
       }
       default: {
         return this.http
-          .get<any>(this.GET_OWN_WISH_LIST + login, {headers: headers});
+          .get<any>(this.GET_OWN_WISH_LIST + login, {headers: headers, params: params});
       }
     }
   }
@@ -53,6 +57,8 @@ export class WishListService {
     return this.http.delete(`api/item/${item.itemId}/delete`, {headers: headers});
   }
 
+
+  //todo create booking
   bookWishItem(item: Item): Observable<any> {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
@@ -60,13 +66,12 @@ export class WishListService {
     return this.http.post(this.POST_ADD_ITEM, item, {headers: headers});
   }
 
+  //todo create unbooking
   unbookWishItem(item: Item): Observable<any> {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
     return this.http.delete(`api/item/${item.itemId}/delete`, {headers: headers});
   }
-
-  //todo search by tags
 
 }

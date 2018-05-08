@@ -25,7 +25,8 @@
                     type="button" class="btn btn-primary"
                     [disabled]="category === class.RECOMMENDATIONS_CATEGORY">Recommendations
             </button>
-            <button routerLink="." [queryParams]="{category: class.BOOKINGS_CATEGORY}" type="button" class="btn btn-primary"
+            <button *ngIf="login === profile.login" routerLink="."
+                    [queryParams]="{category: class.BOOKINGS_CATEGORY}" type="button" class="btn btn-primary"
                     [disabled]="category === class.BOOKINGS_CATEGORY">Bookings
             </button>
           </div>
@@ -47,6 +48,9 @@
             </small>
             <small class="form-text text-danger" *ngIf="itemTag.errors.pattern">
               Wish name can only contain letters, digits and '_'.
+            </small>
+            <small class="form-text text-danger" *ngIf="tags.length >= 8">
+              Maximal count of search tags is 8;
             </small>
           </div>
         </div>
@@ -73,20 +77,21 @@
         <div class="folder d-flex flex-wrap">
           <div *ngFor="let item of items" class="card mb-4">
             <div class="card-header head">
-              <img class="card-img-top" [src]="item.imageFilepath" alt="Card image cap">
+              <img class="card-img-top" [src]="item.imageFilepath" alt="..."
+                   onError="this.src='https://i1.rozetka.ua/goods/1495253/vitek-vt-1511_images_1495253826.jpg'">
               <img *ngIf="item.ownerId === profile.id" (click)="deleteWishItem(item)" class="close-btn"
                    src="assets/close-white.svg" alt="">
               <img *ngIf="item.ownerId !== profile.id" (click)="addWishItem(item)" class="close-btn"
                    src="assets/add.svg" alt="">
             </div>
             <div class="card-body">
-              <a *ngIf="item.ownerId !== profile.id && item.bookerId !== profile.id"
-                 (click)="bookWishItem(item)" class="btn btn-success">Book</a>
-              <a *ngIf="item.ownerId !== profile.id && item.bookerId === profile.id"
-                 (click)="unbookWishItem(item)" class="btn btn-danger">Unbook</a>
-              <br>
+              <button disabled *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === 0"
+                 (click)="bookWishItem(item)" class="btn btn-success">Book</button>
+              <button disabled *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === profile.id"
+                 (click)="unbookWishItem(item)" class="btn btn-danger">Unbook</button>
               <h5 class="card-title">{{item.name}}</h5>
               <p class="card-text"><b>Priority: </b>{{item.priority}}</p>
+              <p *ngIf="item.bookerId !== 0" class="card-text"><b>Booked by id: </b>{{item.bookerId}}</p>
               <p class="card-text"><b>Due date: </b>{{item.dueDate.split(' ')[0]}}</p>
 
               <div class="container">
