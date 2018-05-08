@@ -12,10 +12,13 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 import static com.meetup.meetup.Keys.Key.*;
@@ -55,11 +58,15 @@ public class ItemDaoImpl implements ItemDao {
     public Item findByUserIdItemId(int userId, int itemId) {
         log.debug("Try find item by user id: '{}' and item id: '{}'", userId, itemId);
         Item item = findById(itemId);
-        item.setPriority(getItemPriorityByUserIdItemId(userId, itemId));
-        item.setOwnerId(userId);
         try {
-            item.setBookerId(jdbcTemplate.queryForObject(
-                    env.getProperty(ITEM_GET_BOOKER_ID_BY_ITEM_ID_USER_ID), new Object[]{itemId, userId}, Integer.class));
+            jdbcTemplate.query(env.getProperty(ITEM_GET_PERSONAL_INFO_BY_ITEM_ID_USER_ID), new Object[]{userId, itemId},
+                    (resultSet, i)-> {
+                    item.setOwnerId(resultSet.getInt(USER_ITEM_USER_ID));
+                    item.setBookerId(resultSet.getInt(USER_ITEM_BOOKER_ID));
+                    item.setPriority(ItemPriority.values()[resultSet.getInt(USER_ITEM_PRIORITY_ID) - 1]);
+                    item.setLike(resultSet.getInt(LLIKE_LIKE_ID) != 0);
+                    return item;
+                });
         } catch (DataAccessException e) {
             log.error("Query fails by find item by user id: '{}' and item id: '{}'", userId, itemId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -97,7 +104,7 @@ public class ItemDaoImpl implements ItemDao {
         itemParameters.put(ITEM_DESCRIPTION, model.getDescription());
         itemParameters.put(ITEM_IMAGE_FILEPATH, model.getImageFilepath());
         itemParameters.put(ITEM_LINK, model.getLink());
-        itemParameters.put(ITEM_DUE_DATE, model.getDueDate() /*!= null ? Date.valueOf(model.getDueDate()) : null*/);
+        itemParameters.put(ITEM_DUE_DATE, model.getDueDate());
         try {
             model.setItemId(insertItem.executeAndReturnKey(itemParameters).intValue());
             addTags(model.getTags(), model.getItemId());
@@ -154,7 +161,7 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public Item deleteFromUserWishList(int userId, int itemId) {
-        Item deletedItem = findById(itemId);
+        Item deletedItem = findByUserIdItemId(userId, itemId);
         log.debug("Try to remove from wish list by user id: '{}', item id: '{}'", userId, itemId);
         try {
             int result = jdbcTemplate.update(env.getProperty(ITEM_DELETE_FROM_WISH_LIST), userId, itemId);
@@ -168,7 +175,7 @@ public class ItemDaoImpl implements ItemDao {
             log.error("Query fails by remove item from wish list by user id: '{}', item id: '{}'", userId, itemId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
-        return deletedItem;
+        return delete(deletedItem);
     }
 
     @Override
@@ -247,12 +254,40 @@ public class ItemDaoImpl implements ItemDao {
         return findById(itemId);
     }
 
+    // TODO: 08.05.2018 for who ?
+    @Override
+    public List<Item> findBookedItemsByUserId(int userId) {
+        log.debug("Try get booked items list by user id: '{}'", userId);
+
+        List<Item> items = new ArrayList<>();
+        getBookedItemsIdByUserId(userId).forEach((itemId) -> items.add(findById(itemId)));
+
+        if (items.isEmpty()) {
+            log.debug("Booked items list don't found by user id: '{}'", userId);
+        } else {
+            log.debug("Booked items list was found: '{}'", items);
+        }
+        return items;
+    }
+
+    @Override
+    public List<Item> findItemsByTagName(String tagName) {
+        log.debug("Try get items list by tag name: '{}'", tagName);
+
+        List<Item> items = new ArrayList<>();
+        getItemsIdByTagName(tagName).forEach((itemId) -> items.add(findById(itemId)));
+
+        if (items.isEmpty()) {
+            log.debug("Items list don't found by tag name: '{}'", tagName);
+        } else {
+            log.debug("Items list was found: '{}'", items);
+        }
+        return items;
+    }
+
     @Override
     public Item update(Item model) {
-        try {
-            int numberOfUsers = jdbcTemplate.queryForObject(
-                    env.getProperty(ITEM_GET_NUMBER_OF_ITEM_USERS), new Object[]{model.getItemId()}, Integer.class);
-            if (numberOfUsers != 1) {
+            if (getItemNumberOfUsers(model.getItemId()) != 1) {
                 log.debug("Try insert altered item '{}'", model);
                 deleteFromUserWishList(model.getOwnerId(), model.getItemId());
                 insert(model);
@@ -262,7 +297,7 @@ public class ItemDaoImpl implements ItemDao {
                     int result = jdbcTemplate.update(env.getProperty(ITEM_UPDATE),
                             model.getName(), model.getDescription(), model.getImageFilepath(), model.getLink(),
                             model.getDueDate(), model.getItemId());
-                        result += jdbcTemplate.update(env.getProperty(ITEM_UPDATE_PRIORITY),
+                    result += jdbcTemplate.update(env.getProperty(ITEM_UPDATE_PRIORITY),
                             model.getPriority().ordinal() + 1, model.getOwnerId(), model.getItemId());
                     if (result > 0) {
                         log.debug("Item was updated item: '{}'", model);
@@ -275,22 +310,61 @@ public class ItemDaoImpl implements ItemDao {
                     throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
                 }
             }
-        } catch (DataAccessException e) {
-            log.error("Query fails by getting number if user by item id '{}'", model.getItemId());
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        return model;
+    }
+
+    @Override
+    public Item delete(Item model) {
+        if(getItemNumberOfUsers(model.getItemId()) == 0){
+            log.debug("Try to delete item by item id: '{}'", model.getItemId());
+            try {
+            jdbcTemplate.update(env.getProperty(ITEM_DELETE), model.getItemId());
+            } catch (DataAccessException e) {
+                log.error("Query fails by deleting item with item id: '{}'", model.getItemId());
+                throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+            }
         }
         return model;
     }
 
-    // item deleting in all users
-    @Override
-    public Item delete(Item model) {
-//        try {
-//            jdbcTemplate.update(env.getProperty(ITEM_DELETE), model.getItemId());
-//        } catch (DataAccessException e) {
-//            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-//        }
-        return model;
+    private List<Integer> getItemsIdByTagName(String tagName) {
+        log.debug("Try to get items id by tag name: '{}'", tagName);
+
+        List<Integer> itemsIds;
+        try {
+            itemsIds = jdbcTemplate.queryForList(env.getProperty(ITEM_GET_ITEMS_ID_BY_TAG_NAME),
+                    new Object[]{tagName}, Integer.class);
+        } catch (DataAccessException e) {
+            log.error("Query fails by finding item's ids with tag name: '{}'", tagName);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        if (itemsIds.isEmpty()) {
+            log.debug("Item's ids not found by tag name: '{}'", tagName);
+        } else {
+            log.debug("Item's ids were wound by tag naem: '{}'", tagName);
+        }
+        return itemsIds;
+    }
+
+    private List<Integer> getBookedItemsIdByUserId(int userId) {
+        log.debug("Try to get booked items id by user id '{}'", userId);
+
+        List<Integer> itemsIds;
+        try {
+            itemsIds = jdbcTemplate.queryForList(env.getProperty(ITEM_GET_BOOKED_ITEMS_BY_USER_ID),
+                    new Object[]{userId}, Integer.class);
+        } catch (DataAccessException e) {
+            log.error("Query fails by finding booked item's ids with user id '{}'", userId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        if (itemsIds.isEmpty()) {
+            log.debug("Booked item's ids not found by user id '{}'", userId);
+        } else {
+            log.debug("Booked item's ids were wound by user id '{}'", userId);
+        }
+        return itemsIds;
     }
 
     private List<Integer> getUserItemsId(int userId) {
@@ -332,19 +406,6 @@ public class ItemDaoImpl implements ItemDao {
         return itemsIds;
     }
 
-    private ItemPriority getItemPriorityByUserIdItemId(int userId, int itemId) {
-        log.debug("Try to getItemPriorityByUserIdItemId by user id: '{}' and item id: '{}'", userId, itemId);
-        ItemPriority priority;
-        try {
-            priority = ItemPriority.valueOf(jdbcTemplate.queryForObject(env.getProperty(ITEM_GET_PRIORITY_BY_USER_ID),
-                    new Object[]{userId, itemId}, String.class));
-        } catch (DataAccessException e) {
-            log.error("Query fails by finding item priority by user id: '{}' and item id: '{}'", userId, itemId);
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
-        return priority;
-    }
-
     private void addTags(List<String> tags, int itemId) {
         log.debug("Try to delete tags by item id: '{}'", itemId);
         try {
@@ -361,10 +422,10 @@ public class ItemDaoImpl implements ItemDao {
                 if (id == 0) {
                     log.debug("Try to add new tag: '{}'", tag);
                     SimpleJdbcInsert insertItem = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                            .withTableName(env.getProperty(TABLE_TAG))
-                            .usingGeneratedKeyColumns(env.getProperty(TAG_TAG_ID));
+                            .withTableName(TABLE_TAG)
+                            .usingGeneratedKeyColumns(TAG_TAG_ID);
                     Map<String, Object> itemParameters = new HashMap<>();
-                    itemParameters.put(env.getProperty(TAG_TAG_NAME), tag);
+                    itemParameters.put(TAG_TAG_NAME, tag);
                     try {
                         id = insertItem.executeAndReturnKey(itemParameters).intValue();
                         tagsId.put(id, tag);
@@ -390,5 +451,16 @@ public class ItemDaoImpl implements ItemDao {
                 throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
             }
         });
+    }
+
+    private int getItemNumberOfUsers(int itemId) {
+        log.debug("Try to find item number of users by item id: '{}'", itemId);
+        try {
+            return jdbcTemplate.queryForObject(
+                    env.getProperty(ITEM_GET_NUMBER_OF_ITEM_USERS), new Object[]{itemId}, Integer.class);
+        } catch (DataAccessException e) {
+            log.error("Query fails by find item number of users by item id: '{}'", itemId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
     }
 }
