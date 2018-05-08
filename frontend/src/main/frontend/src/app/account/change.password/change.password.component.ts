@@ -1,11 +1,10 @@
 import {Component, OnInit} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RecoveryProfile} from "../recovery.profile";
-import {ActivatedRoute, Router} from "@angular/router"
+import {ActivatedRoute} from "@angular/router"
 import {NgxSpinnerService} from "ngx-spinner";
 import {AccountService} from "../account.service";
 import {Profile} from "../profile";
-import {LoginAccount} from "../login.account";
 
 @Component({
   selector: 'change.password',
@@ -16,13 +15,11 @@ export class ChangePasswordComponent implements OnInit {
 
   confirmNewPassword: string;
   doNotMatch: string;
-  wrongPassword: string;
   error: string;
   success: boolean;
   account: Profile;
   recovery: RecoveryProfile;
   loggedUser: boolean;
-  oldPassword: string;
 
   constructor(private route: ActivatedRoute,
               private spinner: NgxSpinnerService,
@@ -47,15 +44,12 @@ export class ChangePasswordComponent implements OnInit {
 
   changePassword() {
     this.spinner.show();
-    // if (this.recovery.password !== this.oldPassword) {
-    //   this.wrongPassword = 'ERROR';
-    // }
      if (this.recovery.password !== this.confirmNewPassword) {
       this.doNotMatch = 'ERROR';
     }
     else {
       this.doNotMatch = null;
-      this.accountService.changePassword(this.recovery).subscribe(
+           this.accountService.changePassword(this.recovery).subscribe(
         () => {
           this.success = true;
           this.spinner.hide();

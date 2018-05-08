@@ -208,6 +208,37 @@ public class AccountService {
         log.debug("Password was successfully updated");
     }
 
+    public void checkPassword(RecoveryPasswordVM model) throws Exception{
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+
+        if (user == null) {
+            log.error("Bad token was given at request");
+            throw new BadTokenException(env.getProperty(EXCEPTION_BAD_TOKEN));
+        }
+
+        log.debug("User '{}' was successfully found by token '{}'", user.toString(), model.getToken());
+        log.debug("Trying to get hash from password");
+
+        try {
+            String md5Pass = HashMD5.hash(model.getPassword());
+            model.setPassword(md5Pass);
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Algorithm can not get hash for password");
+            throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
+        }
+
+        log.debug("Hash for password was successfully get");
+        log.debug("Check if user with current password exists at database");
+
+        if (!user.getPassword().equals(model.getPassword())) {
+            log.error("User password is not correct");
+            throw new FailedToLoginException(env.getProperty(EXCEPTION_FAILED_LOGIN));
+        }
+
+        log.debug("Password is correct for user '{}'", user.toString());
+    }
+
     public void changePassword(RecoveryPasswordVM model) throws Exception{
 
         log.debug("Trying to get authenticated user");
@@ -239,4 +270,5 @@ public class AccountService {
 
         log.debug("Password was successfully updated");
     }
+
 }
