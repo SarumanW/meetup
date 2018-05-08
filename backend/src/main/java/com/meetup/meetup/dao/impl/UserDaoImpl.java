@@ -1,5 +1,6 @@
 package com.meetup.meetup.dao.impl;
 
+import com.meetup.meetup.dao.AbstractDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Folder;
@@ -28,23 +29,21 @@ import java.util.List;
 import java.util.Map;
 
 
+
 @Repository
 @PropertySource("classpath:sqlDao.properties")
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
-    private static Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
-
-    @Autowired
-    private Environment env;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private FolderDaoImpl folderDao;
 
     @Autowired
     private UserRowMapper userRowMapper;
+
+    public UserDaoImpl(){
+        log=LoggerFactory.getLogger(UserDaoImpl.class);
+    }
 
     /**
      * Checks if login exists in the database
@@ -129,80 +128,17 @@ public class UserDaoImpl implements UserDao {
     public List<User> getFriends(int userId) {
         log.debug("Try to getFriends by userId '{}'", userId);
 
-        log.debug("Try to create list with FriendsIds by userId '{}'", userId);
-        List<Integer> friendIds = getFriendsIds(userId);
-        log.debug("List with FriendsIds by userId '{}' was created", userId);
-
-        List<User> friends = new ArrayList<>();
-
-        for (int id : friendIds) {
-
-            log.debug("Try to find user entity by id '{}'", id);
-            User friend = findById(id);
-
-            if (friend != null) {
-                friends.add(friend);
-            }
-        }
+        List<User> friends = jdbcTemplate.query(env.getProperty(USER_GET_FRIENDS), new Object[]{userId,userId}, new UserRowMapper());
+        log.debug("Freinds found: '{}'", friends);
 
         return friends;
     }
 
-    /**
-     * Returns list of user ids where friendship for given user's id is confirmed
-     *
-     * @param userId
-     * @return
-     */
-    private List<Integer> getFriendsIds(int userId) {
-        log.debug("Try to getFriendsIds with userId '{}'", userId);
-        List<Map<String, Object>> list;
-
-        try {
-            list = jdbcTemplate.queryForList(env.getProperty(USER_GET_FRIENDS_IDS),
-                    userId, userId);
-
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Friends for user with userId '{}' was not found", userId);
-            return new ArrayList<>();
-        } catch (DataAccessException e) {
-            log.error("Query fails by getFriendsIds by userId '{}'", userId);
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
-
-        if (list.isEmpty()) {
-            log.debug("list with friendsIds was not found by userId '{}'", userId);
-        } else {
-            log.debug("list with friendsIds was found by userId '{}'", userId);
-        }
-
-        BigDecimal b;
-        List<Integer> friendIds = new ArrayList<>();
-
-        for (Map<String, Object> row : list) {
-
-            b = (BigDecimal) row.get(FRIEND_SENDER_ID);
-            if (b == null) log.debug("Map contains no mapping for the key SENDER_ID");
-            if (b.intValue() != userId) {
-                log.debug("Try to add friend's id '{}' to friend list of user with id '{}'", b.intValue(), userId);
-                friendIds.add(b.intValue());
-            }
-
-            b = (BigDecimal) row.get(FRIEND_RECEIVER_ID);
-            if (b == null) log.debug("Map contains no mapping for the key RECEIVER_ID");
-            if (b.intValue() != userId) {
-                log.debug("Try to add friend's id '{}' to friend list of user with id '{}'", b.intValue(), userId);
-                friendIds.add(b.intValue());
-            }
-        }
-
-        return friendIds;
-    }
 
     @Override
     public boolean addFriend(int senderId, int receiverId) {
         log.debug("Try to addFriend from '{}' to '{}'", senderId, receiverId);
-        int result = 0;
+        int result;
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName(TABLE_FRIEND);
@@ -229,64 +165,22 @@ public class UserDaoImpl implements UserDao {
 
     }
 
-    /**
-     * Returns list of unconfirmed friend requests
-     *
-     * @param userId
-     * @return
-     */
+
     @Override
     public List<User> getFriendsRequests(int userId) {
         log.debug("Try to getUnconfirmedIds by userId '{}'", userId);
-        List<Integer> friendIds = getUnconfirmedIds(userId);
-        List<User> friends = new ArrayList<>();
 
-        for (int id : friendIds) {
-            log.debug("Try to get user entity by id '{}'", id);
-            User friend = findById(id);
-            if (friend != null) {
-                log.debug("Try to add friend with id '{}' to user's '{}' friend list", friend.getId(), userId);
-                friends.add(friend);
-            }
-        }
+        List<User> friendsRequests = jdbcTemplate.query(env.getProperty(USER_GET_UNCONFIRMED_FRIENDS), new Object[] {userId}, new UserRowMapper());
+        log.debug("Friends request found '{}'", friendsRequests);
 
-        return friends;
+        return friendsRequests;
     }
 
-
-    /**
-     * Returns list of ids where friendship isn't confirmed for given user's id
-     *
-     * @param userId
-     * @return
-     */
-    private List<Integer> getUnconfirmedIds(int userId) {
-        log.debug("Try to getUnconfirmedIds by userId '{}'", userId);
-        List<Integer> unConfirmedIds = new ArrayList<>();
-
-        try {
-            unConfirmedIds = jdbcTemplate.queryForList(env.getProperty(USER_GET_UNCONFIRMED_IDS),
-                    new Object[]{userId}, Integer.class);
-
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Unconfirmed friends for user with userId '{}' was not found", userId);
-            return unConfirmedIds;
-        } catch (DataAccessException e) {
-            log.error("Query fails by finding unconfirmedIds with id '{}'", userId);
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
-        if (unConfirmedIds.isEmpty()) {
-            log.debug("unConfirmedIds not found by id '{}'", userId);
-        } else {
-            log.debug("unConfirmedIds were wound by id '{}'", userId);
-        }
-        return unConfirmedIds;
-    }
 
     @Override
     public int confirmFriend(int userId, int friendId) {
         log.debug("Try to confirmFriend between '{}' and '{}'", userId, friendId);
-        int result = 0;
+        int result;
         try {
             result = jdbcTemplate.update(env.getProperty(USER_CONFIRM_FRIEND), friendId, userId);
 
@@ -303,7 +197,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public int deleteFriend(int userId, int friendId) {
         log.debug("Try to deleteFriend between '{}' and '{}'", userId, friendId);
-        int result = 0;
+        int result;
         try {
             result = jdbcTemplate.update(env.getProperty(USER_DELETE_FRIEND), userId, friendId, friendId, userId);
         } catch (DataAccessException e) {
@@ -348,7 +242,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User insert(User model) {
         log.debug("Try to insert user with login '{}'", model.getLogin());
-        int id = 0;
+        int id;
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName(TABLE_UUSER)
                 .usingGeneratedKeyColumns(UUSER_USER_ID);
@@ -393,7 +287,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User update(User model) {
         log.debug("Try to update user with id '{}'", model.getId());
-        int result = 0;
+        int result;
         try {
             result = jdbcTemplate.update(env.getProperty(USER_UPDATE),
                     model.getLogin(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
@@ -413,7 +307,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean updatePassword(User user) {
         log.debug("Try to update password, user with id '{}'", user.getId());
-        int result = 0;
+        int result;
         try {
             result = jdbcTemplate.update(env.getProperty(USER_UPDATE_PASSWORD), user.getPassword(), user.getId());
         } catch (DataAccessException e) {
@@ -432,7 +326,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User delete(User model) {
         log.debug("Try to delete user with id '{}'", model.getId());
-        int result = 0;
+        int result;
         try {
             result = jdbcTemplate.update(env.getProperty(USER_DELETE), model.getId());
         } catch (DataAccessException e) {
@@ -452,22 +346,14 @@ public class UserDaoImpl implements UserDao {
      * Actual method of searching unknown users for specific user.
      * @param userId    id of specific user.
      * @param userName  username pattern of unknown users
-     * @return List<User>
+     * @return
      */
     @Override
     public List<User> getNotFriends(int userId, String userName) {
 
         List<Map<String, Object>> userParamsList;
 
-        try {
-            userParamsList = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"), userId, userId, userName + "%");
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Users with username like '{}' was not found", userName);
-            return new ArrayList<>();
-        } catch (DataAccessException e) {
-            log.error("Query fails by delete user with id '{}'", userName);
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
+        userParamsList = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"),userId,userId,userName+"%");
 
         return userRowMapper.mapRow(userParamsList);
 

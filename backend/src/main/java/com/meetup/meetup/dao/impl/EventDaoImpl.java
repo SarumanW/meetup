@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
 
 import static com.meetup.meetup.keys.Key.*;
 
+import com.meetup.meetup.dao.AbstractDao;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,12 +33,13 @@ import java.util.Map;
 @PropertySource("classpath:sqlDao.properties")
 @PropertySource("classpath:strings.properties")
 @PropertySource("classpath:image.properties")
-public class EventDaoImpl implements EventDao {
+public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
 
-    private static Logger log = LoggerFactory.getLogger(EventDaoImpl.class);
 
-    @Autowired
-    private Environment env;
+    public EventDaoImpl(){
+        log=LoggerFactory.getLogger(EventDaoImpl.class);
+    }
+
 
     @Autowired
     private UserDao userDao;

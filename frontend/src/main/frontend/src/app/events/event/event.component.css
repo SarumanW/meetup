@@ -66,4 +66,11 @@ agm-map {
   overflow:scroll;
   overflow-x: hidden;
 }
+.scrollspy {
+  position: relative;
+  height: 200px;
+  margin-top: .5rem;
+  overflow: auto;
+}
+
 

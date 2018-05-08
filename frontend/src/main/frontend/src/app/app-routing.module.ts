@@ -17,6 +17,7 @@ import {EventListComponent} from "./events/event.list/event.list.component";
 import {EventAddComponent} from "./events/event.add/event.add.component";
 import {CalendarComponent} from "./calendar/calendar.component/calendar.component";
 import {EventEditComponent} from "./events/event.edit/event.edit.component";
+import {CheckPasswordComponent} from "./account/change.password/check.password/check.password.component"
 
 const routes: Routes = [
   {path: 'register', component: RegisterComponent},
@@ -32,7 +33,8 @@ const routes: Routes = [
   {path: ':login/folders/:folderId', component: FolderComponent, canActivate: [AuthGuard]},
   {path: ':login/folders/:folderId/:type', component: EventListComponent, canActivate: [AuthGuard]},
   {path: ':login/folders/:folderId/:type/:eventId', component: EventComponent, canActivate: [AuthGuard]},
-  {path: 'change.password', component: ChangePasswordComponent},
+  {path: ':login/change.password', component: ChangePasswordComponent, canActivate: [AuthGuard]},
+  {path: ':login/check.password', component: CheckPasswordComponent, canActivate: [AuthGuard]},
   {path: 'thankyou', component: ThankyouComponent},
   {path: ':login/event/add/:folderId', component: EventAddComponent, canActivate: [AuthGuard] },
   {path: ':login/folders/:folderId/:type/:eventId/edit', component: EventEditComponent, canActivate: [AuthGuard]}

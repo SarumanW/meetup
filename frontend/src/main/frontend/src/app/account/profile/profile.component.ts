@@ -25,7 +25,7 @@ export class ProfileComponent implements OnInit {
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
               private friendService: FriendService,) {
-
+    this.profile = new Profile();
   }
 
   ngOnInit() {
@@ -39,7 +39,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  update() {
+  update(){
     this.spinner.show();
     this.getButton();
     this.spinner.hide();
@@ -48,7 +48,6 @@ export class ProfileComponent implements OnInit {
   // TODO move it to the backend
   getButton() {
     this.friendService.getFriends(this.profile.login).subscribe((friends) => {
-      // this.friendService.getFriends().subscribe((friends) => {
       this.accountService.profile(JSON.parse(localStorage.getItem('currentUser')).login)
         .subscribe((user) => {
           if (friends.length === 0) {

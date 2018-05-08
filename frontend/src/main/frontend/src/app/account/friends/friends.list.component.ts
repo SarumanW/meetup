@@ -21,6 +21,8 @@ export class FriendsListComponent implements OnInit {
   newFriendName: string;
   friends: Profile[];
   unknownUsers: Profile[] = [];
+  friends: Profile[];
+  unknownUsers : Profile[] = [];
   unconfirmedFriends: Profile[] = [];
   message: string;
   loggedUser: boolean;
@@ -36,23 +38,21 @@ export class FriendsListComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === params['login'];
       this.user = params['login']
+      this.getInfo();
+      this.queryField.valueChanges
+        .debounceTime(1000)
+        .distinctUntilChanged()
+        .subscribe(queryField =>{
+          this.unknownUsers = [];
+          this.friendService.getUnknownUsers(queryField)
+            .subscribe((unknownUsers) => this.unknownUsers = unknownUsers)}
+        );
+      this.spinner.hide();
     });
-
-    this.getInfo();
-
-    this.queryField.valueChanges
-      .debounceTime(1000)
-      .distinctUntilChanged()
-      .subscribe(queryField => {
-        this.unknownUsers = [];
-        this.friendService.getUnknownUsers(queryField)
-          .subscribe((unknownUsers) => {
-            this.unknownUsers = unknownUsers;
-          })
-      });
   }
 
   getInfo() {
+
     this.spinner.show();
 
     // if (this.loggedUser) {
@@ -63,6 +63,7 @@ export class FriendsListComponent implements OnInit {
     // }
     this.route.params.subscribe(params => {
       this.friendService.getFriends(params['login'])
+      // this.friendService.getFriends()
         .subscribe((friends) => {
           this.friends = friends
           this.spinner.hide();

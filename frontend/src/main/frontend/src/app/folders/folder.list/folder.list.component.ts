@@ -147,7 +147,7 @@ export class FolderListComponent implements OnInit {
   showSuccess() {
     this.toastr.info('Your events were moved to general folder', 'Attention!', {
       timeOut: 3000,
-      positionClass: 'toast-bottom-left',
+      positionClass: 'toast-top-right',
       closeButton: true
     });
   }
