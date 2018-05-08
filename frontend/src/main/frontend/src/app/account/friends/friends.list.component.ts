@@ -21,8 +21,6 @@ export class FriendsListComponent implements OnInit {
   newFriendName: string;
   friends: Profile[];
   unknownUsers: Profile[] = [];
-  friends: Profile[];
-  unknownUsers : Profile[] = [];
   unconfirmedFriends: Profile[] = [];
   message: string;
   loggedUser: boolean;

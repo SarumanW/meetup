@@ -71,7 +71,7 @@ import {EventEditComponent} from "./events/event.edit/event.edit.component";
     EventListComponent,
     EventAddComponent,
     CalendarComponent,
-    EventEditComponent
+    EventEditComponent,
     CheckPasswordComponent,
   ],
   imports: [
