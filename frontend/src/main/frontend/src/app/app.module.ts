@@ -48,6 +48,7 @@ import {AgmCoreModule} from "@agm/core";
 import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
 import {EventEditComponent} from "./events/event.edit/event.edit.component";
+import {CountDown} from "ng2-date-countdown";
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import {EventEditComponent} from "./events/event.edit/event.edit.component";
     EventListComponent,
     EventAddComponent,
     CalendarComponent,
-    EventEditComponent
+    EventEditComponent,
+    CountDown
   ],
   imports: [
     ReactiveFormsModule,

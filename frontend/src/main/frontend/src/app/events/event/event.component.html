@@ -71,6 +71,15 @@
         <br>
 
         <div class="row">
+          <div class="col-md-8">
+            <countdown class = "countdown" [text]="text" divider=" " units="Year | Month | Days | Hours | Minutes | Seconds"
+                       end={{eventt.eventDate}}></countdown>
+          </div>
+        </div>
+
+        <br>
+
+        <div class="row">
 
           <div class="col-md-8">
 
@@ -210,5 +219,3 @@
 
   </div>
 </div>
-
-
