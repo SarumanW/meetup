@@ -21,6 +21,7 @@ export class HomeComponent {
 
   ngOnInit() {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
+    console.log(this.profile.imgPath);
   }
 
   logout(){

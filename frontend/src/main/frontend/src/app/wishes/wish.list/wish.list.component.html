@@ -1,0 +1,112 @@
+<div class="container-fluid">
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
+  <div class="row">
+    <div class="col-2">
+      <home-comp [states]="state"></home-comp>
+    </div>
+
+    <div class="col-10">
+      <div class="container justify-content-center">
+
+        <!--Category-->
+
+        <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
+          <div class="btn-group">
+            <button routerLink="." [queryParams]="{category: class.OWN_CATEGORY}"
+                    type="button" class="btn btn-primary"
+                    [disabled]="category === class.OWN_CATEGORY">Wishes
+            </button>
+            <button *ngIf="login === profile.login" routerLink="."
+                    [queryParams]="{category: class.RECOMMENDATIONS_CATEGORY}"
+                    type="button" class="btn btn-primary"
+                    [disabled]="category === class.RECOMMENDATIONS_CATEGORY">Recommendations
+            </button>
+            <button *ngIf="login === profile.login" routerLink="."
+                    [queryParams]="{category: class.BOOKINGS_CATEGORY}" type="button" class="btn btn-primary"
+                    [disabled]="category === class.BOOKINGS_CATEGORY">Bookings
+            </button>
+          </div>
+        </div>
+
+        <!--Search-->
+
+        <div class="form-group">
+          <input type="text" class="form-control"
+                 placeholder="Enter tag name and push 'Enter'"
+                  #itemTag="ngModel" (keyup.enter)="addSearchTag()" [(ngModel)]="tag"
+                 minlength="3" maxlength="30" pattern="^[_A-Za-z0-9]*$">
+          <div *ngIf="itemTag.dirty && itemTag.invalid">
+            <small class="form-text text-danger" *ngIf="itemTag.errors.minlength">
+              Wish name must more than 2 chars.
+            </small>
+            <small class="form-text text-danger" *ngIf="itemTag.errors.maxlength">
+              Wish name must less than 31 chars.
+            </small>
+            <small class="form-text text-danger" *ngIf="itemTag.errors.pattern">
+              Wish name can only contain letters, digits and '_'.
+            </small>
+            <small class="form-text text-danger" *ngIf="tags.length >= 8">
+              Maximal count of search tags is 8;
+            </small>
+          </div>
+        </div>
+        <div class="container">
+          <div class="row">
+            <div *ngFor="let tag of tags">
+              <a style="margin-right: 5px; color: white;" class="badge badge-info">
+                #{{ tag }} <span class="tag-glyphicon tag-glyphicon-delete" (click)="deleteSearchTag(tag)"></span>
+                </a>
+            </div>
+          </div>
+        </div>
+
+        <!--Title-->
+
+        <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
+          <h2>{{title}}</h2>
+          <a routerLink="/{{profile.login}}/wishes/add" class="btn btn-primary"
+             *ngIf="login === profile.login && category === class.OWN_CATEGORY">Add item</a>
+        </div>
+
+        <!--Wish list-->
+
+        <div class="folder d-flex flex-wrap">
+          <div *ngFor="let item of items" class="card mb-4">
+            <div class="card-header head">
+              <img class="card-img-top" [src]="item.imageFilepath" alt="..."
+                   onError="this.src='https://i1.rozetka.ua/goods/1495253/vitek-vt-1511_images_1495253826.jpg'">
+              <img *ngIf="item.ownerId === profile.id" (click)="deleteWishItem(item)" class="close-btn"
+                   src="assets/close-white.svg" alt="">
+              <img *ngIf="item.ownerId !== profile.id" (click)="addWishItem(item)" class="close-btn"
+                   src="assets/add.svg" alt="">
+            </div>
+            <div class="card-body">
+              <button disabled *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === 0"
+                 (click)="bookWishItem(item)" class="btn btn-success">Book</button>
+              <button disabled *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === profile.id"
+                 (click)="unbookWishItem(item)" class="btn btn-danger">Unbook</button>
+              <h5 class="card-title">{{item.name}}</h5>
+              <p class="card-text"><b>Priority: </b>{{item.priority}}</p>
+              <p *ngIf="item.bookerId !== 0" class="card-text"><b>Booked by id: </b>{{item.bookerId}}</p>
+              <p class="card-text"><b>Due date: </b>{{item.dueDate.split(' ')[0]}}</p>
+
+              <div class="container">
+                <div class="row">
+                  <div *ngFor="let tag of item.tags">
+                    <a style="color: white;" class="badge badge-pill badge-primary m-1">#{{ tag }}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <a routerLink="/{{profile.login}}/wishes/{{item.itemId}}" class="btn btn-primary">Details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
