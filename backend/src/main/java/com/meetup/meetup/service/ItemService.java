@@ -50,18 +50,18 @@ public class ItemService {
     }
 
     public Item updateItem(Item item) {
-        log.debug("Try to check permission for item '{}'", item);
-        checkPermission(item);
-        log.debug("Permission for update was received");
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
 
         log.debug("Trying to update item '{}' in database", item);
         return itemDao.update(item);
     }
 
     public Item deleteItem(Item item) {
-        log.debug("Try to check permission for item '{}'", item);
-        checkPermission(item);
-        log.debug("Permission for delete was received");
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
 
         log.debug("Trying to delete item '{}' from database", item);
         return itemDao.delete(item);
@@ -100,21 +100,23 @@ public class ItemService {
         return itemDao.deleteFromUserWishList(user.getId(), itemId);
     }
 
-    public Item addLike(int itemId){
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
 
-        log.debug("Try to add like for item with id '{}'", itemId);
-        return itemDao.addLike(itemId, user.getId());
-    }
-
-    public Item removeLike(int itemId){
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
-
-        log.debug("Try to delete like for item with id '{}'", itemId);
-        return itemDao.removeLike(itemId, user.getId());
-    }
+// TODO: 08.05.2018 add check likes
+//    public Item addLike(int itemId){
+//        log.debug("Trying to get authenticated user");
+//        User user = authenticationFacade.getAuthentication();
+//        log.debug("User was successfully received");
+//
+//        log.debug("Try to add like for item with id '{}'", itemId);
+//        return itemDao.addLike(itemId, user.getId());
+//    }
+//
+//    public Item removeLike(int itemId){
+//        log.debug("Trying to get authenticated user");
+//        User user = authenticationFacade.getAuthentication();
+//        log.debug("User was successfully received");
+//
+//        log.debug("Try to delete like for item with id '{}'", itemId);
+//        return itemDao.removeLike(itemId, user.getId());
+//    }
 }

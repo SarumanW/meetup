@@ -65,7 +65,7 @@ public class ItemController {
 
     @DeleteMapping("/{id}/delete")
     public @ResponseBody
-    ResponseEntity deleteItem(@PathVariable int id) {
+    ResponseEntity deleteItemFromUserWishList(@PathVariable int id) {
         log.debug("Trying to delete item with id '{}' to user wish list", id);
         Item deletedItem = itemService.deleteItemFromUserWishList(id);
 
@@ -73,25 +73,26 @@ public class ItemController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/like")
-    public @ResponseBody
-    ResponseEntity<Item> addLike(@PathVariable int id) {
-        log.debug("Trying to add like to item with id '{}'", id);
-
-        Item likedItem = itemService.addLike(id);
-        log.debug("Item was added with id '{}'", id);
-        return new ResponseEntity<>(likedItem, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}/like")
-    public @ResponseBody
-    ResponseEntity<Item> removeLike(@PathVariable int id) {
-        log.debug("Trying to remove like from item with id '{}'", id);
-
-        Item unlikedItem = itemService.removeLike(id);
-        log.debug("Item was added with id '{}'", id);
-        return new ResponseEntity<>(unlikedItem, HttpStatus.OK);
-    }
+// TODO: 08.05.2018 check like
+//    @PostMapping("/{id}/like")
+//    public @ResponseBody
+//    ResponseEntity<Item> addLike(@PathVariable int id) {
+//        log.debug("Trying to add like to item with id '{}'", id);
+//
+//        Item likedItem = itemService.addLike(id);
+//        log.debug("Item was added with id '{}'", id);
+//        return new ResponseEntity<>(likedItem, HttpStatus.OK);
+//    }
+//
+//    @DeleteMapping("/{id}/like")
+//    public @ResponseBody
+//    ResponseEntity<Item> removeLike(@PathVariable int id) {
+//        log.debug("Trying to remove like from item with id '{}'", id);
+//
+//        Item unlikedItem = itemService.removeLike(id);
+//        log.debug("Item was added with id '{}'", id);
+//        return new ResponseEntity<>(unlikedItem, HttpStatus.OK);
+//    }
 
     @PutMapping
     public @ResponseBody
