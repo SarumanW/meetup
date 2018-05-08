@@ -10,6 +10,8 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {WishListService} from "../wish.list.service";
 import {ToastrService} from "ngx-toastr";
 import {Profile} from "../../account/profile";
+import {WishService} from "../wish.service";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-wish',
@@ -23,24 +25,35 @@ export class WishComponent implements OnInit {
   item: Item;
   name = "ITEM";
   profile: Profile;
+  id: string;
+  private sub: any;
+
 
 
   constructor(private router: Router,
               private spinner: NgxSpinnerService,
               private uploadService: UploadFileService,
               private toastr: ToastrService,
-              private wishListService: WishListService) {}
+              private wishListService: WishListService,
+              private wishService : WishService,
+              private route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.sub = this.route.params.subscribe(params => {
+      this.id = params['itemId']});
+
+    this.getItem(this.id);
+
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
 
-  createItem(){
-
-  }
 
   like(){
 
+  }
+
+  getItem(id : string){
+    this.wishService.getWishItem(id).subscribe(item => this.item=item);
   }
 
 

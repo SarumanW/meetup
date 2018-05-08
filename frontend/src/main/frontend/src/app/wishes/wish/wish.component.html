@@ -14,12 +14,7 @@
 
     <div class="col-md-4">
       <img *ngIf="item.imageFilepath" [src]="item.imageFilepath">
-      <img *ngIf="!item.imageFilepath"
-           src="http://www.gamestor.org/uploads/posts/2012-08/1344273736_thumbnail1.jpg">
 
-
-
-      <img src="http://www.gamestor.org/uploads/posts/2012-08/1344273736_thumbnail1.jpg">
     </div>
 
     <div class="col-md-5">
@@ -27,23 +22,22 @@
       <!--Name-->
         <form name="form" role="form" #addItemForm="ngForm">
           <div class="form-group">
-            <h4>ITEMNAME</h4>
+            <h4>{{item.name}}</h4>
           </div>
-
 
 
           <!--Description-->
 
           <div class="form-group">
             <label class="form-control-label"><u>Description:</u></label>
-            <div>DESCRIPTION</div>
+            <div>{{item.description}}</div>
           </div>
 
           <!--Priority-->
 
           <div class="form-group">
             <label class="form-control-label"><u>Priority:</u></label>
-            <div>PRIORITY</div>
+            <div>{{item.priority}}</div>
           </div>
 
           <!--Link-->
@@ -56,23 +50,22 @@
           <!--Due Date-->
 
           <div class="form-group">
-            <label class="form-control-label"><u>duedate:</u></label>
-            <div>DUEDATE:</div>
+            <label class="form-control-label"><u>Duedate:</u></label>
+            <div>{{item.dueDate}}</div>
           </div>
 
           <!--Tags-->
 
           <div class="form-group">
             <label class="form-control-label"><u>Tags:</u></label>
-            <div>TAG1:</div>
-            <div>TAG2:</div>
-            <div>TAG3:</div>
-
-
+            <ul>
+              <li *ngFor="let tag of item.tags">{{tag}}</li>
+            </ul>
           </div>
-          <a routerLink="/{{profile.login}}/wishes" class="btn btn-primary">Return to wishlist</a>
-
+          <hr/>
         </form>
+
+      <a routerLink="/{{profile.login}}/wishes" class="btn btn-primary">Return to wishlist</a>
       <!--</div>-->
     </div>
   </div>
