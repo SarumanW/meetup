@@ -11,7 +11,7 @@ import {WishListService} from "../wish.list.service";
 import {ToastrService} from "ngx-toastr";
 import {Profile} from "../../account/profile";
 import {WishService} from "../wish.service";
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-wish',
@@ -29,18 +29,19 @@ export class WishComponent implements OnInit {
   private sub: any;
 
 
-
   constructor(private router: Router,
               private spinner: NgxSpinnerService,
               private uploadService: UploadFileService,
               private toastr: ToastrService,
               private wishListService: WishListService,
-              private wishService : WishService,
-              private route: ActivatedRoute) {}
+              private wishService: WishService,
+              private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
-      this.id = params['itemId']});
+      this.id = params['itemId']
+    });
 
     this.getItem(this.id);
 
@@ -48,13 +49,25 @@ export class WishComponent implements OnInit {
   }
 
 
-  like(){
+  like() {
 
   }
 
-  getItem(id : string){
-    this.wishService.getWishItem(id).subscribe(item => this.item=item);
+  getItem(id: string) {
+    this.spinner.show();
+
+    this.wishService.getWishItem(id).subscribe(item => {
+      this.item = item;
+      this.spinner.hide();
+    });
   }
 
 
+  removeFromWishList() {
+
+  }
+
+  addToWishList() {
+
+  }
 }

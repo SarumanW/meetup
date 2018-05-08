@@ -10,10 +10,9 @@
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
     </div>
-    <div class="col-md-1"></div>
 
-    <div class="col-md-4">
-      <img *ngIf="item.imageFilepath" [src]="item.imageFilepath">
+    <div class="col-md-5">
+      <img *ngIf="item.imageFilepath" [src]="item.imageFilepath" class="img-fluid">
 
     </div>
 
@@ -22,7 +21,7 @@
       <!--Name-->
         <form name="form" role="form" #addItemForm="ngForm">
           <div class="form-group">
-            <h4>{{item.name}}</h4>
+            <h3>{{item.name}}</h3>
           </div>
 
 
@@ -44,7 +43,7 @@
 
           <div class="form-group">
             <label class="form-control-label"><u>Link:</u></label>
-            <div><a href="https://zaka-zaka.com/game/stalker-call-of-pripyat">LINK:</a></div>
+            <div><a href="https://zaka-zaka.com/game/stalker-call-of-pripyat">Click here for full info</a></div>
           </div>
 
           <!--Due Date-->
@@ -56,7 +55,7 @@
 
           <!--Tags-->
 
-          <div class="form-group">
+          <div *ngIf="item.tags?.length>0" class="form-group">
             <label class="form-control-label"><u>Tags:</u></label>
             <ul>
               <li *ngFor="let tag of item.tags">{{tag}}</li>
@@ -66,7 +65,9 @@
         </form>
 
       <a routerLink="/{{profile.login}}/wishes" class="btn btn-primary">Return to wishlist</a>
-      <!--</div>-->
+      <button type="button" (click)="removeFromWishList()" [disabled]="!item.priority" class="btn btn-primary">Remove</button>
+      <button type="button" (click)="addToWishList()" [disabled]="item.priority" class="btn btn-primary">Add</button>
+
     </div>
   </div>
 </div>
