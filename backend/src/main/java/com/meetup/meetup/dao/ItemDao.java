@@ -24,4 +24,8 @@ public interface ItemDao extends Dao<Item> {
     Item addLike(int itemId, int userId);
 
     Item removeLike(int itemId, int userId);
+
+    List<Item> findBookedItemsByUserId(int userId);
+
+    List<Item> findItemsByTagName(String tagName);
 }

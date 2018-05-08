@@ -36,4 +36,6 @@ public class Item {
     private int bookerId;
 
     private ItemPriority priority;
+
+    private boolean isLike;
 }
