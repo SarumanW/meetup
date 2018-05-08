@@ -1,73 +1,73 @@
-<div class="container-fluid">
+<div class="container-fluid" style="margin-top:20px">
   <ngx-spinner bdOpacity=0.9
                bdColor="#333"
                size="default"
                color="#fff"
                type="ball-beat"></ngx-spinner>
+
   <div class="row">
-    <div class="col-md-6">
-      <img src="http://www.digiseller.ru/preview/130930/p1_30803181021883.JPG"
-           alt="альтернативный текст">
+
+    <div class="col-2">
+      <home-comp [states]="state"></home-comp>
     </div>
 
+    <div class="col-md-5">
+      <img *ngIf="item.imageFilepath" [src]="item.imageFilepath" class="img-fluid">
 
-    <div class="col-md-6 login-main">
-      <h2>Item Info</h2>
+    </div>
 
-      <form name="form" role="form" (ngSubmit)="createItem()" #itemForm="ngForm">
-
-        <div class="form-group">
-          <label class="form-control-label" for="name">Item name</label>
-          <input type="text" class="form-control" [(ngModel)]="item.name" id="name" name="name"
-                 #name="ngModel" placeholder="Enter name of the item" minlength=3 maxlength=50 required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-control-label" for="description">Description</label>
-          <input type="text" class="form-control" [(ngModel)]="item.description" id="description" name="description"
-                 #description="ngModel" placeholder="Enter description of the item" minlength=4 maxlength=200 required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-control-label" for="priority">Priority</label>
-          <select class="form-control" [(ngModel)]="item.priority" id="priority" name="priority"
-                  #priority="ngModel">
-            <option value="">high</option>
-            <option value="">medium</option>
-            <option value="">low</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-control-label" for="dueDate">DueDate</label>
-          <input type="date" class="form-control" [(ngModel)]="item.dueDate" id="dueDate" name="dueDate"
-                 #dueDate="ngModel" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-control-label" for="link">Link</label>
-          <input type="text" class="form-control" [(ngModel)]="item.link" id="link" name="link"
-                 #link="ngModel" placeholder="Link to the item" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-control-label">tags</label>
-          <input type="text" class="form-control" id="tags" name="tags"
-                 placeholder="Enter support tags">
-        </div>
-
-        <div>
-          <h3><span>Likes:{{item.likes}}</span></h3>
-          <button type="button" (click)="like()" class="btn btn-primary">
-            LIKE!
-          </button>
-          <button type="button" (click)="createItem()" class="btn btn-primary">
-            Create item
-          </button>
+    <div class="col-md-5">
+      <!--<div class="container justify-content-center">-->
+      <!--Name-->
+        <form name="form" role="form" #addItemForm="ngForm">
+          <div class="form-group">
+            <h3>{{item.name}}</h3>
+          </div>
 
 
-        </div>
-      </form>
+          <!--Description-->
+
+          <div class="form-group">
+            <label class="form-control-label"><u>Description:</u></label>
+            <div>{{item.description}}</div>
+          </div>
+
+          <!--Priority-->
+
+          <div class="form-group">
+            <label class="form-control-label"><u>Priority:</u></label>
+            <div>{{item.priority}}</div>
+          </div>
+
+          <!--Link-->
+
+          <div class="form-group">
+            <label class="form-control-label"><u>Link:</u></label>
+            <div><a href="https://zaka-zaka.com/game/stalker-call-of-pripyat">Click here for full info</a></div>
+          </div>
+
+          <!--Due Date-->
+
+          <div class="form-group">
+            <label class="form-control-label"><u>Duedate:</u></label>
+            <div>{{item.dueDate}}</div>
+          </div>
+
+          <!--Tags-->
+
+          <div *ngIf="item.tags?.length>0" class="form-group">
+            <label class="form-control-label"><u>Tags:</u></label>
+            <ul>
+              <li *ngFor="let tag of item.tags">{{tag}}</li>
+            </ul>
+          </div>
+          <hr/>
+        </form>
+
+      <a routerLink="/{{profile.login}}/wishes" class="btn btn-primary">Return to wishlist</a>
+      <button type="button" (click)="removeFromWishList()" [disabled]="!item.priority" class="btn btn-primary">Remove</button>
+      <button type="button" (click)="addToWishList()" [disabled]="item.priority" class="btn btn-primary">Add</button>
+
     </div>
   </div>
 </div>

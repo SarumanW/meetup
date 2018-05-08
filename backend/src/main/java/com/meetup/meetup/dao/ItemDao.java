@@ -11,8 +11,6 @@ public interface ItemDao extends Dao<Item> {
 
     Item findByUserIdItemId(int userId, int itemId);
 
-    List<Item> getPopularItems(String[] tagArray);
-
     Item addToUserWishList(int userId, int itemId, ItemPriority priority);
 
     Item deleteFromUserWishList(int userId, int itemId);
@@ -30,4 +28,8 @@ public interface ItemDao extends Dao<Item> {
     List<Item> findBookingByUserLogin(String login);
 
     List<Item> getPopularItems();
+
+    List<Item> findBookedItemsByUserId(int userId);
+
+    List<Item> findItemsByTagName(String tagName);
 }
