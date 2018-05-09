@@ -261,7 +261,7 @@ public class ItemDaoImpl implements ItemDao {
     public List<Item> findBookedItemsByUserId(int userId) {
         log.debug("Try get booked items list by user id: '{}'", userId);
 
-        List<Item> items = new ArrayList<>();
+        List<Item> items;
         try {
             items = jdbcTemplate.query(env.getProperty(ITEM_FIND_BOOKED_ITEMS_BY_USER_ID),
                     new Object[]{userId}, new ExtendedItemRowMapper());
