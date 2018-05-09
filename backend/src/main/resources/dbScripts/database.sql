@@ -60,7 +60,7 @@ CREATE TABLE item (
   name varchar2(50) NOT NULL,
   description varchar2(200) NOT NULL,
   image_filepath varchar2(200) NOT NULL,
-  link varchar2(200) NOT NULL,
+  link varchar2(200),
   due_date timestamp NOT NULL,
   PRIMARY KEY (item_id)
 );
