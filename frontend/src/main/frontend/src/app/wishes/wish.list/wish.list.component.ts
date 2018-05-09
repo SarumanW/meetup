@@ -175,7 +175,7 @@ export class WishListComponent implements OnInit {
     newItem.priority = this.priority;
 
     this.spinner.show();
-    this.wishService.addWishItem(newItem).subscribe(item => {
+    this.wishService.addExistWishItem(newItem).subscribe(item => {
       this.spinner.hide();
 
       const index = this.items.indexOf(item);

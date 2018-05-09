@@ -26,7 +26,7 @@ export class WishService {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.post('api/item/', item, {headers: headers});
+    return this.http.post(`api/item/${item.itemId}/add`, item, {headers: headers});
   }
 
   editWishItem(item: Item): Observable<any>{
