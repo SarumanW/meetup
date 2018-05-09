@@ -1,9 +1,10 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {AccountService} from "../account.service";
 import {LoginAccount} from "../login.account";
 import {Router, ActivatedRoute} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,7 @@ export class LoginComponent implements OnInit {
   account: LoginAccount;
   errorMessage: string;
 
+  @ViewChild(AppComponent) childComponent: AppComponent
   constructor(private accountService: AccountService,
               private router: Router,
               private spinner: NgxSpinnerService) {
@@ -35,8 +37,12 @@ export class LoginComponent implements OnInit {
               ['/'+ profile.login + '/profile']);
         },
         response => {
-          this.processError(response);
-          this.spinner.hide();
+          if (response.status === 418) {
+            this.childComponent.showError('The server encountered an error but still retry your request. Please wait..', 'Server error!');
+          } else {
+            this.processError(response);
+            this.spinner.hide();
+          }
         }
       );
     }

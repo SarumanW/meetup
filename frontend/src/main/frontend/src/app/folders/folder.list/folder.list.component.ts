@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 import {Folder} from "../folder";
 import {FolderListService} from "../folder.list.service";
@@ -7,6 +7,7 @@ import {Observable} from "rxjs/Observable";
 import {ToastrService} from "ngx-toastr";
 import {Profile} from "../../account/profile";
 import {NgxSpinnerService} from "ngx-spinner";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-folder',
@@ -21,6 +22,7 @@ export class FolderListComponent implements OnInit {
   nameInput: string = "";
   profile: Profile;
 
+  @ViewChild(AppComponent) childComponent: AppComponent
   constructor(private folderListService: FolderListService,
               private spinner: NgxSpinnerService,
               private toastr: ToastrService) {
@@ -73,8 +75,12 @@ export class FolderListComponent implements OnInit {
             this.spinner.hide();
             this.showSuccess();
           },
-          () => {
-            this.spinner.hide();
+          (response) => {
+            if (response.status === 418) {
+              this.childComponent.showError('The server encountered an error but still retry your request. Please wait..', 'Server error!');
+            } else {
+              this.spinner.hide();
+            }
           });
   }
 

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {Router} from "@angular/router";
 import {Profile} from "./account/profile";
+import {ToastrService} from "ngx-toastr";
 
 
 @Component({
@@ -19,7 +20,8 @@ export class AppComponent {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
 
-  constructor(private router : Router){}
+  constructor(private router : Router,
+              private toastr : ToastrService){}
 
   logout(){
     localStorage.clear();
@@ -47,6 +49,14 @@ export class AppComponent {
 
   login():string{
     return this.profile.login;
+  }
+
+  showError(message: string, title: string) {
+    this.toastr.error(message, title, {
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      closeButton: true
+    });
   }
 
 }

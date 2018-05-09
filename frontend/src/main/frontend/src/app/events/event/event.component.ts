@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {EventService} from "../event.service";
 import {ActivatedRoute} from "@angular/router";
 import {Evento} from "../event";
 import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-event',
@@ -23,6 +24,7 @@ export class EventComponent implements OnInit {
   lat: number;
   lng: number;
 
+  @ViewChild(AppComponent) childComponent: AppComponent
   constructor(private eventService: EventService,
               private route: ActivatedRoute,
               private toastr: ToastrService,
@@ -37,7 +39,11 @@ export class EventComponent implements OnInit {
       this.currentUserLogin = JSON.parse(localStorage.currentUser).login;
       this.alreadyHasParticipant = false;
     }, error => {
-      this.showError('Unsuccessful event loading', 'Loading error');
+      if (error.status === 418) {
+        this.childComponent.showError('The server encountered an error but still retry your request. Please wait..', 'Server error!');
+      }else {
+        this.childComponent.showError('Unsuccessful event loading', 'Loading error');
+      }
     });
     this.getEvent();
   }
@@ -53,16 +59,12 @@ export class EventComponent implements OnInit {
       this.lng = +coordinates[1];
       this.spinner.hide();
     }, error => {
-      this.spinner.hide();
-      this.showError('Unsuccessful event loading', 'Loading error');
-    })
-  }
-
-  showError(message: string, title: string) {
-    this.toastr.error(message, title, {
-      timeOut: 3000,
-      positionClass: 'toast-bottom-left',
-      closeButton: true
+      if (error.status === 418) {
+        this.childComponent.showError('The server encountered an error but still retry your request. Please wait..', 'Server error!');
+      } else {
+        this.spinner.hide();
+        this.childComponent.showError('Unsuccessful event loading', 'Loading error');
+      }
     });
   }
 
@@ -97,11 +99,15 @@ export class EventComponent implements OnInit {
           this.spinner.hide();
           this.showSuccess();
         }, error => {
-          this.showError('Unsuccessful participant adding', 'Adding error');
+          if (error.status === 418) {
+            this.childComponent.showError('The server encountered an error but still retry your request. Please wait..', 'Server error!');
+          }else {
+            this.childComponent.showError('Unsuccessful participant adding', 'Adding error');
+          }
           this.spinner.hide();
         });
     } else {
-      this.showError('Participant already exists', 'Adding error');
+      this.childComponent.showError('Participant already exists', 'Adding error');
       this.spinner.hide();
     }
 

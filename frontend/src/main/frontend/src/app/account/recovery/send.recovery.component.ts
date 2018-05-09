@@ -1,7 +1,8 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {HttpClient} from '@angular/common/http';
 import {FormBuilder, Validators} from "@angular/forms";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-sendrecovery',
@@ -16,6 +17,7 @@ export class SendRecoveryComponent implements OnInit {
     email: [Validators.required, Validators.pattern(this.emailPattern)]
   });
 
+  @ViewChild(AppComponent) childComponent: AppComponent
   constructor(private http: HttpClient,
               private fb: FormBuilder) {
   }
@@ -31,7 +33,13 @@ export class SendRecoveryComponent implements OnInit {
       () => {
         this.success = true;
       },
-      response => this.processError(response)
+      response => {
+        if (response.status === 418) {
+          this.childComponent.showError('The server encountered an error but still retry your request. Please wait..', 'Server error!');
+        } else {
+          this.processError(response)
+        }
+      }
     );
   }
 

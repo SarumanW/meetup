@@ -1,10 +1,11 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RegisterAccount} from "../register.account";
 import {AccountService} from "../account.service";
 import {Router} from "@angular/router"
 import {FormBuilder, Validators} from "@angular/forms";
 import {NgxSpinnerService} from "ngx-spinner";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-register',
@@ -24,6 +25,7 @@ export class RegisterComponent implements OnInit {
     email: [Validators.required, Validators.pattern(this.emailPattern)]
   });
 
+  @ViewChild(AppComponent) childComponent: AppComponent
   constructor(private accountService: AccountService,
               private fb: FormBuilder,
               private router: Router,
@@ -54,8 +56,12 @@ export class RegisterComponent implements OnInit {
           this.router.navigate(['/thankyou']);
         },
         response => {
-          this.processError(response);
-          this.spinner.hide();
+          if (response.status === 418) {
+            this.childComponent.showError('The server encountered an error but still retry your request. Please wait..', 'Server error!');
+          } else {
+            this.processError(response);
+            this.spinner.hide();
+          }
         }
       );
     }

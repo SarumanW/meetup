@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgxSpinnerService} from "ngx-spinner";
 import {ToastrService} from "ngx-toastr";
 import {ActivatedRoute} from "@angular/router";
 import {Evento} from "../event";
 import {EventAddService} from "../event.add.service";
 import {ImageUploadService} from "../image.upload.service";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-event.add',
@@ -28,6 +29,7 @@ export class EventAddComponent implements OnInit {
   lat: number;
   lng: number;
 
+  @ViewChild(AppComponent) childComponent: AppComponent
   constructor(private route: ActivatedRoute,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
@@ -40,7 +42,7 @@ export class EventAddComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.folderId = params['folderId'];
     }, error => {
-      this.showError('Unsuccessful parameters loading', 'Loading error');
+      this.childComponent.showError('Unsuccessful parameters loading', 'Loading error');
     });
 
     this.getCurrentDate();
@@ -85,15 +87,6 @@ export class EventAddComponent implements OnInit {
     this.addEntity();
   }
 
-  //TODO move to general component
-  showError(message: string, title: string) {
-    this.toastr.error(message, title, {
-      timeOut: 3000,
-      positionClass: 'toast-top-right',
-      closeButton: true
-    });
-  }
-
   showSuccess() {
     this.toastr.info('Event was successfully added', 'Attention!', {
       timeOut: 3000,
@@ -111,7 +104,7 @@ export class EventAddComponent implements OnInit {
       this.showSuccess();
       this.resetEvent();
     }, error => {
-      this.showError('Unsuccessful event adding', 'Adding error');
+      this.childComponent.showError('Unsuccessful event adding', 'Adding error');
       this.spinner.hide();
     });
   }
@@ -126,7 +119,7 @@ export class EventAddComponent implements OnInit {
     this.selectedFiles = event.target.files;
     let filename: string = this.selectedFiles.item(0).name.toLowerCase();
     if (!this.fileRegexp.test(filename)) {
-      this.showError("Incorrect file format " + this.selectedFiles.item(0).name, 'File format error');
+      this.childComponent.showError("Incorrect file format " + this.selectedFiles.item(0).name, 'File format error');
       this.errorFileFormat = true;
     } else {
       this.errorFileFormat = false;
@@ -145,8 +138,12 @@ export class EventAddComponent implements OnInit {
         console.log(this.eventt.imageFilepath);
       this.spinner.hide();
     }, error => {
-      this.showError(error, 'Upload failed');
-      this.spinner.hide();
+      if (error.status === 418) {
+        this.childComponent.showError('The server encountered an error but still retry your request. Please wait..', 'Server error!');
+      } else {
+        this.childComponent.showError(error, 'Upload failed');
+        this.spinner.hide();
+      }
     });
 
     this.selectedFiles = undefined;

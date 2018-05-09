@@ -2,6 +2,7 @@ import {Component, Input} from "@angular/core";
 import {FriendService} from "../friend.service";
 import {Profile} from "../../profile";
 import {FriendsListComponent} from "../friends.list.component";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'friend',
@@ -15,7 +16,8 @@ export class FriendComponent {
   @Input() loggedUser: boolean;
   state:string="friends"
   constructor(private friendService: FriendService,
-              private friendsList: FriendsListComponent){
+              private friendsList: FriendsListComponent,
+              private toastr: ToastrService){
   }
 
   deleteFriend(id: number){
@@ -24,4 +26,5 @@ export class FriendComponent {
   confirmFriend(id: number){
     this.friendService.confirmFriend(id).subscribe((response)=>this.friendsList.getInfo());
   }
+
 }

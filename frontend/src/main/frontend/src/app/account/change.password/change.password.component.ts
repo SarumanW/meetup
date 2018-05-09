@@ -1,10 +1,11 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RecoveryProfile} from "../recovery.profile";
 import {ActivatedRoute} from "@angular/router"
 import {NgxSpinnerService} from "ngx-spinner";
 import {AccountService} from "../account.service";
 import {Profile} from "../profile";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'change.password',
@@ -21,6 +22,7 @@ export class ChangePasswordComponent implements OnInit {
   recovery: RecoveryProfile;
   loggedUser: boolean;
 
+  @ViewChild(AppComponent) childComponent: AppComponent
   constructor(private route: ActivatedRoute,
               private spinner: NgxSpinnerService,
               private accountService: AccountService) {
@@ -54,7 +56,13 @@ export class ChangePasswordComponent implements OnInit {
           this.success = true;
           this.spinner.hide();
         },
-        response => this.processError(response)
+        response => {
+          if (response.status === 418) {
+            this.childComponent.showError('The server encountered an error but still retry your request. Please wait..', 'Server error!');
+          } else {
+            this.processError(response)
+          }
+        }
       );
     }
   }

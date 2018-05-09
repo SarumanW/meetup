@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {FriendService} from "./friend.service";
 import {FormControl} from "@angular/forms";
 import {Profile} from "../profile";
@@ -9,6 +9,7 @@ import {ActivatedRoute} from "@angular/router";
 import "rxjs/add/operator/debounceTime";
 import "rxjs/add/operator/distinctUntilChanged";
 import "rxjs/add/operator/switchMap";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'friends-list',
@@ -27,6 +28,7 @@ export class FriendsListComponent implements OnInit {
   user: string;
   queryField: FormControl = new FormControl();
 
+  @ViewChild(AppComponent) childComponent: AppComponent
   constructor(private friendService: FriendService,
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute) {
@@ -79,7 +81,9 @@ export class FriendsListComponent implements OnInit {
         (error) => {
           if (error.status === 200) {
             this.message = error.error.text;
-          } else {
+          } else if (error.status === 418) {
+              this.childComponent.showError('The server encountered an error but still retry your request. Please wait..', 'Server error!');
+            } else {
             this.message = error.error;
           }
           this.spinner.hide();

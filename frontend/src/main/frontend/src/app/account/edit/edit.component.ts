@@ -7,6 +7,7 @@ import {UploadFileService} from "../../upload.file/upload.file.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {FormBuilder, Validators} from "@angular/forms";
 import {ModalWindow} from "../../modal.window/modal.window.component";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'edit',
@@ -34,6 +35,7 @@ export class EditComponent implements OnInit {
     email: [Validators.required, Validators.pattern(this.emailPattern)]
   });
 
+  @ViewChild(AppComponent) childdComponent: AppComponent
   @ViewChild(ModalWindow) childComponent: ModalWindow
   constructor(private accountService: AccountService,
               private router: Router,
@@ -90,8 +92,12 @@ export class EditComponent implements OnInit {
           this.router.navigate(
             [JSON.parse(localStorage.currentUser).login + '/profile']);
         }
-        this.spinner.hide();
-        this.processError(response)
+        else if (response.status === 418) {
+          this.childdComponent.showError('The server encountered an error but still retry your request. Please wait..', 'Server error!');
+        } else {
+          this.spinner.hide();
+          this.processError(response)
+        }
       }
     );
   }
