@@ -12,9 +12,9 @@
     <div class="col-6">
       <div class="container justify-content-center">
 
-        <form name="form" role="form" #addItemForm="ngForm">
+        <form name="form" role="form" #addItemForm="ngForm" ngForm="addItemForm">
           <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
-            <h2>Add event</h2>
+            <h2>Add item</h2>
           </div>
 
           <!--Image-->
@@ -32,7 +32,7 @@
 
               <div class="col-md-4">
                 <div class="thumbnail">
-                  <img [src]="selectedFile" class="img-thumbnail" alt="Image"/>
+                  <img [src]="selectedFile" style="background: #aaaaaa" class="img-thumbnail" alt="Image"/>
                 </div>
               </div>
             </div>
@@ -44,16 +44,16 @@
             <label class="form-control-label" for="itemName">Name:</label>
             <input type="text" class="form-control" [(ngModel)]="newItem.name" id="itemName" name="name"
                    #name="ngModel" placeholder="Enter item name"
-                   minlength="2" maxlength="254" pattern="^[_.@A-Za-z0-9-]*$" required>
+                   minlength="3" maxlength="30" pattern="^[_.@A-Za-z0-9-\s]*$" required>
             <div *ngIf="name.dirty && name.invalid">
               <small class="form-text text-danger" *ngIf="name.errors.required">
                 Wish name is required.
               </small>
               <small class="form-text text-danger" *ngIf="name.errors.minlength">
-                Wish name is required to be at least 4 character.
+                Wish name is required to be at least 3 character.
               </small>
               <small class="form-text text-danger" *ngIf="name.errors.maxlength">
-                Wish name cannot be longer than 50 characters.
+                Wish name cannot be longer than 30 characters.
               </small>
               <small class="form-text text-danger" *ngIf="name.errors.pattern">
                 Wish name can only contain letters and digits.
@@ -68,7 +68,7 @@
             <input type="text" class="form-control" [(ngModel)]="newItem.description"
                    id="itemDescription" name="description"
                    #description="ngModel" placeholder="Enter item description"
-                   minlength="2" maxlength="254" pattern="^[_A-Za-z0-9-.?!,:;'\s]*$" required>
+                   minlength="4" maxlength="250" pattern="^[_A-Za-z0-9-.?!,:;'\s]*$" required>
             <div *ngIf="description.dirty && description.invalid">
               <small class="form-text text-danger" *ngIf="description.errors.required">
                 Wish description is required.
@@ -77,7 +77,7 @@
                 Wish description is required to be at least 4 character.
               </small>
               <small class="form-text text-danger" *ngIf="description.errors.maxlength">
-                Wish description cannot be longer than 50 characters.
+                Wish description cannot be longer than 250 characters.
               </small>
               <small class="form-text text-danger" *ngIf="description.errors.pattern">
                 Wish description can only contain letters and digits.
@@ -101,7 +101,8 @@
           <div class="form-group">
             <label class="form-control-label" for="itemLink">Link:</label>
             <input type="url" class="form-control" [(ngModel)]="newItem.link" id="itemLink" name="link"
-                   #link="ngModel" placeholder="Enter item description">
+                   #link="ngModel" placeholder="Enter item description"
+                   pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)">
             <div *ngIf="link.dirty && link.invalid">
               <small class="form-text text-danger" *ngIf="link.invalid">
                 Wish link is not correct.
@@ -153,7 +154,7 @@
             </div>
           </div>
 
-          <button type="button" [disabled]="addItemForm.form.invalid" (click)="onSubmit()" class="btn btn-primary">
+          <button type="button" [disabled]="addItemForm.form.invalid || link.invalid" (click)="onSubmit()" class="btn btn-primary">
             Add
           </button>
 

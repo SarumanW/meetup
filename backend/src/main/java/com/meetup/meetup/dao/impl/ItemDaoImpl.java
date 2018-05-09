@@ -192,7 +192,7 @@ public class ItemDaoImpl implements ItemDao {
             log.error("Query fails by remove booker by owner id: '{}', item id: '{}'", ownerId, itemId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
-        return findById(itemId);
+        return findByUserIdItemId(ownerId, itemId);
     }
 
     @Override
@@ -211,7 +211,7 @@ public class ItemDaoImpl implements ItemDao {
             log.error("Query fails by remove booker by owner id: '{}', item id: '{}'", ownerId, itemId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
-        return findById(itemId);
+        return findByUserIdItemId(ownerId, itemId);
     }
 
     @Override
@@ -265,6 +265,7 @@ public class ItemDaoImpl implements ItemDao {
         } else {
             log.debug("Booked items list was found: '{}'", items);
         }
+
         return items;
     }
 
@@ -281,11 +282,6 @@ public class ItemDaoImpl implements ItemDao {
             log.debug("Items list was found: '{}'", items);
         }
         return items;
-    }
-
-    @Override
-    public List<Item> findBookingByUserLogin(String login, String[] tagArray) {
-        return null;
     }
 
     @Override
@@ -328,7 +324,7 @@ public class ItemDaoImpl implements ItemDao {
         if(getItemNumberOfUsers(model.getItemId()) == 0){
             log.debug("Try to delete item by item id: '{}'", model.getItemId());
             try {
-            jdbcTemplate.update(env.getProperty(ITEM_DELETE), model.getItemId());
+                jdbcTemplate.update(env.getProperty(ITEM_DELETE), model.getItemId());
             } catch (DataAccessException e) {
                 log.error("Query fails by deleting item with item id: '{}'", model.getItemId());
                 throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -474,11 +470,6 @@ public class ItemDaoImpl implements ItemDao {
                 throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
             }
         });
-    }
-
-    @Override
-    public List<Item> findBookingByUserLogin(String login) {
-        return null;
     }
 
     private int getItemNumberOfUsers(int itemId) {

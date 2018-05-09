@@ -53,7 +53,7 @@ public class ItemController {
     @PostMapping("/{id}/add")
     public @ResponseBody ResponseEntity<Item> addItemToUserWishList(@PathVariable int id,@Valid @RequestBody String itemPriority){
         log.debug("Trying to add item with id '{}' to user wish list", id);
-        System.out.println("!!!" + itemPriority);
+        log.error("!!!" + itemPriority);
         itemService.addItemToUserWishList(id, itemPriority);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -93,5 +93,28 @@ public class ItemController {
 
         log.debug("Image successfully uploaded send response status OK");
         return new ResponseEntity<>(imagePath, HttpStatus.OK);
+    }
+
+    //Booking
+
+    @PostMapping("/{itemId}/owner/{ownerId}/booker/{bookerId}")
+    public ResponseEntity<Item> addItemBooker(@PathVariable int itemId, @PathVariable int ownerId, @PathVariable int bookerId){
+        log.debug("Trying to add item with id '{}' to user wish list", itemId);
+
+        Item itemWithBooker = itemService.addItemBooker(ownerId, itemId, bookerId);
+
+        log.debug("Booker with id '{}' was added to item '{}'", bookerId, itemWithBooker);
+
+        return new ResponseEntity<>(itemWithBooker, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{itemId}/owner/{ownerId}/booker/{bookerId}")
+    public ResponseEntity deleteItemBooker(@PathVariable int itemId, @PathVariable int ownerId, @PathVariable int bookerId) {
+        log.debug("Trying to delete item with id '{}' to user wish list", itemId);
+
+        Item itemWithoutBooker = itemService.deleteItemBooker(ownerId, itemId);
+
+        log.debug("Booker with id '{}' was deleted from item '{}'", bookerId, itemWithoutBooker);
+        return new ResponseEntity<>(itemWithoutBooker, HttpStatus.OK);
     }
 }

@@ -22,7 +22,7 @@ export class WishAddComponent implements OnInit {
   newItem: Item;
 
   // Image
-  selectedFile = null;
+  selectedFile = 'assets/item-icon-default.svg';
   selectedImage = null;
 
   //Date
@@ -94,7 +94,7 @@ export class WishAddComponent implements OnInit {
   resetItem() {
     this.newItem = new Item();
     this.getDueDate();
-    this.selectedFile = null;
+    this.selectedFile = 'assets/item-icon-default.svg';
     this.tag = '';
   }
 
@@ -127,9 +127,10 @@ export class WishAddComponent implements OnInit {
 
     this.spinner.show();
 
-    if(this.selectedFile !== null) {
+    if(this.selectedFile !== 'assets/item-icon-default.svg') {
       this.uploadImage();
     } else {
+      this.newItem.imageFilepath = this.selectedFile;
       this.addWish();
     }
   }
@@ -144,7 +145,7 @@ export class WishAddComponent implements OnInit {
         //todo Check working
         this.newItem.imageFilepath = event.body.toString();
         this.addWish();
-        this.selectedFile = null;
+        this.selectedFile = 'assets/item-icon-default.svg';
         this.selectedImage = null;
       }
     }, error => {

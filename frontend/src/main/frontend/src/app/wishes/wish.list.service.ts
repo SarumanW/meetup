@@ -30,7 +30,7 @@ export class WishListService {
     switch (category) {
       case WishListComponent.BOOKINGS_CATEGORY: {
         return this.http
-          .get<any>(this.GET_BOOKINGS_WISH_LIST + login, {headers: headers, params: params});
+          .get<any>(this.GET_BOOKINGS_WISH_LIST, {headers: headers, params: params});
       }
       case WishListComponent.RECOMMENDATIONS_CATEGORY: {
         return this.http
@@ -63,7 +63,9 @@ export class WishListService {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.post(this.POST_ADD_ITEM, item, {headers: headers});
+    let url = `/api/item/${item.itemId}/owner/${item.ownerId}/booker/${item.bookerId}`;
+
+    return this.http.post(url, item, {headers: headers});
   }
 
   //todo create unbooking
@@ -71,7 +73,9 @@ export class WishListService {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.delete(`api/item/${item.itemId}/delete`, {headers: headers});
+    let url = `/api/item/${item.itemId}/owner/${item.ownerId}/booker/${item.bookerId}`;
+
+    return this.http.delete(url, {headers: headers});
   }
 
 }

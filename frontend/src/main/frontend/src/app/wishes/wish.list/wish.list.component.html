@@ -16,17 +16,21 @@
 
         <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
           <div class="btn-group">
-            <button routerLink="." [queryParams]="{category: class.OWN_CATEGORY}"
+            <!--[queryParams]="{category: class.OWN_CATEGORY}"-->
+            <button routerLink="/{{login}}/wishes/category/{{class.OWN_CATEGORY}}"
                     type="button" class="btn btn-primary"
                     [disabled]="category === class.OWN_CATEGORY">Wishes
             </button>
-            <button *ngIf="login === profile.login" routerLink="."
-                    [queryParams]="{category: class.RECOMMENDATIONS_CATEGORY}"
+            <!--[queryParams]="{category: class.RECOMMENDATIONS_CATEGORY}"-->
+            <button *ngIf="login === profile.login"
+                    routerLink="/{{login}}/wishes/category/{{class.RECOMMENDATIONS_CATEGORY}}"
                     type="button" class="btn btn-primary"
                     [disabled]="category === class.RECOMMENDATIONS_CATEGORY">Recommendations
             </button>
-            <button *ngIf="login === profile.login" routerLink="."
-                    [queryParams]="{category: class.BOOKINGS_CATEGORY}" type="button" class="btn btn-primary"
+            <!--[queryParams]="{category: class.BOOKINGS_CATEGORY}" -->
+            <button *ngIf="login === profile.login"
+                    routerLink="/{{login}}/wishes/category/{{class.BOOKINGS_CATEGORY}}"
+                    type="button" class="btn btn-primary"
                     [disabled]="category === class.BOOKINGS_CATEGORY">Bookings
             </button>
           </div>
@@ -34,32 +38,34 @@
 
         <!--Search-->
 
-        <div class="form-group">
-          <input type="text" class="form-control"
-                 placeholder="Enter tag name and push 'Enter'"
-                  #itemTag="ngModel" (keyup.enter)="addSearchTag()" [(ngModel)]="tag"
-                 minlength="3" maxlength="30" pattern="^[_A-Za-z0-9]*$">
-          <div *ngIf="itemTag.dirty && itemTag.invalid">
-            <small class="form-text text-danger" *ngIf="itemTag.errors.minlength">
-              Wish name must more than 2 chars.
-            </small>
-            <small class="form-text text-danger" *ngIf="itemTag.errors.maxlength">
-              Wish name must less than 31 chars.
-            </small>
-            <small class="form-text text-danger" *ngIf="itemTag.errors.pattern">
-              Wish name can only contain letters, digits and '_'.
-            </small>
-            <small class="form-text text-danger" *ngIf="tags.length >= 8">
-              Maximal count of search tags is 8;
-            </small>
+        <div *ngIf="category === class.RECOMMENDATIONS_CATEGORY">
+          <div class="form-group">
+            <input type="text" class="form-control"
+                   placeholder="Enter tag name and push 'Enter'"
+                   #itemTag="ngModel" (keyup.enter)="addSearchTag()" [(ngModel)]="tag"
+                   minlength="3" maxlength="30" pattern="^[_A-Za-z0-9]*$">
+            <div *ngIf="itemTag.dirty && itemTag.invalid">
+              <small class="form-text text-danger" *ngIf="itemTag.errors.minlength">
+                Wish name must more than 2 chars.
+              </small>
+              <small class="form-text text-danger" *ngIf="itemTag.errors.maxlength">
+                Wish name must less than 31 chars.
+              </small>
+              <small class="form-text text-danger" *ngIf="itemTag.errors.pattern">
+                Wish name can only contain letters, digits and '_'.
+              </small>
+              <small class="form-text text-danger" *ngIf="tags.length >= 8">
+                Maximal count of search tags is 8;
+              </small>
+            </div>
           </div>
-        </div>
-        <div class="container">
-          <div class="row">
-            <div *ngFor="let tag of tags">
-              <a style="margin-right: 5px; color: white;" class="badge badge-info">
-                #{{ tag }} <span class="tag-glyphicon tag-glyphicon-delete" (click)="deleteSearchTag(tag)"></span>
+          <div class="container">
+            <div class="row">
+              <div *ngFor="let tag of tags">
+                <a style="margin-right: 5px; color: white;" class="badge badge-info">
+                  #{{ tag }} <span class="tag-glyphicon tag-glyphicon-delete" (click)="deleteSearchTag(tag)"></span>
                 </a>
+              </div>
             </div>
           </div>
         </div>
@@ -85,12 +91,12 @@
                    src="assets/add.svg" alt="">
             </div>
             <div class="card-body">
-              <button disabled *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === 0"
+              <button *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === 0"
                  (click)="bookWishItem(item)" class="btn btn-success">Book</button>
-              <button disabled *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === profile.id"
+              <button *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === profile.id"
                  (click)="unbookWishItem(item)" class="btn btn-danger">Unbook</button>
               <h5 class="card-title">{{item.name}}</h5>
-              <p class="card-text"><b>Priority: </b>{{item.priority}}</p>
+              <p *ngIf="category == class.RECOMMENDATIONS_CATEGORY" class="card-text"><b>Priority: </b>{{item.priority}}</p>
               <p *ngIf="item.bookerId !== 0" class="card-text"><b>Booked by id: </b>{{item.bookerId}}</p>
               <p class="card-text"><b>Due date: </b>{{item.dueDate.split(' ')[0]}}</p>
 

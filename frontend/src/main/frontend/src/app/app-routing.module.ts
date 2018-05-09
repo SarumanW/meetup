@@ -39,6 +39,7 @@ const routes: Routes = [
   {path: ':login/change.password', component: ChangePasswordComponent, canActivate: [AuthGuard]},
   {path: ':login/check.password', component: CheckPasswordComponent, canActivate: [AuthGuard]},
   {path: ':login/wishes', component: WishListComponent, canActivate: [AuthGuard]},
+  {path: ':login/wishes/category/:category', component: WishListComponent, canActivate: [AuthGuard]},
   {path: ':login/wishes/add', component: WishAddComponent, canActivate: [AuthGuard]},
   {path: ':login/wishes/:itemId', component: WishComponent, canActivate: [AuthGuard]},
   {path: 'change.password', component: ChangePasswordComponent},

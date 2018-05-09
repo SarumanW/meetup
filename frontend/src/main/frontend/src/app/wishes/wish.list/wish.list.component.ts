@@ -43,7 +43,7 @@ export class WishListComponent implements OnInit {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
 
     this.loginSubscriber();
-    this.paramsSubscriber();
+    // this.paramsSubscriber();
   }
 
   loginSubscriber() {
@@ -52,13 +52,7 @@ export class WishListComponent implements OnInit {
       if(this.login === undefined) {
         this.login = this.profile.login;
       }
-      this.getWishList();
-    });
-  }
-
-  paramsSubscriber() {
-    this.route.queryParams.subscribe((params: Params) => {
-      let category =  params['category'];
+      let category = params['category'];
       if (this.login === this.profile.login && category == WishListComponent.BOOKINGS_CATEGORY) {
         this.category = WishListComponent.BOOKINGS_CATEGORY;
         this.title = "Bookings wishes:";
@@ -74,13 +68,13 @@ export class WishListComponent implements OnInit {
   }
 
   getWishList(withSpinner = true) {
-    //todo get wish list from database
     if (withSpinner) {
       this.spinner.show();
     }
 
     this.wishListService.getWishList(this.category, this.login, this.tags).subscribe(
       itemList => {
+        console.log(itemList);
         this.items = itemList;
         this.spinner.hide();
       });
@@ -90,7 +84,6 @@ export class WishListComponent implements OnInit {
     if (this.tag.length > 2 && this.tag.length < 31 && /^[_A-Za-z0-9]*$/.test(this.tag) && this.tags.length < 8) {
       this.tags.push(this.tag);
       this.tag = '';
-      //todo search items by tag from database
       this.getWishList()
     }
   }
@@ -161,23 +154,24 @@ export class WishListComponent implements OnInit {
 
   //todo check working
   bookWishItem(item: Item) {
+    item.bookerId = this.profile.id;
     this.spinner.show();
     this.wishListService.bookWishItem(item).subscribe(itemBooked => {
-      this.spinner.hide();
-      //this.getWishList(false);
 
       //delete one item
       const index = this.items.indexOf(item);
-      console.log(index);
       if (index !== -1) {
-        this.items.splice(index, 1)
+        this.items[index] = itemBooked;
       }
-      this.items.push(itemBooked);
+
+      console.log(item);
+
+      this.spinner.hide();
 
       this.showSuccess('Wish item was successfully booked', 'Attention!');
     }, error => {
-      this.showError('Unsuccessful wish item booking', 'Adding error');
       this.spinner.hide();
+      this.showError('Unsuccessful wish item booking', 'Adding error');
     });
   }
 
@@ -185,16 +179,17 @@ export class WishListComponent implements OnInit {
   unbookWishItem(item: Item) {
     this.spinner.show();
     this.wishListService.unbookWishItem(item).subscribe(itemUnBooked => {
-      this.spinner.hide();
 
       //delete one item
       const index = this.items.indexOf(item);
-      console.log(index);
       if (index !== -1) {
-        this.items.splice(index, 1)
+        this.items[index] = itemUnBooked;
       }
 
-      this.items.push(itemUnBooked);
+      this.spinner.hide();
+
+      console.log(item);
+
       this.showSuccess('Wish item was successfully deleted', 'Attention!');
     }, error => {
       this.showError('Unsuccessful wish item deleting', 'Adding error');
