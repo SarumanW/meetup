@@ -127,11 +127,10 @@ public final class Key {
     public static final String ITEM_DELETE_TAGS = "item.deleteTags";
     public static final String ITEM_ADD_LIKE_BY_ITEM_ID_USER_ID = "item.addLikeByItemIdUserId";
     public static final String ITEM_REMOVE_LIKE_BY_ITEM_ID_USER_ID = "item.removeLikeByItemIdUserId";
-    public static final String ITEM_UPDATE_PRIORITY = "item.updatePriority";
+    public static final String ITEM_UPDATE_USER_ITEM_INFO = "item.updateUserItemInfo";
     public static final String ITEM_GET_BOOKED_ITEMS_BY_USER_ID = "item.getBookedItemsByUserId";
-    public static final String ITEM_GET_ITEMS_ID_BY_TAG_NAME = "item.getItemsIdByTagName";
-
-
+    public static final String ITEM_GET_ITEMS_ID_BY_TAG_NAMES = "item.getItemsIdByTagNames";
+    public static final String TAG_SEARCH_TAGS_NAME = "tag.searchTagsName";
 
     //Exceptions
     public static final String EXCEPTION_AUTHENTICATION = "authentication.exception";
