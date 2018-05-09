@@ -142,10 +142,12 @@
       <app-modal-window #addDate id="add-date">
         <div class="modal-header d-flex justify-content-between align-items-center">
           <h4 class="modal-title">Finish conversion</h4>
+
           <img class="close-btn" src="assets/close.svg" (click)="addDate.hide()" alt="">
         </div>
 
         <div class="app-modal-body">
+          <p class="modal-body">Do you realy want to convert the event to {{this.tempTypeShow}}?</p>
           <form name="form" role="form" #addDateForm="ngForm">
             <div *ngIf = "shouldShow">
               <div class="form-group">
@@ -168,6 +170,8 @@
         <div class="app-modal-footer">
           <button class="btn btn-success" [disabled]="shouldShow && addDateForm.form.invalid"
                   (click)="addDate.hide();formatDate(); convertEvent()">Confirm</button>
+          <button class="btn btn-default" [disabled]="shouldShow && addDateForm.form.invalid"
+                  (click)="addDate.hide()">Cancel</button>
         </div>
 
       </app-modal-window>
