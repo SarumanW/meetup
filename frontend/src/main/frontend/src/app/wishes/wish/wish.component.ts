@@ -21,7 +21,8 @@ export class WishComponent implements OnInit {
   item: Item;
   name = "ITEM";
   profile: Profile;
-  id: string;
+  id: number;
+  login: string;
   private sub: any;
 
 
@@ -36,7 +37,8 @@ export class WishComponent implements OnInit {
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
-      this.id = params['itemId']
+      this.id = +params['itemId'];
+      this.login = params['login'];
     });
 
     this.getItem(this.id);
@@ -49,7 +51,7 @@ export class WishComponent implements OnInit {
 
   }
 
-  getItem(id: string) {
+  getItem(id: number) {
     this.spinner.show();
 
     this.wishService.getWishItem(id).subscribe(item => {

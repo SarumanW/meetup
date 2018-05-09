@@ -6,6 +6,7 @@ import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 import "rxjs/add/operator/debounceTime";
+import {WishService} from "../wish.service";
 
 @Component({
   selector: 'app-wish-list',
@@ -34,6 +35,7 @@ export class WishListComponent implements OnInit {
   priority: string;
 
   constructor(private wishListService: WishListService,
+              private wishService: WishService,
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
               private toastr: ToastrService,) {
@@ -120,7 +122,7 @@ export class WishListComponent implements OnInit {
   bookWishItem(item: Item) {
     item.bookerId = this.profile.id;
     this.spinner.show();
-    this.wishListService.bookWishItem(item).subscribe(itemBooked => {
+    this.wishService.bookWishItem(item).subscribe(itemBooked => {
 
       //delete one item
       const index = this.items.indexOf(item);
@@ -142,7 +144,7 @@ export class WishListComponent implements OnInit {
   //todo check working
   unbookWishItem(item: Item) {
     this.spinner.show();
-    this.wishListService.unbookWishItem(item).subscribe(itemUnBooked => {
+    this.wishService.unbookWishItem(item).subscribe(itemUnBooked => {
 
       //delete one item
       const index = this.items.indexOf(item);
@@ -173,7 +175,7 @@ export class WishListComponent implements OnInit {
     newItem.priority = this.priority;
 
     this.spinner.show();
-    this.wishListService.addWishItem(newItem).subscribe(item => {
+    this.wishService.addWishItem(newItem).subscribe(item => {
       this.spinner.hide();
 
       const index = this.items.indexOf(item);
@@ -203,7 +205,7 @@ export class WishListComponent implements OnInit {
 
   deleteWishItem(item: Item) {
     this.spinner.show();
-    this.wishListService.deleteWishItem(item).subscribe(item => {
+    this.wishService.deleteWishItem(item).subscribe(item => {
       this.spinner.hide();
 
       const index = this.items.indexOf(item);

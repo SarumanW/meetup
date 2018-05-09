@@ -84,7 +84,7 @@
           <div *ngFor="let item of items" class="card mb-4">
             <div class="card-header head">
               <img class="card-img-top" [src]="item.imageFilepath" alt="..."
-                   onError="this.src='https://i1.rozetka.ua/goods/1495253/vitek-vt-1511_images_1495253826.jpg'">
+                   onError="this.src='assets/item-icon-default.svg'">
               <img *ngIf="item.ownerId === profile.id" (click)="delete.show()"
                    class="close-btn" src="assets/close-white.svg" alt="">
               <img *ngIf="item.ownerId !== profile.id" (click)="add.show()"
