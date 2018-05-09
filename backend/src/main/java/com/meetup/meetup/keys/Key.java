@@ -28,6 +28,9 @@ public final class Key {
     public static final String USER_ITEM_BOOKER_ID = "ID_WHO_BOOKED";
     public static final String USER_ITEM_PRIORITY_ID = "PRIORITY_ID";
 
+    //PRIORITY table fields
+    public static final String PRIORITY_NAME = "PRIORITY_NAME";
+
     //LLIKE table field
     public static final String LLIKE_LIKE_ID = "LIKE_ID";
 
@@ -136,6 +139,7 @@ public final class Key {
     public static final String ITEM_UPDATE_PRIORITY = "item.updatePriority";
     public static final String ITEM_GET_BOOKED_ITEMS_BY_USER_ID = "item.getBookedItemsByUserId";
     public static final String ITEM_GET_ITEMS_ID_BY_TAG_NAME = "item.getItemsIdByTagName";
+    public static final String ITEM_FIND_BOOKED_ITEMS_BY_USER_ID = "item.findBookedItemsByUserId";
 
 
 

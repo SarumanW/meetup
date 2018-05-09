@@ -1,6 +1,7 @@
 package com.meetup.meetup.dao.impl;
 
 import com.meetup.meetup.dao.ItemDao;
+import com.meetup.meetup.dao.rowMappers.ExtendedItemRowMapper;
 import com.meetup.meetup.dao.rowMappers.ItemRowMapper;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.ItemPriority;
@@ -106,7 +107,7 @@ public class ItemDaoImpl implements ItemDao {
         try {
             model.setItemId(insertItem.executeAndReturnKey(itemParameters).intValue());
             addTags(model.getTags(), model.getItemId());
-            addToUserWishList(model.getOwnerId(), model.getItemId(), model.getPriority());
+            addToUserWishList(model);
         } catch (DataAccessException e) {
             log.error("Query fails by insert item '{}'", model);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -136,25 +137,28 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
-    public Item addToUserWishList(int userId, int itemId, ItemPriority priority) {
-        log.debug("Try add to wish list by user id: '{}', item id: '{}', priority: '{}'", userId, itemId, priority);
+    public Item addToUserWishList(Item item) {
+        log.debug("Try add to wish list by user id: '{}', item id: '{}', priority: '{}'",
+                item.getOwnerId(), item.getItemId(), item.getPriority());
         try {
             int result = jdbcTemplate.update(env.getProperty(ITEM_UPDATE_USER_ITEM),
-                    userId, itemId, priority.ordinal() + 1);
+                    item.getOwnerId(), item.getItemId(), item.getPriority().ordinal() + 1);
+
+            update(item);
 
             if (result != 0) {
                 log.debug("Item by user id: '{}', item id: '{}', priority: '{}' was added to wish list",
-                        userId, itemId, priority);
+                        item.getOwnerId(), item.getItemId(), item.getPriority());
             } else {
                 log.debug("Item by user id: '{}', item id: '{}', priority: '{}' was not added to wish list",
-                        userId, itemId, priority);
+                        item.getOwnerId(), item.getItemId(), item.getPriority());
             }
         } catch (DataAccessException e) {
             log.error("Query fails by add item to wish list by user id: '{}', item id: '{}', priority: '{}'",
-                    userId, itemId, priority);
+                    item.getOwnerId(), item.getItemId(), item.getPriority());
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
-        return findById(itemId);
+        return item;
     }
 
     @Override
@@ -258,7 +262,13 @@ public class ItemDaoImpl implements ItemDao {
         log.debug("Try get booked items list by user id: '{}'", userId);
 
         List<Item> items = new ArrayList<>();
-        getBookedItemsIdByUserId(userId).forEach((itemId) -> items.add(findById(itemId)));
+        try {
+            items = jdbcTemplate.query(env.getProperty(ITEM_FIND_BOOKED_ITEMS_BY_USER_ID),
+                    new Object[]{userId}, new ExtendedItemRowMapper());
+        } catch (DataAccessException e) {
+            log.error("Query fails by find items with user id: '{}'", userId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
 
         if (items.isEmpty()) {
             log.debug("Booked items list don't found by user id: '{}'", userId);
