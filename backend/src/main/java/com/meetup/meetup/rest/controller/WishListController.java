@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +42,7 @@ public class WishListController {
     }
 
     @GetMapping("/{login}")
-    public ResponseEntity<List<Item>> getWishesByUser(@PathVariable String login,@RequestParam(value="tag") String[] tagArray) {
+    public ResponseEntity<List<Item>> getWishesByUser(@PathVariable String login,@RequestParam(value="tag",required = false) String[] tagArray) {
         log.debug("Trying to get wishes by login '{}'", login);
 
         List<Item> userWishes = wishListService.getWishesByUser(login, tagArray);

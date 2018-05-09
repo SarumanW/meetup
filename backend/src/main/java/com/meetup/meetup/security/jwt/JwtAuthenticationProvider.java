@@ -14,7 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_JWT_AUTHENTICATION;
+import static com.meetup.meetup.keys.Key.EXCEPTION_JWT_AUTHENTICATION;
 
 @Component
 @PropertySource("classpath:strings.properties")

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface UserDao extends Dao<User> {
 
-    User findByLogin(String login, String[] tagArray);
+    User findByLogin(String login);
 
     User findByEmail(String email);
 

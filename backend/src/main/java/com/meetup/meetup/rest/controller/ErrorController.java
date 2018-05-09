@@ -33,11 +33,23 @@ public class ErrorController {
     @ExceptionHandler(CustomRuntimeException.class)
     public void handleCustomException(HttpServletResponse response, Exception e) {
         log.error("CustomException: ", e);
+        response.setStatus(418);
+        try {
+            response.getWriter().print("Attention, an attempt to brew coffee with a teapot");
+        } catch (IOException e1) {
+            log.error("exception in ErrorController: ", e1);
+        }
     }
 
     @ExceptionHandler(Exception.class)
     public void handleException(HttpServletResponse response, Exception e) {
         log.error("Exception: ", e);
+        response.setStatus(418);
+        try {
+            response.getWriter().print("Attention, an attempt to brew coffee with a teapot");
+        } catch (IOException e1) {
+            log.error("exception in ErrorController: ", e1);
+        }
     }
 }
 

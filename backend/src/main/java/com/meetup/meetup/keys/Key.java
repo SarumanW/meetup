@@ -1,4 +1,4 @@
-package com.meetup.meetup.Keys;
+package com.meetup.meetup.keys;
 
 public final class Key {
 
@@ -22,6 +22,14 @@ public final class Key {
     public static final String ITEM_LINK = "LINK";
     public static final String ITEM_DUE_DATE = "DUE_DATE";
     public static final String ITEM_LIKES = "LIKES";
+
+    //USER_ITEM table fields
+    public static final String USER_ITEM_USER_ID = "USER_ID";
+    public static final String USER_ITEM_BOOKER_ID = "ID_WHO_BOOKED";
+    public static final String USER_ITEM_PRIORITY_ID = "PRIORITY_ID";
+
+    //LLIKE table field
+    public static final String LLIKE_LIKE_ID = "LIKE_ID";
 
     //TAG table fields
     public static final String TAG_TAG_ID = "TAG_ID";
@@ -74,8 +82,8 @@ public final class Key {
     public static final String USER_UPDATE = "user.update";
     public static final String USER_UPDATE_PASSWORD = "user.updatePassword";
     public static final String USER_DELETE = "user.delete";
-    public static final String USER_GET_FRIENDS_IDS = "user.getFriendsIds";
-    public static final String USER_GET_UNCONFIRMED_IDS = "user.getUnconfirmedIds";
+    public static final String USER_GET_FRIENDS = "user.getFriends";
+    public static final String USER_GET_UNCONFIRMED = "user.getUnconfirmedFriends";
     public static final String USER_CONFIRM_FRIEND = "user.confirmFriend";
     public static final String USER_DELETE_FRIEND = "user.deleteFriend";
     public static final String USER_IS_LOGIN_FREE = "user.isLoginFree";
@@ -90,15 +98,19 @@ public final class Key {
     public static final String FOLDER_REMOVE_EVENTS = "folder.removeEvents";
 
     //EventDao
-    public static final String EVENT_FIND_BY_USER_ID = "event.findByUserId";
-    public static final String EVENT_FIND_BY_ID = "event.findById";
-    public static final String EVENT_UPDATE = "event.update";
-    public static final String EVENT_DELETE = "event.delete";
-    public static final String EVENT_FIND_BY_FOLDER_ID = "event.findByFolderId";
-    public static final String EVENT_GET_PARTICIPANTS = "event.getParticipants";
-    public static final String EVENT_FIND_BY_TYPE_IN_FOLDER = "event.findByTypeInFolder";
-    public static final String EVENT_GET_DRAFTS = "event.getDrafts";
-
+    public static final String EVENT_FIND_BY_USER_ID="event.findByUserId";
+    public static final String EVENT_FIND_BY_ID="event.findById";
+    public static final String EVENT_UPDATE="event.update";
+    public static final String EVENT_DELETE="event.delete";
+    public static final String EVENT_FIND_BY_FOLDER_ID="event.findByFolderId";
+    public static final String EVENT_GET_PARTICIPANTS="event.getParticipants";
+    public static final String EVENT_FIND_BY_TYPE_IN_FOLDER="event.findByTypeInFolder";
+    public static final String EVENT_GET_DRAFTS="event.getDrafts";
+    public static final String EVENT_GET_IN_PERIOD="event.getInPeriod";
+    public static final String EVENT_GET_ALL_PUBLIC="event.getAllPublic";
+    public static final String EVENT_DELETE_PARTICIPANTS="event.deleteParticipants";
+    public static final String EVENT_DELETE_MEMBERS="event.deleteMembers";
+    public static final String EVENT_DELETE_PARTICIPANT="event.deleteParticipant";
     //RoleDao
     public static final String GET_ROLE = "role.getRole";
 
@@ -109,18 +121,21 @@ public final class Key {
     public static final String ITEM_UPDATE = "item.update";
     public static final String ITEM_GET_TAG_BY_ITEM_ID = "item.getTagByItemId";
     public static final String ITEM_GET_POPULAR_ITEMS_ID ="item.getPopularItemsIds";
+    public static final String ITEM_GET_PERSONAL_INFO_BY_ITEM_ID_USER_ID = "item.getPersonalInfoByUserIdItemId";
     public static final String ITEM_GET_PRIORITY_BY_USER_ID ="item.getPriorityByUserId";
     public static final String ITEM_GET_BOOKER_ID_BY_ITEM_ID_USER_ID = "item.getBookerIdByUserIdIntemId";
     public static final String ITEM_UPDATE_USER_ITEM = "item.updateUserItem";
     public static final String ITEM_DELETE_FROM_WISH_LIST = "item.deleteFromWishList";
     public static final String ITEM_SET_BOOKER_ID_FOR_ITEM = "item.setBookerId";
     public static final String ITEM_GET_NUMBER_OF_ITEM_USERS = "item.getNumberOfItemUsers";
-    public static final String ITEM_GET_TAG_ID = "item.getTagId";
+    public static final String ITEM_GET_TAG_ID = "item.getTagIdByName";
     public static final String ITEM_ADD_TAG_TO_ITEM = "item.addTagToItem";
     public static final String ITEM_DELETE_TAGS = "item.deleteTags";
     public static final String ITEM_ADD_LIKE_BY_ITEM_ID_USER_ID = "item.addLikeByItemIdUserId";
     public static final String ITEM_REMOVE_LIKE_BY_ITEM_ID_USER_ID = "item.removeLikeByItemIdUserId";
     public static final String ITEM_UPDATE_PRIORITY = "item.updatePriority";
+    public static final String ITEM_GET_BOOKED_ITEMS_BY_USER_ID = "item.getBookedItemsByUserId";
+    public static final String ITEM_GET_ITEMS_ID_BY_TAG_NAME = "item.getItemsIdByTagName";
 
 
 

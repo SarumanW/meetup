@@ -20,7 +20,7 @@ export class FriendsListComponent implements OnInit {
   state: string = "friends";
   newFriendName: string;
   friends: Profile[];
-  unknownUsers : Profile[] = [];
+  unknownUsers: Profile[] = [];
   unconfirmedFriends: Profile[] = [];
   message: string;
   loggedUser: boolean;
@@ -33,7 +33,6 @@ export class FriendsListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.spinner.show();
     this.route.params.subscribe(params => {
       this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === params['login'];
       this.user = params['login'];
@@ -51,17 +50,21 @@ export class FriendsListComponent implements OnInit {
   }
 
   getInfo() {
+
+    this.spinner.show();
+
     // if (this.loggedUser) {
-      this.friendService.getFriendsRequests()
-        .subscribe((requests) => {
-          this.unconfirmedFriends = requests;
-        });
+    this.friendService.getFriendsRequests()
+      .subscribe((requests) => {
+        this.unconfirmedFriends = requests;
+      });
     // }
     this.route.params.subscribe(params => {
       this.friendService.getFriends(params['login'])
       // this.friendService.getFriends()
         .subscribe((friends) => {
           this.friends = friends
+          this.spinner.hide();
         });
     });
   }

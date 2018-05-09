@@ -16,7 +16,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_FILE_UPLOAD;
+import static com.meetup.meetup.keys.Key.EXCEPTION_FILE_UPLOAD;
 
 
 @Service
@@ -55,7 +55,7 @@ public class StorageService {
         String inFileFormat = "." + file.getOriginalFilename().split("\\.")[1];
         try {
             long imageName = System.nanoTime();
-            String imagePath = env.getProperty("wish.local.img.link") + '\\' + imageName + inFileFormat;
+            String imagePath = env.getProperty("wish.remote.img.link") + imageName + inFileFormat;
             Files.deleteIfExists(this.rootLocation.resolve(imageName + inFileFormat));
             Files.copy(file.getInputStream(), this.rootLocation.resolve(imageName + inFileFormat));
             return imagePath;

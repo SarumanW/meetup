@@ -28,15 +28,7 @@ header{
 
 /**/
 
-.participant .card{
-  overflow: hidden;
-  width: calc(25% - 15px);
-  margin-right: 20px;
-}
-.participant .card:nth-child(4n){
-  margin-right: 0;
-}
-.participant .card .head{
+.participant .head{
   height: 150px;
   background-color: #007bff;
   display: flex;
@@ -44,15 +36,14 @@ header{
   position: relative;
 }
 
-.participant .card .head .folder-icon{
-  height: 74px;
-  width: auto;
-}
-
-.participant .card .head .close-btn{
+.participant .head .close-btn{
   position: absolute;
   right: 16px;
   top: 16px;
+}
+
+.button {
+  color: #007bff;
 }
 
 .close-btn{
@@ -67,7 +58,19 @@ agm-map {
 
 .event-logo{
   width: 350px;
-  height: 350px;
+  height: 330px;
+}
+
+.l-g{
+  max-height: 265px;
+  overflow:scroll;
+  overflow-x: hidden;
+}
+.scrollspy {
+  position: relative;
+  height: 200px;
+  margin-top: .5rem;
+  overflow: auto;
 }
 
 

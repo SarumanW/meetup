@@ -1,9 +1,9 @@
 package com.meetup.meetup.rest.controller;
 
 
-import com.fasterxml.jackson.databind.node.TextNode;
+
 import com.meetup.meetup.entity.Item;
-import com.meetup.meetup.entity.ItemPriority;
+
 import com.meetup.meetup.service.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,15 +58,6 @@ public class ItemController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping
-    public @ResponseBody ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
-        log.debug("Trying to update item '{}'", newItem);
-        Item updatedItem = itemService.updateItem(newItem);
-
-       log.debug("Send response body updated '{}' and status OK");
-        return new ResponseEntity<>(updatedItem, HttpStatus.OK);
-    }
-
     @DeleteMapping("/{id}/delete")
     public @ResponseBody ResponseEntity deleteItem(@PathVariable int id) {
         log.debug("Trying to delete item with id '{}' to user wish list", id);
@@ -74,6 +65,15 @@ public class ItemController {
 
         log.debug("Send response status OK");
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PutMapping
+    public @ResponseBody ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
+        log.debug("Trying to update item '{}'", newItem);
+        Item updatedItem = itemService.updateItem(newItem);
+
+       log.debug("Send response body updated '{}' and status OK");
+        return new ResponseEntity<>(updatedItem, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
