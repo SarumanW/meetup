@@ -11,7 +11,7 @@ public interface ItemDao extends Dao<Item> {
 
     Item findByUserIdItemId(int userId, int itemId);
 
-    Item addToUserWishList(int userId, int itemId, ItemPriority priority);
+    Item addToUserWishList(Item item);
 
     Item deleteFromUserWishList(int userId, int itemId);
 
