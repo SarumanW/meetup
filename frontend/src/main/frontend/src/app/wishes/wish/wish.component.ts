@@ -1,11 +1,7 @@
 import {Router} from "@angular/router";
 import {Component, OnInit} from '@angular/core';
 import {Item} from "../item";
-import {HttpEventType, HttpResponse} from "@angular/common/http";
 import {UploadFileService} from "../../upload.file/upload.file.service";
-import {HttpClientModule} from "@angular/common/http";
-import {Tag} from "../tag";
-import {ITEMS} from "../items";
 import {NgxSpinnerService} from "ngx-spinner";
 import {WishListService} from "../wish.list.service";
 import {ToastrService} from "ngx-toastr";

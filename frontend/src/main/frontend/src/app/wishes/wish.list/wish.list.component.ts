@@ -5,8 +5,7 @@ import {Profile} from "../../account/profile";
 import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
 import {Router, ActivatedRoute, Params} from "@angular/router";
-import {ITEMS} from "../items";
-import {Tag} from "../tag";
+import "rxjs/add/operator/debounceTime";
 
 @Component({
   selector: 'app-wish-list',
@@ -29,6 +28,11 @@ export class WishListComponent implements OnInit {
   tags: string[] = [];
   login: string;
 
+  //Add item date
+  minDueDate: string;
+  dueDate: string;
+  priority: string;
+
   constructor(private wishListService: WishListService,
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
@@ -43,7 +47,7 @@ export class WishListComponent implements OnInit {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
 
     this.loginSubscriber();
-    // this.paramsSubscriber();
+    this.getDueDate()
   }
 
   loginSubscriber() {
@@ -112,46 +116,6 @@ export class WishListComponent implements OnInit {
     });
   }
 
-  addWishItem(item: Item) {
-    item.ownerId = this.profile.id;
-    this.spinner.show();
-    this.wishListService.addWishItem(item).subscribe(item => {
-      this.spinner.hide();
-
-
-      const index = this.items.indexOf(item);
-      console.log(index);
-      if (index !== -1) {
-        this.items.splice(index, 1)
-      }
-
-      //this.getWishList(false);
-      this.showSuccess('Wish item was successfully added', 'Attention!');
-    }, error => {
-      this.showError('Unsuccessful wish item adding', 'Adding error');
-      this.spinner.hide();
-    });
-  }
-
-  deleteWishItem(item: Item) {
-    this.spinner.show();
-    this.wishListService.deleteWishItem(item).subscribe(item => {
-      this.spinner.hide();
-
-      const index = this.items.indexOf(item);
-      console.log(index);
-      if (index !== -1) {
-        this.items.splice(index, 1)
-      }
-
-      //this.getWishList(false);
-      this.showSuccess('Wish item was successfully deleted', 'Attention!');
-    }, error => {
-      this.showError('Unsuccessful wish item deleting', 'Adding error');
-      this.spinner.hide();
-    });
-  }
-
   //todo check working
   bookWishItem(item: Item) {
     item.bookerId = this.profile.id;
@@ -189,6 +153,63 @@ export class WishListComponent implements OnInit {
       this.spinner.hide();
 
       console.log(item);
+
+      this.showSuccess('Wish item was successfully deleted', 'Attention!');
+    }, error => {
+      this.showError('Unsuccessful wish item deleting', 'Adding error');
+      this.spinner.hide();
+    });
+  }
+
+  // Add Item
+
+  addWishItem(item: Item) {
+    let newItem = Object.assign({}, item);
+
+    console.log(item);
+
+    newItem.ownerId = this.profile.id;
+    newItem.dueDate = this.dueDate + ' 00:00:00';
+    newItem.priority = this.priority;
+
+    this.spinner.show();
+    this.wishListService.addWishItem(newItem).subscribe(item => {
+      this.spinner.hide();
+
+      const index = this.items.indexOf(item);
+      if (index !== -1) {
+        this.items.splice(index, 1)
+      }
+
+      this.showSuccess('Wish item was successfully added', 'Attention!');
+    }, error => {
+      this.showError('Unsuccessful wish item adding', 'Adding error');
+      this.spinner.hide();
+    });
+  }
+
+  getDueDate() {
+    let today = new Date();
+    let year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    let day = today.getDate();
+
+    this.minDueDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
+    this.dueDate = this.minDueDate;
+
+    console.log(this.minDueDate);
+    console.log(this.dueDate);
+  }
+
+  deleteWishItem(item: Item) {
+    this.spinner.show();
+    this.wishListService.deleteWishItem(item).subscribe(item => {
+      this.spinner.hide();
+
+      const index = this.items.indexOf(item);
+      if (index !== -1) {
+        this.items.splice(index, 1)
+      }
 
       this.showSuccess('Wish item was successfully deleted', 'Attention!');
     }, error => {

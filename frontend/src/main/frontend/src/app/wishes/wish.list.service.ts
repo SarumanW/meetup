@@ -57,7 +57,6 @@ export class WishListService {
     return this.http.delete(`api/item/${item.itemId}/delete`, {headers: headers});
   }
 
-
   //todo create booking
   bookWishItem(item: Item): Observable<any> {
     let headers = new HttpHeaders()

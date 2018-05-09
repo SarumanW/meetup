@@ -2,15 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {Item} from "../item";
 import {HttpEventType, HttpResponse} from "@angular/common/http";
 import {UploadFileService} from "../../upload.file/upload.file.service";
-import {HttpClientModule} from "@angular/common/http";
-import {Tag} from "../tag";
-import {ITEMS} from "../items";
 import {NgxSpinnerService} from "ngx-spinner";
 import {WishListService} from "../wish.list.service";
 import {ToastrService} from "ngx-toastr";
 import {Profile} from "../../account/profile";
-import {Observable} from "rxjs/Observable";
-import {Subscriber} from "rxjs/Subscriber";
 
 @Component({
   selector: 'app-wish-add',
@@ -84,7 +79,7 @@ export class WishAddComponent implements OnInit {
   }
 
   deleteTag(tag: string) {
-    const index = this.newItem.tags.indexOf(this.tag);
+    const index = this.newItem.tags.indexOf(tag);
     console.log(index);
     if (index !== -1) {
       this.newItem.tags.splice(index, 1)
