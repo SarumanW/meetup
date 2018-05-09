@@ -63,8 +63,14 @@ export class FriendsListComponent implements OnInit {
       this.friendService.getFriends(params['login'])
       // this.friendService.getFriends()
         .subscribe((friends) => {
+          console.log("success")
           this.friends = friends
-        });
+        },
+          error=>{
+          // if(error.status === 418){
+            this.childComponent.showError('The server encountered an error but still retry your request. Please wait..', 'Server error!')
+          // }
+          });
     });
   }
 

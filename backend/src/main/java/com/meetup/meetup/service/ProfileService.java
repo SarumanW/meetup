@@ -77,8 +77,8 @@ public class ProfileService {
         User user = userDao.findByLogin(login);
 
         log.debug("User for finding friends '{}'", user.toString());
-
-        return userDao.getFriends(user.getId());
+        throw new RuntimeException("adsas");
+//        return userDao.getFriends(user.getId());
     }
 
     public List<User> getFriendsRequests() {

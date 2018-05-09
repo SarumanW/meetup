@@ -38,6 +38,12 @@ public class ErrorController {
     @ExceptionHandler(Exception.class)
     public void handleException(HttpServletResponse response, Exception e) {
         log.error("Exception: ", e);
+        response.setStatus(418);
+        try {
+            response.getWriter().print(e.getMessage().replace("SendCustomError", ""));
+        } catch (IOException e1) {
+            log.error("exception in ErrorController: ", e1);
+        }
     }
 }
 
