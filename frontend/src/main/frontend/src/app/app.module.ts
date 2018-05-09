@@ -54,6 +54,7 @@ import { WishComponent } from './wishes/wish/wish.component';
 import {WishListService} from "./wishes/wish.list.service";
 import { WishAddComponent } from './wishes/wish.add/wish.add.component';
 import {WishService} from "./wishes/wish.service";
+import {CountDown} from "ng2-date-countdown";
 
 @NgModule({
   declarations: [
@@ -76,11 +77,13 @@ import {WishService} from "./wishes/wish.service";
     EventListComponent,
     EventAddComponent,
     CalendarComponent,
+    EventEditComponent,
+    CountDown,
     WishListComponent,
     WishComponent,
     WishAddComponent,
     EventEditComponent,
-    CheckPasswordComponent,
+    CheckPasswordComponent
   ],
   imports: [
     ReactiveFormsModule,
