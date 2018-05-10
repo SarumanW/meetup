@@ -24,7 +24,7 @@ public class WishListController {
     private WishListService wishListService;
 
     @GetMapping
-    public @ResponseBody ResponseEntity<List<Item>> getWishList(){
+    public ResponseEntity<List<Item>> getWishList(){
         log.debug("Trying to get wish list");
         List<Item> items = wishListService.getWishList();
 
@@ -32,20 +32,11 @@ public class WishListController {
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    public @ResponseBody ResponseEntity<Item> addWishItem(@Valid @RequestBody Item item) {
-        log.debug("Trying to add wish item {}", item);
-        Item addWishItem = wishListService.addWishItem(item);
-
-        log.debug("Send response body saved item '{}' and status CREATED", addWishItem);
-        return new ResponseEntity<>(addWishItem, HttpStatus.CREATED);
-    }
-
     @GetMapping("/{login}")
-    public ResponseEntity<List<Item>> getWishesByUser(@PathVariable String login,@RequestParam(value="tag",required = false) String[] tagArray) {
+    public ResponseEntity<List<Item>> getWishesByUser(@PathVariable String login) {
         log.debug("Trying to get wishes by login '{}'", login);
 
-        List<Item> userWishes = wishListService.getWishesByUser(login, tagArray);
+        List<Item> userWishes = wishListService.getWishesByUser(login);
 
         log.debug("Send response body wishes '{}' and status OK", userWishes.toString());
 
@@ -53,7 +44,7 @@ public class WishListController {
     }
 
     @GetMapping("/recommendations")
-    public ResponseEntity<List<Item>> getRecommendations(@RequestParam(value="tag") String[] tagArray) {
+    public ResponseEntity<List<Item>> getRecommendations(@RequestParam(value="tag", required = false) String[] tagArray) {
         log.debug("Trying to get  recommend wishes");
         List<Item> items = wishListService.getRecommendations(tagArray);
 
@@ -61,17 +52,12 @@ public class WishListController {
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
-    @GetMapping("/bookings/{login}")
-    public ResponseEntity<List<Item>> getBookingByUser(@PathVariable String login, @RequestParam(value="tag") String[] tagArray) {
-        log.debug("Trying to get booking wishes by user login '{}'", login);
-        List<Item> items = wishListService.getBookingByUser(login, tagArray);
+    @GetMapping("/bookings")
+    public ResponseEntity<List<Item>> getBookingByUser() {
+        log.debug("Trying to get booking wishes by user");
+        List<Item> items = wishListService.getBookingByUser();
 
         log.debug("Send response body items '{}' and status OK", items.toString());
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
-
-
-
-
-
 }

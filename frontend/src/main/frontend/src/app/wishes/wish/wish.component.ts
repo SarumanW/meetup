@@ -1,11 +1,7 @@
 import {Router} from "@angular/router";
 import {Component, OnInit} from '@angular/core';
 import {Item} from "../item";
-import {HttpEventType, HttpResponse} from "@angular/common/http";
 import {UploadFileService} from "../../upload.file/upload.file.service";
-import {HttpClientModule} from "@angular/common/http";
-import {Tag} from "../tag";
-import {ITEMS} from "../items";
 import {NgxSpinnerService} from "ngx-spinner";
 import {WishListService} from "../wish.list.service";
 import {ToastrService} from "ngx-toastr";
@@ -25,7 +21,8 @@ export class WishComponent implements OnInit {
   item: Item;
   name = "ITEM";
   profile: Profile;
-  id: string;
+  id: number;
+  login: string;
   private sub: any;
 
 
@@ -40,7 +37,8 @@ export class WishComponent implements OnInit {
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
-      this.id = params['itemId']
+      this.id = +params['itemId'];
+      this.login = params['login'];
     });
 
     this.getItem(this.id);
@@ -53,7 +51,7 @@ export class WishComponent implements OnInit {
 
   }
 
-  getItem(id: string) {
+  getItem(id: number) {
     this.spinner.show();
 
     this.wishService.getWishItem(id).subscribe(item => {

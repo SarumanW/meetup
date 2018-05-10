@@ -67,21 +67,16 @@ public class ItemService {
         return itemDao.delete(item);
     }
 
-    public Item addItemToUserWishList(int itemId, String itemPriority) {
+    public Item addItemToUserWishList(Item item) {
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
         log.debug("User was successfully received");
-        if (itemPriority.equals("Normal")){
-            return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.NORMAL);
-        }
-        if (itemPriority.equals("Low")){
-            return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.LOW);
-        }
-        if (itemPriority.equals("High")){
-            return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.URGENT);
-        }
-        log.debug("Trying to add item with id '{}' in user '{}' wish list", itemId,user.getId());
-        return itemDao.addToUserWishList(user.getId(),itemId,ItemPriority.NORMAL);
+
+        item.setOwnerId(user.getId());
+
+        log.debug("Trying to add item with id '{}' in user '{}' wish list", item.getItemId() ,user.getId());
+
+        return itemDao.addToUserWishList(item);
     }
 
     public Item deleteItemFromUserWishList(int itemId) {
@@ -112,4 +107,14 @@ public class ItemService {
 //        log.debug("Try to delete like for item with id '{}'", itemId);
 //        return itemDao.removeLike(itemId, user.getId());
 //    }
+
+    public Item addItemBooker(int ownerId, int itemId, int bookerId) {
+        log.debug("Trying to add booker '{}' to item '{}' with owner '{}'", bookerId, itemId, ownerId);
+        return itemDao.addBookerForItem(ownerId, itemId, bookerId);
+    }
+
+    public Item deleteItemBooker(int ownerId, int itemId) {
+        log.debug("Trying to remove booker from item '{}' with owner '{}'", itemId, ownerId);
+        return itemDao.removeBookerForItem(ownerId, itemId);
+    }
 }

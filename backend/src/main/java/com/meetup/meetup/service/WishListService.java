@@ -47,16 +47,7 @@ public class WishListService {
         return itemDao.getWishListByUserId(user.getId());
     }
 
-    public Item addWishItem(Item item) {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
-
-        log.debug("Trying to insert item to user wish list");
-        return itemDao.addToUserWishList(user.getId(), item.getItemId(), item.getPriority());
-    }
-
-    public List<Item> getWishesByUser(String login, String[] tagArray) {
+    public List<Item> getWishesByUser(String login) {
         User user = userDao.findByLogin(login);
 
         if (user == null) {
@@ -69,32 +60,18 @@ public class WishListService {
     }
 
     public List<Item> getRecommendations(String[] tagArray) {
-
         log.debug("Trying to get all recommendations");
+
+        if (tagArray == null) {
+            return itemDao.getPopularItems();
+        }
+
         return itemDao.getPopularItems(tagArray);
     }
 
-    public List<Item> getBookingByUser(String login, String[] tagArray) {
-        log.debug("Trying to get booking wishes from dao by user login '{}'", login);
-        return itemDao.findBookingByUserLogin(login, tagArray);
-    }
-
-
-
-    //Check authentication and folder permission
-    private void checkPermission(Item item) {
-        log.debug("Trying to get user from AuthenticationFacade");
-
+    public List<Item> getBookingByUser() {
         User user = authenticationFacade.getAuthentication();
-
-        log.debug("User '{}' was successfully received", user.toString());
-        log.debug("Trying to check equivalence of item.getUserId '{}' and user.getId '{}'", item.getOwnerId(), user.getId());
-
-        if (item.getOwnerId() != user.getId()) {
-            log.error("User has no access to this data");
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Item", "userId", item.getOwnerId()));
-        }
-
-        log.debug("Given access to WishList '{}' for user '{}'", item.toString(), user.toString());
+        log.debug("Trying to get booking wishes from dao by user login '{}'", user.getLogin());
+        return itemDao.findBookedItemsByUserId(user.getId());
     }
 }

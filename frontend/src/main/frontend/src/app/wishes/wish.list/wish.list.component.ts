@@ -5,8 +5,8 @@ import {Profile} from "../../account/profile";
 import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
 import {Router, ActivatedRoute, Params} from "@angular/router";
-import {ITEMS} from "../items";
-import {Tag} from "../tag";
+import "rxjs/add/operator/debounceTime";
+import {WishService} from "../wish.service";
 
 @Component({
   selector: 'app-wish-list',
@@ -29,7 +29,13 @@ export class WishListComponent implements OnInit {
   tags: string[] = [];
   login: string;
 
+  //Add item date
+  minDueDate: string;
+  dueDate: string;
+  priority: string;
+
   constructor(private wishListService: WishListService,
+              private wishService: WishService,
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
               private toastr: ToastrService,) {
@@ -43,7 +49,7 @@ export class WishListComponent implements OnInit {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
 
     this.loginSubscriber();
-    this.paramsSubscriber();
+    this.getDueDate()
   }
 
   loginSubscriber() {
@@ -52,13 +58,7 @@ export class WishListComponent implements OnInit {
       if(this.login === undefined) {
         this.login = this.profile.login;
       }
-      this.getWishList();
-    });
-  }
-
-  paramsSubscriber() {
-    this.route.queryParams.subscribe((params: Params) => {
-      let category =  params['category'];
+      let category = params['category'];
       if (this.login === this.profile.login && category == WishListComponent.BOOKINGS_CATEGORY) {
         this.category = WishListComponent.BOOKINGS_CATEGORY;
         this.title = "Bookings wishes:";
@@ -74,13 +74,13 @@ export class WishListComponent implements OnInit {
   }
 
   getWishList(withSpinner = true) {
-    //todo get wish list from database
     if (withSpinner) {
       this.spinner.show();
     }
 
     this.wishListService.getWishList(this.category, this.login, this.tags).subscribe(
       itemList => {
+        console.log(itemList);
         this.items = itemList;
         this.spinner.hide();
       });
@@ -90,7 +90,6 @@ export class WishListComponent implements OnInit {
     if (this.tag.length > 2 && this.tag.length < 31 && /^[_A-Za-z0-9]*$/.test(this.tag) && this.tags.length < 8) {
       this.tags.push(this.tag);
       this.tag = '';
-      //todo search items by tag from database
       this.getWishList()
     }
   }
@@ -119,39 +118,44 @@ export class WishListComponent implements OnInit {
     });
   }
 
-  addWishItem(item: Item) {
-    item.ownerId = this.profile.id;
+  //todo check working
+  bookWishItem(item: Item) {
+    item.bookerId = this.profile.id;
     this.spinner.show();
-    this.wishListService.addWishItem(item).subscribe(item => {
-      this.spinner.hide();
+    this.wishService.bookWishItem(item).subscribe(itemBooked => {
 
-
+      //delete one item
       const index = this.items.indexOf(item);
-      console.log(index);
       if (index !== -1) {
-        this.items.splice(index, 1)
+        this.items[index] = itemBooked;
       }
 
-      //this.getWishList(false);
-      this.showSuccess('Wish item was successfully added', 'Attention!');
-    }, error => {
-      this.showError('Unsuccessful wish item adding', 'Adding error');
+      console.log(item);
+
       this.spinner.hide();
+
+      this.showSuccess('Wish item was successfully booked', 'Attention!');
+    }, error => {
+      this.spinner.hide();
+      this.showError('Unsuccessful wish item booking', 'Adding error');
     });
   }
 
-  deleteWishItem(item: Item) {
+  //todo check working
+  unbookWishItem(item: Item) {
     this.spinner.show();
-    this.wishListService.deleteWishItem(item).subscribe(item => {
-      this.spinner.hide();
+    this.wishService.unbookWishItem(item).subscribe(itemUnBooked => {
 
+      //delete one item
       const index = this.items.indexOf(item);
-      console.log(index);
       if (index !== -1) {
-        this.items.splice(index, 1)
+        this.items[index] = itemUnBooked;
       }
 
-      //this.getWishList(false);
+      this.spinner.hide();
+
+      console.log(item);
+
       this.showSuccess('Wish item was successfully deleted', 'Attention!');
     }, error => {
       this.showError('Unsuccessful wish item deleting', 'Adding error');
@@ -159,42 +163,56 @@ export class WishListComponent implements OnInit {
     });
   }
 
-  //todo check working
-  bookWishItem(item: Item) {
-    this.spinner.show();
-    this.wishListService.bookWishItem(item).subscribe(itemBooked => {
-      this.spinner.hide();
-      //this.getWishList(false);
+  // Add Item
 
-      //delete one item
+  addWishItem(item: Item) {
+    let newItem = Object.assign({}, item);
+
+    console.log(item);
+
+    newItem.ownerId = this.profile.id;
+    newItem.dueDate = this.dueDate + ' 00:00:00';
+    newItem.priority = this.priority;
+
+    this.spinner.show();
+    this.wishService.addExistWishItem(newItem).subscribe(item => {
+      this.spinner.hide();
+
       const index = this.items.indexOf(item);
-      console.log(index);
       if (index !== -1) {
         this.items.splice(index, 1)
       }
-      this.items.push(itemBooked);
 
-      this.showSuccess('Wish item was successfully booked', 'Attention!');
+      this.showSuccess('Wish item was successfully added', 'Attention!');
     }, error => {
-      this.showError('Unsuccessful wish item booking', 'Adding error');
+      this.showError('Unsuccessful wish item adding', 'Adding error');
       this.spinner.hide();
     });
   }
 
-  //todo check working
-  unbookWishItem(item: Item) {
+  getDueDate() {
+    let today = new Date();
+    let year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    let day = today.getDate();
+
+    this.minDueDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
+    this.dueDate = this.minDueDate;
+
+    console.log(this.minDueDate);
+    console.log(this.dueDate);
+  }
+
+  deleteWishItem(item: Item) {
     this.spinner.show();
-    this.wishListService.unbookWishItem(item).subscribe(itemUnBooked => {
+    this.wishService.deleteWishItem(item).subscribe(item => {
       this.spinner.hide();
 
-      //delete one item
       const index = this.items.indexOf(item);
-      console.log(index);
       if (index !== -1) {
         this.items.splice(index, 1)
       }
 
-      this.items.push(itemUnBooked);
       this.showSuccess('Wish item was successfully deleted', 'Attention!');
     }, error => {
       this.showError('Unsuccessful wish item deleting', 'Adding error');

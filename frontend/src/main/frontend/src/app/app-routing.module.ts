@@ -21,6 +21,7 @@ import {WishComponent} from "./wishes/wish/wish.component";
 import {WishAddComponent} from "./wishes/wish.add/wish.add.component";
 import {EventEditComponent} from "./events/event.edit/event.edit.component";
 import {CheckPasswordComponent} from "./account/change.password/check.password/check.password.component"
+import {WishEditComponent} from "./wishes/wish.edit/wish.edit.component";
 
 const routes: Routes = [
   {path: 'register', component: RegisterComponent},
@@ -39,7 +40,9 @@ const routes: Routes = [
   {path: ':login/change.password', component: ChangePasswordComponent, canActivate: [AuthGuard]},
   {path: ':login/check.password', component: CheckPasswordComponent, canActivate: [AuthGuard]},
   {path: ':login/wishes', component: WishListComponent, canActivate: [AuthGuard]},
+  {path: ':login/wishes/category/:category', component: WishListComponent, canActivate: [AuthGuard]},
   {path: ':login/wishes/add', component: WishAddComponent, canActivate: [AuthGuard]},
+  {path: ':login/wishes/edit/:itemId', component: WishEditComponent, canActivate: [AuthGuard]},
   {path: ':login/wishes/:itemId', component: WishComponent, canActivate: [AuthGuard]},
   {path: 'change.password', component: ChangePasswordComponent},
   {path: 'thankyou', component: ThankyouComponent},
