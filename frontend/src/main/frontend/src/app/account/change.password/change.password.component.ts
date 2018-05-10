@@ -3,8 +3,9 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {RecoveryProfile} from "../recovery.profile";
 import {ActivatedRoute} from "@angular/router"
 import {NgxSpinnerService} from "ngx-spinner";
-import {LoginAccount} from "../login.account";
 import {AccountService} from "../account.service";
+import {Profile} from "../profile";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'change.password',
@@ -12,54 +13,62 @@ import {AccountService} from "../account.service";
 })
 
 export class ChangePasswordComponent implements OnInit {
+
   confirmNewPassword: string;
   doNotMatch: string;
-  wrongPassword: string;
   error: string;
   success: boolean;
-  profile: RecoveryProfile;
-  output: any;
-  account: LoginAccount;
-  newPassword: string;
-  oldPassword: string;
+  account: Profile;
+  recovery: RecoveryProfile;
+  loggedUser: boolean;
 
   constructor(private route: ActivatedRoute,
               private spinner: NgxSpinnerService,
-              private accountService: AccountService) {
+              private accountService: AccountService,
+              private appComponent:AppComponent) {
   }
 
   ngOnInit() {
-    this.success = false;
-    this.profile = new RecoveryProfile();
+    this.account = JSON.parse(localStorage.getItem('currentUser'));
+    this.account = new Profile();
+    this.recovery = new RecoveryProfile();
     this.route.params.subscribe(params => {
-      this.profile.token = params['token'];
+      this.account.login = params['login'];
+    },error => {
+      this.appComponent.showError(error, 'Upload failed');
     });
+
+    this.accountService.profile(this.account.login).subscribe(
+      (data) => {
+        this.account = data;
+        this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === this.account.login;
+      },error => {
+        this.appComponent.showError(error, 'Upload failed');
+      });
   }
 
   changePassword() {
     this.spinner.show();
-    if (this.newPassword !== this.confirmNewPassword) {
+     if (this.recovery.password !== this.confirmNewPassword) {
       this.doNotMatch = 'ERROR';
     }
-    // else if (this.oldPassword !== this.account.password) {
-    //   this.wrongPassword = 'ERROR';
-    // }
     else {
       this.doNotMatch = null;
-      this.accountService.update(this.account).subscribe(
+           this.accountService.changePassword(this.recovery).subscribe(
         () => {
           this.success = true;
           this.spinner.hide();
-        },
-         response => this.processError(response));
-     this.output = this.error;
-     this.spinner.hide();
+        } ,error => {
+               this.appComponent.showError(error, 'Upload failed');
+               this.processError(error)
+             }
+      );
     }
   }
 
   private processError(response: HttpErrorResponse) {
-    this.success = null;
-    console.log(response);
-    this.error = response.error;
-  }
+      this.success = null;
+      console.log(response);
+      this.error = response.error;
+    }
 }

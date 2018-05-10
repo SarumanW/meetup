@@ -14,6 +14,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -29,7 +30,8 @@ public class MailBuilder {
     private String to;
     private String subject = "Meetup";
     private String fileName = null;
-    private MultipartFile file;
+    private MultipartFile multipartFile;
+    private File file;
 
     public MailBuilder(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
@@ -57,8 +59,14 @@ public class MailBuilder {
     }
 
     public MailBuilder setFile(MultipartFile file) {
-        this.file = file;
+        this.multipartFile = file;
         System.out.println("setting "+file.getSize());
+        this.fileName = "myFile.pdf";
+        return this;
+    }
+
+    public MailBuilder setFile(File file) {
+        this.file = file;
         this.fileName = "myFile.pdf";
         return this;
     }
@@ -69,10 +77,11 @@ public class MailBuilder {
             messageHelper.setTo(to);
             messageHelper.setSubject(subject);
             messageHelper.setText(content, true);
-            if (fileName != null) {
-                log.debug("attaching file {}", fileName);
-                System.out.println("Build " + file.getSize());
-                messageHelper.addAttachment(fileName, () -> file.getInputStream());
+            if (multipartFile != null) {
+                messageHelper.addAttachment(fileName, () -> multipartFile.getInputStream());
+            }
+            if (file != null){
+                messageHelper.addAttachment(fileName,file);
             }
         };
     }

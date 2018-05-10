@@ -29,4 +29,10 @@ public interface EventDao extends Dao<Event> {
     List<Event> getPeriodEvents(int userId, String startDate, String endDate);
 
     List<Event> getAllPublic(int userId, String eventName);
+
+    Event deleteParticipants(Event event);
+
+    Event deleteMembers(Event event);
+
+    int deleteParticipant(int eventId, String login);
 }

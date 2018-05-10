@@ -1,12 +1,13 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpErrorResponse, HttpResponse, HttpEventType} from "@angular/common/http";
 import {AccountService} from "../account.service";
 import {Profile} from "../profile";
 import {ActivatedRoute, Router} from "@angular/router"
 import {UploadFileService} from "../../upload.file/upload.file.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {Popup} from "ng2-opd-popup";
 import {FormBuilder, Validators} from "@angular/forms";
+import {ModalWindow} from "../../modal.window/modal.window.component";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'edit',
@@ -27,32 +28,31 @@ export class EditComponent implements OnInit {
   errorFileFormat: string;
   emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   errorDateFormat: string;
+  errorPhoneFormat: string;
   mask: any[] = ['+', '3', ' ', '8', ' ', '(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
+  phonePattern = /\+3\s8\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}/;
   editForm = this.fb.group({
     email: [Validators.required, Validators.pattern(this.emailPattern)]
   });
 
+  @ViewChild(ModalWindow) childComponent: ModalWindow;
   constructor(private accountService: AccountService,
               private router: Router,
               private fb: FormBuilder,
               private route: ActivatedRoute,
               private uploadService: UploadFileService,
               private spinner: NgxSpinnerService,
-              private popup: Popup) {
+              private appComponent:AppComponent) {
   }
 
   clickButton() {
-    const maxYear = `${2012}`;
-    const minYear = `${1960}`;
+    const maxYear = "2012";
+    const minYear = "1960";
     if (this.account.birthDay > maxYear || this.account.birthDay < minYear ) {
       this.errorDateFormat = "Please enter your real day of birth!";
     } else {
-      this.popup.show();
+     this.childComponent.show();
     }
-  }
-
-  close() {
-    this.popup.hide();
   }
 
   ngOnInit() {
@@ -61,11 +61,15 @@ export class EditComponent implements OnInit {
     this.account = new Profile();
     this.route.params.subscribe(params => {
       this.account.login = params['login'];
+    },error => {
+      this.appComponent.showError(error, 'Error');
     });
 
     this.accountService.profile(this.account.login).subscribe(
       (data) => {
         this.account = data;
+      },error => {
+        this.appComponent.showError(error, 'Error');
       }
     );
   }
@@ -80,17 +84,20 @@ export class EditComponent implements OnInit {
       },
       response => {
         if (response.status === 200) {
-          if (JSON.parse(localStorage.currentUser).login != this.account.login) {
-            let profile = JSON.parse(localStorage.currentUser);
-            profile.login = this.account.login;
-            localStorage.setItem('currentUser', JSON.stringify(profile));
-          }
+          let profile = JSON.parse(localStorage.currentUser);
+          profile.name = this.account.name;
+          profile.lastname = this.account.lastname;
+          profile.email = this.account.email;
+          profile.birthDay = this.account.birthDay;
+          profile.phone = this.account.phone;
+          //profile.imgPath = .body;
+          localStorage.setItem('currentUser', JSON.stringify(profile));
 
           this.router.navigate(
             [JSON.parse(localStorage.currentUser).login + '/profile']);
         }
         this.spinner.hide();
-        this.processError(response)
+          this.appComponent.showError(response, 'Error');
       }
     );
   }
@@ -111,7 +118,7 @@ export class EditComponent implements OnInit {
     this.progress.percentage = 0;
 
     this.currentFileUpload = this.selectedFiles.item(0);
-    this.uploadService.pushFileToStorage(this.currentFileUpload).subscribe(event => {
+    this.uploadService.pushProfileFileToStorage(this.currentFileUpload).subscribe(event => {
       if (event.type === HttpEventType.UploadProgress) {
         this.progress.percentage = Math.round(100 * event.loaded / event.total);
       } else if (event instanceof HttpResponse) {
@@ -121,10 +128,22 @@ export class EditComponent implements OnInit {
         profile.imgPath = event.body;
         localStorage.setItem('currentUser', JSON.stringify(profile));
       }
-    });
+    },error => {
+      this.appComponent.showError(error, 'Error');
+      this.processError(error)
+    } );
 
     this.selectedFiles = undefined
 
+  }
+
+  checkPhone(phone: String){
+    if (!phone.match(this.phonePattern)){
+      this.errorPhoneFormat = "error";
+    }
+    else {
+      this.errorPhoneFormat = '';
+    }
   }
 
   formatDate(date: Date)  {
@@ -138,6 +157,6 @@ export class EditComponent implements OnInit {
   private processError(response: HttpErrorResponse) {
     this.success = null;
     console.log(response);
-    this.error = 'ERROR';
+    this.error = response.error;
   }
 }

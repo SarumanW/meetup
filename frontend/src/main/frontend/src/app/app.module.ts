@@ -33,7 +33,7 @@ import {ThankyouComponent} from "./account/thankyou/thankyou.component";
 import {NgxSpinnerModule} from 'ngx-spinner';
 import {EventListComponent} from "./events/event.list/event.list.component";
 import {Ng2TableModule} from "ng2-table";
-import {TooltipModule, PaginationModule} from "ngx-bootstrap";
+import {TooltipModule, PaginationModule, BsDropdownModule} from "ngx-bootstrap";
 import {PopupModule} from "ng2-opd-popup";
 import {EventAddComponent} from './events/event.add/event.add.component';
 import {EventAddService} from "./events/event.add.service";
@@ -47,6 +47,15 @@ import {ImageUploadService} from "./events/image.upload.service";
 import {AgmCoreModule} from "@agm/core";
 import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
+import {CheckPasswordComponent} from "./account/change.password/check.password/check.password.component"
+import {EventEditComponent} from "./events/event.edit/event.edit.component";
+import { WishListComponent } from './wishes/wish.list/wish.list.component';
+import { WishComponent } from './wishes/wish/wish.component';
+import {WishListService} from "./wishes/wish.list.service";
+import { WishAddComponent } from './wishes/wish.add/wish.add.component';
+import {WishService} from "./wishes/wish.service";
+import { WishEditComponent } from './wishes/wish.edit/wish.edit.component';
+import {CountDown} from "ng2-date-countdown";
 
 @NgModule({
   declarations: [
@@ -69,11 +78,19 @@ import { TextMaskModule } from 'angular2-text-mask';
     EventListComponent,
     EventAddComponent,
     CalendarComponent,
+    WishListComponent,
+    WishComponent,
+    WishAddComponent,
+    EventEditComponent,
+    CheckPasswordComponent,
+    WishEditComponent,
+    CountDown
   ],
   imports: [
     ReactiveFormsModule,
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
     ToastrModule.forRoot(),
@@ -88,8 +105,10 @@ import { TextMaskModule } from 'angular2-text-mask';
     BrowserAnimationsModule,
     TextMaskModule,
     AgmCoreModule.forRoot({
-      apiKey: environment.googleMapsApiKey
-    })
+      apiKey: environment.googleMapsApiKey,
+      libraries: ["places"]
+    }),
+    BsDropdownModule.forRoot(),
   ],
   providers: [AccountService,
     AuthGuard,
@@ -100,7 +119,10 @@ import { TextMaskModule } from 'angular2-text-mask';
     UploadFileService,
     EventAddService,
     CalendarService,
-    ImageUploadService],
+    ImageUploadService,
+    WishListService,
+    WishService
+  ],
   bootstrap: [AppComponent]
 })
 
