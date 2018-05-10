@@ -70,7 +70,7 @@ export class CalendarComponent implements OnInit {
         this.filterEvents();
         this.spinner.hide();
       },error => {
-          this.appComponent.showError(error, 'Upload failed');
+          this.appComponent.showError(error, 'Error');
         }
       )
   }

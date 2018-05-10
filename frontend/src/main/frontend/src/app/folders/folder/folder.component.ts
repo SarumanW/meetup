@@ -25,7 +25,7 @@ export class FolderComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.folderId = params['folderId'];
     }, error => {
-      this.appComponent.showError(error, 'Upload failed');
+      this.appComponent.showError(error, 'Error');
     });
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));

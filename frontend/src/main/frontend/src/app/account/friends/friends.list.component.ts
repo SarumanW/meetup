@@ -47,12 +47,12 @@ export class FriendsListComponent implements OnInit {
               this.friendService.getUnknownUsers(queryField)
                 .subscribe((unknownUsers) => this.unknownUsers = unknownUsers)
             }, error => {
-              this.appComponent.showError(error, 'Upload failed');
+              this.appComponent.showError(error, 'Error');
             }
           );
         this.spinner.hide();
       }, error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
       }
     );
   }
@@ -66,7 +66,7 @@ export class FriendsListComponent implements OnInit {
       .subscribe((requests) => {
           this.unconfirmedFriends = requests;
         }, error => {
-          this.appComponent.showError(error, 'Upload failed');
+          this.appComponent.showError(error, 'Error');
         }
       );
     // }
@@ -77,11 +77,11 @@ export class FriendsListComponent implements OnInit {
               this.friends = friends;
               this.spinner.hide();
             }, error => {
-              this.appComponent.showError(error, 'Upload failed');
+              this.appComponent.showError(error, 'Error');
             }
           );
       }, error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
       }
     );
   }
@@ -100,7 +100,7 @@ export class FriendsListComponent implements OnInit {
           if (error.status === 200) {
             this.message = error.error.text;
           } else {
-            this.appComponent.showError(error, 'Upload failed');
+            this.appComponent.showError(error, 'Error');
           }
           this.spinner.hide();
         }

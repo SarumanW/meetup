@@ -69,11 +69,11 @@ export class ProfileComponent implements OnInit {
           }
           this.friendCount = friends.length;
         },error => {
-            this.appComponent.showError(error, 'Upload failed');
+            this.appComponent.showError(error, 'Error');
           }
         );
     },error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
       }
     );
     this.friendService.getFriendsRequests().subscribe((requests) => {
@@ -90,7 +90,7 @@ export class ProfileComponent implements OnInit {
         }
       }
     },error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
       }
     );
   }
@@ -99,7 +99,7 @@ export class ProfileComponent implements OnInit {
     this.friendService.addFriend(login).subscribe((result) => {
       this.update()
     },error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
       }
     );
   }
@@ -108,7 +108,7 @@ export class ProfileComponent implements OnInit {
     this.friendService.deleteFriend(id).subscribe((result) => {
       this.update()
     },error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
       }
     );
   }
@@ -117,7 +117,7 @@ export class ProfileComponent implements OnInit {
     this.friendService.confirmFriend(id).subscribe((result) => {
       this.update()
     },error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
       }
     );
   }

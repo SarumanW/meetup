@@ -33,7 +33,7 @@ export class SendRecoveryComponent implements OnInit {
       () => {
         this.success = true;
       }, error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
         this.processError(error)
       }
     );

@@ -56,7 +56,7 @@ export class EventListComponent implements OnInit {
       this.folderId = params['folderId'];
       this.eventType = params['type'];
     }, error => {
-      this.appComponent.showError(error, 'Upload failed');
+      this.appComponent.showError(error, 'Error');
     });
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
@@ -73,10 +73,10 @@ export class EventListComponent implements OnInit {
           .subscribe((events) => {
             this.publicEvents = events;
           }, error => {
-            this.appComponent.showError(error, 'Upload failed');
+            this.appComponent.showError(error, 'Error');
           })
       }, error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
       });
   }
 
@@ -116,7 +116,7 @@ export class EventListComponent implements OnInit {
           this.onChangeTable(this.config);
           this.spinner.hide();
         }, error => {
-          this.appComponent.showError(error, 'Upload failed');
+          this.appComponent.showError(error, 'Error');
         })
     } else {
       this.eventService.getDrafts(this.folderId)
@@ -126,7 +126,7 @@ export class EventListComponent implements OnInit {
           this.onChangeTable(this.config);
           this.spinner.hide();
         }, error => {
-          this.appComponent.showError(error, 'Upload failed');
+          this.appComponent.showError(error, 'Error');
         })
     }
   }

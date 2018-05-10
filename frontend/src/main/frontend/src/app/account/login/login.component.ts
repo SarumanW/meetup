@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
             this.router.navigate(
               ['/'+ profile.login + '/profile']);
         },error => {
-          this.appComponent.showError(error, 'Upload failed');
+          this.appComponent.showError(error, 'Error');
           this.processError(error)
           this.spinner.hide();
         }

@@ -55,7 +55,7 @@ export class RegisterComponent implements OnInit {
           this.spinner.hide();
           this.router.navigate(['/thankyou']);
         }, error => {
-          this.appComponent.showError(error, 'Upload failed');
+          this.appComponent.showError(error, 'Error');
           this.processError(error)
           this.spinner.hide();
         }

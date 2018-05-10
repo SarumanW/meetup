@@ -68,7 +68,7 @@ export class FolderListComponent implements OnInit {
         this.folders = folders
         this.spinner.hide();
       }, error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
       })
   }
 
@@ -106,7 +106,7 @@ export class FolderListComponent implements OnInit {
 
         doc.save('table.pdf');
       }, error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
       }
     )
   }
@@ -124,7 +124,7 @@ export class FolderListComponent implements OnInit {
         this.folders.push(folder);
         this.spinner.hide();
       }, error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
       });
 
     this.nameInput = null;
@@ -146,7 +146,7 @@ export class FolderListComponent implements OnInit {
             this.spinner.hide();
             this.showSuccess();
           }, error => {
-          this.appComponent.showError(error, 'Upload failed');
+          this.appComponent.showError(error, 'Error');
             this.spinner.hide();
           });
     }

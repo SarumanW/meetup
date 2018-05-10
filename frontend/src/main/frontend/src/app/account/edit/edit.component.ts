@@ -35,7 +35,7 @@ export class EditComponent implements OnInit {
     email: [Validators.required, Validators.pattern(this.emailPattern)]
   });
 
-  @ViewChild(ModalWindow) childComponent: ModalWindow
+  @ViewChild(ModalWindow) childComponent: ModalWindow;
   constructor(private accountService: AccountService,
               private router: Router,
               private fb: FormBuilder,
@@ -62,14 +62,14 @@ export class EditComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.account.login = params['login'];
     },error => {
-      this.appComponent.showError(error, 'Upload failed');
+      this.appComponent.showError(error, 'Error');
     });
 
     this.accountService.profile(this.account.login).subscribe(
       (data) => {
         this.account = data;
       },error => {
-        this.appComponent.showError(error, 'Upload failed');
+        this.appComponent.showError(error, 'Error');
       }
     );
   }
@@ -97,7 +97,7 @@ export class EditComponent implements OnInit {
             [JSON.parse(localStorage.currentUser).login + '/profile']);
         }
         this.spinner.hide();
-          this.appComponent.showError(response, 'Upload failed');
+          this.appComponent.showError(response, 'Error');
       }
     );
   }
@@ -129,7 +129,7 @@ export class EditComponent implements OnInit {
         localStorage.setItem('currentUser', JSON.stringify(profile));
       }
     },error => {
-      this.appComponent.showError(error, 'Upload failed');
+      this.appComponent.showError(error, 'Error');
       this.processError(error)
     } );
 
