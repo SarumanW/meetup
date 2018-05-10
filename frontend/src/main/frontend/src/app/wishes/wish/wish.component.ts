@@ -48,7 +48,17 @@ export class WishComponent implements OnInit {
 
 
   like() {
+  this.wishService.addLike(this.id).subscribe((item:Item)=>{
+    this.item.likes = item.likes;
+    this.item.isLiked = item.isLiked;
+  })
+  }
 
+  dislike(){
+    this.wishService.removeLike(this.id).subscribe((item:Item)=>{
+      this.item.likes = item.likes;
+      this.item.isLiked = item.isLiked;
+    })
   }
 
   getItem(id: number) {
@@ -68,4 +78,6 @@ export class WishComponent implements OnInit {
   addToWishList() {
 
   }
+
+
 }

@@ -9,6 +9,7 @@ export class Item {
   link: string;
   dueDate: string;
   likes: number;
+  isLiked: boolean;
   tags: string[] = [];
 
   clone() : Item {
@@ -25,7 +26,7 @@ export class Item {
     itemClone.dueDate = this.dueDate;
     itemClone.likes = this.likes;
     itemClone.tags = this.tags;
-
+    itemClone.isLiked = this.isLiked;
     return itemClone;
   }
 }

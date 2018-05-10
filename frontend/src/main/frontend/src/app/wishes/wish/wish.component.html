@@ -69,7 +69,8 @@
       </button>
       <button type="button" (click)="addToWishList()" [disabled]="item.priority" class="btn btn-primary">Add</button>
       <button *ngIf="profile.login === login" type="button" class="btn btn-warning">Edit</button>
-
+      <div *ngIf="!item.isLiked"><img src="assets/notliked.png" (click)="like()"> {{item.likes}}</div>
+      <div *ngIf="item.isLiked"><img src="assets/liked.png" (click)="dislike()"> {{item.likes}}</div>
     </div>
   </div>
 </div>

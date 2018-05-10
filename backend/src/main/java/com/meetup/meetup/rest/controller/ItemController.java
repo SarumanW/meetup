@@ -78,25 +78,23 @@ public class ItemController {
     }
 
 // TODO: 08.05.2018 check like
-//    @PostMapping("/{id}/like")
-//    public @ResponseBody
-//    ResponseEntity<Item> addLike(@PathVariable int id) {
-//        log.debug("Trying to add like to item with id '{}'", id);
-//
-//        Item likedItem = itemService.addLike(id);
-//        log.debug("Item was added with id '{}'", id);
-//        return new ResponseEntity<>(likedItem, HttpStatus.OK);
-//    }
-//
-//    @DeleteMapping("/{id}/like")
-//    public @ResponseBody
-//    ResponseEntity<Item> removeLike(@PathVariable int id) {
-//        log.debug("Trying to remove like from item with id '{}'", id);
-//
-//        Item unlikedItem = itemService.removeLike(id);
-//        log.debug("Item was added with id '{}'", id);
-//        return new ResponseEntity<>(unlikedItem, HttpStatus.OK);
-//    }
+    @PostMapping("/{id}/like")
+    public @ResponseBody
+    ResponseEntity<Item> addLike(@PathVariable int id) {
+        log.debug("Trying to add like to item with id '{}'", id);
+
+        Item likedItem = itemService.addLike(id);
+        return new ResponseEntity<>(likedItem, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/like")
+    public @ResponseBody
+    ResponseEntity<Item> removeLike(@PathVariable int id) {
+        log.debug("Trying to remove like from item with id '{}'", id);
+
+        Item unlikedItem = itemService.removeLike(id);
+        return new ResponseEntity<>(unlikedItem, HttpStatus.OK);
+    }
 
     @PutMapping
     public @ResponseBody
@@ -117,21 +115,6 @@ public class ItemController {
         log.debug("Send response status OK");
         return new ResponseEntity(HttpStatus.OK);
     }
-
-
-//    @PostMapping("/upload")
-//    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
-//        log.debug("Trying to upload image '{}'", file);
-//
-//        String message = itemImageService.store(file);
-//
-//        log.debug("Image successfully uploaded send response status OK");
-//        return new ResponseEntity<>(message,HttpStatus.OK);
-//
-//        log.debug("Booker with id '{}' was added to item '{}'", bookerId, itemWithBooker);
-//
-//        return new ResponseEntity<>(itemWithBooker, HttpStatus.OK);
-//    }
 
     @DeleteMapping("/{itemId}/owner/{ownerId}/booker/{bookerId}")
     public ResponseEntity deleteItemBooker(@PathVariable int itemId, @PathVariable int ownerId, @PathVariable int bookerId) {

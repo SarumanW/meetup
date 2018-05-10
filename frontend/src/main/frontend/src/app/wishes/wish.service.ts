@@ -63,4 +63,15 @@ export class WishService {
     return this.http.delete(url, {headers: headers});
   }
 
+  addLike(id:number){
+    let headers = new HttpHeaders().set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    let url = `api/item/${id}/like`;
+    return this.http.post(url, {},{headers: headers})
+  }
+
+  removeLike(id: number){
+    let headers = new HttpHeaders().set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    let url = `api/item/${id}/like`;
+    return this.http.delete(url,{headers: headers})
+  }
 }
