@@ -15,11 +15,17 @@ export class WishListService {
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
     let params = new HttpParams();
-    if (tags.length !== 0) {
-      tags.forEach(function (tag) {
-        params.set("tag", tag);
-      });
-    }
+    // if (tags.length !== 0) {
+    //   for (let tag of tags) {
+    //     params.set('tag', tag);
+    //     console.log(tag);
+    //     console.log(params.get('tag'));
+    //   }
+    // }
+    //
+    // console.log(params);
+    // console.log(params.getAll('tag'));
+    // console.log(params.toString());
 
     switch (category) {
       case WishListComponent.BOOKINGS_CATEGORY: {
@@ -28,13 +34,21 @@ export class WishListService {
       }
       case WishListComponent.RECOMMENDATIONS_CATEGORY: {
         return this.http
-          .get<any>('api/wishes/recommendations/', {headers: headers, params: params});
+          .post<any>('api/wishes/recommendations/', tags, {headers: headers, params: params});
       }
       default: {
         return this.http
           .get<any>('api/wishes/' + login, {headers: headers, params: params});
       }
     }
+  }
+
+  getQueryTagList(queryTagPart: string): Observable<any> {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http
+      .get<any>(`api/wishes/tags/${queryTagPart}`, {headers: headers});
   }
 
 }

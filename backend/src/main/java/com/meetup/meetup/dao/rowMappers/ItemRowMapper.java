@@ -13,17 +13,12 @@ public class ItemRowMapper implements RowMapper<Item> {
     @Override
     public Item mapRow(ResultSet resultSet, int i) throws SQLException {
         Item item = new Item();
-        Timestamp date;
-
         item.setItemId(resultSet.getInt(ITEM_ITEM_ID));
         item.setName(resultSet.getString(ITEM_NAME));
         item.setDescription(resultSet.getString(ITEM_DESCRIPTION));
         item.setImageFilepath(resultSet.getString(ITEM_IMAGE_FILEPATH));
         item.setLink(resultSet.getString(ITEM_LINK));
-        date = resultSet.getTimestamp(ITEM_DUE_DATE);
-        item.setDueDate(date == null ? null : date.toString());
         item.setLikes(resultSet.getInt(ITEM_LIKES));
-
         return item;
     }
 }

@@ -7,6 +7,9 @@ ALTER TABLE item DROP CONSTRAINT item_fk_user;
 ALTER TABLE user_item DROP CONSTRAINT u_item_fk_user;
 ALTER TABLE user_item DROP CONSTRAINT u_item_fk_item;
 ALTER TABLE user_item DROP CONSTRAINT u_item_fk_prior;
+ALTER TABLE user_item DROP CONSTRAINT u_item_fk_booker;
+ALTER TABLE tag_item DROP CONSTRAINT tag_item_fk_tag;
+ALTER TABLE tag_item DROP CONSTRAINT tag_item_fk_item;
 ALTER TABLE llike DROP CONSTRAINT like_fk_item;
 ALTER TABLE llike DROP CONSTRAINT like_fk_user;
 ALTER TABLE friend DROP CONSTRAINT friend_fk_user_s;
@@ -22,11 +25,6 @@ ALTER TABLE message DROP CONSTRAINT message_fk_user;
 ALTER TABLE message DROP CONSTRAINT message_fk_chat;
 ALTER TABLE chat DROP CONSTRAINT chat_fk_c_type;
 ALTER TABLE chat DROP CONSTRAINT chat_fk_event;
-ALTER TABLE user_item DROP CONSTRAINT u_item_fk_booker;
-ALTER TABLE tag_item DROP CONSTRAINT tag_item_fk_tag;
-ALTER TABLE tag_item DROP CONSTRAINT tag_item_fk_item;
-
-
 
 
 ALTER TABLE user_item ADD CONSTRAINT u_item_fk_booker FOREIGN KEY(id_who_booked) REFERENCES uuser(user_id);
