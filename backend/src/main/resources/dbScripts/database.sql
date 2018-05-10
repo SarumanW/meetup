@@ -30,7 +30,9 @@ CREATE TABLE uuser (
   timezone NUMBER(3),
   image_filepath VARCHAR2(200),
   bday DATE,
-  phone VARCHAR2(25)
+  phone VARCHAR2(25),
+  pined_event_id NUMBER(11),
+  periodical_email VARCHAR2(100)
 );
 
 CREATE TABLE user_item (
