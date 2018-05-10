@@ -145,8 +145,7 @@ public class EventController {
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
         log.debug("Trying to upload event image '{}'", file);
 
-        String message;
-        message = eventImageService.store(file);
+        String message = eventImageService.store(file);
         log.debug("Image successfully uploaded send response status OK");
 
         return new ResponseEntity<>(message, HttpStatus.OK);
