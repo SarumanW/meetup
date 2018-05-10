@@ -1,9 +1,11 @@
 package com.meetup.meetup.rest.controller;
 
 
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.meetup.meetup.entity.Item;
-
+import com.meetup.meetup.entity.ItemPriority;
+import com.meetup.meetup.service.EventImageService;
 import com.meetup.meetup.service.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,44 +25,51 @@ public class ItemController {
     private static Logger log = LoggerFactory.getLogger(ItemController.class);
 
     private final ItemService itemService;
-    private final StorageService storageService;
 
     @Autowired
-    public ItemController(ItemService itemService, StorageService storageService) {
+    public ItemController(ItemService itemService) {
         this.itemService = itemService;
-        this.storageService = storageService;
     }
 
-
-    @GetMapping("/{id}")
-    public @ResponseBody ResponseEntity<Item> getItemById(@PathVariable int id){
-        log.debug("Try to get item with id '{}'", id);
-        Item item = itemService.getItemById(id);
+    @GetMapping("/{id}/login/{login}")
+    public @ResponseBody
+    ResponseEntity<Item> getItemByUserIdItemId(@PathVariable int id, @PathVariable String login) {
+        log.debug("Try to get item with id '{}' for user with with login '{}'", id, login);
+        Item item = itemService.findByUserIdItemId(id, login);
 
         log.debug("Send response body item '{}' and status OK", item);
         return new ResponseEntity<>(item, HttpStatus.OK);
     }
 
     @PostMapping
-    public @ResponseBody ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
-        log.debug("Trying to save item {}", item);
+    public @ResponseBody
+    ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
+        log.debug("Trying to save item '{}'", item);
         Item addedItem = itemService.addItem(item);
+
+        // TODO: 07.05.2018  
+//        log.debug("Trying to save item with id '{}' to user wish list", addedItem.getItemId());
+//        addedItem = itemService.addItemToUserWishList(addedItem.getItemId(), item);
 
         log.debug("Send response body saved item '{}' and status CREATED", addedItem);
         return new ResponseEntity<>(addedItem, HttpStatus.CREATED);
     }
 
+
+
     @PostMapping("/{id}/add")
-    public @ResponseBody ResponseEntity<Item> addItemToUserWishList(@Valid @RequestBody Item item, @PathVariable("id") String id){
-        log.debug("Trying to add item with id '{}' to user wish list", item.getItemId());
-        log.error("!!!" + item.getPriority());
-        Item returnedItem = itemService.addItemToUserWishList(item);
-        log.info("Added item with id '{}' to user wish list", returnedItem.getItemId());
+    public @ResponseBody
+    ResponseEntity<Item> addItemToUserWishList(@PathVariable int id, @Valid @RequestBody Item item) {
+        log.debug("Trying to add item with id '{}' to user wish list", id);
+
+        Item addedItem = itemService.addItemToUserWishList(item);
+        log.debug("Item was added with id '{}'", addedItem.getItemId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/delete")
-    public @ResponseBody ResponseEntity deleteItem(@PathVariable int id) {
+    public @ResponseBody
+    ResponseEntity deleteItemFromUserWishList(@PathVariable int id) {
         log.debug("Trying to delete item with id '{}' to user wish list", id);
         Item deletedItem = itemService.deleteItemFromUserWishList(id);
 
@@ -68,17 +77,40 @@ public class ItemController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+// TODO: 08.05.2018 check like
+//    @PostMapping("/{id}/like")
+//    public @ResponseBody
+//    ResponseEntity<Item> addLike(@PathVariable int id) {
+//        log.debug("Trying to add like to item with id '{}'", id);
+//
+//        Item likedItem = itemService.addLike(id);
+//        log.debug("Item was added with id '{}'", id);
+//        return new ResponseEntity<>(likedItem, HttpStatus.OK);
+//    }
+//
+//    @DeleteMapping("/{id}/like")
+//    public @ResponseBody
+//    ResponseEntity<Item> removeLike(@PathVariable int id) {
+//        log.debug("Trying to remove like from item with id '{}'", id);
+//
+//        Item unlikedItem = itemService.removeLike(id);
+//        log.debug("Item was added with id '{}'", id);
+//        return new ResponseEntity<>(unlikedItem, HttpStatus.OK);
+//    }
+
     @PutMapping
-    public @ResponseBody ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
+    public @ResponseBody
+    ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
         log.debug("Trying to update item '{}'", newItem);
         Item updatedItem = itemService.updateItem(newItem);
 
-       log.debug("Send response body updated '{}' and status OK");
+        log.debug("Send response body updated '{}' and status OK");
         return new ResponseEntity<>(updatedItem, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
-    public @ResponseBody ResponseEntity deleteItem(@Valid @RequestBody Item item) {
+    public @ResponseBody
+    ResponseEntity deleteItem(@Valid @RequestBody Item item) {
         log.debug("Trying to delete item '{}'", item);
         Item deletedItem = itemService.deleteItem(item);
 
@@ -86,28 +118,20 @@ public class ItemController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam MultipartFile file) {
-        log.debug("Trying to upload image '{}'", file);
 
-        String imagePath = storageService.wishItemImageStore(file);
-
-        log.debug("Image successfully uploaded send response status OK");
-        return new ResponseEntity<>(imagePath, HttpStatus.OK);
-    }
-
-    //Booking
-
-    @PostMapping("/{itemId}/owner/{ownerId}/booker/{bookerId}")
-    public ResponseEntity<Item> addItemBooker(@PathVariable int itemId, @PathVariable int ownerId, @PathVariable int bookerId){
-        log.debug("Trying to add item with id '{}' to user wish list", itemId);
-
-        Item itemWithBooker = itemService.addItemBooker(ownerId, itemId, bookerId);
-
-        log.debug("Booker with id '{}' was added to item '{}'", bookerId, itemWithBooker);
-
-        return new ResponseEntity<>(itemWithBooker, HttpStatus.OK);
-    }
+//    @PostMapping("/upload")
+//    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+//        log.debug("Trying to upload image '{}'", file);
+//
+//        String message = itemImageService.store(file);
+//
+//        log.debug("Image successfully uploaded send response status OK");
+//        return new ResponseEntity<>(message,HttpStatus.OK);
+//
+//        log.debug("Booker with id '{}' was added to item '{}'", bookerId, itemWithBooker);
+//
+//        return new ResponseEntity<>(itemWithBooker, HttpStatus.OK);
+//    }
 
     @DeleteMapping("/{itemId}/owner/{ownerId}/booker/{bookerId}")
     public ResponseEntity deleteItemBooker(@PathVariable int itemId, @PathVariable int ownerId, @PathVariable int bookerId) {

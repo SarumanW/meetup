@@ -3,6 +3,7 @@ package com.meetup.meetup.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meetup.meetup.dao.ItemDao;
+import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.ItemPriority;
 import com.meetup.meetup.entity.User;
@@ -22,22 +23,25 @@ public class ItemService {
 
     private static Logger log = LoggerFactory.getLogger(ProfileService.class);
 
+    private final UserDao userDao;
     private final ItemDao itemDao;
     private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    public ItemService(ItemDao itemDao, AuthenticationFacade authenticationFacade, Environment env) {
+    public ItemService(UserDao userDao, ItemDao itemDao, AuthenticationFacade authenticationFacade, Environment env) {
+        this.userDao = userDao;
         this.itemDao = itemDao;
         this.authenticationFacade = authenticationFacade;
     }
 
-    public Item getItemById(int id) {
+    public Item findByUserIdItemId(int id, String login) {
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
         log.debug("User was successfully received");
 
-        log.debug("Trying to get item with id '{}'", id);
-        return itemDao.findByUserIdItemId(user.getId(),id);
+        User userItem = userDao.findByLogin(login);
+        log.debug("Trying to get item with id '{}' for user with id '{}'", id, userItem.getId());
+        return itemDao.findByUserIdItemId(userItem.getId(),id);
     }
 
     public Item addItem(Item item) {
