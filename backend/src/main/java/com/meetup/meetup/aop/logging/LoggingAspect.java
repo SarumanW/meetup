@@ -18,7 +18,7 @@ import java.util.Arrays;
  */
 @Aspect
 public class LoggingAspect {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(LoggingAspect.class);
 
     /**
      * Pointcut that matches all repositories, services and Web REST endpoints.
@@ -65,13 +65,13 @@ public class LoggingAspect {
      */
     @Around("applicationPackagePointcut() && springBeanPointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.debug("Enter: {}.{}() with argument[s] = {}",
+        log.info("Enter: {}.{}() with argument[s] = {}",
                 joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(),
                 Arrays.toString(joinPoint.getArgs()));
         try {
             Object result = joinPoint.proceed();
-            log.debug("Exit: {}.{}() with result = {}",
+            log.info("Exit: {}.{}() with result = {}",
                     joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(),
                     result);

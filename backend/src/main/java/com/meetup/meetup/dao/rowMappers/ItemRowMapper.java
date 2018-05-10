@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import static com.meetup.meetup.Keys.Key.*;
+import static com.meetup.meetup.keys.Key.*;
 
 public class ItemRowMapper implements RowMapper<Item> {
     @Override

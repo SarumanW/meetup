@@ -1,6 +1,7 @@
 package com.meetup.meetup.dao.impl;
 
 import com.meetup.meetup.dao.ItemDao;
+import com.meetup.meetup.dao.rowMappers.ExtendedItemRowMapper;
 import com.meetup.meetup.dao.rowMappers.ItemRowMapper;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.ItemPriority;
@@ -23,7 +24,7 @@ import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 
-import static com.meetup.meetup.Keys.Key.*;
+import static com.meetup.meetup.keys.Key.*;
 
 @Repository
 @PropertySource("classpath:sqlDao.properties")
@@ -80,6 +81,11 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
+    public List<Item> getPopularItems(String[] tagArray) {
+        return null;
+    }
+
+    @Override
     public Item findById(int itemId) {
         log.debug("Try find item by item id: '{}'", itemId);
         Item item;
@@ -99,7 +105,7 @@ public class ItemDaoImpl implements ItemDao {
         log.debug("Try insert item '{}'", model);
         SimpleJdbcInsert insertItem = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName(TABLE_ITEM)
-                .usingGeneratedKeyColumns("ITEM_ID");
+                .usingGeneratedKeyColumns(ITEM_ITEM_ID);
         if (model.getImageFilepath() == null) {
             model.setImageFilepath(env.getProperty("image.default.filepath"));
         }
@@ -112,7 +118,7 @@ public class ItemDaoImpl implements ItemDao {
         try {
             model.setItemId(insertItem.executeAndReturnKey(itemParameters).intValue());
             addTags(model.getTags(), model.getItemId());
-            addToUserWishList(model.getOwnerId(), model.getItemId(), model.getDueDate(), model.getPriority());
+            addToUserWishList(model);
         } catch (DataAccessException e) {
             log.error("Query fails by insert item '{}'", model);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -142,25 +148,26 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
-    public Item addToUserWishList(int userId, int itemId, String dueDate, ItemPriority priority) {
-        log.debug("Try add to wish list by user id: '{}', item id: '{}', priority: '{}'", userId, itemId, priority);
+    public Item addToUserWishList(Item item) {
+        log.debug("Try add to wish list by user id: '{}', item id: '{}', priority: '{}'",
+                item.getOwnerId(), item.getItemId(), item.getPriority());
         try {
             int result = jdbcTemplate.update(env.getProperty(ITEM_UPDATE_USER_ITEM),
-                    userId, itemId, dueDate, priority.ordinal() + 1);
+                    item.getOwnerId(), item.getItemId(), item.getDueDate(), item.getPriority().ordinal() + 1);
 
             if (result != 0) {
-                log.debug("Item by user id: '{}', item id: '{}', priority: '{}' was added to wish list",
-                        userId, itemId, priority);
+                log.debug("Item by user id: '{}', item id: '{}', due date: '{}', priority: '{}' was added to wish list",
+                        item.getOwnerId(), item.getItemId(), item.getDueDate(), item.getPriority());
             } else {
-                log.debug("Item by user id: '{}', item id: '{}', priority: '{}' was not added to wish list",
-                        userId, itemId, priority);
+                log.debug("Item by user id: '{}', item id: '{}', due date: '{}', priority: '{}' was not added to wish list",
+                        item.getOwnerId(), item.getItemId(), item.getDueDate(), item.getPriority());
             }
         } catch (DataAccessException e) {
             log.error("Query fails by add item to wish list by user id: '{}', item id: '{}', priority: '{}'",
-                    userId, itemId, priority);
+                    item.getOwnerId(), item.getItemId(), item.getPriority());
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
-        return findById(itemId);
+        return item;
     }
 
     @Override
@@ -291,6 +298,7 @@ public class ItemDaoImpl implements ItemDao {
         } else {
             log.debug("Booked items list was found: '{}'", items);
         }
+
         return items;
     }
 

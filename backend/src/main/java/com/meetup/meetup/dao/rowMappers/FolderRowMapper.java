@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static com.meetup.meetup.Keys.Key.*;
+import static com.meetup.meetup.keys.Key.*;
 
 public class FolderRowMapper implements RowMapper<Folder> {
     @Override

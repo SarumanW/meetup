@@ -1,6 +1,7 @@
 /target/**
 /backend/target/**
 /frontend/target/**
+/frontend/src/main/frontend/npm-debug.log
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###

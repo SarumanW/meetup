@@ -13,7 +13,7 @@ public interface ItemDao extends Dao<Item> {
 
     List<Item> getPopularItems();
 
-    Item addToUserWishList(int userId, int itemId, String dueDate, ItemPriority priority);
+    Item addToUserWishList(Item item);
 
     Item deleteFromUserWishList(int userId, int itemId);
 
@@ -24,6 +24,8 @@ public interface ItemDao extends Dao<Item> {
     Item addLike(int itemId, int userId);
 
     Item removeLike(int itemId, int userId);
+
+    List<Item> getPopularItems(String[] tagArray);
 
     List<Item> findBookedItemsByUserId(int userId);
 

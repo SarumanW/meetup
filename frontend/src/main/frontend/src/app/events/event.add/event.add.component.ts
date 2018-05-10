@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
 import {NgxSpinnerService} from "ngx-spinner";
 import {ToastrService} from "ngx-toastr";
 import {ActivatedRoute} from "@angular/router";
 import {Evento} from "../event";
 import {EventAddService} from "../event.add.service";
 import {ImageUploadService} from "../image.upload.service";
+import {FormControl} from "@angular/forms";
+import {MapsAPILoader} from "@agm/core";
+import {} from '@types/googlemaps';
 
 @Component({
   selector: 'app-event.add',
@@ -27,12 +30,18 @@ export class EventAddComponent implements OnInit {
   imageLoaded: boolean;
   lat: number;
   lng: number;
+  searchControl: FormControl;
+
+  @ViewChild("search")
+  searchElementRef: ElementRef;
 
   constructor(private route: ActivatedRoute,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
               private eventAddService: EventAddService,
-              private uploadService: ImageUploadService) { }
+              private uploadService: ImageUploadService,
+              private mapsAPILoader: MapsAPILoader,
+              private ngZone: NgZone) { }
 
   ngOnInit() {
     this.eventt = new Evento;
@@ -47,6 +56,37 @@ export class EventAddComponent implements OnInit {
     this.resetEvent();
     this.fileRegexp = new RegExp('^.*\\.(jpg|JPG|gif|GIF|png|PNG)$');
     this.errorFileFormat = true;
+    console.log(this.eventt);
+
+    this.searchControl = new FormControl();
+    this.setCurrentPosition();
+
+    this.mapsAPILoader.load().then(() => {
+      let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
+        types: ["address"]
+      });
+      autocomplete.addListener("place_changed", () => {
+        this.ngZone.run(() => {
+          let place: google.maps.places.PlaceResult = autocomplete.getPlace();
+
+          if (place.geometry === undefined || place.geometry === null) {
+            return;
+          }
+
+          this.lat = place.geometry.location.lat();
+          this.lng = place.geometry.location.lng();
+        });
+      });
+    });
+  }
+
+  setCurrentPosition() {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
+      });
+    }
   }
 
   resetEvent() {
@@ -56,10 +96,10 @@ export class EventAddComponent implements OnInit {
     this.eventt.eventType = "EVENT";
     this.eventt.name = "";
     this.eventt.description = "";
-    this.eventt.eventDate = "";
-    this.eventt.periodicity = "";
+    this.eventt.eventDate = this.currentDate;
+    this.eventt.periodicity = "ONCE";
     this.eventt.place = "";
-    this.time = "00:00";
+    this.time = "23:59";
     this.lat = 50.447011182312195;
     this.lng = 30.456780195127067;
   }
@@ -76,7 +116,7 @@ export class EventAddComponent implements OnInit {
     let year = date.getFullYear();
     let month = date.getMonth() + 1;
     let day = date.getDate();
-    this.currentDate =  year + "-" + (month < 10 ? "0" + month : month) + "-" + day;
+    this.currentDate =  year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
     console.log(this.currentDate);
   }
 
@@ -120,6 +160,7 @@ export class EventAddComponent implements OnInit {
     console.log("addEvent");
     this.eventt.isDraft = false;
     this.addEntity();
+    console.log(this.eventt);
   }
 
   selectFile(event) {

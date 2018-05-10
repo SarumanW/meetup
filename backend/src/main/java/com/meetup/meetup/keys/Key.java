@@ -1,4 +1,4 @@
-package com.meetup.meetup.Keys;
+package com.meetup.meetup.keys;
 
 public final class Key {
 
@@ -82,8 +82,8 @@ public final class Key {
     public static final String USER_UPDATE = "user.update";
     public static final String USER_UPDATE_PASSWORD = "user.updatePassword";
     public static final String USER_DELETE = "user.delete";
-    public static final String USER_GET_FRIENDS_IDS = "user.getFriendsIds";
-    public static final String USER_GET_UNCONFIRMED_IDS = "user.getUnconfirmedIds";
+    public static final String USER_GET_FRIENDS = "user.getFriends";
+    public static final String USER_GET_UNCONFIRMED = "user.getUnconfirmedFriends";
     public static final String USER_CONFIRM_FRIEND = "user.confirmFriend";
     public static final String USER_DELETE_FRIEND = "user.deleteFriend";
     public static final String USER_IS_LOGIN_FREE = "user.isLoginFree";
@@ -98,15 +98,19 @@ public final class Key {
     public static final String FOLDER_REMOVE_EVENTS = "folder.removeEvents";
 
     //EventDao
-    public static final String EVENT_FIND_BY_USER_ID = "event.findByUserId";
-    public static final String EVENT_FIND_BY_ID = "event.findById";
-    public static final String EVENT_UPDATE = "event.update";
-    public static final String EVENT_DELETE = "event.delete";
-    public static final String EVENT_FIND_BY_FOLDER_ID = "event.findByFolderId";
-    public static final String EVENT_GET_PARTICIPANTS = "event.getParticipants";
-    public static final String EVENT_FIND_BY_TYPE_IN_FOLDER = "event.findByTypeInFolder";
-    public static final String EVENT_GET_DRAFTS = "event.getDrafts";
-
+    public static final String EVENT_FIND_BY_USER_ID="event.findByUserId";
+    public static final String EVENT_FIND_BY_ID="event.findById";
+    public static final String EVENT_UPDATE="event.update";
+    public static final String EVENT_DELETE="event.delete";
+    public static final String EVENT_FIND_BY_FOLDER_ID="event.findByFolderId";
+    public static final String EVENT_GET_PARTICIPANTS="event.getParticipants";
+    public static final String EVENT_FIND_BY_TYPE_IN_FOLDER="event.findByTypeInFolder";
+    public static final String EVENT_GET_DRAFTS="event.getDrafts";
+    public static final String EVENT_GET_IN_PERIOD="event.getInPeriod";
+    public static final String EVENT_GET_ALL_PUBLIC="event.getAllPublic";
+    public static final String EVENT_DELETE_PARTICIPANTS="event.deleteParticipants";
+    public static final String EVENT_DELETE_MEMBERS="event.deleteMembers";
+    public static final String EVENT_DELETE_PARTICIPANT="event.deleteParticipant";
     //RoleDao
     public static final String GET_ROLE = "role.getRole";
 
