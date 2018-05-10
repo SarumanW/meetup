@@ -2,7 +2,7 @@
   <div >
     <img *ngIf="profile.imgPath===null" src="http://tuzikgreet.ru/i/files/stati/9-veshhey-kotorye-hochet-skazat-vam-vasha-sobaka-1.jpg"
          class="profile-logo">
-    <img *ngIf="profile.imgPath" [src]="profile.imgPath" class="profile-logo">
+    <img *ngIf="profile.imgPath" [src]="profile.imgPath" onError="this.src='assets/defoult.jpg'" class="profile-logo">
   </div>
 
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'profile'}"

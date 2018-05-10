@@ -7,6 +7,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 import "rxjs/add/operator/debounceTime";
 import {WishService} from "../wish.service";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-wish-list',
@@ -25,8 +26,6 @@ export class WishListComponent implements OnInit {
   title: string;
   category: string;
   profile: Profile;
-  tag: string;
-  tags: string[] = [];
   login: string;
 
   //Add item date
@@ -49,6 +48,7 @@ export class WishListComponent implements OnInit {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
 
     this.loginSubscriber();
+    this.tagsInputSubscriber();
     this.getDueDate()
   }
 
@@ -73,33 +73,20 @@ export class WishListComponent implements OnInit {
     });
   }
 
-  getWishList() {
+  getWishList(withSpinner = true) {
+    if (withSpinner) {
       this.spinner.show();
+    }
+
     this.wishListService.getWishList(this.category, this.login, this.tags).subscribe(
       itemList => {
         console.log(itemList);
         this.items = itemList;
         this.spinner.hide();
-      }, error =>{
-        this.showError(error.error,"title");
-        this.spinner.hide();
-      });
-  }
-
-  addSearchTag() {
-    if (this.tag.length > 2 && this.tag.length < 31 && /^[_A-Za-z0-9]*$/.test(this.tag) && this.tags.length < 8) {
-      this.tags.push(this.tag);
-      this.tag = '';
-      this.getWishList()
-    }
-  }
-
-  deleteSearchTag(tag: string) {
-    const index = this.tags.indexOf(tag);
-    if (index !== -1) {
-      this.tags.splice(index, 1)
-      this.getWishList()
-    }
+      }, error => {
+      this.showError('Unsuccessful wish list getting', 'Adding error');
+      this.spinner.hide();
+    });
   }
 
   showSuccess(message: string, title: string) {
@@ -218,5 +205,45 @@ export class WishListComponent implements OnInit {
       this.showError('Unsuccessful wish item deleting', 'Adding error');
       this.spinner.hide();
     });
+  }
+
+  //Tags
+  queryTagField: FormControl = new FormControl();
+  queryTags: string[] = [];
+  tag: string;
+  tags: string[] = [];
+
+  tagsInputSubscriber() {
+    this.queryTagField.valueChanges
+      .debounceTime(400)
+      .distinctUntilChanged()
+      .subscribe(queryField => {
+        if (this.tag !== undefined && this.tag !== '') {
+          this.wishListService.getQueryTagList(queryField)
+            .subscribe((queryTags) => {
+              this.queryTags = queryTags;
+            }, error => {
+              this.showError(error, 'Error');
+            })
+        }
+      }, error => {
+        this.showError(error, 'Error');
+      });
+  }
+
+  addSearchTag(tag: string = this.tag) {
+    if (tag.length > 2 && tag.length < 31 && /^[_A-Za-z0-9]*$/.test(tag) && this.tags.length < 8) {
+      this.tags.push(tag);
+      this.tag = '';
+      this.getWishList();
+    }
+  }
+
+  deleteSearchTag(tag: string) {
+    const index = this.tags.indexOf(tag);
+    if (index !== -1) {
+      this.tags.splice(index, 1);
+      this.getWishList();
+    }
   }
 }

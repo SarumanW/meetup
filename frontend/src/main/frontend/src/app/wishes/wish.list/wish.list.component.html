@@ -40,23 +40,28 @@
 
         <div *ngIf="category === class.RECOMMENDATIONS_CATEGORY">
           <div class="form-group">
-            <input type="text" class="form-control"
-                   placeholder="Enter tag name and push 'Enter'"
-                   #itemTag="ngModel" (keyup.enter)="addSearchTag()" [(ngModel)]="tag"
-                   minlength="3" maxlength="30" pattern="^[_A-Za-z0-9]*$">
-            <div *ngIf="itemTag.dirty && itemTag.invalid">
-              <small class="form-text text-danger" *ngIf="itemTag.errors.minlength">
+            <div *ngIf="queryTagField.dirty && queryTagField.invalid">
+              <small class="form-text text-danger" *ngIf="queryTagField.errors.minlength">
                 Wish name must more than 2 chars.
               </small>
-              <small class="form-text text-danger" *ngIf="itemTag.errors.maxlength">
+              <small class="form-text text-danger" *ngIf="queryTagField.errors.maxlength">
                 Wish name must less than 31 chars.
               </small>
-              <small class="form-text text-danger" *ngIf="itemTag.errors.pattern">
+              <small class="form-text text-danger" *ngIf="queryTagField.errors.pattern">
                 Wish name can only contain letters, digits and '_'.
               </small>
               <small class="form-text text-danger" *ngIf="tags.length >= 8">
                 Maximal count of search tags is 8;
               </small>
+            </div>
+            <input type="text" class="form-control"
+                   placeholder="Enter tag name and push 'Enter'" [formControl]="queryTagField"
+                   (keyup.enter)="addSearchTag()" [(ngModel)]="tag"
+                   minlength="3" maxlength="30" pattern="^[_A-Za-z0-9]*$">
+            <div *ngIf="queryTagField.value">
+              <div *ngFor="let tag of queryTags">
+                <a class="search-tag" (click)="addSearchTag(tag)" style="cursor: pointer;">{{tag}}</a>
+              </div>
             </div>
           </div>
           <div class="container">
@@ -80,15 +85,42 @@
 
         <!--Wish list-->
 
-        <div class="folder d-flex flex-wrap">
-          <div *ngFor="let item of items" class="card mb-4">
-            <div class="card-header head">
+        <div class="row">
+          <div *ngFor="let item of items" class="col-sm-6 col-md-4 col-lg-3 mt-4">
+            <div class="card card-inverse card-info">
               <img class="card-img-top" [src]="item.imageFilepath" alt="..."
                    onError="this.src='assets/item-icon-default.svg'">
-              <img *ngIf="item.ownerId === profile.id" (click)="delete.show()"
-                   class="close-btn" src="assets/close-white.svg" alt="">
-              <img *ngIf="item.ownerId !== profile.id" (click)="add.show()"
-                   class="close-btn" src="assets/add.svg" alt="">
+              <div class="card-block">
+                <figure class="item-add-del-wrap">
+                  <img *ngIf="item.ownerId === profile.id" (click)="delete.show()"
+                       class="item-action-add-del item-action-del" src="assets/close-white.svg" alt="x">
+                  <img *ngIf="item.ownerId !== profile.id" (click)="add.show()"
+                       class="item-action-add-del item-action-add" src="assets/add.svg" alt="+">
+                </figure>
+                <h5 class="card-title mt-3">{{item.name}}</h5>
+                <div class="meta card-text">
+                  <a *ngIf="item.priority !== null">Priority: {{item.priority}}</a>
+                </div>
+                <p *ngIf="item.dueDate !== null" class="card-text"><b>Due date: </b>{{item.dueDate.split(' ')[0]}}</p>
+                <div class="container">
+                  <div class="row">
+                    <div *ngFor="let tag of item.tags">
+                      <a style="color: white;" class="badge badge-pill badge-primary m-1">#{{ tag }}</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <p *ngIf="item.bookerId !== 0 && item.bookerId !== profile.id"
+                   class="card-text"><b>Booked by id: </b>{{item.bookerId}}</p>
+                <button *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === 0"
+                        (click)="book.show()" class="btn btn-success float-left btn-sm">Book
+                </button>
+                <button *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === profile.id"
+                        (click)="unbook.show()" class="btn btn-danger float-left btn-sm">Unbook
+                </button>
+                <a routerLink="/{{login}}/wishes/{{item.itemId}}" class="btn btn-primary float-right btn-sm">Details</a>
+              </div>
             </div>
 
             <!--Add item-->
@@ -176,26 +208,6 @@
                 <button class="btn btn-default" (click)="unbook.hide();">Cancel</button>
               </div>
             </app-modal-window>
-
-            <div class="card-body">
-              <button *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === 0"
-                 (click)="book.show()" class="btn btn-success">Book</button>
-              <button *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === profile.id"
-                 (click)="unbook.show()" class="btn btn-danger">Unbook</button>
-              <h5 class="card-title">{{item.name}}</h5>
-              <p *ngIf="category == class.RECOMMENDATIONS_CATEGORY" class="card-text"><b>Priority: </b>{{item.priority}}</p>
-              <p *ngIf="item.bookerId !== 0" class="card-text"><b>Booked by id: </b>{{item.bookerId}}</p>
-              <p class="card-text" *ngIf="item.dueDate!==null"><b>Due date: </b>{{item.dueDate.split(' ')[0]}}</p>
-
-              <div class="container">
-                <div class="row">
-                  <div *ngFor="let tag of item.tags">
-                    <a style="color: white;" class="badge badge-pill badge-primary m-1">#{{ tag }}</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <a routerLink="/{{profile.login}}/wishes/{{item.itemId}}" class="btn btn-primary">Details</a>
           </div>
         </div>
       </div>

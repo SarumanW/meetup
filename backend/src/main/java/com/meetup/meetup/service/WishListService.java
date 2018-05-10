@@ -62,7 +62,7 @@ public class WishListService {
     public List<Item> getRecommendations(String[] tagArray) {
         log.debug("Trying to get all recommendations");
 
-        if (tagArray == null) {
+        if (tagArray.length == 0) {
             return itemDao.getPopularItems();
         }
 
@@ -71,7 +71,12 @@ public class WishListService {
 
     public List<Item> getBookingByUser() {
         User user = authenticationFacade.getAuthentication();
-        log.debug("Trying to get booking wishes from dao by user login '{}'", user.getLogin());
+        log.debug("Trying to get booking wishes from dao for user '{}'", user);
         return itemDao.findBookedItemsByUserId(user.getId());
+    }
+
+    public List<String> getSearchTags(String tagPart) {
+        log.debug("Trying to get tags from dao by tag part '{}'", tagPart);
+        return itemDao.searchTag(tagPart);
     }
 }
