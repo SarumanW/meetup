@@ -33,8 +33,7 @@ export class EventAddComponent implements OnInit {
   lng: number;
   searchControl: FormControl;
 
-  @ViewChild("search")
-  searchElementRef: ElementRef;
+  @ViewChild("search") searchElementRef: ElementRef;
 
   constructor(private route: ActivatedRoute,
               private appComponent: AppComponent,
@@ -125,15 +124,6 @@ export class EventAddComponent implements OnInit {
     this.eventt.isDraft = true;
     this.addEntity();
   }
-
-  // //TODO move to general component
-  // showError(message: string, title: string) {
-  //   this.toastr.error(message, title, {
-  //     timeOut: 3000,
-  //     positionClass: 'toast-top-right',
-  //     closeButton: true
-  //   });
-  // }
 
   showSuccess() {
     this.toastr.info('Event was successfully added', 'Attention!', {

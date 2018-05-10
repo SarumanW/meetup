@@ -8,6 +8,7 @@ import {EventService} from "../event.service";
 import {EVENT_COLUMNS} from "./config/event.columns";
 import {NOTE_COLUMNS} from "./config/note.columns";
 import {FormControl} from "@angular/forms";
+import {AppComponent} from "../../app.component";
 
 
 @Component({
@@ -44,7 +45,8 @@ export class EventListComponent implements OnInit {
               private eventService: EventService,
               private route: ActivatedRoute,
               private router: Router,
-              private spinner: NgxSpinnerService) {
+              private spinner: NgxSpinnerService,
+              private appComponent: AppComponent) {
 
   }
 
@@ -53,6 +55,8 @@ export class EventListComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.folderId = params['folderId'];
       this.eventType = params['type'];
+    }, error => {
+      this.appComponent.showError(error, 'Upload failed');
     });
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
@@ -68,7 +72,11 @@ export class EventListComponent implements OnInit {
         this.eventService.getPublicEvents(this.profile.id, queryField)
           .subscribe((events) => {
             this.publicEvents = events;
+          }, error => {
+            this.appComponent.showError(error, 'Upload failed');
           })
+      }, error => {
+        this.appComponent.showError(error, 'Upload failed');
       });
   }
 
@@ -107,6 +115,8 @@ export class EventListComponent implements OnInit {
           this.length = this.events.length;
           this.onChangeTable(this.config);
           this.spinner.hide();
+        }, error => {
+          this.appComponent.showError(error, 'Upload failed');
         })
     } else {
       this.eventService.getDrafts(this.folderId)
@@ -115,6 +125,8 @@ export class EventListComponent implements OnInit {
           this.length = this.events.length;
           this.onChangeTable(this.config);
           this.spinner.hide();
+        }, error => {
+          this.appComponent.showError(error, 'Upload failed');
         })
     }
   }

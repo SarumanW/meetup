@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router"
 import {NgxSpinnerService} from "ngx-spinner";
 import {AccountService} from "../../account.service";
 import {Profile} from "../../profile";
+import {AppComponent} from "../../../app.component";
 
 @Component({
   selector: 'check.password',
@@ -21,7 +22,8 @@ export class CheckPasswordComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private spinner: NgxSpinnerService,
               private accountService: AccountService,
-              private router: Router) {
+              private router: Router,
+              private appComponent: AppComponent) {
   }
 
   ngOnInit() {
@@ -29,12 +31,16 @@ export class CheckPasswordComponent implements OnInit {
     this.account = new Profile();
     this.route.params.subscribe(params => {
       this.account.login = params['login'];
+    },error => {
+      this.appComponent.showError(error, 'Upload failed');
     });
 
     this.accountService.profile(this.account.login).subscribe(
       (data) => {
         this.account = data;
         this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === this.account.login;
+      },error => {
+        this.appComponent.showError(error, 'Upload failed');
       }
     );
   }
@@ -48,8 +54,10 @@ export class CheckPasswordComponent implements OnInit {
           this.router.navigate(["/" + this.account.login + "/change.password"]);
         }, 10);
         this.spinner.hide();
-      },
-      response => this.processError(response)
+      }, error => {
+        this.appComponent.showError(error, 'Upload failed');
+        this.processError(error)
+      }
     );
   }
 

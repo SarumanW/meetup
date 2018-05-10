@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {HttpClient} from '@angular/common/http';
 import {FormBuilder, Validators} from "@angular/forms";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-sendrecovery',
@@ -17,7 +18,8 @@ export class SendRecoveryComponent implements OnInit {
   });
 
   constructor(private http: HttpClient,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private appComponent: AppComponent) {
   }
 
   ngOnInit() {
@@ -30,8 +32,10 @@ export class SendRecoveryComponent implements OnInit {
     this.http.get('api/recovery/'+this.emailAddr).subscribe(
       () => {
         this.success = true;
-      },
-      response => this.processError(response)
+      }, error => {
+        this.appComponent.showError(error, 'Upload failed');
+        this.processError(error)
+      }
     );
   }
 
