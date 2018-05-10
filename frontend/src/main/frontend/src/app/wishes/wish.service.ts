@@ -8,11 +8,11 @@ export class WishService {
 
   constructor(private http: HttpClient) {}
 
-  getWishItem(id: number): Observable<any> {
+  getWishItem(id: number, login: string): Observable<any> {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.get<any>("api/item/" + id, {headers: headers});
+    return this.http.get<any>(`api/item/${id}/login/${login}`, {headers: headers});
   }
 
   addWishItem(item: Item): Observable<any> {

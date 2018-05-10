@@ -54,7 +54,7 @@ export class WishComponent implements OnInit {
   getItem(id: number) {
     this.spinner.show();
 
-    this.wishService.getWishItem(id).subscribe(item => {
+    this.wishService.getWishItem(id, this.login).subscribe(item => {
       this.item = item;
       this.spinner.hide();
     });

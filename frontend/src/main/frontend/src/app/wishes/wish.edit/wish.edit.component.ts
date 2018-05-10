@@ -31,6 +31,9 @@ export class WishEditComponent implements OnInit {
   //Profile
   profile: Profile;
 
+  //login from path
+  login: string;
+
   constructor(private uploadService: UploadFileService,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
@@ -46,13 +49,14 @@ export class WishEditComponent implements OnInit {
   paramsSubscriber() {
     this.route.params.subscribe((params: Params) => {
       let id = +params['itemId'];
+      this.login = params['login'];
       this.getWishItemById(id);
     });
   }
 
   getWishItemById(id: number) {
     this.spinner.show();
-    this.wishService.getWishItem(id).subscribe(item => {
+    this.wishService.getWishItem(id, this.login).subscribe(item => {
         this.editItem = item;
         this.selectedFile = this.editItem.imageFilepath;
         this.getDueDate();
