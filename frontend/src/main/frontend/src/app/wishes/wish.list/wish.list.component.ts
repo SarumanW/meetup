@@ -162,7 +162,7 @@ export class WishListComponent implements OnInit {
     newItem.priority = this.priority;
 
     this.spinner.show();
-    this.wishService.addExistWishItem(newItem).subscribe(item => {
+    this.wishService.addExistWishItem(newItem).subscribe(newItem => {
       this.spinner.hide();
 
       const index = this.items.indexOf(item);
@@ -192,7 +192,7 @@ export class WishListComponent implements OnInit {
 
   deleteWishItem(item: Item) {
     this.spinner.show();
-    this.wishService.deleteWishItem(item).subscribe(item => {
+    this.wishService.deleteWishItem(item).subscribe(deletedItem => {
       this.spinner.hide();
 
       const index = this.items.indexOf(item);
