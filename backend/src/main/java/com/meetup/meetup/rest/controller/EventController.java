@@ -6,6 +6,7 @@ import com.meetup.meetup.exception.runtime.frontend.detailed.FileUploadException
 import com.meetup.meetup.exception.runtime.frontend.detailed.MailServerException;
 import com.meetup.meetup.service.EventImageService;
 import com.meetup.meetup.service.EventService;
+import com.meetup.meetup.service.PdfCreatService;
 import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -26,7 +28,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_MAIL_SERVER;
+import static com.meetup.meetup.keys.Key.EXCEPTION_MAIL_SERVER;
 
 @RestController
 @RequestMapping(path = "/api/events")
@@ -34,6 +36,9 @@ import static com.meetup.meetup.Keys.Key.EXCEPTION_MAIL_SERVER;
 public class EventController {
 
     private static Logger log = LoggerFactory.getLogger(EventController.class);
+
+    @Autowired
+    private PdfCreatService pdfCreatService;
 
     @Autowired
     private Environment env;
@@ -77,6 +82,7 @@ public class EventController {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
+    @PreAuthorize("@eventPermissionChecker.canCreateEvent(#event)")
     @PostMapping("/add")
     public ResponseEntity<Event> addEvent(@Valid @RequestBody Event event) {
         log.debug("Trying to save event '{}'", event.toString());
@@ -88,6 +94,7 @@ public class EventController {
         return new ResponseEntity<>(responseEvent, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("@eventPermissionChecker.canUpdateEvent(#event)")
     @PutMapping
     public ResponseEntity<Event> updateEvent(@Valid @RequestBody Event event) {
         log.debug("Trying to update event '{}'", event.toString());
@@ -99,17 +106,19 @@ public class EventController {
         return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Event> deleteEvent(@Valid @RequestBody Event event) {
-        log.debug("Trying to delete event '{}'", event.toString());
+    @PreAuthorize("@eventPermissionChecker.canDeleteEvent(#eventId)")
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<Event> deleteEvent(@PathVariable int eventId) {
+        log.debug("Trying to delete eventId '{}'", eventId);
 
-        Event deletedEvent = eventService.deleteEvent(event);
+        Event deletedEvent = eventService.deleteEvent(eventId);
 
         log.debug("Send response body event '{}' and status OK", deletedEvent.toString());
 
         return new ResponseEntity<>(deletedEvent, HttpStatus.OK);
     }
 
+    @PreAuthorize("@eventPermissionChecker.canDeleteEvent(#eventId)")
     @PostMapping("/{eventId}/participant/add")
     public ResponseEntity<User> addParticipant(@PathVariable int eventId, @RequestBody String login) {
         return new ResponseEntity<>(eventService.addParticipant(eventId, login), HttpStatus.CREATED);
@@ -140,13 +149,44 @@ public class EventController {
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
         log.debug("Trying to upload event image '{}'", file);
 
-        String message;
-        HttpStatus httpStatus;
-        message = eventImageService.store(file);
+        String message = eventImageService.store(file);
         log.debug("Image successfully uploaded send response status OK");
-        httpStatus = HttpStatus.OK;
 
-        return new ResponseEntity<>(message, httpStatus);
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    @PreAuthorize("@eventPermissionChecker.canDeleteEvent(#eventId)")
+    @DeleteMapping("/participants/{eventId}")
+    public ResponseEntity<Event> deleteParticipants(@PathVariable int eventId) {
+        log.debug("Trying to delete participants of eventId '{}'", eventId);
+
+        Event deletedParticipantsEvent = eventService.deleteParticipants(eventId);
+
+        log.debug("Send response body event '{}' and status OK", deletedParticipantsEvent);
+
+        return new ResponseEntity<>(deletedParticipantsEvent, HttpStatus.OK);
+    }
+
+    @PreAuthorize("@eventPermissionChecker.canDeleteEvent(#eventId)")
+    @DeleteMapping("{eventId}/participant/{login}")
+    public ResponseEntity<String> deleteParticipant(@PathVariable int eventId, @PathVariable String login) {
+        HttpStatus httpStatus;
+        String message;
+        log.debug("Trying to delete participant with login {} of eventId '{}'", login, eventId);
+
+        int result = eventService.deleteParticipant(eventId, login);
+
+        if (result == 0) {
+            httpStatus = HttpStatus.NOT_FOUND;
+            message = "\"Participant with this login does not exist\"";
+        } else {
+            httpStatus = HttpStatus.OK;
+            message = "\"Participant was deleted successfully\"";
+        }
+
+        log.debug("Send response body event '{}' and status {}", message, httpStatus);
+
+        return new ResponseEntity<String>(message, httpStatus);
     }
 
     @PostMapping("/sendEventPlan")
@@ -155,4 +195,5 @@ public class EventController {
         eventService.sendEventPlan(file);
         return new ResponseEntity<>("All Okey", HttpStatus.OK);
     }
+
 }

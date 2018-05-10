@@ -5,6 +5,7 @@ import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.*;
 import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import com.meetup.meetup.exception.runtime.frontend.detailed.LoginNotFoundException;
+import com.meetup.meetup.keys.Key;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,8 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
-import static com.meetup.meetup.Keys.Key.EXCEPTION_LOGIN_NOT_FOUND;
+import static com.meetup.meetup.keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -42,6 +42,9 @@ public class EventService {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private PdfCreatService pdfCreatService;
 
     @Autowired
     public EventService(EventDao eventDao, AuthenticationFacade authenticationFacade, UserDao userDao, MailService mailService) {
@@ -138,18 +141,18 @@ public class EventService {
         return eventDao.getDrafts(folderId);
     }
 
+    @Transactional
     public Event addEvent(Event event) {
         log.debug("Trying to insert event '{}' to database", event.toString());
 
-        // TODO: 22.04.2018 Check permission
         User user = authenticationFacade.getAuthentication();
+
         int eventTypeId = eventTypeMap.get(event.getEventType());
 
-        if (event.getEventType() != EventType.NOTE) {
-            int eventPeriodicityId = periodicityMap.get(event.getPeriodicity());
-            event.setPeriodicityId(eventPeriodicityId);
-            log.debug("Set eventPeriodicity id '{}'", eventPeriodicityId);
-        }
+        int eventPeriodicityId = periodicityMap.get(event.getPeriodicity());
+        event.setPeriodicityId(eventPeriodicityId);
+        log.debug("Set eventPeriodicity id '{}'", eventPeriodicityId);
+
 
         event.setEventTypeId(eventTypeId);
         log.debug("Set eventType id '{}'", eventTypeId);
@@ -159,33 +162,63 @@ public class EventService {
     public Event updateEvent(Event event) {
         log.debug("Trying to update event '{}' in database", event.toString());
 
-        // TODO: 22.04.2018 Check permission
+        int eventTypeId = eventTypeMap.get(event.getEventType());
+
+        int eventPeriodicityId = periodicityMap.get(event.getPeriodicity());
+        event.setPeriodicityId(eventPeriodicityId);
+        log.debug("Set eventPeriodicity id '{}'", eventPeriodicityId);
+
+
+        event.setEventTypeId(eventTypeId);
+        log.debug("Set eventType id '{}'", eventTypeId);
+
         return eventDao.update(event);
     }
 
-    public Event deleteEvent(Event event) {
-        log.debug("Trying to delete event '{}' from database", event.toString());
+    public Event deleteEvent(int eventId) {
+        log.debug("Trying to find event by id '{}'", eventId);
 
-        // TODO: 22.04.2018 Check permission
+        Event event = getEvent(eventId);
+
+        log.debug("Found event '{}' with id '{}'", event, eventId);
+
+        log.debug("Trying to delete members with eventId '{}' from database", eventId);
+
+        event = eventDao.deleteMembers(event);
+
+        log.debug("Trying to delete eventId '{}' from database", eventId);
         return eventDao.delete(event);
     }
 
     public User addParticipant(int eventId, String login) {
 
-        log.debug("Trying to add paritipant with login '{}'", login);
-        checkPermission(eventId);
+        log.debug("Trying to add participant with login '{}'", login);
 
         User user = userDao.findByLogin(login);
 
         if (user == null) {
-            log.debug("Can not find user with login '{}'", login);
-            throw new LoginNotFoundException(env.getProperty(EXCEPTION_LOGIN_NOT_FOUND));
+            log.error("Can not find user with login '{}'", login);
+            throw new LoginNotFoundException(env.getProperty(Key.EXCEPTION_LOGIN_NOT_FOUND));
         }
 
         eventDao.addParticipant(user.getId(), eventId);
 
         log.debug("Participant with login '{}' was added", login);
         return user;
+    }
+
+    public Event deleteParticipants(int eventId) {
+        log.debug("Trying to find event by id '{}'", eventId);
+
+        Event event = getEvent(eventId);
+
+        log.debug("Trying to delete eventId '{}' from database", eventId);
+
+        return eventDao.deleteParticipants(event);
+    }
+
+    public int deleteParticipant(int eventId, String login) {
+        return eventDao.deleteParticipant(eventId, login);
     }
 
     public void sendEventPlan(MultipartFile file) {
@@ -202,13 +235,11 @@ public class EventService {
         mailService.sendMailWithEventPlan(user,file);
     }
 
-    //Check authentication and folder permission
-    private void checkPermission(int eventId) {
+    public void sendEventPlan(){
         User user = authenticationFacade.getAuthentication();
-
-        if (eventDao.getRole(user.getId(), eventId) != Role.OWNER) {
-            log.debug("User with id '{}' has not permission to add participant to event '{}'", user.getId(), eventId);
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Event", "eventId", eventId));
-        }
+        List<Event> events = eventDao.getPeriodEvents(4,"2018-05-01 00:00:00","2018-06-01 00:00:00");
+        pdfCreatService.createPDF(events);
+        mailService.sendMailWithEventPlan(user, new File("F:\\try.pdf"));
     }
+
 }
