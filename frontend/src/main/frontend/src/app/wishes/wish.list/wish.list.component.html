@@ -185,7 +185,7 @@
               <h5 class="card-title">{{item.name}}</h5>
               <p *ngIf="category == class.RECOMMENDATIONS_CATEGORY" class="card-text"><b>Priority: </b>{{item.priority}}</p>
               <p *ngIf="item.bookerId !== 0" class="card-text"><b>Booked by id: </b>{{item.bookerId}}</p>
-              <p class="card-text"><b>Due date: </b>{{item.dueDate.split(' ')[0]}}</p>
+              <p class="card-text" *ngIf="item.dueDate!==null"><b>Due date: </b>{{item.dueDate.split(' ')[0]}}</p>
 
               <div class="container">
                 <div class="row">

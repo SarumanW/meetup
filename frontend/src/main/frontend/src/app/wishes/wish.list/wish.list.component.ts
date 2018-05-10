@@ -73,15 +73,15 @@ export class WishListComponent implements OnInit {
     });
   }
 
-  getWishList(withSpinner = true) {
-    if (withSpinner) {
+  getWishList() {
       this.spinner.show();
-    }
-
     this.wishListService.getWishList(this.category, this.login, this.tags).subscribe(
       itemList => {
         console.log(itemList);
         this.items = itemList;
+        this.spinner.hide();
+      }, error =>{
+        this.showError(error.error,"title");
         this.spinner.hide();
       });
   }
