@@ -1,12 +1,10 @@
 package com.meetup.meetup.dao.impl;
 
 import com.meetup.meetup.dao.ItemDao;
-import com.meetup.meetup.dao.rowMappers.ExtendedItemRowMapper;
 import com.meetup.meetup.dao.rowMappers.ItemRowMapper;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.ItemPriority;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
-import oracle.jdbc.OracleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +12,11 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.*;
-import java.sql.Date;
 import java.util.*;
 
 import static com.meetup.meetup.keys.Key.*;
@@ -35,10 +30,10 @@ public class ItemDaoImpl implements ItemDao {
     private static Logger log = LoggerFactory.getLogger(ItemDaoImpl.class);
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private Environment env;
 
     @Autowired
-    private Environment env;
+    private JdbcTemplate jdbcTemplate;
 
     private final int numberOfPopularItem = 5;
     private final int numberOfSearchedItem = 5;
@@ -78,11 +73,6 @@ public class ItemDaoImpl implements ItemDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return item;
-    }
-
-    @Override
-    public List<Item> getPopularItems(String[] tagArray) {
-        return null;
     }
 
     @Override
@@ -206,7 +196,7 @@ public class ItemDaoImpl implements ItemDao {
             log.error("Query fails by remove booker by owner id: '{}', item id: '{}'", ownerId, itemId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
-        return findById(itemId);
+        return findByUserIdItemId(ownerId, itemId);
     }
 
     @Override
@@ -225,15 +215,21 @@ public class ItemDaoImpl implements ItemDao {
             log.error("Query fails by remove booker by owner id: '{}', item id: '{}'", ownerId, itemId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
-        return findById(itemId);
+        return findByUserIdItemId(ownerId, itemId);
     }
 
     @Override
     public Item addLike(int itemId, int userId) {
         log.debug("Try to add like by item id: '{}', user id: '{}'", itemId, userId);
         try {
-            int result = jdbcTemplate.update(env.getProperty(ITEM_ADD_LIKE_BY_ITEM_ID_USER_ID),
-                    itemId, userId);
+            SimpleJdbcInsert insertItem = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
+                    .withTableName(TABLE_LLIKE)
+                    .usingGeneratedKeyColumns(LLIKE_LIKE_ID);
+            Map<String, Object> itemParameters = new HashMap<>();
+            itemParameters.put(LLIKE_ITEM_ID, itemId);
+            itemParameters.put(LLIKE_USER_ID, userId);
+
+            int result = insertItem.execute(itemParameters);
 
             if (result != 0) {
                 log.debug("Like by item id: '{}', user id: '{}' was added", itemId, userId);
@@ -244,7 +240,7 @@ public class ItemDaoImpl implements ItemDao {
             log.error("Query fails by add like by item id: '{}', user id: '{}'", itemId, userId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
-        return findById(itemId);
+        return findByUserIdItemId(itemId, itemId);
     }
 
     @Override
@@ -263,7 +259,7 @@ public class ItemDaoImpl implements ItemDao {
             log.error("Query fails by remove like by item id: '{}', user id: '{}'", itemId, userId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
-        return findById(itemId);
+        return findByUserIdItemId(itemId, itemId);
     }
 
     @Override
@@ -373,13 +369,26 @@ public class ItemDaoImpl implements ItemDao {
         }
     }
 
-    // TODO: 09.05.2018 don't work
+    // TODO: 10.05.2018 refactor it !!!
     private List<Integer> getItemsIdByTagName(String[] tagNames) {
         log.debug("Try to get items id by tag name: '{}'", Arrays.toString(tagNames));
+
+        StringBuilder builder = new StringBuilder("SELECT ITEM_ID" +
+                "  FROM TAG_ITEM " +
+                "  INNER JOIN TAG T ON TAG_ITEM.TAG_ID = T.TAG_ID " +
+                "  WHERE NAME IN (?");
+
+        for (int i = 1; i < tagNames.length; i++) {
+            builder.append(",?");
+        }
+        String ps = builder.append(") GROUP BY ITEM_ID HAVING COUNT(ITEM_ID) = ?").toString();
+        List<Object> params = new ArrayList<>(Arrays.asList(tagNames));
+        params.add(tagNames.length);
+
         List<Integer> itemsIds;
         try {
-            itemsIds = jdbcTemplate.queryForList(env.getProperty(ITEM_GET_ITEMS_ID_BY_TAG_NAMES), Integer.class,
-                    tagNames, tagNames.length);
+            itemsIds = jdbcTemplate.queryForList(
+                    ps, params.toArray(), Integer.class);
         } catch (DataAccessException e) {
             log.error("Query fails by finding item's ids with tag name: '{}'", Arrays.toString(tagNames));
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -388,7 +397,7 @@ public class ItemDaoImpl implements ItemDao {
         if (itemsIds.isEmpty()) {
             log.debug("Item's ids not found by tag name: '{}'", Arrays.toString(tagNames));
         } else {
-            log.debug("Item's ids were wound by tag naem: '{}'", Arrays.toString(tagNames));
+            log.debug("Item's ids were wound by tag name: '{}'", Arrays.toString(tagNames));
         }
         return itemsIds;
     }

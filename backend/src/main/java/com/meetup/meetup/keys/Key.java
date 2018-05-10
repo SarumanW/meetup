@@ -12,6 +12,7 @@ public final class Key {
     public static final String TABLE_FOLDER = "FOLDER";
     public static final String TABLE_ITEM = "ITEM";
     public static final String TABLE_TAG = "TAG";
+    public static final String TABLE_LLIKE = "LLIKE";
 
 
     //ITEM table fields
@@ -30,6 +31,8 @@ public final class Key {
 
     //LLIKE table field
     public static final String LLIKE_LIKE_ID = "LIKE_ID";
+    public static final String LLIKE_ITEM_ID = "ITEM_ID";
+    public static final String LLIKE_USER_ID = "USER_ID";
 
     //TAG table fields
     public static final String TAG_TAG_ID = "TAG_ID";
@@ -129,7 +132,6 @@ public final class Key {
     public static final String ITEM_GET_TAG_ID = "item.getTagIdByName";
     public static final String ITEM_ADD_TAG_TO_ITEM = "item.addTagToItem";
     public static final String ITEM_DELETE_TAGS = "item.deleteTags";
-    public static final String ITEM_ADD_LIKE_BY_ITEM_ID_USER_ID = "item.addLikeByItemIdUserId";
     public static final String ITEM_REMOVE_LIKE_BY_ITEM_ID_USER_ID = "item.removeLikeByItemIdUserId";
     public static final String ITEM_UPDATE_USER_ITEM_INFO = "item.updateUserItemInfo";
     public static final String ITEM_GET_BOOKED_ITEMS_BY_USER_ID = "item.getBookedItemsByUserId";
