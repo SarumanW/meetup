@@ -3,6 +3,7 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import * as $ from 'jquery';
 import {Profile} from "../../account/profile";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-chat',
@@ -16,15 +17,19 @@ export class ChatComponent implements OnInit {
   state: string = "chat";
   messageText: string;
   profile: Profile;
+  eventId: number;
 
   isButtonHidden: boolean = false;
 
-  constructor() {
+  constructor(private route: ActivatedRoute) {
 
   }
 
   ngOnInit() {
     this.profile = JSON.parse(localStorage.currentUser);
+    this.route.params.subscribe(params => {
+      this.eventId = params['eventId'];
+    });
   }
 
   connect() {
@@ -42,7 +47,7 @@ export class ChatComponent implements OnInit {
     let that = this;
 
     this.stompClient.connect({}, function () {
-      that.stompClient.subscribe("/chat", (payload) => {
+      that.stompClient.subscribe("/chat/" + that.eventId, (payload) => {
 
         let colors = [
           '#2196F3', '#32c787', '#00BCD4', '#ff5652',
@@ -105,7 +110,7 @@ export class ChatComponent implements OnInit {
     });
 
     setTimeout(() => {
-      this.stompClient.send("/app-chat/add", {}, JSON.stringify({sender: userName, type: 'JOIN'}));
+      this.stompClient.send("/app-chat/add/" + this.eventId, {}, JSON.stringify({sender: userName, type: 'JOIN'}));
     }, 2000)
   }
 
@@ -116,7 +121,7 @@ export class ChatComponent implements OnInit {
       type: 'CHAT'
     };
 
-    this.stompClient.send("/app-chat/send/message", {}, JSON.stringify(chatMessage));
+    this.stompClient.send("/app-chat/send/message/" + this.eventId, {}, JSON.stringify(chatMessage));
 
     $('#message').val('');
   }
