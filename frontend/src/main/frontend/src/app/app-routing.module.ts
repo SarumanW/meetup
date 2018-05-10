@@ -37,7 +37,7 @@ const routes: Routes = [
   {path: 'thankyou', component: ThankyouComponent},
   {path: ':login/event/add/:folderId', component: EventAddComponent, canActivate: [AuthGuard] },
   {path: ':login/folders/:folderId/:type/:eventId/edit', component: EventEditComponent, canActivate: [AuthGuard]},
-  {path: 'chat/:eventId', component: ChatComponent},
+  {path: 'chat/:chatId', component: ChatComponent},
 ];
 
 @NgModule({

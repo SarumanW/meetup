@@ -20,20 +20,20 @@ public class WebSocketController {
         this.template = template;
     }
 
-    @MessageMapping("/send/message/{eventId}")
-    @SendTo("/chat/{eventId}")
+    @MessageMapping("/send/message/{chatId}")
+    @SendTo("/chat/{chatId}")
     public ChatMessage onRecievedMessage(@Payload ChatMessage message,
-                                         @DestinationVariable int eventId){
+                                         @DestinationVariable int chatId){
 //        this.template.convertAndSend("/chat",
 //                new SimpleDateFormat("HH:mm:ss").format(new Date()) + " - " + message);
         return message;
     }
 
-    @MessageMapping("/add/{eventId}")
-    @SendTo("/chat/{eventId}")
+    @MessageMapping("/add/{chatId}")
+    @SendTo("/chat/{chatId}")
     public ChatMessage addUser(@Payload ChatMessage message,
                                          SimpMessageHeaderAccessor headerAccessor,
-                               @DestinationVariable int eventId){
+                               @DestinationVariable int chatId){
 //        this.template.convertAndSend("/chat",
 //                new SimpleDateFormat("HH:mm:ss").format(new Date()) + " - " + message);
         headerAccessor.getSessionAttributes().put("username", message.getSender());

@@ -1,4 +1,4 @@
-import {Component, OnInit, Renderer2, RendererFactory2, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit, Renderer2, RendererFactory2, ViewEncapsulation} from '@angular/core';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import * as $ from 'jquery';
@@ -10,14 +10,14 @@ import {ActivatedRoute} from "@angular/router";
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
 
   serverUrl = 'http://localhost:8000/socket';
   stompClient;
   state: string = "chat";
   messageText: string;
   profile: Profile;
-  eventId: number;
+  chatId: number;
 
   isButtonHidden: boolean = false;
 
@@ -28,7 +28,7 @@ export class ChatComponent implements OnInit {
   ngOnInit() {
     this.profile = JSON.parse(localStorage.currentUser);
     this.route.params.subscribe(params => {
-      this.eventId = params['eventId'];
+      this.chatId = params['chatId'];
     });
   }
 
@@ -47,7 +47,7 @@ export class ChatComponent implements OnInit {
     let that = this;
 
     this.stompClient.connect({}, function () {
-      that.stompClient.subscribe("/chat/" + that.eventId, (payload) => {
+      that.stompClient.subscribe("/chat/" + that.chatId, (payload) => {
 
         let colors = [
           '#2196F3', '#32c787', '#00BCD4', '#ff5652',
@@ -110,7 +110,7 @@ export class ChatComponent implements OnInit {
     });
 
     setTimeout(() => {
-      this.stompClient.send("/app-chat/add/" + this.eventId, {}, JSON.stringify({sender: userName, type: 'JOIN'}));
+      this.stompClient.send("/app-chat/add/" + this.chatId, {}, JSON.stringify({sender: userName, type: 'JOIN'}));
     }, 2000)
   }
 
@@ -121,8 +121,18 @@ export class ChatComponent implements OnInit {
       type: 'CHAT'
     };
 
-    this.stompClient.send("/app-chat/send/message/" + this.eventId, {}, JSON.stringify(chatMessage));
+    this.stompClient.send("/app-chat/send/message/" + this.chatId, {}, JSON.stringify(chatMessage));
 
     $('#message').val('');
+    $('#messageArea').scrollTop($('#messageArea').prop('scrollHeight'));
+  }
+
+  ngOnDestroy() {
+    let chatMessage = {
+      sender: this.profile.login,
+      type: 'LEAVE'
+    };
+
+    this.stompClient.send("/app-chat/send/message/" + this.chatId, {}, JSON.stringify(chatMessage));
   }
 }
