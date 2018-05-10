@@ -66,7 +66,7 @@ public class WishListService {
             return itemDao.getPopularItems();
         }
 
-        return itemDao.getPopularItems(tagArray);
+        return itemDao.findItemsByTagName(tagArray);
     }
 
     public List<Item> getBookingByUser() {
