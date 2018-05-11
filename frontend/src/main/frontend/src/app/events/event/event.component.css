@@ -58,7 +58,38 @@ agm-map {
 
 .event-logo{
   width: 350px;
-  height: 350px;
+  height: 330px;
+}
+
+.l-g{
+  max-height: 265px;
+  overflow:scroll;
+  overflow-x: hidden;
+}
+.scrollspy {
+  position: relative;
+  height: 200px;
+  margin-top: .5rem;
+  overflow: auto;
 }
 
 
+.countdown{
+  width: 100%;
+  height: 70px;
+  background: #007bff;
+  color: white;
+  font-size: 20px;
+}
+.countdown .two-dots {
+  display: none;
+}
+.countdown .measurements {
+  display: flex;
+  color: white;
+  margin-right: 5px;
+  padding: 10px;
+}
+.countdown .divider {
+  font-size: 20px;
+}

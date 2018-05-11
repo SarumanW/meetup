@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import static com.meetup.meetup.keys.Key.*;
 
+import com.meetup.meetup.dao.AbstractDao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,15 +27,13 @@ import java.util.Map;
 @Repository
 @PropertySource("classpath:sqlDao.properties")
 @PropertySource("classpath:strings.properties")
-public class FolderDaoImpl implements FolderDao {
+public class FolderDaoImpl extends AbstractDao<Folder>  implements FolderDao {
 
-    private static Logger log = LoggerFactory.getLogger(FolderDaoImpl.class);
 
-    @Autowired
-    private Environment env;
+    public FolderDaoImpl(){
+        log=LoggerFactory.getLogger(FolderDaoImpl.class);
+    }
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Folder> getUserFolders(int id) {

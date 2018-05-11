@@ -1,14 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {EventService} from "../event.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Evento} from "../event";
 import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-event',
   templateUrl: './event.component.html',
-  styleUrls: ['./event.component.css']
+  styleUrls: ['./event.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class EventComponent implements OnInit {
 
@@ -35,7 +37,8 @@ export class EventComponent implements OnInit {
               private route: ActivatedRoute,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
-              private router: Router) {
+              private router: Router,
+              private appComponent: AppComponent) {
   }
 
   ngOnInit() {
@@ -50,8 +53,8 @@ export class EventComponent implements OnInit {
       this.time = "00:00";
       this.shouldShow = false;
       this.datee = this.currentDate;
-    }, error => {
-      this.showError('Unsuccessful event loading', 'Loading error');
+    },error => {
+        this.appComponent.showError('Unsuccessful event loading', 'Loading error');
     });
     this.getEvent();
   }
@@ -69,16 +72,8 @@ export class EventComponent implements OnInit {
       this.spinner.hide();
     }, error => {
       this.spinner.hide();
-      this.showError('Unsuccessful event loading', 'Loading error');
+        this.appComponent.showError('Unsuccessful event loading', 'Loading error');
     })
-  }
-
-  showError(message: string, title: string) {
-    this.toastr.error(message, title, {
-      timeOut: 3000,
-      positionClass: 'toast-top-right',
-      closeButton: true
-    });
   }
 
   showSuccess(message: string, title: string) {
@@ -113,11 +108,11 @@ export class EventComponent implements OnInit {
           this.spinner.hide();
           this.showSuccess('Participant was successfully added', 'Attention!');
         }, error => {
-          this.showError('Unsuccessful participant adding', 'Adding error');
+          this.appComponent.showError('Unsuccessful event loading', 'Loading error');
           this.spinner.hide();
         });
     } else {
-      this.showError('Participant already exists', 'Adding error');
+      this.appComponent.showError('Participant already exists', 'Adding error');
       this.spinner.hide();
     }
 
@@ -148,7 +143,7 @@ export class EventComponent implements OnInit {
         this.showSuccess('Event is successfully updated', 'Success!');
         this.spinner.hide();
       }, error => {
-        this.showError('Can not update event', 'Attention!');
+        this.appComponent.showError('Can not update event', 'Attention!');
         this.spinner.hide();
       }
     );
@@ -210,7 +205,7 @@ export class EventComponent implements OnInit {
         this.eventt.participants = [];
         this.spinner.hide();
       }, error => {
-        this.showError('Can not delete participants', 'Error!');
+        this.appComponent.showError('Can not delete participants', 'Error!');
         this.spinner.hide();
       }
     );
@@ -223,7 +218,7 @@ export class EventComponent implements OnInit {
         this.spinner.hide();
         this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId])
       }, error => {
-        this.showError('Can not delete event', 'Error!');
+        this.appComponent.showError('Can not delete event', 'Error!');
         this.spinner.hide();
       }
     );
@@ -254,12 +249,12 @@ export class EventComponent implements OnInit {
           this.eventt.participants.splice(deletedProfileIndex, 1);
           this.spinner.hide();
         }, error => {
-          this.showError('Participant with this login does not exist', 'Error!');
+          this.appComponent.showError('Participant with this login does not exist', 'Error!');
           this.spinner.hide();
         }
       );
     } else {
-      this.showError('Participant with this login does not exist', 'Error!');
+      this.appComponent.showError('Participant with this login does not exist', 'Error!');
       this.spinner.hide();
     }
 

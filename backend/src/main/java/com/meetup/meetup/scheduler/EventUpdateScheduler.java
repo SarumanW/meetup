@@ -18,6 +18,7 @@ import java.util.List;
 
 import static com.meetup.meetup.keys.Key.EXCEPTION_PARSE_DATE;
 
+// TODO: 5/11/2018 Extend abstract class
 @Component
 public class EventUpdateScheduler {
 
@@ -32,7 +33,7 @@ public class EventUpdateScheduler {
     private static final SimpleDateFormat fullDateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss.SS");
     private static final SimpleDateFormat hoursDateFormat = new SimpleDateFormat("YYYY-MM-dd HH");
 
-    @Scheduled(cron="0 0 0/1 * * *")
+    @Scheduled(cron="0 0 * ? * *")
     public void changeEventDate() {
         log.debug("Getting current date");
         String currentDate = hoursDateFormat.format(new Date());

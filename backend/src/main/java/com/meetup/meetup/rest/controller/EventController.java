@@ -6,6 +6,7 @@ import com.meetup.meetup.exception.runtime.frontend.detailed.FileUploadException
 import com.meetup.meetup.exception.runtime.frontend.detailed.MailServerException;
 import com.meetup.meetup.service.EventImageService;
 import com.meetup.meetup.service.EventService;
+import com.meetup.meetup.service.PdfCreatService;
 import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.validation.Valid;
 import java.io.*;
@@ -35,6 +35,9 @@ import static com.meetup.meetup.keys.Key.EXCEPTION_MAIL_SERVER;
 public class EventController {
 
     private static Logger log = LoggerFactory.getLogger(EventController.class);
+
+    @Autowired
+    private PdfCreatService pdfCreatService;
 
     @Autowired
     private Environment env;
@@ -145,8 +148,7 @@ public class EventController {
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
         log.debug("Trying to upload event image '{}'", file);
 
-        String message;
-        message = eventImageService.store(file);
+        String message = eventImageService.store(file);
         log.debug("Image successfully uploaded send response status OK");
 
         return new ResponseEntity<>(message, HttpStatus.OK);
@@ -192,4 +194,5 @@ public class EventController {
         eventService.sendEventPlan(file);
         return new ResponseEntity<>("All Okey", HttpStatus.OK);
     }
+
 }

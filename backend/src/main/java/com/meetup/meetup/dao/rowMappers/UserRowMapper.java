@@ -35,7 +35,8 @@ public class UserRowMapper implements RowMapper<User> {
         user.setBirthDay(date == null ? null : date.toString());
         user.setTimeZone(resultSet.getInt(UUSER_TIMEZONE));
         user.setImgPath(resultSet.getString(UUSER_IMAGE_FILEPATH));
-
+        user.setPinedEventId(resultSet.getInt(UUSER_PINED_EVENT_ID));
+        user.setPeriodicalEmail(resultSet.getString(UUSER_PERIODICAL_EMAIL));
         return user;
     }
 

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -40,6 +41,9 @@ public class EventService {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private PdfCreatService pdfCreatService;
 
     @Autowired
     public EventService(EventDao eventDao, AuthenticationFacade authenticationFacade, UserDao userDao, MailService mailService) {
@@ -151,6 +155,7 @@ public class EventService {
         return eventDao.getDrafts(folderId);
     }
 
+    @Transactional
     public Event addEvent(Event event) {
         log.debug("Trying to insert event '{}' to database", event.toString());
 
@@ -244,14 +249,4 @@ public class EventService {
         mailService.sendMailWithEventPlan(user,file);
     }
 
-
-    //Check authentication and folder permission
-    private void checkPermission(int eventId) {
-        User user = authenticationFacade.getAuthentication();
-
-        if (eventDao.getRole(user.getId(), eventId) != Role.OWNER) {
-            log.debug("User with id '{}' has not permission to add participant to event '{}'", user.getId(), eventId);
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Event", "eventId", eventId));
-        }
-    }
 }

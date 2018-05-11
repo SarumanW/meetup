@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {FriendService} from "../friends/friend.service";
 import {FriendsListComponent} from "../friends/friends.list.component";
+import {AppComponent} from "../../app.component";
 
 @Component({
   templateUrl: './profile.component.html',
@@ -24,8 +25,9 @@ export class ProfileComponent implements OnInit {
   constructor(private accountService: AccountService,
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
-              private friendService: FriendService,) {
-
+              private friendService: FriendService,
+              private appComponent: AppComponent) {
+    this.profile = new Profile();
   }
 
   ngOnInit() {
@@ -35,7 +37,10 @@ export class ProfileComponent implements OnInit {
           this.profile = profile;
           this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === this.profile.login;
           this.update();
-        });
+        },error => {
+          this.appComponent.showError(error, 'Upload failed');
+        }
+      );
     });
   }
 
@@ -48,7 +53,6 @@ export class ProfileComponent implements OnInit {
   // TODO move it to the backend
   getButton() {
     this.friendService.getFriends(this.profile.login).subscribe((friends) => {
-      // this.friendService.getFriends().subscribe((friends) => {
       this.accountService.profile(JSON.parse(localStorage.getItem('currentUser')).login)
         .subscribe((user) => {
           if (friends.length === 0) {
@@ -64,8 +68,14 @@ export class ProfileComponent implements OnInit {
             }
           }
           this.friendCount = friends.length;
-        });
-    });
+        },error => {
+            this.appComponent.showError(error, 'Error');
+          }
+        );
+    },error => {
+        this.appComponent.showError(error, 'Error');
+      }
+    );
     this.friendService.getFriendsRequests().subscribe((requests) => {
       if (requests.length === 0) {
         this.isConfirmed = true;
@@ -79,24 +89,36 @@ export class ProfileComponent implements OnInit {
           this.isConfirmed = true;
         }
       }
-    });
+    },error => {
+        this.appComponent.showError(error, 'Error');
+      }
+    );
   }
 
   addFriend(login: string) {
     this.friendService.addFriend(login).subscribe((result) => {
       this.update()
-    });
+    },error => {
+        this.appComponent.showError(error, 'Error');
+      }
+    );
   }
 
   deleteFriend(id: number) {
     this.friendService.deleteFriend(id).subscribe((result) => {
       this.update()
-    });
+    },error => {
+        this.appComponent.showError(error, 'Error');
+      }
+    );
   }
 
   confirmFriend(id: number) {
     this.friendService.confirmFriend(id).subscribe((result) => {
       this.update()
-    });
+    },error => {
+        this.appComponent.showError(error, 'Error');
+      }
+    );
   }
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {Router} from "@angular/router";
 import {Profile} from "./account/profile";
+import {ToastrService} from "ngx-toastr";
 
 
 @Component({
@@ -19,7 +20,7 @@ export class AppComponent {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
 
-  constructor(private router : Router){}
+  constructor(private router : Router, private toastr: ToastrService,){}
 
   logout(){
     localStorage.clear();
@@ -28,7 +29,7 @@ export class AppComponent {
 
   modifyHeader(location) {
     if (location.url === "/login" || location.url === "/register" || location.url === '/' || location.url === '/continueReg'
-    || location.url === "/recovery")
+    || location.url === "/recovery" || location.url === "/thankyou")
     {
       this.showLogout = false;
     } else {
@@ -39,14 +40,29 @@ export class AppComponent {
   goToProfile(){
 
     if(localStorage.currentUser){
-      this.router.navigate(['/' + JSON.parse(localStorage.currentUser).login + "/profile"]);
+      this.router.navigate(['/' + this.profile.login + "/profile"]);
     } else {
       this.router.navigate(['/login']);
     }
   }
 
+  showError(error: any, title: string) {
+    let message :string;
+    if(error.status === 418) {
+      message = 'Please try again later';
+      title = 'Server Error'
+    } else {
+      message = error.error;
+    }
+      this.toastr.error(message, title, {
+        timeOut: 3000,
+        positionClass: 'toast-top-right',
+        closeButton: true
+      });
+  }
+
   login():string{
-    return JSON.parse(localStorage.currentUser).login
+    return this.profile.login;
   }
 
 }

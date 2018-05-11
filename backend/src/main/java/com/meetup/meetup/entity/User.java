@@ -47,6 +47,10 @@ public class User {
 //    @JsonIgnore
     private String imgPath;
 
+    private int pinedEventId;
+
+    private String periodicalEmail;
+
     @JsonIgnore
     public String getPassword() {
         return password;
