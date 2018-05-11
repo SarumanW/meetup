@@ -16,7 +16,8 @@ export class AppComponent {
 
 
   ngOnInit(){
-    this.router.events.subscribe(event => this.modifyHeader(event));
+    this.router.events.subscribe(event => this.modifyHeader(event),
+      error => this.showError(error,"Error"));
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
   }
 

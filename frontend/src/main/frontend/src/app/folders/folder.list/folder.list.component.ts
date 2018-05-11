@@ -7,6 +7,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {Evento} from "../../events/event";
 import {EventService} from "../../events/event.service";
 import 'jspdf-autotable';
+import {Builder} from "../export.builder";
 import {AppComponent} from "../../app.component";
 
 declare let jsPDF;
@@ -23,13 +24,39 @@ export class FolderListComponent implements OnInit {
   state: string = "folders";
   nameInput: string = "";
   profile: Profile;
-  rows : any[] = [];
-  columns = ["Name", "Description", "Date"];
+  isSent: boolean;
 
   currentDate: string;
   startDate: string;
   endDate: string;
-  periodEvents: Evento[] = [];
+
+  checkboxes: any[] = [
+    {
+      checked: true,
+      columnName: "Name",
+      objectProperty: "name",
+    },
+    {
+      checked: false,
+      columnName: "Date",
+      objectProperty: "eventDate",
+    },
+    {
+      checked: false,
+      columnName: "Description",
+      objectProperty: "description",
+    },
+    {
+      checked: false,
+      columnName: "Periodicity",
+      objectProperty: "periodicity",
+    },
+    {
+      checked: false,
+      columnName: "Date",
+      objectProperty: "eventDate",
+    }
+  ];
 
   constructor(private folderListService: FolderListService,
               private spinner: NgxSpinnerService,
@@ -65,48 +92,49 @@ export class FolderListComponent implements OnInit {
 
     this.folderListService.getFoldersList().subscribe(
       folders => {
-        this.folders = folders
+        this.folders = folders;
         this.spinner.hide();
-      }, error => {
-        this.appComponent.showError(error, 'Error');
-      })
+      },
+      error => this.appComponent.showError(error, "Error"))
   }
 
   getPeriodEvents(start: string, end: string): void {
+    this.spinner.show();
+
     this.eventService.getEventsInPeriod(start, end).subscribe(
       events => {
-        this.periodEvents = events;
         let doc = new jsPDF('p', 'pt');
+        let docName = "events-plan-" + this.currentDate + ".pdf";
 
-        for (let i = 0; i < events.length; i++) {
-          let forceEvent : any[] = [];
+        console.log(events);
 
-          forceEvent.push(this.periodEvents[i].name);
-          forceEvent.push(this.periodEvents[i].description);
-          forceEvent.push(this.periodEvents[i].eventDate);
+        let builder: Builder = new Builder(events, this.checkboxes);
 
-          this.rows.push(forceEvent);
-        }
+        let columns = builder.render().buildColumns();
+        let rows = builder.buildRows();
 
         let s = this.startDate.split(' ')[0];
         let e = this.endDate.split(' ')[0];
 
-        doc.autoTable(this.columns, this.rows, {
+        doc.autoTable(columns, rows, {
           addPageContent: function() {
             doc.text("Your events on period: " + s + " to " + e, 40, 30);
           }
-        });
+        },
+          error => this.appComponent.showError(error, "Error"));
 
-        let data = new File([doc.output()], "events.pdf");
+        this.spinner.hide();
 
-        let formData = new FormData();
-        formData.append("file", data);
+        if(this.isSent){
+          let data = new File([doc.output], docName);
 
-        this.eventService.uploadEventsPlan(formData).subscribe();
+          let formData = new FormData();
+          formData.append("file", data);
 
-        doc.save('table.pdf');
-      }, error => {
-        this.appComponent.showError(error, 'Error');
+          this.eventService.uploadEventsPlan(formData).subscribe(success =>{},error => this.appComponent.showError(error, "Error"));
+        }
+
+        doc.save(docName);
       }
     )
   }
@@ -123,9 +151,8 @@ export class FolderListComponent implements OnInit {
         folder.folderId = res.folderId;
         this.folders.push(folder);
         this.spinner.hide();
-      }, error => {
-        this.appComponent.showError(error, 'Error');
-      });
+      },
+        error => this.appComponent.showError(error, "Error"));
 
     this.nameInput = null;
   }
@@ -145,8 +172,9 @@ export class FolderListComponent implements OnInit {
 
             this.spinner.hide();
             this.showSuccess();
-          }, error => {
-          this.appComponent.showError(error, 'Error');
+          },
+          error=> {
+            this.appComponent.showError(error, "Error")
             this.spinner.hide();
           });
     }
@@ -155,7 +183,7 @@ export class FolderListComponent implements OnInit {
   showSuccess() {
     this.toastr.info('Your events were moved to general folder', 'Attention!', {
       timeOut: 3000,
-      positionClass: 'toast-top-right',
+      positionClass: 'toast-bottom-left',
       closeButton: true
     });
   }

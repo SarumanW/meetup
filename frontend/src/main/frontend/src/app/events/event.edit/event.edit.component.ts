@@ -56,7 +56,7 @@ export class EventEditComponent implements OnInit {
       this.currentUserId = JSON.parse(localStorage.currentUser).id;
       this.currentUserLogin = JSON.parse(localStorage.currentUser).login;
     }, error => {
-      this.appComponent.showError('Unsuccessful event loading', 'Loading error');
+      this.appComponent.showError(error, 'Loading error');
     });
     this.getEvent();
 
@@ -110,7 +110,7 @@ export class EventEditComponent implements OnInit {
       this.spinner.hide();
     }, error => {
       this.spinner.hide();
-      this.appComponent.showError('Unsuccessful event loading', 'Loading error');
+      this.appComponent.showError(error, 'Loading error');
     })
   }
 
@@ -131,7 +131,7 @@ export class EventEditComponent implements OnInit {
         this.spinner.hide();
         this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/" + this.type + "/" + this.eventId]);
       }, error => {
-        this.appComponent.showError('Can not update event', 'Attention!');
+        this.appComponent.showError(error, 'Attention!');
         this.spinner.hide();
       }
     );
