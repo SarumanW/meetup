@@ -43,8 +43,8 @@ public class WishListController {
         return new ResponseEntity<>(userWishes, HttpStatus.OK);
     }
 
-    @GetMapping("/recommendations")
-    public ResponseEntity<List<Item>> getRecommendations(@RequestParam(value="tag", required = false) String[] tagArray) {
+    @PostMapping("/recommendations")
+    public ResponseEntity<List<Item>> getRecommendations(@RequestBody String[] tagArray) {
         log.debug("Trying to get  recommend wishes");
         List<Item> items = wishListService.getRecommendations(tagArray);
 
@@ -59,5 +59,15 @@ public class WishListController {
 
         log.debug("Send response body items '{}' and status OK", items.toString());
         return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
+    @GetMapping("/tags/{tagPart}")
+    public ResponseEntity<List<String>> getSearchTags(@PathVariable String tagPart) {
+
+        log.debug("Trying to get tags by part name '{}'", tagPart);
+        List<String> tags = wishListService.getSearchTags(tagPart);
+
+        log.debug("Send response body tags '{}' and status OK", tags.toString());
+        return new ResponseEntity<>(tags, HttpStatus.OK);
     }
 }

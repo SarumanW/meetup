@@ -30,7 +30,9 @@ CREATE TABLE uuser (
   timezone NUMBER(3),
   image_filepath VARCHAR2(200),
   bday DATE,
-  phone VARCHAR2(25)
+  phone VARCHAR2(25),
+  pined_event_id NUMBER(11),
+  periodical_email VARCHAR2(100)
 );
 
 CREATE TABLE user_item (
@@ -38,6 +40,7 @@ CREATE TABLE user_item (
   item_id number NOT NULL,
   id_who_booked number,
   priority_id number,
+  due_date timestamp NOT NULL,
   UNIQUE (user_id, item_id)
 );
 
@@ -61,7 +64,6 @@ CREATE TABLE item (
   description varchar2(200) NOT NULL,
   image_filepath varchar2(200) NOT NULL,
   link varchar2(200),
-  due_date timestamp NOT NULL,
   PRIMARY KEY (item_id)
 );
 

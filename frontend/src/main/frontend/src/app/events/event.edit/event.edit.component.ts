@@ -8,6 +8,7 @@ import {ImageUploadService} from "../image.upload.service";
 import {FormControl} from "@angular/forms";
 import {MapsAPILoader} from "@agm/core";
 import {$} from "protractor";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-event.edit',
@@ -44,7 +45,8 @@ export class EventEditComponent implements OnInit {
               private router: Router,
               private uploadService: ImageUploadService,
               private mapsAPILoader: MapsAPILoader,
-              private ngZone: NgZone) { }
+              private ngZone: NgZone,
+              private appComponent: AppComponent) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -54,7 +56,7 @@ export class EventEditComponent implements OnInit {
       this.currentUserId = JSON.parse(localStorage.currentUser).id;
       this.currentUserLogin = JSON.parse(localStorage.currentUser).login;
     }, error => {
-      this.showError('Unsuccessful event loading', 'Loading error');
+      this.appComponent.showError('Unsuccessful event loading', 'Loading error');
     });
     this.getEvent();
 
@@ -108,7 +110,7 @@ export class EventEditComponent implements OnInit {
       this.spinner.hide();
     }, error => {
       this.spinner.hide();
-      this.showError('Unsuccessful event loading', 'Loading error');
+      this.appComponent.showError('Unsuccessful event loading', 'Loading error');
     })
   }
 
@@ -129,7 +131,7 @@ export class EventEditComponent implements OnInit {
         this.spinner.hide();
         this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/" + this.type + "/" + this.eventId]);
       }, error => {
-        this.showError('Can not update event', 'Attention!');
+        this.appComponent.showError('Can not update event', 'Attention!');
         this.spinner.hide();
       }
     );
@@ -174,7 +176,7 @@ export class EventEditComponent implements OnInit {
       console.log(this.eventt.imageFilepath);
       this.spinner.hide();
     }, error => {
-      this.showError(error, 'Upload failed');
+      this.appComponent.showError(error, 'Upload failed');
       this.spinner.hide();
     });
 

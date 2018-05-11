@@ -12,7 +12,7 @@
     </div>
 
     <div class="col-md-5">
-      <img *ngIf="item.imageFilepath" [src]="item.imageFilepath" class="img-fluid">
+      <img *ngIf="item.imageFilepath" [src]="item.imageFilepath" onError="this.src='assets/item-icon-default.svg'" class="img-fluid">
     </div>
 
     <div class="col-md-5">
@@ -42,7 +42,7 @@
 
         <div class="form-group">
           <label class="form-control-label"><u>Link:</u></label>
-          <div><a href="https://zaka-zaka.com/game/stalker-call-of-pripyat">Click here for full info</a></div>
+          <div><a [href]="this.item.link">Click here for full info</a></div>
         </div>
 
         <!--Due Date-->
@@ -64,13 +64,15 @@
       </form>
 
       <a routerLink="/{{profile.login}}/wishes" class="btn btn-primary">Return to wishlist</a>
-      <button *ngIf="profile.login === login" type="button" (click)="removeFromWishList()" [disabled]="!item.priority"
+      <button *ngIf="item.ownerId !== 0 && profile.login === login" type="button" (click)="removeFromWishList()" [disabled]="!item.priority"
               class="btn btn-danger">Remove
       </button>
       <button type="button" (click)="addToWishList()" [disabled]="item.priority" class="btn btn-primary">Add</button>
-      <button *ngIf="profile.login === login" type="button" class="btn btn-warning">Edit</button>
+      <button *ngIf="item.ownerId !== 0 && profile.login === login" type="button" class="btn btn-warning">Edit</button>
+
       <div *ngIf="!item.isLiked"><img src="assets/notliked.png" (click)="like()"> {{item.likes}}</div>
       <div *ngIf="item.isLiked"><img src="assets/liked.png" (click)="dislike()"> {{item.likes}}</div>
+
     </div>
   </div>
 </div>

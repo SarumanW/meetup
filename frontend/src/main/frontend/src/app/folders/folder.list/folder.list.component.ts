@@ -7,6 +7,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {Evento} from "../../events/event";
 import {EventService} from "../../events/event.service";
 import 'jspdf-autotable';
+import {AppComponent} from "../../app.component";
 
 declare let jsPDF;
 
@@ -33,7 +34,8 @@ export class FolderListComponent implements OnInit {
   constructor(private folderListService: FolderListService,
               private spinner: NgxSpinnerService,
               private toastr: ToastrService,
-              private eventService: EventService) {
+              private eventService: EventService,
+              private appComponent: AppComponent) {
 
     this.selectedFolder = new Folder;
   }
@@ -65,6 +67,8 @@ export class FolderListComponent implements OnInit {
       folders => {
         this.folders = folders
         this.spinner.hide();
+      }, error => {
+        this.appComponent.showError(error, 'Error');
       })
   }
 
@@ -101,6 +105,8 @@ export class FolderListComponent implements OnInit {
         this.eventService.uploadEventsPlan(formData).subscribe();
 
         doc.save('table.pdf');
+      }, error => {
+        this.appComponent.showError(error, 'Error');
       }
     )
   }
@@ -117,6 +123,8 @@ export class FolderListComponent implements OnInit {
         folder.folderId = res.folderId;
         this.folders.push(folder);
         this.spinner.hide();
+      }, error => {
+        this.appComponent.showError(error, 'Error');
       });
 
     this.nameInput = null;
@@ -137,8 +145,8 @@ export class FolderListComponent implements OnInit {
 
             this.spinner.hide();
             this.showSuccess();
-          },
-          () => {
+          }, error => {
+          this.appComponent.showError(error, 'Error');
             this.spinner.hide();
           });
     }

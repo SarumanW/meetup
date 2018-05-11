@@ -12,6 +12,7 @@ public final class Key {
     public static final String TABLE_FOLDER = "FOLDER";
     public static final String TABLE_ITEM = "ITEM";
     public static final String TABLE_TAG = "TAG";
+    public static final String TABLE_LLIKE = "LLIKE";
 
 
     //ITEM table fields
@@ -28,11 +29,10 @@ public final class Key {
     public static final String USER_ITEM_BOOKER_ID = "ID_WHO_BOOKED";
     public static final String USER_ITEM_PRIORITY_ID = "PRIORITY_ID";
 
-    //PRIORITY table fields
-    public static final String PRIORITY_NAME = "PRIORITY_NAME";
-
     //LLIKE table field
     public static final String LLIKE_LIKE_ID = "LIKE_ID";
+    public static final String LLIKE_ITEM_ID = "ITEM_ID";
+    public static final String LLIKE_USER_ID = "USER_ID";
 
     //TAG table fields
     public static final String TAG_TAG_ID = "TAG_ID";
@@ -125,8 +125,6 @@ public final class Key {
     public static final String ITEM_GET_TAG_BY_ITEM_ID = "item.getTagByItemId";
     public static final String ITEM_GET_POPULAR_ITEMS_ID ="item.getPopularItemsIds";
     public static final String ITEM_GET_PERSONAL_INFO_BY_ITEM_ID_USER_ID = "item.getPersonalInfoByUserIdItemId";
-    public static final String ITEM_GET_PRIORITY_BY_USER_ID ="item.getPriorityByUserId";
-    public static final String ITEM_GET_BOOKER_ID_BY_ITEM_ID_USER_ID = "item.getBookerIdByUserIdIntemId";
     public static final String ITEM_UPDATE_USER_ITEM = "item.updateUserItem";
     public static final String ITEM_DELETE_FROM_WISH_LIST = "item.deleteFromWishList";
     public static final String ITEM_SET_BOOKER_ID_FOR_ITEM = "item.setBookerId";
@@ -134,14 +132,11 @@ public final class Key {
     public static final String ITEM_GET_TAG_ID = "item.getTagIdByName";
     public static final String ITEM_ADD_TAG_TO_ITEM = "item.addTagToItem";
     public static final String ITEM_DELETE_TAGS = "item.deleteTags";
-    public static final String ITEM_ADD_LIKE_BY_ITEM_ID_USER_ID = "item.addLikeByItemIdUserId";
     public static final String ITEM_REMOVE_LIKE_BY_ITEM_ID_USER_ID = "item.removeLikeByItemIdUserId";
-    public static final String ITEM_UPDATE_PRIORITY = "item.updatePriority";
+    public static final String ITEM_UPDATE_USER_ITEM_INFO = "item.updateUserItemInfo";
     public static final String ITEM_GET_BOOKED_ITEMS_BY_USER_ID = "item.getBookedItemsByUserId";
-    public static final String ITEM_GET_ITEMS_ID_BY_TAG_NAME = "item.getItemsIdByTagName";
-    public static final String ITEM_FIND_BOOKED_ITEMS_BY_USER_ID = "item.findBookedItemsByUserId";
-
-
+    public static final String ITEM_GET_ITEMS_ID_BY_TAG_NAMES = "item.getItemsIdByTagNames";
+    public static final String TAG_SEARCH_TAGS_NAME = "tag.searchTagsName";
 
     //Exceptions
     public static final String EXCEPTION_AUTHENTICATION = "authentication.exception";
