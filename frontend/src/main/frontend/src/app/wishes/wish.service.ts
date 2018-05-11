@@ -43,7 +43,6 @@ export class WishService {
     return this.http.delete(`api/item/${item.itemId}/delete`, {headers: headers});
   }
 
-  //todo create booking
   bookWishItem(item: Item): Observable<any> {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
@@ -53,7 +52,6 @@ export class WishService {
     return this.http.post(url, item, {headers: headers});
   }
 
-  //todo create unbooking
   unbookWishItem(item: Item): Observable<any> {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);

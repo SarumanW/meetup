@@ -34,6 +34,12 @@ export class WishListComponent implements OnInit {
   dueDate: string;
   priority: string;
 
+  //Tags
+  queryTagField: FormControl = new FormControl();
+  queryTags: string[] = [];
+  tag: string;
+  tags: string[] = [];
+
   constructor(private wishListService: WishListService,
               private wishService: WishService,
               private spinner: NgxSpinnerService,
@@ -116,7 +122,6 @@ export class WishListComponent implements OnInit {
     });
   }
 
-  //todo check working
   bookWishItem(item: Item) {
     item.bookerId = this.profile.id;
     this.spinner.show();
@@ -139,7 +144,6 @@ export class WishListComponent implements OnInit {
     });
   }
 
-  //todo check working
   unbookWishItem(item: Item) {
     this.spinner.show();
     this.wishService.unbookWishItem(item).subscribe(itemUnBooked => {
@@ -217,12 +221,6 @@ export class WishListComponent implements OnInit {
       this.spinner.hide();
     });
   }
-
-  //Tags
-  queryTagField: FormControl = new FormControl();
-  queryTags: string[] = [];
-  tag: string;
-  tags: string[] = [];
 
   tagsInputSubscriber() {
     this.queryTagField.valueChanges

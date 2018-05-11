@@ -5,7 +5,7 @@ import {ToastrService} from "ngx-toastr";
 import {WishListService} from "../wish.list.service";
 import {UploadFileService} from "../../upload.file/upload.file.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {ActivatedRoute, Params} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {WishService} from "../wish.service";
 import {HttpResponse} from "@angular/common/http";
 import {AppComponent} from "../../app.component";
@@ -40,7 +40,8 @@ export class WishEditComponent implements OnInit {
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
               private wishService: WishService,
-              private appComponent: AppComponent) {
+              private appComponent: AppComponent,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -65,7 +66,10 @@ export class WishEditComponent implements OnInit {
         this.getDueDate();
         this.spinner.hide();
       },
-      error => this.appComponent.showError(error, "Error"));
+      error => {
+        this.appComponent.showError(error, "Error");
+        this.spinner.hide();
+      });
   }
 
   getDueDate() {
@@ -165,10 +169,12 @@ export class WishEditComponent implements OnInit {
   addWish() {
     console.log('run "add wish" method');
     this.wishService.editWishItem(this.editItem).subscribe(item => {
-      this.spinner.hide();
       this.showSuccess('Wish item was successfully added', 'Attention!');
+      this.spinner.hide();
+      console.log('./' + this.profile.login + '/wishes/' + item.itemId);
+      this.router.navigate(['./' + this.profile.login + '/wishes/' + item.itemId]);
     }, error => {
-      this.appComponent.showError(error, "Error")
+      this.appComponent.showError(error, "Error");
       this.spinner.hide();
     });
   }
