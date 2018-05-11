@@ -33,7 +33,7 @@ public class EventUpdateScheduler {
     private static final SimpleDateFormat fullDateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss.SS");
     private static final SimpleDateFormat hoursDateFormat = new SimpleDateFormat("YYYY-MM-dd HH");
 
-    @Scheduled(cron="0 0 * ? * *")
+    @Scheduled(cron="${cron.hourly}")
     public void changeEventDate() {
         log.debug("Getting current date");
         String currentDate = hoursDateFormat.format(new Date());

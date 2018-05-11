@@ -27,16 +27,14 @@ import static com.meetup.meetup.keys.Key.*;
 @Component
 public class MailSenderScheduler {
 
-    private Environment env;
     private UserDao userDao;
     private EventDao eventDao;
     private PdfCreatService pdfCreatService;
     private MailService mailService;
 
     @Autowired
-    public MailSenderScheduler(Environment env, UserDao userDao, EventDao eventDao, PdfCreatService pdfCreatService,
+    public MailSenderScheduler(UserDao userDao, EventDao eventDao, PdfCreatService pdfCreatService,
                                MailService mailService) {
-        this.env = env;
         this.userDao = userDao;
         this.eventDao = eventDao;
         this.pdfCreatService = pdfCreatService;
@@ -46,7 +44,7 @@ public class MailSenderScheduler {
     private static final Logger log = LoggerFactory.getLogger(EventUpdateScheduler.class);
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
 
-    @Scheduled(cron = "0 0 0 ? * *")
+    @Scheduled(cron = "${cron.daily}")
     public void sendMails() {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
