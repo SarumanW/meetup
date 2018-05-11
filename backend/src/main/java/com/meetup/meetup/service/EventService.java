@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.meetup.meetup.keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
+import static com.meetup.meetup.keys.Key.EXCEPTION_LOGIN_NOT_FOUND;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -41,6 +42,9 @@ public class EventService {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private PdfCreatService pdfCreatService;
 
     @Autowired
     public EventService(EventDao eventDao, AuthenticationFacade authenticationFacade, UserDao userDao, MailService mailService) {
@@ -133,6 +137,21 @@ public class EventService {
         return events;
     }
 
+    public List<Event> getEventsByPeriodForAllUsers(String startDate, String endDate) {
+
+        log.debug("Trying to get events from dao ");
+        List<Event> events = eventDao.getPeriodEventsAllUsers(startDate, endDate);
+
+        if (events == null) {
+            log.error("Events was not found");
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "period", "one day"));
+        }
+
+        log.debug("Found events '{}'", events.toString());
+
+        return events;
+    }
+
     public List<Event> getDrafts(int folderId) {
         return eventDao.getDrafts(folderId);
     }
@@ -194,7 +213,7 @@ public class EventService {
 
         if (user == null) {
             log.error("Can not find user with login '{}'", login);
-            throw new LoginNotFoundException(env.getProperty(Key.EXCEPTION_LOGIN_NOT_FOUND));
+            throw new LoginNotFoundException(env.getProperty(EXCEPTION_LOGIN_NOT_FOUND));
         }
 
         eventDao.addParticipant(user.getId(), eventId);

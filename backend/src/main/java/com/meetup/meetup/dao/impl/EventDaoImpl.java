@@ -276,6 +276,24 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
     }
 
     @Override
+    public List<Event> getPeriodEventsAllUsers(String startDate, String endDate) {
+        List<Event> events;
+        log.debug("Try to find list of events between '{}' and '{}'",
+                startDate, endDate);
+        try {
+            events = jdbcTemplate.query(env.getProperty(EVENT_GET_IN_PERIOD_ALL_USERS),
+                    new Object[]{startDate, endDate}, new EventRowMapper());
+        } catch (DataAccessException e) {
+            log.error("Query fails by finding event");
+            e.printStackTrace();
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        log.debug("Events between dates counted '{}'", events.size());
+        return events;
+    }
+
+    @Override
     public List<Event> getAllPublic(int userId, String eventName) {
         List<Event> events;
         log.debug("Try to find list of public events by user with id '{}' and query '{}'", userId, eventName);
@@ -285,6 +303,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
                     new Object[]{userId, qString}, new EventRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by finding public events by user with id '{}'", userId);
+            e.printStackTrace();
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
