@@ -111,8 +111,8 @@
                 </div>
               </div>
               <div class="card-footer">
-                <p *ngIf="item.bookerId !== 0 && item.bookerId !== profile.id"
-                   class="card-text"><b>Booked by id: </b>{{item.bookerId}}</p>
+                <button *ngIf="item.bookerId !== 0 && item.bookerId !== profile.id && item.ownerId !== profile.id"
+                   class="btn btn-secondary float-left btn-sm" disabled>Booked</button>
                 <button *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === 0"
                         (click)="book.show()" class="btn btn-success float-left btn-sm">Book
                 </button>
