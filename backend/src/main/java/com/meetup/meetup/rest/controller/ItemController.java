@@ -32,10 +32,11 @@ public class ItemController {
     }
 
 
-    @GetMapping("/{id}")
-    public @ResponseBody ResponseEntity<Item> getItemById(@PathVariable int id){
-        log.debug("Try to get item with id '{}'", id);
-        Item item = itemService.getItemById(id);
+    @GetMapping("/{id}/login/{login}")
+    public @ResponseBody
+    ResponseEntity<Item> getItemByUserIdItemId(@PathVariable int id, @PathVariable String login) {
+        log.debug("Try to get item with id '{}' for user with with login '{}'", id, login);
+        Item item = itemService.findByUserIdItemId(id, login);
 
         log.debug("Send response body item '{}' and status OK", item);
         return new ResponseEntity<>(item, HttpStatus.OK);
@@ -53,9 +54,9 @@ public class ItemController {
     @PostMapping("/{id}/add")
     public @ResponseBody ResponseEntity<Item> addItemToUserWishList(@Valid @RequestBody Item item, @PathVariable("id") String id){
         log.debug("Trying to add item with id '{}' to user wish list", item.getItemId());
-        log.error("!!!" + item.getPriority());
-        Item returnedItem = itemService.addItemToUserWishList(item);
-        log.info("Added item with id '{}' to user wish list", returnedItem.getItemId());
+
+        Item addedItem = itemService.addItemToUserWishList(item);
+        log.info("Added item with id '{}' to user wish list", addedItem.getItemId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -94,6 +95,24 @@ public class ItemController {
 
         log.debug("Image successfully uploaded send response status OK");
         return new ResponseEntity<>(imagePath, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/like")
+    public @ResponseBody
+    ResponseEntity<Item> addLike(@PathVariable int id) {
+        log.debug("Trying to add like to item with id '{}'", id);
+
+        Item likedItem = itemService.addLike(id);
+        return new ResponseEntity<>(likedItem, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/like")
+    public @ResponseBody
+    ResponseEntity<Item> removeLike(@PathVariable int id) {
+        log.debug("Trying to remove like from item with id '{}'", id);
+
+        Item unlikedItem = itemService.removeLike(id);
+        return new ResponseEntity<>(unlikedItem, HttpStatus.OK);
     }
 
     //Booking
