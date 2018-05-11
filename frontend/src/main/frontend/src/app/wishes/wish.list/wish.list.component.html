@@ -111,14 +111,17 @@
                 </div>
               </div>
               <div class="card-footer">
-                <button *ngIf="item.bookerId !== 0 && item.bookerId !== profile.id && item.ownerId !== profile.id"
-                   class="btn btn-secondary float-left btn-sm" disabled>Booked</button>
-                <button *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === 0"
-                        (click)="book.show()" class="btn btn-success float-left btn-sm">Book
-                </button>
-                <button *ngIf="item.ownerId !== 0 && item.ownerId !== profile.id && item.bookerId === profile.id"
-                        (click)="unbook.show()" class="btn btn-danger float-left btn-sm">Unbook
-                </button>
+                <div *ngIf="item.ownerId !== profile.id" class="float-left">
+                  <button *ngIf="item.bookerId !== 0 && item.bookerId !== profile.id"
+                          class="btn btn-secondary btn-sm" disabled>Booked
+                  </button>
+                  <button *ngIf="item.ownerId !== 0 && item.bookerId === 0"
+                          (click)="book.show()" class="btn btn-success btn-sm">Book
+                  </button>
+                  <button *ngIf="item.ownerId !== 0 && item.bookerId === profile.id"
+                          (click)="unbook.show()" class="btn btn-danger btn-sm">Unbook
+                  </button>
+                </div>
                 <a routerLink="/{{login}}/wishes/{{item.itemId}}" class="btn btn-primary float-right btn-sm">Details</a>
               </div>
             </div>
