@@ -32,4 +32,6 @@ public interface UserDao extends Dao<User> {
 
     boolean isEmailFree(String email);
 
+    List<User> getByEmailPeriod(String period);
+
 }

@@ -84,7 +84,6 @@ import {CountDown} from "ng2-date-countdown";
     EventEditComponent,
     CheckPasswordComponent,
     WishEditComponent,
-    CheckPasswordComponent,
     CountDown
   ],
   imports: [

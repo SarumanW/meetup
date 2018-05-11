@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.thymeleaf.TemplateEngine;
 
+import java.io.File;
 import java.io.InputStream;
 
 @Service
@@ -89,6 +90,23 @@ public class MailService {
                 .setVariable("name", user.getName())
                 .setTemplate(environment.getProperty("eventPlanTemplate"))
                 .setFile(file)
+                .build();
+        log.debug("Trying to send message");
+
+        mailSender.send(messagePreparator);
+
+        log.debug("Mail was sent successfully");
+    }
+
+    @Async
+    public void sendMailWithEventPlan(User user, File file, String date) {
+        log.debug("Trying to build message");
+        MimeMessagePreparator messagePreparator = new MailBuilder(templateEngine)
+                .setTo(user.getEmail())
+                .setSubject("Event Plan")
+                .setVariable("name", user.getName())
+                .setTemplate(environment.getProperty("eventPlanTemplate"))
+                .setFile(file, date)
                 .build();
         log.debug("Trying to send message");
 
