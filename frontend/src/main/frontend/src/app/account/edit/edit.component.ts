@@ -83,6 +83,7 @@ export class EditComponent implements OnInit {
         this.spinner.hide();
       },
       response => {
+        this.appComponent.showError(response,"Error")
         if (response.status === 200) {
           let profile = JSON.parse(localStorage.currentUser);
           profile.name = this.account.name;

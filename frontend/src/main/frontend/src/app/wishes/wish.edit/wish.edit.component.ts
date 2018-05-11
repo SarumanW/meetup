@@ -8,6 +8,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {ActivatedRoute, Params} from "@angular/router";
 import {WishService} from "../wish.service";
 import {HttpResponse} from "@angular/common/http";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-wish-edit',
@@ -38,7 +39,8 @@ export class WishEditComponent implements OnInit {
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
-              private wishService: WishService) {
+              private wishService: WishService,
+              private appComponent: AppComponent) {
   }
 
   ngOnInit() {
@@ -51,7 +53,8 @@ export class WishEditComponent implements OnInit {
       let id = +params['itemId'];
       this.login = params['login'];
       this.getWishItemById(id);
-    });
+    },
+      error => this.appComponent.showError(error, "Error"));
   }
 
   getWishItemById(id: number) {
@@ -61,7 +64,8 @@ export class WishEditComponent implements OnInit {
         this.selectedFile = this.editItem.imageFilepath;
         this.getDueDate();
         this.spinner.hide();
-      });
+      },
+      error => this.appComponent.showError(error, "Error"));
   }
 
   getDueDate() {
@@ -153,7 +157,7 @@ export class WishEditComponent implements OnInit {
         this.selectedImage = null;
       }
     }, error => {
-      this.showError('Unsuccessful image uploaded', 'Adding error');
+      this.appComponent.showError(error, "Error")
       this.spinner.hide();
     });
   }
@@ -164,7 +168,7 @@ export class WishEditComponent implements OnInit {
       this.spinner.hide();
       this.showSuccess('Wish item was successfully added', 'Attention!');
     }, error => {
-      this.showError('Unsuccessful wish item adding', 'Adding error');
+      this.appComponent.showError(error, "Error")
       this.spinner.hide();
     });
   }

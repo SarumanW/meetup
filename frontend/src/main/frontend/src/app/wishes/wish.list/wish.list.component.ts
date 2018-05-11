@@ -8,6 +8,7 @@ import {Router, ActivatedRoute, Params} from "@angular/router";
 import "rxjs/add/operator/debounceTime";
 import {WishService} from "../wish.service";
 import {FormControl} from "@angular/forms";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-wish-list',
@@ -37,7 +38,8 @@ export class WishListComponent implements OnInit {
               private wishService: WishService,
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
-              private toastr: ToastrService,) {
+              private toastr: ToastrService,
+              private appComponent:AppComponent) {
   }
 
   ngOnInit() {
@@ -70,7 +72,8 @@ export class WishListComponent implements OnInit {
         this.title = "Own wishes:";
       }
       this.getWishList();
-    });
+    },
+      error => this.appComponent.showError(error, "Error"));
   }
 
   getWishList(withSpinner = true) {
@@ -84,7 +87,7 @@ export class WishListComponent implements OnInit {
         this.items = itemList;
         this.spinner.hide();
       }, error => {
-      this.showError('Unsuccessful wish list getting', 'Adding error');
+        this.appComponent.showError(error, "Error")
       this.spinner.hide();
     });
   }
@@ -124,7 +127,7 @@ export class WishListComponent implements OnInit {
       this.showSuccess('Wish item was successfully booked', 'Attention!');
     }, error => {
       this.spinner.hide();
-      this.showError('Unsuccessful wish item booking', 'Adding error');
+      this.appComponent.showError(error, "Error")
     });
   }
 
@@ -145,7 +148,7 @@ export class WishListComponent implements OnInit {
 
       this.showSuccess('Wish item was successfully deleted', 'Attention!');
     }, error => {
-      this.showError('Unsuccessful wish item deleting', 'Adding error');
+      this.appComponent.showError(error, "Error")
       this.spinner.hide();
     });
   }
@@ -172,7 +175,7 @@ export class WishListComponent implements OnInit {
 
       this.showSuccess('Wish item was successfully added', 'Attention!');
     }, error => {
-      this.showError('Unsuccessful wish item adding', 'Adding error');
+      this.appComponent.showError(error, "Error")
       this.spinner.hide();
     });
   }
@@ -202,7 +205,7 @@ export class WishListComponent implements OnInit {
 
       this.showSuccess('Wish item was successfully deleted', 'Attention!');
     }, error => {
-      this.showError('Unsuccessful wish item deleting', 'Adding error');
+      this.appComponent.showError(error, "Error")
       this.spinner.hide();
     });
   }
@@ -227,7 +230,7 @@ export class WishListComponent implements OnInit {
             })
         }
       }, error => {
-        this.showError(error, 'Error');
+        this.appComponent.showError(error, "Error")
       });
   }
 

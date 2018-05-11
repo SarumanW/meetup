@@ -8,6 +8,7 @@ import {ToastrService} from "ngx-toastr";
 import {Profile} from "../../account/profile";
 import {WishService} from "../wish.service";
 import {ActivatedRoute} from '@angular/router';
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-wish',
@@ -36,14 +37,16 @@ export class WishComponent implements OnInit {
               private toastr: ToastrService,
               private wishListService: WishListService,
               private wishService: WishService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private appComponent:AppComponent) {
   }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
       this.id = +params['itemId'];
       this.login = params['login'];
-    });
+    },
+      error => this.appComponent.showError(error, "Error"));
 
     this.getItem(this.id);
 
@@ -55,14 +58,16 @@ export class WishComponent implements OnInit {
     this.wishService.addLike(this.id).subscribe((item:Item)=>{
       this.item.likes = item.likes;
       this.item.isLiked = item.isLiked;
-    })
+    },
+      error => this.appComponent.showError(error, "Error"))
   }
 
   dislike(){
     this.wishService.removeLike(this.id).subscribe((item:Item)=>{
       this.item.likes = item.likes;
       this.item.isLiked = item.isLiked;
-    })
+    },
+      error => this.appComponent.showError(error, "Error"))
   }
 
   getItem(id: number) {
@@ -71,7 +76,8 @@ export class WishComponent implements OnInit {
     this.wishService.getWishItem(id, this.login).subscribe(item => {
       this.item = item;
       this.spinner.hide();
-    });
+    },
+      error => this.appComponent.showError(error, "Error"));
   }
 
 
@@ -83,7 +89,7 @@ export class WishComponent implements OnInit {
       this.router.navigate(
         ['/'+ this.profile.login + '/wishes']);
     }, error => {
-      this.showError('Unsuccessful wish item deleting', 'Adding error');
+      this.appComponent.showError(error, "Error")
       this.spinner.hide();
     });
   }
@@ -103,7 +109,7 @@ export class WishComponent implements OnInit {
       this.spinner.hide();
       this.showSuccess('Wish item was successfully added', 'Attention!');
     }, error => {
-      this.showError('Unsuccessful wish item adding', 'Adding error');
+      this.appComponent.showError(error, "Error")
       this.spinner.hide();
     });
   }
