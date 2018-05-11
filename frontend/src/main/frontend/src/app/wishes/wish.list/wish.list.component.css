@@ -128,12 +128,12 @@ h5 {
 
 .item-add-del-wrap {
   position: absolute;
-  top: -12px;
+  top: -18px;
   display: inline-block;
   overflow: hidden;
   box-sizing: border-box;
-  width: 25px;
-  height: 25px;
+  width: 36px;
+  height: 36px;
   margin: 0;
   border: 1px solid #fff;
   border-radius: 50%;
@@ -141,7 +141,7 @@ h5 {
 
 .item-action-add-del {
   display: block;
-  width: 100%;
+  width: 60%;
   height: auto;
   border-radius: 50%;
   cursor: pointer;
@@ -151,8 +151,16 @@ h5 {
   background: #28a745;
 }
 
+.item-action-add:hover {
+  background: #218838;
+}
+
 .item-action-del {
-  background: #b21f2d;
+  background: #dc3545;
+}
+
+.item-action-del:hover {
+  background: #c82333;
 }
 
 /*.item-inline {*/

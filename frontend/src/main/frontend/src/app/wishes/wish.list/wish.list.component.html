@@ -91,11 +91,11 @@
               <img class="card-img-top" [src]="item.imageFilepath" alt="..."
                    onError="this.src='assets/item-icon-default.svg'">
               <div class="card-block">
-                <figure class="item-add-del-wrap">
+                <figure [ngClass]="['d-flex', 'justify-content-center', 'align-content-center', 'flex-wrap', 'item-add-del-wrap', getActionBackground(item)]">
                   <img *ngIf="item.ownerId === profile.id" (click)="delete.show()"
-                       class="item-action-add-del item-action-del" src="assets/close-white.svg" alt="x">
+                       class="item-action-add-del" src="assets/close-white.svg" alt="x">
                   <img *ngIf="item.ownerId !== profile.id" (click)="add.show()"
-                       class="item-action-add-del item-action-add" src="assets/add.svg" alt="+">
+                       class="item-action-add-del" src="assets/add.svg" alt="+">
                 </figure>
                 <h5 class="card-title mt-3">{{item.name}}</h5>
                 <div class="meta card-text">

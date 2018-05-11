@@ -89,6 +89,14 @@ export class WishListComponent implements OnInit {
     });
   }
 
+  getActionBackground(item: Item) {
+    if(item.ownerId !== this.profile.id) {
+      return 'item-action-add';
+    } else {
+      return 'item-action-del';
+    }
+  }
+
   showSuccess(message: string, title: string) {
     this.toastr.info(message, title, {
       timeOut: 3000,
