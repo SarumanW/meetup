@@ -67,9 +67,47 @@
       <button *ngIf="item.ownerId !== 0 && profile.login === login" type="button" (click)="removeFromWishList()" [disabled]="!item.priority"
               class="btn btn-danger">Remove
       </button>
-      <button type="button" (click)="addToWishList()" [disabled]="item.priority" class="btn btn-primary">Add</button>
-      <button *ngIf="item.ownerId !== 0 && profile.login === login" type="button" class="btn btn-warning">Edit</button>
+      <button type="button" (click)="add.show()" [disabled]="item.priority" class="btn btn-primary">Add</button>
+      <button *ngIf="item.ownerId !== 0 && profile.login === login"  routerLink="/{{profile.login}}/wishes/edit/{{item.itemId}}" type="button" class="btn btn-warning">Edit</button>
 
     </div>
   </div>
+
+  <!--Add item-->
+
+  <app-modal-window #add>
+    <div class="modal-header d-flex justify-content-between align-items-right">
+      <h4 class="modal-title">Add item</h4>
+      <img class="close-btn" src="assets/close.svg" (click)="add.hide()" alt="">
+    </div>
+    <div class="app-modal-body">
+      <form #addItemForm="ngForm" ngForm="addItemForm">
+
+        <!--Priority-->
+
+        <div class="form-group">
+          <label for="priority">Priority:</label>
+          <select name="priority" id="priority" class="form-control" [(ngModel)]="priority" required>
+            <option value="URGENT">URGENT</option>
+            <option value="NORMAL">NORMAL</option>
+            <option value="LOW">LOW</option>
+          </select>
+        </div>
+
+        <!--Due Date-->
+
+        <div class="form-group">
+          <label class="form-control-label" for="itemDate">Choose the due day of the wish:</label>
+          <input type="date" min="{{minDueDate}}" class="form-control"
+                 id="itemDate" name="eventDate" #itemDueDate="ngModel" [(ngModel)]="dueDate" required>
+          <div *ngIf="itemDueDate.dirty && itemDueDate.invalid">
+            <small class="form-text text-danger" *ngIf="itemDueDate.error.min">
+              Minimal due date must be {{minDueDate}}.
+            </small>
+          </div>
+        </div>
+        <button [disabled]="addItemForm.form.invalid" class="btn btn-default" (click)="add.hide(); addToWishList()">Add</button>
+      </form>
+    </div>
+  </app-modal-window>
 </div>
