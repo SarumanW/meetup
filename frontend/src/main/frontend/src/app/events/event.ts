@@ -14,4 +14,6 @@ export class Evento{
   imageFilepath : string;
   ownerId : number;
   participants : Profile[]
+  privateChatId: number;
+  publicChatId: number;
 }

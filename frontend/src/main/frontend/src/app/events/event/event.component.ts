@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Evento} from "../event";
 import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
+import {ChatService} from "../../chat/chat.service";
 
 @Component({
   selector: 'app-event',
@@ -35,7 +36,8 @@ export class EventComponent implements OnInit {
               private route: ActivatedRoute,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
-              private router: Router) {
+              private router: Router,
+              private chatService: ChatService) {
   }
 
   ngOnInit() {
@@ -67,10 +69,26 @@ export class EventComponent implements OnInit {
       this.lng = +coordinates[1];
       this.tempType = eventt.eventType;
       this.spinner.hide();
+      if (eventt.eventType === 'EVENT') {
+        this.getChatIds(eventt);
+      }
     }, error => {
       this.spinner.hide();
       this.showError('Unsuccessful event loading', 'Loading error');
     })
+  }
+
+  getChatIds(eventt: Evento) {
+    this.chatService.getChatIds(eventt.eventId).subscribe(
+      chat=> {
+        this.eventt.privateChatId = chat.privateChatId;
+        this.eventt.publicChatId = chat.publicChatId;
+        console.log(this.eventt.privateChatId);
+        console.log(this.eventt.publicChatId);
+      }, error => {
+        this.showError('Problem with chats loading','Attention!');
+      }
+    );
   }
 
   showError(message: string, title: string) {

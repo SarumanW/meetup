@@ -48,6 +48,7 @@ import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
 import {EventEditComponent} from "./events/event.edit/event.edit.component";
 import { ChatComponent } from './chat/chat/chat.component';
+import {ChatService} from "./chat/chat.service";
 
 @NgModule({
   declarations: [
@@ -106,7 +107,8 @@ import { ChatComponent } from './chat/chat/chat.component';
     UploadFileService,
     EventAddService,
     CalendarService,
-    ImageUploadService],
+    ImageUploadService,
+    ChatService],
   bootstrap: [AppComponent]
 })
 
