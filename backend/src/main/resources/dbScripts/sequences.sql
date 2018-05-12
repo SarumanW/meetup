@@ -44,6 +44,24 @@ DROP TRIGGER c_type_tr;
 DROP SEQUENCE message_seq;
 DROP TRIGGER message_tr;
 
+DROP SEQUENCE item_comment_seq;
+DROP TRIGGER item_comment_tr;
+
+
+CREATE SEQUENCE item_comment_seq
+ START WITH     1
+ INCREMENT BY   1
+ NOCACHE
+ NOCYCLE;
+CREATE OR REPLACE TRIGGER item_comment_tr
+BEFORE INSERT ON item_comment
+FOR EACH ROW
+BEGIN
+  SELECT item_comment_seq.NEXTVAL
+  INTO   :new.id_comment
+  FROM   dual;
+END;
+/
 
 
 CREATE SEQUENCE tag_seq

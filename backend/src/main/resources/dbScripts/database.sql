@@ -19,6 +19,7 @@ DROP TABLE periodicity;
 DROP TABLE event_type;
 DROP TABLE uuser;
 DROP TABLE tag_item;
+DROP TABLE item_comment;
 
 CREATE TABLE uuser (
   user_id NUMBER(11) PRIMARY KEY,
@@ -150,4 +151,12 @@ CREATE TABLE chat_type (
   chat_type_id number,
   type varchar2(10) NOT NULL,
   PRIMARY KEY (chat_type_id)
+);
+
+CREATE TABLE item_comment
+(
+  id_comment number PRIMARY KEY,
+  body_text VARCHAR2(2000) NOT NULL,
+  post_time TIMESTAMP NOT NULL,
+  id_author number NOT NULL
 );

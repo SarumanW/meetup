@@ -25,9 +25,11 @@ ALTER TABLE chat DROP CONSTRAINT chat_fk_event;
 ALTER TABLE user_item DROP CONSTRAINT u_item_fk_booker;
 ALTER TABLE tag_item DROP CONSTRAINT tag_item_fk_tag;
 ALTER TABLE tag_item DROP CONSTRAINT tag_item_fk_item;
+ALTER TABLE item_comment DROP CONSTRAINT item_comment_user_id_fk;
 
 
 
+ALTER TABLE item_comment ADD CONSTRAINT tem_comment_user_id_fk FOREIGN KEY (id_author) REFERENCES uuser(user_id);
 
 ALTER TABLE user_item ADD CONSTRAINT u_item_fk_booker FOREIGN KEY(id_who_booked) REFERENCES uuser(user_id);
 
