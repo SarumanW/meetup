@@ -7,9 +7,6 @@ ALTER TABLE item DROP CONSTRAINT item_fk_user;
 ALTER TABLE user_item DROP CONSTRAINT u_item_fk_user;
 ALTER TABLE user_item DROP CONSTRAINT u_item_fk_item;
 ALTER TABLE user_item DROP CONSTRAINT u_item_fk_prior;
-ALTER TABLE user_item DROP CONSTRAINT u_item_fk_booker;
-ALTER TABLE tag_item DROP CONSTRAINT tag_item_fk_tag;
-ALTER TABLE tag_item DROP CONSTRAINT tag_item_fk_item;
 ALTER TABLE llike DROP CONSTRAINT like_fk_item;
 ALTER TABLE llike DROP CONSTRAINT like_fk_user;
 ALTER TABLE friend DROP CONSTRAINT friend_fk_user_s;
@@ -30,6 +27,12 @@ ALTER TABLE tag_item DROP CONSTRAINT tag_item_fk_tag;
 ALTER TABLE tag_item DROP CONSTRAINT tag_item_fk_item;
 ALTER TABLE item_comment DROP CONSTRAINT item_comment_user_id_fk;
 ALTER TABLE item_comment DROP CONSTRAINT item_comment_item_id_fk;
+
+ALTER TABLE user_item DROP CONSTRAINT u_item_fk_booker;
+ALTER TABLE tag_item DROP CONSTRAINT tag_item_fk_tag;
+ALTER TABLE tag_item DROP CONSTRAINT tag_item_fk_item;
+ALTER TABLE uuser DROP CONSTRAINT uuser_fk_event;
+
 
 
 
@@ -66,3 +69,5 @@ ALTER TABLE chat ADD CONSTRAINT chat_fk_event FOREIGN KEY(event_id) REFERENCES u
 
 ALTER TABLE tag_item ADD CONSTRAINT tag_item_fk_tag FOREIGN KEY (tag_id) REFERENCES tag(tag_id);
 ALTER TABLE tag_item ADD CONSTRAINT tag_item_fk_item FOREIGN KEY (item_id) REFERENCES item(item_id);
+
+ALTER TABLE uuser ADD CONSTRAINT uuser_fk_event FOREIGN KEY (pined_event_id) REFERENCES event(event_id);

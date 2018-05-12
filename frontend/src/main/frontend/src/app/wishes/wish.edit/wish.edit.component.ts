@@ -5,9 +5,10 @@ import {ToastrService} from "ngx-toastr";
 import {WishListService} from "../wish.list.service";
 import {UploadFileService} from "../../upload.file/upload.file.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {ActivatedRoute, Params} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {WishService} from "../wish.service";
 import {HttpResponse} from "@angular/common/http";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-wish-edit',
@@ -32,13 +33,15 @@ export class WishEditComponent implements OnInit {
   profile: Profile;
 
   //login from path
-  login: string;
+  login:string;
 
   constructor(private uploadService: UploadFileService,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
-              private wishService: WishService) {
+              private wishService: WishService,
+              private appComponent: AppComponent,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -51,7 +54,8 @@ export class WishEditComponent implements OnInit {
       let id = +params['itemId'];
       this.login = params['login'];
       this.getWishItemById(id);
-    });
+    },
+      error => this.appComponent.showError(error, "Error"));
   }
 
   getWishItemById(id: number) {
@@ -60,6 +64,10 @@ export class WishEditComponent implements OnInit {
         this.editItem = item;
         this.selectedFile = this.editItem.imageFilepath;
         this.getDueDate();
+        this.spinner.hide();
+      },
+      error => {
+        this.appComponent.showError(error, "Error");
         this.spinner.hide();
       });
   }
@@ -153,7 +161,7 @@ export class WishEditComponent implements OnInit {
         this.selectedImage = null;
       }
     }, error => {
-      this.showError('Unsuccessful image uploaded', 'Adding error');
+      this.appComponent.showError(error, "Error")
       this.spinner.hide();
     });
   }
@@ -161,10 +169,12 @@ export class WishEditComponent implements OnInit {
   addWish() {
     console.log('run "add wish" method');
     this.wishService.editWishItem(this.editItem).subscribe(item => {
-      this.spinner.hide();
       this.showSuccess('Wish item was successfully added', 'Attention!');
+      this.spinner.hide();
+      console.log('./' + this.profile.login + '/wishes/' + item.itemId);
+      this.router.navigate(['./' + this.profile.login + '/wishes/' + item.itemId]);
     }, error => {
-      this.showError('Unsuccessful wish item adding', 'Adding error');
+      this.appComponent.showError(error, "Error");
       this.spinner.hide();
     });
   }

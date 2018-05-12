@@ -11,6 +11,7 @@ export class Item {
   likes: number;
   isLiked: boolean;
   tags: string[] = [];
+  isLiked: boolean;
 
   clone() : Item {
     let itemClone = new Item();

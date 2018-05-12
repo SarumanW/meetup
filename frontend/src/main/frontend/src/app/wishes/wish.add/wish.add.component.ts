@@ -7,6 +7,8 @@ import {WishListService} from "../wish.list.service";
 import {ToastrService} from "ngx-toastr";
 import {Profile} from "../../account/profile";
 import {WishService} from "../wish.service";
+import {AppComponent} from "../../app.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-wish-add',
@@ -33,7 +35,9 @@ export class WishAddComponent implements OnInit {
   constructor(private uploadService: UploadFileService,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
-              private wishService: WishService) {
+              private wishService: WishService,
+              private appComponent: AppComponent,
+              private router: Router,) {
   }
 
   ngOnInit() {
@@ -153,11 +157,12 @@ export class WishAddComponent implements OnInit {
   addWish() {
     console.log('run "add wish" method');
     this.wishService.addWishItem(this.newItem).subscribe(item => {
-      this.spinner.hide();
       this.showSuccess('Wish item was successfully added', 'Attention!');
-      this.resetItem();
+      this.spinner.hide();
+      console.log('/' + this.profile.login + '/wishes/' + item.id);
+      this.router.navigate(['./' + this.profile.login + '/wishes/' + item.itemId]);
     }, error => {
-      this.showError('Unsuccessful wish item adding', 'Adding error');
+      this.appComponent.showError(error, "Error");
       this.spinner.hide();
     });
   }

@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Evento} from "../../events/event";
 import {Profile} from "../../account/profile";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-folder',
@@ -15,13 +16,16 @@ export class FolderComponent implements OnInit {
   profile: Profile;
 
   constructor(private route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              private appComponent: AppComponent) {
 
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.folderId = params['folderId'];
+    }, error => {
+      this.appComponent.showError(error, 'Error');
     });
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));

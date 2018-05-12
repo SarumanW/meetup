@@ -78,6 +78,16 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     @Override
+    public List<User> getByEmailPeriod(String period) {
+        log.debug("Try to users by email period '{}'", period);
+
+        List<User> users = jdbcTemplate.query(env.getProperty(USER_GET_BY_EMAIL_PERIOD), new Object[]{period}, new UserRowMapper());
+        log.debug("Users found: '{}'", users);
+
+        return users;
+    }
+
+    @Override
     public User findByLogin(String login) {
         log.debug("Try to find User by login: '{}'", login);
         User user;
@@ -346,14 +356,22 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
      * Actual method of searching unknown users for specific user.
      * @param userId    id of specific user.
      * @param userName  username pattern of unknown users
-     * @return
+     * @return List<User>
      */
     @Override
     public List<User> getNotFriends(int userId, String userName) {
 
         List<Map<String, Object>> userParamsList;
 
-        userParamsList = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"),userId,userId,userName+"%");
+        try {
+            userParamsList = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"), userId, userId, userName + "%");
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("Users with username like '{}' was not found", userName);
+            return new ArrayList<>();
+        } catch (DataAccessException e) {
+            log.error("Query fails by delete user with id '{}'", userName);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
 
         return userRowMapper.mapRow(userParamsList);
 

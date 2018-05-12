@@ -5,6 +5,7 @@ import {AccountService} from "../account.service";
 import {Router} from "@angular/router"
 import {FormBuilder, Validators} from "@angular/forms";
 import {NgxSpinnerService} from "ngx-spinner";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-register',
@@ -27,7 +28,8 @@ export class RegisterComponent implements OnInit {
   constructor(private accountService: AccountService,
               private fb: FormBuilder,
               private router: Router,
-              private spinner: NgxSpinnerService) {
+              private spinner: NgxSpinnerService,
+              private appComponent: AppComponent) {
   }
 
   ngOnInit() {
@@ -52,9 +54,9 @@ export class RegisterComponent implements OnInit {
           this.success = true;
           this.spinner.hide();
           this.router.navigate(['/thankyou']);
-        },
-        response => {
-          this.processError(response);
+        }, error => {
+          this.appComponent.showError(error, 'Error');
+          this.processError(error)
           this.spinner.hide();
         }
       );

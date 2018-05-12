@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.meetup.meetup.keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
+import static com.meetup.meetup.keys.Key.EXCEPTION_LOGIN_NOT_FOUND;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -40,6 +42,9 @@ public class EventService {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private PdfCreatService pdfCreatService;
 
     @Autowired
     public EventService(EventDao eventDao, AuthenticationFacade authenticationFacade, UserDao userDao, MailService mailService) {
@@ -132,10 +137,26 @@ public class EventService {
         return events;
     }
 
+    public List<Event> getEventsByPeriodForAllUsers(String startDate, String endDate) {
+
+        log.debug("Trying to get events from dao ");
+        List<Event> events = eventDao.getPeriodEventsAllUsers(startDate, endDate);
+
+        if (events == null) {
+            log.error("Events was not found");
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "period", "one day"));
+        }
+
+        log.debug("Found events '{}'", events.toString());
+
+        return events;
+    }
+
     public List<Event> getDrafts(int folderId) {
         return eventDao.getDrafts(folderId);
     }
 
+    @Transactional
     public Event addEvent(Event event) {
         log.debug("Trying to insert event '{}' to database", event.toString());
 
@@ -192,7 +213,7 @@ public class EventService {
 
         if (user == null) {
             log.error("Can not find user with login '{}'", login);
-            throw new LoginNotFoundException(env.getProperty(Key.EXCEPTION_LOGIN_NOT_FOUND));
+            throw new LoginNotFoundException(env.getProperty(EXCEPTION_LOGIN_NOT_FOUND));
         }
 
         eventDao.addParticipant(user.getId(), eventId);
@@ -229,14 +250,4 @@ public class EventService {
         mailService.sendMailWithEventPlan(user,file);
     }
 
-
-    //Check authentication and folder permission
-    private void checkPermission(int eventId) {
-        User user = authenticationFacade.getAuthentication();
-
-        if (eventDao.getRole(user.getId(), eventId) != Role.OWNER) {
-            log.debug("User with id '{}' has not permission to add participant to event '{}'", user.getId(), eventId);
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Event", "eventId", eventId));
-        }
-    }
 }
