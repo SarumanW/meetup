@@ -99,7 +99,7 @@ export class EventAddComponent implements OnInit {
     this.eventt.eventDate = this.currentDate;
     this.eventt.periodicity = "ONCE";
     this.eventt.place = "";
-    this.time = "00:00";
+    this.time = "23:59";
     this.lat = 50.447011182312195;
     this.lng = 30.456780195127067;
   }

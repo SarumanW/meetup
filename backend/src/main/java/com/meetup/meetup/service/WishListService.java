@@ -1,6 +1,7 @@
 package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.ItemDao;
+import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.EntityNotFoundException;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
+import static com.meetup.meetup.keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -24,48 +25,53 @@ public class WishListService {
 
     private final ItemDao itemDao;
     private final AuthenticationFacade authenticationFacade;
-
+    private final UserDao userDao;
     private final Environment env;
 
     @Autowired
-    public WishListService(ItemDao itemDao, AuthenticationFacade authenticationFacade, Environment env) {
+    public WishListService(ItemDao itemDao, AuthenticationFacade authenticationFacade, UserDao userDao, Environment env) {
         this.itemDao = itemDao;
         this.authenticationFacade = authenticationFacade;
+        this.userDao = userDao;
         this.env = env;
     }
+
 
     public List<Item> getWishList() {
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
+
         log.debug("User was successfully received");
 
         log.debug("Trying to get all WishList for user '{}'", user.toString());
         return itemDao.getWishListByUserId(user.getId());
     }
 
-    public Item addWishItem(Item item) {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
+    public List<Item> getWishesByUser(String login) {
+        User user = userDao.findByLogin(login);
 
-        log.debug("Trying to insert item to user wish list");
-        return itemDao.addToUserWishList(user.getId(), item.getItemId(), item.getPriority());
-    }
-
-    //Check authentication and folder permission
-    private void checkPermission(Item item) {
-        log.debug("Trying to get user from AuthenticationFacade");
-
-        User user = authenticationFacade.getAuthentication();
-
-        log.debug("User '{}' was successfully received", user.toString());
-        log.debug("Trying to check equivalence of item.getUserId '{}' and user.getId '{}'", item.getOwnerId(), user.getId());
-
-        if (item.getOwnerId() != user.getId()) {
-            log.error("User has no access to this data");
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Item", "userId", item.getOwnerId()));
+        if (user == null) {
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "login", login));
         }
 
-        log.debug("Given access to WishList '{}' for user '{}'", item.toString(), user.toString());
+        log.debug("Trying to get wishes from dao by user login '{}'", login);
+
+        return itemDao.getWishListByUserId(user.getId());
+    }
+
+    public List<Item> getRecommendations(String[] tagArray) {
+        log.debug("Trying to get all recommendations");
+
+        if (tagArray == null) {
+            return itemDao.getPopularItems();
+        }
+
+        return itemDao.getPopularItems(tagArray);
+    }
+
+    public List<Item> getBookingByUser() {
+        User user = authenticationFacade.getAuthentication();
+        log.debug("Trying to get booking wishes from dao by user login '{}'", user.getLogin());
+        return itemDao.findBookedItemsByUserId(user.getId());
     }
 }

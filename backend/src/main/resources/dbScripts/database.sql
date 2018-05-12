@@ -38,7 +38,8 @@ CREATE TABLE user_item (
   user_id number NOT NULL,
   item_id number NOT NULL,
   id_who_booked number,
-  priority_id number,
+  due_date timestamp,
+  priority_id number NOT NULL,
   UNIQUE (user_id, item_id)
 );
 
@@ -61,8 +62,7 @@ CREATE TABLE item (
   name varchar2(50) NOT NULL,
   description varchar2(200) NOT NULL,
   image_filepath varchar2(200) NOT NULL,
-  link varchar2(200) NOT NULL,
-  due_date timestamp NOT NULL,
+  link varchar2(200),
   PRIMARY KEY (item_id)
 );
 

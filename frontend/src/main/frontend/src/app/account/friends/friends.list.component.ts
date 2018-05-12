@@ -21,8 +21,6 @@ export class FriendsListComponent implements OnInit {
   newFriendName: string;
   friends: Profile[];
   unknownUsers: Profile[] = [];
-  friends: Profile[];
-  unknownUsers : Profile[] = [];
   unconfirmedFriends: Profile[] = [];
   message: string;
   loggedUser: boolean;
@@ -37,7 +35,7 @@ export class FriendsListComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === params['login'];
-      this.user = params['login']
+      this.user = params['login'];
       this.getInfo();
       this.queryField.valueChanges
         .debounceTime(1000)

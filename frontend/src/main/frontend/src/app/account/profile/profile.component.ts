@@ -39,7 +39,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  update(){
+  update() {
     this.spinner.show();
     this.getButton();
     this.spinner.hide();

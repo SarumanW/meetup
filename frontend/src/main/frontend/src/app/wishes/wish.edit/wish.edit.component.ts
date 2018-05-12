@@ -1,24 +1,25 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {Item} from "../item";
-import {HttpEventType, HttpResponse} from "@angular/common/http";
+import {Profile} from "../../account/profile";
+import {ToastrService} from "ngx-toastr";
+import {WishListService} from "../wish.list.service";
 import {UploadFileService} from "../../upload.file/upload.file.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {WishListService} from "../wish.list.service";
-import {ToastrService} from "ngx-toastr";
-import {Profile} from "../../account/profile";
+import {ActivatedRoute, Params} from "@angular/router";
 import {WishService} from "../wish.service";
+import {HttpResponse} from "@angular/common/http";
 
 @Component({
-  selector: 'app-wish-add',
-  templateUrl: './wish.add.component.html',
-  styleUrls: ['./wish.add.component.css']
+  selector: 'app-wish-edit',
+  templateUrl: './wish.edit.component.html',
+  styleUrls: ['./wish.edit.component.css']
 })
-export class WishAddComponent implements OnInit {
+export class WishEditComponent implements OnInit {
   state: string = "wishes";
-  newItem: Item;
+  editItem: Item;
 
   // Image
-  selectedFile = 'assets/item-icon-default.svg';
+  selectedFile = null;
   selectedImage = null;
 
   //Date
@@ -30,16 +31,37 @@ export class WishAddComponent implements OnInit {
   //Profile
   profile: Profile;
 
+  //login from path
+  login: string;
+
   constructor(private uploadService: UploadFileService,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
+              private route: ActivatedRoute,
               private wishService: WishService) {
   }
 
   ngOnInit() {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
-    this.newItem = new Item();
-    this.getDueDate();
+    this.paramsSubscriber();
+  }
+
+  paramsSubscriber() {
+    this.route.params.subscribe((params: Params) => {
+      let id = +params['itemId'];
+      this.login = params['login'];
+      this.getWishItemById(id);
+    });
+  }
+
+  getWishItemById(id: number) {
+    this.spinner.show();
+    this.wishService.getWishItem(id, this.login).subscribe(item => {
+        this.editItem = item;
+        this.selectedFile = this.editItem.imageFilepath;
+        this.getDueDate();
+        this.spinner.hide();
+      });
   }
 
   getDueDate() {
@@ -49,10 +71,7 @@ export class WishAddComponent implements OnInit {
     let day = today.getDate();
 
     this.minDueDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
-    this.newItem.dueDate = this.minDueDate;
-
-    console.log(this.minDueDate);
-    console.log(this.newItem.dueDate);
+    this.editItem.dueDate = this.editItem.dueDate.split(' ')[0];
   }
 
   selectFile(event) {
@@ -70,28 +89,17 @@ export class WishAddComponent implements OnInit {
 
   addTag() {
     if (this.tag.length > 2 && this.tag.length < 31 && /^[_A-Za-z0-9]*$/.test(this.tag)) {
-      // let tag = new Tag();
-      // tag.name = this.tag;
-
-      this.newItem.tags.push(this.tag);
+      this.editItem.tags.push(this.tag);
 
       this.tag = '';
     }
   }
 
   deleteTag(tag: string) {
-    const index = this.newItem.tags.indexOf(tag);
-    console.log(index);
+    const index = this.editItem.tags.indexOf(tag);
     if (index !== -1) {
-      this.newItem.tags.splice(index, 1)
+      this.editItem.tags.splice(index, 1)
     }
-  }
-
-  resetItem() {
-    this.newItem = new Item();
-    this.getDueDate();
-    this.selectedFile = 'assets/item-icon-default.svg';
-    this.tag = '';
   }
 
   showSuccess(message: string, title: string) {
@@ -111,22 +119,22 @@ export class WishAddComponent implements OnInit {
   }
 
   setCorrectDate() {
-    let dateAndTime = this.newItem.dueDate;
+    let dateAndTime = this.editItem.dueDate;
     dateAndTime += ' 00:00:00';
-    this.newItem.dueDate = dateAndTime;
+    this.editItem.dueDate = dateAndTime;
   }
 
   onSubmit() {
-    this.newItem.ownerId = this.profile.id;
+    this.editItem.ownerId = this.profile.id;
 
     this.setCorrectDate();
 
     this.spinner.show();
 
-    if(this.selectedFile !== 'assets/item-icon-default.svg') {
+    if(this.selectedFile !== this.editItem.imageFilepath) {
       this.uploadImage();
     } else {
-      this.newItem.imageFilepath = this.selectedFile;
+      this.editItem.imageFilepath = this.selectedFile;
       this.addWish();
     }
   }
@@ -139,7 +147,7 @@ export class WishAddComponent implements OnInit {
         console.log(event.body);
 
         //todo Check working
-        this.newItem.imageFilepath = event.body.toString();
+        this.editItem.imageFilepath = event.body.toString();
         this.addWish();
         this.selectedFile = 'assets/item-icon-default.svg';
         this.selectedImage = null;
@@ -152,13 +160,13 @@ export class WishAddComponent implements OnInit {
 
   addWish() {
     console.log('run "add wish" method');
-    this.wishService.addWishItem(this.newItem).subscribe(item => {
+    this.wishService.editWishItem(this.editItem).subscribe(item => {
       this.spinner.hide();
       this.showSuccess('Wish item was successfully added', 'Attention!');
-      this.resetItem();
     }, error => {
       this.showError('Unsuccessful wish item adding', 'Adding error');
       this.spinner.hide();
     });
   }
+
 }

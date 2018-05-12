@@ -134,12 +134,12 @@ public class ProfileController {
         User updatedUser = storageService.store(file);
 
         log.debug("Image successfully uploaded send response status OK");
-        return new ResponseEntity<>(updatedUser.getImgPath(),HttpStatus.OK);
+        return new ResponseEntity<>(updatedUser.getImgPath(), HttpStatus.OK);
 
     }
 
     @GetMapping("/search")
-    public List<User> searchUsers(@RequestParam String username) {
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String username) {
         log.debug("Trying to search users by username '{}'",
                 username);
 
@@ -147,6 +147,6 @@ public class ProfileController {
 
         log.debug("Found users '{}'", users.toString());
 
-        return users;
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

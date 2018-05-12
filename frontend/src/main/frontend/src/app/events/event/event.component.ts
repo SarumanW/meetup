@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {EventService} from "../event.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Evento} from "../event";
@@ -8,7 +8,8 @@ import {NgxSpinnerService} from "ngx-spinner";
 @Component({
   selector: 'app-event',
   templateUrl: './event.component.html',
-  styleUrls: ['./event.component.css']
+  styleUrls: ['./event.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class EventComponent implements OnInit {
 

@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +23,8 @@ public class WishListController {
     @Autowired
     private WishListService wishListService;
 
-    @GetMapping("/userWishList")
-    public @ResponseBody ResponseEntity<List<Item>> getWishList(){
+    @GetMapping
+    public ResponseEntity<List<Item>> getWishList(){
         log.debug("Trying to get wish list");
         List<Item> items = wishListService.getWishList();
 
@@ -33,14 +32,32 @@ public class WishListController {
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
-    @PostMapping("/addToWishList")
-    public @ResponseBody ResponseEntity<Item> addWishItem(@Valid @RequestBody Item item) {
-        log.debug("Trying to add wish item {}", item);
-        Item addWishItem = wishListService.addWishItem(item);
+    @GetMapping("/{login}")
+    public ResponseEntity<List<Item>> getWishesByUser(@PathVariable String login) {
+        log.debug("Trying to get wishes by login '{}'", login);
 
-        log.debug("Send response body saved item '{}' and status CREATED", addWishItem);
-        return new ResponseEntity<>(addWishItem, HttpStatus.CREATED);
+        List<Item> userWishes = wishListService.getWishesByUser(login);
+
+        log.debug("Send response body wishes '{}' and status OK", userWishes.toString());
+
+        return new ResponseEntity<>(userWishes, HttpStatus.OK);
     }
 
+    @GetMapping("/recommendations")
+    public ResponseEntity<List<Item>> getRecommendations(@RequestParam(value="tag", required = false) String[] tagArray) {
+        log.debug("Trying to get  recommend wishes");
+        List<Item> items = wishListService.getRecommendations(tagArray);
 
+        log.debug("Send response body items '{}' and status OK", items.toString());
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
+    @GetMapping("/bookings")
+    public ResponseEntity<List<Item>> getBookingByUser() {
+        log.debug("Trying to get booking wishes by user");
+        List<Item> items = wishListService.getBookingByUser();
+
+        log.debug("Send response body items '{}' and status OK", items.toString());
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
 }
