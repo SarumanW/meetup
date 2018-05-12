@@ -36,7 +36,8 @@ public class EventUpdateScheduler {
     @Scheduled(cron="${cron.hourly}")
     public void changeEventDate() {
         log.debug("Getting current date");
-        String currentDate = hoursDateFormat.format(new Date());
+        Date lastHour = DateUtils.addHours(new Date(),-1);
+        String currentDate = hoursDateFormat.format(lastHour);
         log.debug("Current date and hours '{}'",currentDate);
         log.debug("Try to get events with time from '{}' till '{}'",currentDate+":00:00",currentDate+":59:59");
         List<Event> events = eventService.getEventsByPeriodForAllUsers(currentDate+":00:00",currentDate+":59:59");
