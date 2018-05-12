@@ -155,8 +155,9 @@ CREATE TABLE chat_type (
 
 CREATE TABLE item_comment
 (
-  id_comment number PRIMARY KEY,
+  comment_id number PRIMARY KEY,
   body_text VARCHAR2(2000) NOT NULL,
   post_time TIMESTAMP NOT NULL,
-  id_author number NOT NULL
+  author_id number NOT NULL,
+  item_id number NOT NULL
 );

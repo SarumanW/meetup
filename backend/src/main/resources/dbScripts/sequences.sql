@@ -58,7 +58,7 @@ BEFORE INSERT ON item_comment
 FOR EACH ROW
 BEGIN
   SELECT item_comment_seq.NEXTVAL
-  INTO   :new.id_comment
+  INTO   :new.comment_id
   FROM   dual;
 END;
 /
