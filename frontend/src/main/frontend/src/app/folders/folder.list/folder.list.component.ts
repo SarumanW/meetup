@@ -1,15 +1,17 @@
 import {Component, OnInit} from "@angular/core";
-import {Router} from "@angular/router";
 import {Folder} from "../folder";
 import {FolderListService} from "../folder.list.service";
-import {FolderService} from "../folder.service";
-import {Observable} from "rxjs/Observable";
 import {ToastrService} from "ngx-toastr";
 import {Profile} from "../../account/profile";
 import {NgxSpinnerService} from "ngx-spinner";
+import {Evento} from "../../events/event";
+import {EventService} from "../../events/event.service";
+import 'jspdf-autotable';
+
+declare let jsPDF;
 
 @Component({
-  selector: 'app-folder',
+  selector: 'app-folders',
   templateUrl: './folder.list.component.html',
   styleUrls: ['./folder.list.component.css']
 })
@@ -20,10 +22,18 @@ export class FolderListComponent implements OnInit {
   state: string = "folders";
   nameInput: string = "";
   profile: Profile;
+  rows : any[] = [];
+  columns = ["Name", "Description", "Date"];
+
+  currentDate: string;
+  startDate: string;
+  endDate: string;
+  periodEvents: Evento[] = [];
 
   constructor(private folderListService: FolderListService,
               private spinner: NgxSpinnerService,
-              private toastr: ToastrService) {
+              private toastr: ToastrService,
+              private eventService: EventService) {
 
     this.selectedFolder = new Folder;
   }
@@ -31,6 +41,21 @@ export class FolderListComponent implements OnInit {
   ngOnInit() {
     this.getFoldersList();
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
+
+    this.getCurrentDate();
+  }
+
+  getCurrentDate() {
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    this.currentDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + day;
+  }
+
+  formatDate() {
+    this.startDate = this.startDate + " 00:00:00";
+    this.endDate = this.endDate + " 00:00:00";
   }
 
   getFoldersList(): void {
@@ -41,6 +66,43 @@ export class FolderListComponent implements OnInit {
         this.folders = folders
         this.spinner.hide();
       })
+  }
+
+  getPeriodEvents(start: string, end: string): void {
+    this.eventService.getEventsInPeriod(start, end).subscribe(
+      events => {
+        this.periodEvents = events;
+        let doc = new jsPDF('p', 'pt');
+
+        for (let i = 0; i < events.length; i++) {
+          let forceEvent : any[] = [];
+
+          forceEvent.push(this.periodEvents[i].name);
+          forceEvent.push(this.periodEvents[i].description);
+          forceEvent.push(this.periodEvents[i].eventDate);
+
+          this.rows.push(forceEvent);
+        }
+
+        let s = this.startDate.split(' ')[0];
+        let e = this.endDate.split(' ')[0];
+
+        doc.autoTable(this.columns, this.rows, {
+          addPageContent: function() {
+            doc.text("Your events on period: " + s + " to " + e, 40, 30);
+          }
+        });
+
+        let data = new File([doc.output()], "events.pdf");
+
+        let formData = new FormData();
+        formData.append("file", data);
+
+        this.eventService.uploadEventsPlan(formData).subscribe();
+
+        doc.save('table.pdf');
+      }
+    )
   }
 
   addFolder(folderName) {
@@ -63,7 +125,7 @@ export class FolderListComponent implements OnInit {
   deleteFolder(folder) {
     let isSure = confirm("Are you sure?");
 
-    if(isSure) {
+    if (isSure) {
       this.spinner.show();
 
       this.folderListService.deleteFolder(folder)
@@ -85,9 +147,14 @@ export class FolderListComponent implements OnInit {
   showSuccess() {
     this.toastr.info('Your events were moved to general folder', 'Attention!', {
       timeOut: 3000,
-      positionClass: 'toast-bottom-left',
+      positionClass: 'toast-top-right',
       closeButton: true
     });
+  }
+
+  downloadPlan() {
+    this.formatDate();
+    this.getPeriodEvents(this.startDate, this.endDate);
   }
 
 }

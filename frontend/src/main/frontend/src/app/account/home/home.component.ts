@@ -24,7 +24,8 @@ export class HomeComponent {
     console.log(this.profile.imgPath);
   }
 
-  logout() {
+  logout(){
     localStorage.clear();
+    this.router.navigate(["/login"]);
   }
 }

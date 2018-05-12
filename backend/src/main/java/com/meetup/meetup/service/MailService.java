@@ -12,7 +12,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.thymeleaf.TemplateEngine;
+
+import java.io.InputStream;
 
 @Service
 @PropertySource("classpath:links.properties")
@@ -67,6 +71,24 @@ public class MailService {
                         environment.getProperty("server.domain") +
                         environment.getProperty("mail.recovery") + token)
                 .setTemplate(environment.getProperty("recoveryPasswordTemplate"))
+                .build();
+        log.debug("Trying to send message");
+
+        mailSender.send(messagePreparator);
+
+        log.debug("Mail was sent successfully");
+    }
+
+    @Async
+    public void sendMailWithEventPlan(User user, MultipartFile file) {
+        log.debug("Trying to build message");
+        System.out.println("Mail service : " + file.getSize());
+        MimeMessagePreparator messagePreparator = new MailBuilder(templateEngine)
+                .setTo(user.getEmail())
+                .setSubject("Event Plan")
+                .setVariable("name", user.getName())
+                .setTemplate(environment.getProperty("eventPlanTemplate"))
+                .setFile(file)
                 .build();
         log.debug("Trying to send message");
 

@@ -7,6 +7,7 @@ import com.meetup.meetup.exception.runtime.DatabaseWorkException;
 import com.meetup.meetup.exception.runtime.HashAlgorithmException;
 import com.meetup.meetup.exception.runtime.NoTokenException;
 import com.meetup.meetup.exception.runtime.frontend.detailed.*;
+import com.meetup.meetup.security.AuthenticationFacade;
 import com.meetup.meetup.security.utils.HashMD5;
 import com.meetup.meetup.service.vm.LoginVM;
 import com.meetup.meetup.service.vm.RecoveryPasswordVM;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.NoSuchAlgorithmException;
 
-import static com.meetup.meetup.Keys.Key.*;
+import static com.meetup.meetup.keys.Key.*;
 
 @Component
 @PropertySource("classpath:strings.properties")
@@ -32,16 +33,18 @@ public class AccountService {
     private final JwtService jwtService;
     private final UserDao userDao;
     private final MailService mailService;
+    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
     private Environment env;
 
     @Autowired
-    public AccountService(JwtService jwtService, UserDao userDao, MailService mailService) {
+    public AccountService(JwtService jwtService, UserDao userDao, MailService mailService, AuthenticationFacade authenticationFacade) {
         log.info("Initializing AccountService");
         this.jwtService = jwtService;
         this.userDao = userDao;
         this.mailService = mailService;
+        this.authenticationFacade = authenticationFacade;
     }
 
     public UserAndTokenVM login(LoginVM credentials) throws Exception {
@@ -204,4 +207,68 @@ public class AccountService {
 
         log.debug("Password was successfully updated");
     }
+
+    public void checkPassword(RecoveryPasswordVM model) throws Exception{
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+
+        if (user == null) {
+            log.error("Bad token was given at request");
+            throw new BadTokenException(env.getProperty(EXCEPTION_BAD_TOKEN));
+        }
+
+        log.debug("User '{}' was successfully found by token '{}'", user.toString(), model.getToken());
+        log.debug("Trying to get hash from password");
+
+        try {
+            String md5Pass = HashMD5.hash(model.getPassword());
+            model.setPassword(md5Pass);
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Algorithm can not get hash for password");
+            throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
+        }
+
+        log.debug("Hash for password was successfully get");
+        log.debug("Check if user with current password exists at database");
+
+        if (!user.getPassword().equals(model.getPassword())) {
+            log.error("User password is not correct");
+            throw new FailedToLoginException(env.getProperty(EXCEPTION_FAILED_LOGIN));
+        }
+
+        log.debug("Password is correct for user '{}'", user.toString());
+    }
+
+    public void changePassword(RecoveryPasswordVM model) throws Exception{
+
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+
+        if (user == null) {
+            log.error("Bad token was given at request");
+            throw new BadTokenException(env.getProperty(EXCEPTION_BAD_TOKEN));
+        }
+
+        log.debug("User '{}' was successfully found by token '{}'", user.toString(), model.getToken());
+        log.debug("Trying to create hash from password");
+
+        try {
+            String md5Pass = HashMD5.hash(model.getPassword());
+            user.setPassword(md5Pass);
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Algorithm can not create hash for password");
+            throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
+        }
+
+        log.debug("Hash for password was successfully create");
+        log.debug("Trying to update user in database");
+
+        if (!userDao.updatePassword(user)) {
+            log.error("User was not updated");
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        log.debug("Password was successfully updated");
+    }
+
 }

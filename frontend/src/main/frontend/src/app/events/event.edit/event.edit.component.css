@@ -1,0 +1,12 @@
+agm-map {
+  height: 350px;
+}
+.toast-top-right {
+  top: 12px;
+  right: 12px;
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

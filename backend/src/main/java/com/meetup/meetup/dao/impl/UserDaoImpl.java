@@ -1,5 +1,6 @@
 package com.meetup.meetup.dao.impl;
 
+import com.meetup.meetup.dao.AbstractDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Folder;
@@ -13,36 +14,36 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import static com.meetup.meetup.keys.Key.*;
+
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.meetup.meetup.Keys.Key.*;
 
 
 @Repository
 @PropertySource("classpath:sqlDao.properties")
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
-    private static Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
-
-    @Autowired
-    private Environment env;
-
-    @Autowired
-    @Qualifier("jdbcTemplate")
-    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private FolderDaoImpl folderDao;
 
     @Autowired
     private UserRowMapper userRowMapper;
+
+    public UserDaoImpl(){
+        log=LoggerFactory.getLogger(UserDaoImpl.class);
+    }
 
     /**
      * Checks if login exists in the database
@@ -86,10 +87,14 @@ public class UserDaoImpl implements UserDao {
                     new Object[]{login}, new UserRowMapper() {
                     }
             );
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("User with login '{}' was not found", login);
+            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with login '{}'", login);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "login", login));
         }
+
         log.debug("User with login '{}' was found", login);
 
         return user;
@@ -107,6 +112,9 @@ public class UserDaoImpl implements UserDao {
                     new Object[]{email}, new UserRowMapper() {
                     }
             );
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("User with email '{}' was not found", email);
+            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with email '{}'", email);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "email", email));
@@ -216,6 +224,9 @@ public class UserDaoImpl implements UserDao {
                     }
             );
 
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("User with userId '{}' was not found", id);
+            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with id '{}'", id);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
