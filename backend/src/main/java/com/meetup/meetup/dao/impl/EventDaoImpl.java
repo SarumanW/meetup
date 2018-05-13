@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
 
 import static com.meetup.meetup.keys.Key.*;
 
+import com.meetup.meetup.dao.AbstractDao;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,12 +33,13 @@ import java.util.Map;
 @PropertySource("classpath:sqlDao.properties")
 @PropertySource("classpath:strings.properties")
 @PropertySource("classpath:image.properties")
-public class EventDaoImpl implements EventDao {
+public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
 
-    private static Logger log = LoggerFactory.getLogger(EventDaoImpl.class);
 
-    @Autowired
-    private Environment env;
+    public EventDaoImpl(){
+        log=LoggerFactory.getLogger(EventDaoImpl.class);
+    }
+
 
     @Autowired
     private UserDao userDao;
@@ -176,7 +178,7 @@ public class EventDaoImpl implements EventDao {
 
     private void insertUserEvent(int userId, int eventId, int roleId) {
         log.debug("Try to insert user event with user id '{}', event id '{}', role id '{}'", userId, eventId, roleId);
-        int result = 0;
+        int result;
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName(TABLE_USER_EVENT);
 
@@ -210,7 +212,6 @@ public class EventDaoImpl implements EventDao {
             jdbcTemplate.update(env.getProperty(EVENT_DELETE_PARTICIPANTS), model.getEventId());
             model.setParticipants(null);
         } catch (DataAccessException e) {
-            e.printStackTrace();
             log.error("Query fails by delete participants of event with id '{}'", model.getEventId());
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
@@ -267,11 +268,28 @@ public class EventDaoImpl implements EventDao {
                     new Object[]{userId, startDate, endDate}, new EventRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by finding event by user with id '{}'", userId);
-            e.printStackTrace();
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
         log.debug("Events between dates for user with id '{}' counted '{}'", userId, events.size());
+        return events;
+    }
+
+    @Override
+    public List<Event> getPeriodEventsAllUsers(String startDate, String endDate) {
+        List<Event> events;
+        log.debug("Try to find list of events between '{}' and '{}'",
+                startDate, endDate);
+        try {
+            events = jdbcTemplate.query(env.getProperty(EVENT_GET_IN_PERIOD_ALL_USERS),
+                    new Object[]{startDate, endDate}, new EventRowMapper());
+        } catch (DataAccessException e) {
+            log.error("Query fails by finding event");
+            e.printStackTrace();
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        log.debug("Events between dates counted '{}'", events.size());
         return events;
     }
 
@@ -296,7 +314,7 @@ public class EventDaoImpl implements EventDao {
     @Override
     public Event update(Event model) {
         log.debug("Try to update event with id '{}'", model.getEventId());
-        int result = 0;
+        int result;
         try {
             result = jdbcTemplate.update(env.getProperty(EVENT_UPDATE),
                     model.getName(), model.getEventDate(), model.getDescription(), model.getPeriodicityId(),
@@ -316,12 +334,11 @@ public class EventDaoImpl implements EventDao {
     @Override
     public Event delete(Event model) {
         log.debug("Try to delete event with id '{}'", model.getEventId());
-        int result = 0;
+        int result;
         try {
             result = jdbcTemplate.update(env.getProperty(EVENT_DELETE), model.getEventId());
         } catch (DataAccessException e) {
             log.error("Query fails by delete event with id '{}'", model.getEventId());
-            e.printStackTrace();
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 

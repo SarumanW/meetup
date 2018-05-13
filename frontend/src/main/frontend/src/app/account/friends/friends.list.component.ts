@@ -9,6 +9,7 @@ import {ActivatedRoute} from "@angular/router";
 import "rxjs/add/operator/debounceTime";
 import "rxjs/add/operator/distinctUntilChanged";
 import "rxjs/add/operator/switchMap";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'friends-list',
@@ -29,45 +30,60 @@ export class FriendsListComponent implements OnInit {
 
   constructor(private friendService: FriendService,
               private spinner: NgxSpinnerService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private appComponent: AppComponent) {
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === params['login'];
-      this.user = params['login']
-    });
-
-    this.getInfo();
-
-    this.queryField.valueChanges
-      .debounceTime(1000)
-      .distinctUntilChanged()
-      .subscribe(queryField => {
-        this.unknownUsers = [];
-        this.friendService.getUnknownUsers(queryField)
-          .subscribe((unknownUsers) => {
-            this.unknownUsers = unknownUsers;
-          })
-      });
+        this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === params['login'];
+        this.user = params['login'];
+        this.getInfo();
+        this.queryField.valueChanges
+          .debounceTime(1000)
+          .distinctUntilChanged()
+          .subscribe(queryField => {
+              this.unknownUsers = [];
+              this.friendService.getUnknownUsers(queryField)
+                .subscribe((unknownUsers) => this.unknownUsers = unknownUsers)
+            }, error => {
+              this.appComponent.showError(error, 'Error');
+            }
+          );
+        this.spinner.hide();
+      }, error => {
+        this.appComponent.showError(error, 'Error');
+      }
+    );
   }
 
   getInfo() {
+
     this.spinner.show();
 
     // if (this.loggedUser) {
     this.friendService.getFriendsRequests()
       .subscribe((requests) => {
-        this.unconfirmedFriends = requests;
-      });
+          this.unconfirmedFriends = requests;
+        }, error => {
+          this.appComponent.showError(error, 'Error');
+        }
+      );
     // }
     this.route.params.subscribe(params => {
-      this.friendService.getFriends(params['login'])
-        .subscribe((friends) => {
-          this.friends = friends
-          this.spinner.hide();
-        });
-    });
+        this.friendService.getFriends(params['login'])
+        // this.friendService.getFriends()
+          .subscribe((friends) => {
+              this.friends = friends;
+              this.spinner.hide();
+            }, error => {
+              this.appComponent.showError(error, 'Error');
+            }
+          );
+      }, error => {
+        this.appComponent.showError(error, 'Error');
+      }
+    );
   }
 
   addFriend(login: string) {
@@ -77,19 +93,18 @@ export class FriendsListComponent implements OnInit {
     this.friendService.addFriend(login)
       .subscribe(
         (message) => {
-          this.message = message
+          this.message = message;
           this.spinner.hide();
         },
         (error) => {
           if (error.status === 200) {
             this.message = error.error.text;
           } else {
-            this.message = error.error;
+            this.appComponent.showError(error, 'Error');
           }
           this.spinner.hide();
-        });
-
+        }
+      );
     this.newFriendName = "";
-
   }
 }

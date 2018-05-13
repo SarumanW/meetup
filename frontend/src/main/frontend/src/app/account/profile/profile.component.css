@@ -31,3 +31,13 @@
   width: 300px;
 }
 
+.close-btn {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.message{
+  color: #1c7430;
+}
+

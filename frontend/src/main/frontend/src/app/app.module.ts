@@ -46,9 +46,17 @@ import {ImageUploadService} from "./events/image.upload.service";
 import {AgmCoreModule} from "@agm/core";
 import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
+import {CheckPasswordComponent} from "./account/change.password/check.password/check.password.component"
 import {EventEditComponent} from "./events/event.edit/event.edit.component";
 import { ChatComponent } from './chat/chat/chat.component';
 import {ChatService} from "./chat/chat.service";
+import { WishListComponent } from './wishes/wish.list/wish.list.component';
+import { WishComponent } from './wishes/wish/wish.component';
+import {WishListService} from "./wishes/wish.list.service";
+import { WishAddComponent } from './wishes/wish.add/wish.add.component';
+import {WishService} from "./wishes/wish.service";
+import { WishEditComponent } from './wishes/wish.edit/wish.edit.component';
+import {CountDown} from "ng2-date-countdown";
 
 @NgModule({
   declarations: [
@@ -72,7 +80,14 @@ import {ChatService} from "./chat/chat.service";
     EventAddComponent,
     CalendarComponent,
     EventEditComponent,
-    ChatComponent
+    ChatComponent,
+    WishListComponent,
+    WishComponent,
+    WishAddComponent,
+    EventEditComponent,
+    CheckPasswordComponent,
+    WishEditComponent,
+    CountDown
   ],
   imports: [
     ReactiveFormsModule,
@@ -108,7 +123,10 @@ import {ChatService} from "./chat/chat.service";
     EventAddService,
     CalendarService,
     ImageUploadService,
-    ChatService],
+    ChatService,
+    WishListService,
+    WishService
+  ],
   bootstrap: [AppComponent]
 })
 

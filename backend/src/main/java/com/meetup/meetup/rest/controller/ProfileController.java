@@ -114,6 +114,19 @@ public class ProfileController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    // TODO: 5/4/2018  Push service method
+//    @GetMapping("/userRelations/{userId}")
+//    public ResponseEntity<String> userRelations(@PathVariable() int userId){
+//
+//        log.debug("Trying to get relation between user with id '{}' and authenticated user", userId);
+//
+//        String relation = profileService.userRelations(userId);
+//
+//        log.debug("Send response body relation '{}' and status OK", relation);
+//
+//        return new ResponseEntity<>(relation, HttpStatus.OK);
+//    }
+
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
         log.debug("Trying to upload image '{}'", file);
@@ -121,12 +134,12 @@ public class ProfileController {
         User updatedUser = storageService.store(file);
 
         log.debug("Image successfully uploaded send response status OK");
-        return new ResponseEntity<>(updatedUser.getImgPath(),HttpStatus.OK);
+        return new ResponseEntity<>(updatedUser.getImgPath(), HttpStatus.OK);
 
     }
 
     @GetMapping("/search")
-    public List<User> searchUsers(@RequestParam String username) {
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String username) {
         log.debug("Trying to search users by username '{}'",
                 username);
 
@@ -134,6 +147,6 @@ public class ProfileController {
 
         log.debug("Found users '{}'", users.toString());
 
-        return users;
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

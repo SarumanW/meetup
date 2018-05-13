@@ -9,6 +9,7 @@ import {FormControl} from "@angular/forms";
 import {MapsAPILoader} from "@agm/core";
 import {} from '@types/googlemaps';
 import {ChatService} from "../../chat/chat.service";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-event.add',
@@ -33,10 +34,10 @@ export class EventAddComponent implements OnInit {
   lng: number;
   searchControl: FormControl;
 
-  @ViewChild("search")
-  searchElementRef: ElementRef;
+  @ViewChild("search") searchElementRef: ElementRef;
 
   constructor(private route: ActivatedRoute,
+              private appComponent: AppComponent,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
               private eventAddService: EventAddService,
@@ -47,11 +48,10 @@ export class EventAddComponent implements OnInit {
 
   ngOnInit() {
     this.eventt = new Evento;
-
     this.route.params.subscribe(params => {
       this.folderId = params['folderId'];
     }, error => {
-      this.showError('Unsuccessful parameters loading', 'Loading error');
+      this.appComponent.showError('Unsuccessful parameters loading', 'Loading error');
     });
 
     this.getCurrentDate();
@@ -101,7 +101,7 @@ export class EventAddComponent implements OnInit {
     this.eventt.eventDate = this.currentDate;
     this.eventt.periodicity = "ONCE";
     this.eventt.place = "";
-    this.time = "00:00";
+    this.time = "23:59";
     this.lat = 50.447011182312195;
     this.lng = 30.456780195127067;
   }
@@ -127,15 +127,6 @@ export class EventAddComponent implements OnInit {
     this.addEntity();
   }
 
-  //TODO move to general component
-  showError(message: string, title: string) {
-    this.toastr.error(message, title, {
-      timeOut: 3000,
-      positionClass: 'toast-top-right',
-      closeButton: true
-    });
-  }
-
   showSuccess() {
     this.toastr.info('Event was successfully added', 'Attention!', {
       timeOut: 3000,
@@ -156,7 +147,7 @@ export class EventAddComponent implements OnInit {
         this.addChat(eventt);
       }
     }, error => {
-      this.showError('Unsuccessful event adding', 'Adding error');
+      this.appComponent.showError('Unsuccessful event adding', 'Adding error');
       this.spinner.hide();
     });
   }
@@ -182,7 +173,7 @@ export class EventAddComponent implements OnInit {
     this.selectedFiles = event.target.files;
     let filename: string = this.selectedFiles.item(0).name.toLowerCase();
     if (!this.fileRegexp.test(filename)) {
-      this.showError("Incorrect file format " + this.selectedFiles.item(0).name, 'File format error');
+      this.appComponent.showError("Incorrect file format " + this.selectedFiles.item(0).name, 'File format error');
       this.errorFileFormat = true;
     } else {
       this.errorFileFormat = false;
@@ -201,7 +192,7 @@ export class EventAddComponent implements OnInit {
         console.log(this.eventt.imageFilepath);
       this.spinner.hide();
     }, error => {
-      this.showError(error, 'Upload failed');
+      this.appComponent.showError(error, 'Upload failed');
       this.spinner.hide();
     });
 

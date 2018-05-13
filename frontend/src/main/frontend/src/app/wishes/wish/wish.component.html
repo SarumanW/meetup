@@ -1,0 +1,116 @@
+<div class="container-fluid" style="margin-top:20px">
+  <ngx-spinner bdOpacity=0.9
+               bdColor="#333"
+               size="default"
+               color="#fff"
+               type="ball-beat"></ngx-spinner>
+
+  <div class="row">
+
+    <div class="col-2">
+      <home-comp [states]="state"></home-comp>
+    </div>
+
+    <div class="col-md-5">
+      <img *ngIf="item.imageFilepath" [src]="item.imageFilepath" onError="this.src='assets/item-icon-default.svg'" class="img-fluid">
+    </div>
+
+    <div class="col-md-5">
+      <!--<div class="container justify-content-center">-->
+      <!--Name-->
+      <form name="form" role="form" #addItemForm="ngForm">
+        <div class="form-group">
+          <h3>{{item.name}}</h3>
+        </div>
+
+
+        <!--Description-->
+
+        <div class="form-group">
+          <label class="form-control-label"><u>Description:</u></label>
+          <div>{{item.description}}</div>
+        </div>
+
+        <!--Priority-->
+
+        <div class="form-group">
+          <label class="form-control-label"><u>Priority:</u></label>
+          <div>{{item.priority}}</div>
+        </div>
+
+        <!--Link-->
+
+        <div class="form-group">
+          <label class="form-control-label"><u>Link:</u></label>
+          <div><a [href]="this.item.link">Click here for full info</a></div>
+        </div>
+
+        <!--Due Date-->
+
+        <div class="form-group">
+          <label class="form-control-label"><u>Duedate:</u></label>
+          <div>{{item.dueDate}}</div>
+        </div>
+
+        <!--Tags-->
+
+        <div *ngIf="item.tags?.length>0" class="form-group">
+          <label class="form-control-label"><u>Tags:</u></label>
+          <ul>
+            <li *ngFor="let tag of item.tags">{{tag}}</li>
+          </ul>
+        </div>
+        <hr/>
+      </form>
+
+      <a routerLink="/{{profile.login}}/wishes" class="btn btn-primary">Return to wishlist</a>
+      <button *ngIf="item.ownerId !== 0 && profile.login === login" type="button" (click)="removeFromWishList()" [disabled]="!item.priority"
+              class="btn btn-danger">Remove
+      </button>
+      <button type="button" (click)="add.show()" [disabled]="item.priority" class="btn btn-primary">Add</button>
+      <button *ngIf="item.ownerId !== 0 && profile.login === login"  routerLink="/{{profile.login}}/wishes/edit/{{item.itemId}}" type="button" class="btn btn-warning">Edit</button>
+
+      <div *ngIf="!item.isLiked"><img src="assets/notliked.png" (click)="like()"> {{item.likes}}</div>
+      <div *ngIf="item.isLiked"><img src="assets/liked.png" (click)="dislike()"> {{item.likes}}</div>
+
+    </div>
+  </div>
+
+  <!--Add item-->
+
+  <app-modal-window #add>
+    <div class="modal-header d-flex justify-content-between align-items-right">
+      <h4 class="modal-title">Add item</h4>
+      <img class="close-btn" src="assets/close.svg" (click)="add.hide()" alt="">
+    </div>
+    <div class="app-modal-body">
+      <form #addItemForm="ngForm" ngForm="addItemForm">
+
+        <!--Priority-->
+
+        <div class="form-group">
+          <label for="priority">Priority:</label>
+          <select name="priority" id="priority" class="form-control" [(ngModel)]="priority" required>
+            <option value="URGENT">URGENT</option>
+            <option value="NORMAL">NORMAL</option>
+            <option value="LOW">LOW</option>
+          </select>
+        </div>
+
+        <!--Due Date-->
+
+        <div class="form-group">
+          <label class="form-control-label" for="itemDate">Choose the due day of the wish:</label>
+          <input type="date" min="{{minDueDate}}" class="form-control"
+                 id="itemDate" name="eventDate" #itemDueDate="ngModel" [(ngModel)]="dueDate" required>
+          <div *ngIf="itemDueDate.dirty && itemDueDate.invalid">
+            <small class="form-text text-danger" *ngIf="itemDueDate.error.min">
+              Minimal due date must be {{minDueDate}}.
+            </small>
+          </div>
+        </div>
+        <button [disabled]="addItemForm.form.invalid" class="btn btn-default" (click)="add.hide(); addToWishList()">Add</button>
+      </form>
+    </div>
+  </app-modal-window>
+</div>
