@@ -47,8 +47,8 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private final int OWNER_ID = 1;
-    private final int PARTICIPANT_ID = 2;
+    private static final int OWNER_ID = 1;
+    private static final int PARTICIPANT_ID = 2;
 
 
     @Override
@@ -201,7 +201,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
     }
 
     public void addParticipant(int participantId, int eventId) {
-        insertUserEvent(participantId, eventId, this.PARTICIPANT_ID);
+        insertUserEvent(participantId, eventId, PARTICIPANT_ID);
     }
 
     @Override
