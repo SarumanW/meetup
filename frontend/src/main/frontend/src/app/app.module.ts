@@ -48,7 +48,7 @@ import {AgmCoreModule} from "@agm/core";
 import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
 import {EventEditComponent} from "./events/event.edit/event.edit.component";
-import {CountDown} from "ng2-date-countdown";
+import {CountDown} from "./events/countdown/countdown";
 
 @NgModule({
   declarations: [

@@ -1,0 +1,13 @@
+.countdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.countdown .measurements {
+  flex: 0.1;
+}
+.countdown .measurements .divider {
+  float: right;
+}
