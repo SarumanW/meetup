@@ -55,7 +55,7 @@ import {WishListService} from "./wishes/wish.list.service";
 import { WishAddComponent } from './wishes/wish.add/wish.add.component';
 import {WishService} from "./wishes/wish.service";
 import { WishEditComponent } from './wishes/wish.edit/wish.edit.component';
-import {CountDown} from "ng2-date-countdown";
+import {CountDown} from "./events/countdown/countdown";
 
 @NgModule({
   declarations: [
