@@ -5,13 +5,23 @@ import com.meetup.meetup.entity.Message;
 import java.util.List;
 
 public interface ChatDao {
-    Message insertMessage(Message message);
 
-    boolean createChatsByEventId(int eventId);
+    //Chats
 
+    // TODO: 14.05.2018 CHECK WORKING
+    List<Integer> createChatsByEventId(int eventId);
+
+    // TODO: 14.05.2018 CHECK WORKING
     boolean deleteChatsByEventId(int eventId);
 
-    List<Integer> findChatsIdsByEventId();
+    // TODO: 14.05.2018 CHECK WORKING
+    List<Integer> findChatsIdsByEventId(int eventId);
 
-    List<Message> findMessagesByEventIdAndChatType();
+    //Messages
+
+    // TODO: 14.05.2018 CHECK WORKING
+    Message insertMessage(Message message);
+
+    // TODO: 14.05.2018 CHECK WORKING
+    List<Message> findMessagesByChatId(int chatId);
 }

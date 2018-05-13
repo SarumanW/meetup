@@ -13,6 +13,25 @@ public final class Key {
     public static final String TABLE_ITEM = "ITEM";
     public static final String TABLE_TAG = "TAG";
     public static final String TABLE_LLIKE = "LLIKE";
+    public static final String TABLE_CHAT = "CHAT";
+    public static final String TABLE_CHAT_TYPE = "CHAT_TYPE";
+    public static final String TABLE_MESSAGE = "MESSAGE";
+
+    //MESSAGE table fields
+    public static final String MESSAGE_MESSAGE_ID = "MESSAGE_ID";
+    public static final String MESSAGE_SENDER_ID = "SENDER_ID";
+    public static final String MESSAGE_CHAT_ID = "CHAT_ID";
+    public static final String MESSAGE_TEXT = "TEXT";
+    public static final String MESSAGE_MESSAGE_DATE = "MESSAGE_DATE";
+
+    //CHAT_TYPE table fields
+    public static final String CHAT_CHAT_TYPE_ID = "CHAT_TYPE_ID";
+    public static final String CHAT_TYPE = "TYPE";
+
+    //CHAT table fields
+    public static final String CHAT_CHAT_ID = "CHAT_ID";
+    public static final String CHAT_TYPE_ID = "CHAT_TYPE_ID";
+    public static final String CHAT_EVENT_ID = "EVENT_ID";
 
     //ITEM table fields
     public static final String ITEM_ITEM_ID = "ITEM_ID";
@@ -140,6 +159,12 @@ public final class Key {
     public static final String ITEM_GET_ITEMS_ID_BY_TAG_NAMES = "item.getItemsIdByTagNames";
     public static final String TAG_SEARCH_TAGS_NAME = "tag.searchTagsName";
     public static final String ITEM_GET_LIKE_ID_BY_USER_ID_ITEM_ID = "item.getLikeIdByUserIdItemId";
+
+    //ChatDao
+    public static final String CHAT_DELETE_BY_EVENT_ID = "chat.deleteChatsByEventId";
+    public static final String CHAT_DELETE_MESSAGES_BY_EVENT_ID = "chat.deleteMessagesByEventId";
+    public static final String CHAT_FIND_CHATS_IDS_BY_EVENT_ID = "chat.findChatsIdsByEventId";
+    public static final String CHAT_FIND_MESSAGES_BY_CHAT_ID = "chat.findMessagesByChatId";
 
     //Exceptions
     public static final String EXCEPTION_AUTHENTICATION = "authentication.exception";

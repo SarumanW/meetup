@@ -150,6 +150,6 @@ CREATE TABLE chat (
 
 CREATE TABLE chat_type (
   chat_type_id number,
-  type varchar2(10) NOT NULL,
+  type varchar2(15) NOT NULL,
   PRIMARY KEY (chat_type_id)
 );
