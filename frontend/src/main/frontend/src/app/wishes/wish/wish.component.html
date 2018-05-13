@@ -92,9 +92,38 @@
 
   </div>
 </div>
+
+<!--Comment list-->
 <div class="row">
-  <div class="col-md-5 offset-md-2">
-    <comment-list></comment-list>
+  <div class="col-xs-12 col-md-8 offset-md-2">
+
+    <!--<div *appShowAuthed="true">-->
+      <!--<app-list-errors [errors]="commentFormErrors"></app-list-errors>-->
+      <!--<form class="card comment-form" (ngSubmit)="addComment()">-->
+        <!--<fieldset [disabled]="isSubmitting">-->
+          <!--<div class="card-block">-->
+                <!--<textarea class="form-control"-->
+                          <!--placeholder="Write a comment..."-->
+                          <!--rows="3"-->
+                          <!--[formControl]="commentControl"-->
+                <!--&gt;</textarea>-->
+          <!--</div>-->
+          <!--<div class="card-footer">-->
+            <!--<img [src]="currentUser.image" class="comment-author-img" />-->
+            <!--<button class="btn btn-sm btn-primary" type="submit">-->
+              <!--Post Comment-->
+            <!--</button>-->
+          <!--</div>-->
+        <!--</fieldset>-->
+      <!--</form>-->
+    <!--</div>-->
+
+    <comment-list
+      *ngFor="let comment of comments"
+      [comment]="comment"
+      (deleteComment)="onDeleteComment(comment)">
+    </comment-list>
+
   </div>
 </div>
 <!--Add item-->

@@ -8,6 +8,8 @@ import {ToastrService} from "ngx-toastr";
 import {Profile} from "../../account/profile";
 import {WishService} from "../wish.service";
 import {ActivatedRoute} from '@angular/router';
+import {CommentService} from "./comment-list/comment.service";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-wish',
@@ -21,10 +23,13 @@ export class WishComponent implements OnInit {
   item: Item;
   name = "ITEM";
   profile: Profile;
-  id: number;
+  idItem: number;
   login: string;
   private sub: any;
-
+  comments: Comment[];
+  commentControl = new FormControl();
+  commentFormErrors = {};
+  isSubmitting = false;
   minDueDate: string;
   dueDate: string;
   priority: string;
@@ -35,37 +40,76 @@ export class WishComponent implements OnInit {
               private uploadService: UploadFileService,
               private toastr: ToastrService,
               private wishListService: WishListService,
+              private commentsService: CommentService,
               private wishService: WishService,
               private route: ActivatedRoute) {
   }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
-      this.id = +params['itemId'];
+      this.idItem = +params['itemId'];
       this.login = params['login'];
     });
 
-    this.getItem(this.id);
+    this.getItem(this.idItem);
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
+
+    // Load the comments on this item
+    this.populateComments();
+
+  }
+
+  populateComments() {
+    this.commentsService.getAll(this.idItem)
+      .subscribe(comments => this.comments = comments);
+  }
+
+  addComment() {
+    this.isSubmitting = true;
+    this.commentFormErrors = {};
+
+    const commentBody = this.commentControl.value;
+    this.commentsService
+      .add(this.idItem, commentBody)
+      .subscribe(
+        comment => {
+          this.comments.unshift(comment);
+          this.commentControl.reset('');
+          this.isSubmitting = false;
+        },
+        errors => {
+          this.isSubmitting = false;
+          this.commentFormErrors = errors;
+        }
+      );
+  }
+
+  onDeleteComment(comment) {
+    this.commentsService.destroy(comment.id, this.idItem)
+      .subscribe(
+        success => {
+          this.comments = this.comments.filter((item) => item !== comment);
+        }
+      );
   }
 
   getLoginsWhoLiked(){
-    this.wishService.getLoginsWhoLiked(this.id).subscribe((logins:string)=> {
+    this.wishService.getLoginsWhoLiked(this.idItem).subscribe((logins:string)=> {
         this.loginLikes = logins;
       }
     )
 }
 
   like() {
-    this.wishService.addLike(this.id).subscribe((item:Item)=>{
+    this.wishService.addLike(this.idItem).subscribe((item:Item)=>{
       this.item.likes = item.likes;
       this.item.like = item.like;
     })
   }
 
   dislike(){
-    this.wishService.removeLike(this.id).subscribe((item:Item)=>{
+    this.wishService.removeLike(this.idItem).subscribe((item:Item)=>{
       this.item.likes = item.likes;
       this.item.like = item.like;
     })
