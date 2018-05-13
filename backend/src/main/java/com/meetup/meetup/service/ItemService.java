@@ -24,14 +24,14 @@ public class ItemService {
 
     private static Logger log = LoggerFactory.getLogger(ProfileService.class);
 
-    private final ItemDao itemDao;
     private final UserDao userDao;
+    private final ItemDao itemDao;
     private final AuthenticationFacade authenticationFacade;
 
     @Autowired
     public ItemService(UserDao userDao, ItemDao itemDao, AuthenticationFacade authenticationFacade, Environment env) {
-        this.itemDao = itemDao;
         this.userDao = userDao;
+        this.itemDao = itemDao;
         this.authenticationFacade = authenticationFacade;
     }
 
@@ -95,6 +95,7 @@ public class ItemService {
         log.debug("Trying to delete item with id '{}' from user '{}' wish list", itemId, user.getId());
         return itemDao.deleteFromUserWishList(user.getId(), itemId);
     }
+
 
 
     public Item addLike(int itemId){

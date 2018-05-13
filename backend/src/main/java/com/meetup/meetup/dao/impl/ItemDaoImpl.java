@@ -267,6 +267,11 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
+    public List<Item> getPopularItems(String[] tagArray) {
+        return null;
+    }
+
+    @Override
     public List<Item> findBookedItemsByUserId(int userId) {
         log.debug("Try get booked items list by user id: '{}'", userId);
         List<Item> items = new ArrayList<>();
@@ -524,4 +529,24 @@ public class ItemDaoImpl implements ItemDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
     }
+    public List<String> getLoginsWhoLikedItem(int itemId) {
+        log.debug("Try to getUserLikesByItemId for item with id '{}'", itemId);
+
+        List<String> userLogins;
+        try {
+            userLogins = jdbcTemplate.queryForList(env.getProperty(ITEM_GET_LIKED_USER_LOGINS_BY_ITEM_ID),
+                    new Object[]{itemId}, String.class);
+        } catch (DataAccessException e) {
+            log.error("Query fails by finding login list who liked item with item id '{}'", itemId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        if (userLogins.isEmpty()) {
+            log.debug("Likes for item with id '{}' not found", itemId);
+        } else {
+            log.debug("Likes for item with id '{}' were found '{}'", itemId, userLogins);
+        }
+        return userLogins;
+    }
 }
+
