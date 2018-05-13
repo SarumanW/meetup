@@ -74,4 +74,10 @@ export class WishService {
     let url = `api/item/${id}/like`;
     return this.http.delete(url,{headers: headers})
   }
+
+  getLoginsWhoLiked(id: number){
+    let headers = new HttpHeaders().set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    let url = `api/item/${id}/likes`;
+    return this.http.get(url,{headers: headers})
+  }
 }

@@ -16,6 +16,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -123,5 +124,14 @@ public class ItemService {
     public Item deleteItemBooker(int ownerId, int itemId) {
         log.debug("Trying to remove booker from item '{}' with owner '{}'", itemId, ownerId);
         return itemDao.removeBookerForItem(ownerId, itemId);
+    }
+
+    public List<String> getUserLoginsWhoLikedItem(int itemId){
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
+
+        log.debug("Try to get list of login who liked item with id '{}'", itemId);
+        return itemDao.getLoginsWhoLikedItem(itemId);
     }
 }
