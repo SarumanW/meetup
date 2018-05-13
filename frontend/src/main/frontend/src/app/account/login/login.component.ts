@@ -2,8 +2,9 @@ import {Component, OnInit} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {AccountService} from "../account.service";
 import {LoginAccount} from "../login.account";
-import {Router, ActivatedRoute} from "@angular/router";
+import {Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,8 @@ export class LoginComponent implements OnInit {
 
   constructor(private accountService: AccountService,
               private router: Router,
-              private spinner: NgxSpinnerService) {
+              private spinner: NgxSpinnerService,
+              private appComponent: AppComponent) {
   }
 
   ngOnInit() {
@@ -33,9 +35,9 @@ export class LoginComponent implements OnInit {
             this.spinner.hide();
             this.router.navigate(
               ['/'+ profile.login + '/profile']);
-        },
-        response => {
-          this.processError(response);
+        },error => {
+          this.appComponent.showError(error, 'Error');
+          this.processError(error)
           this.spinner.hide();
         }
       );

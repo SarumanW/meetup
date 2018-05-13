@@ -24,7 +24,7 @@ public class ErrorController {
         log.error("Exception sent to frontend: ", e);
         response.setStatus(500);
         try {
-            response.getWriter().print(e.getMessage().replace("SendCustomError", ""));
+            response.getWriter().print(e.getMessage());
         } catch (IOException e1) {
             log.error("exception in ErrorController: ", e1);
         }
@@ -33,17 +33,16 @@ public class ErrorController {
     @ExceptionHandler(CustomRuntimeException.class)
     public void handleCustomException(HttpServletResponse response, Exception e) {
         log.error("CustomException: ", e);
-        response.setStatus(418);
-        try {
-            response.getWriter().print("Attention, an attempt to brew coffee with a teapot");
-        } catch (IOException e1) {
-            log.error("exception in ErrorController: ", e1);
-        }
+        sendTeapotException(response);
     }
 
     @ExceptionHandler(Exception.class)
     public void handleException(HttpServletResponse response, Exception e) {
         log.error("Exception: ", e);
+        sendTeapotException(response);
+    }
+
+    private void sendTeapotException(HttpServletResponse response){
         response.setStatus(418);
         try {
             response.getWriter().print("Attention, an attempt to brew coffee with a teapot");

@@ -47,8 +47,15 @@ import {ImageUploadService} from "./events/image.upload.service";
 import {AgmCoreModule} from "@agm/core";
 import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
+import {CheckPasswordComponent} from "./account/change.password/check.password/check.password.component"
 import {EventEditComponent} from "./events/event.edit/event.edit.component";
-import {CountDown} from "./events/countdown/countdown";
+import { WishListComponent } from './wishes/wish.list/wish.list.component';
+import { WishComponent } from './wishes/wish/wish.component';
+import {WishListService} from "./wishes/wish.list.service";
+import { WishAddComponent } from './wishes/wish.add/wish.add.component';
+import {WishService} from "./wishes/wish.service";
+import { WishEditComponent } from './wishes/wish.edit/wish.edit.component';
+import {CountDown} from "ng2-date-countdown";
 
 @NgModule({
   declarations: [
@@ -71,7 +78,12 @@ import {CountDown} from "./events/countdown/countdown";
     EventListComponent,
     EventAddComponent,
     CalendarComponent,
+    WishListComponent,
+    WishComponent,
+    WishAddComponent,
     EventEditComponent,
+    CheckPasswordComponent,
+    WishEditComponent,
     CountDown
   ],
   imports: [
@@ -107,7 +119,10 @@ import {CountDown} from "./events/countdown/countdown";
     UploadFileService,
     EventAddService,
     CalendarService,
-    ImageUploadService],
+    ImageUploadService,
+    WishListService,
+    WishService
+  ],
   bootstrap: [AppComponent]
 })
 

@@ -7,6 +7,7 @@ import {isSameDay, isSameMonth} from "ngx-bootstrap/chronos/utils/date-getters";
 import {CalendarService} from '../calendar.service';
 import {Evento} from "../../events/event";
 import {colors} from "../calendar.utils/colors";
+import {AppComponent} from '../../app.component';
 
 @Component({
   selector: 'app-calendar',
@@ -26,7 +27,8 @@ export class CalendarComponent implements OnInit {
 
   constructor(private calendarService: CalendarService,
               private spinner: NgxSpinnerService,
-              private router: Router) {
+              private router: Router,
+              private appComponent: AppComponent) {
   }
 
   ngOnInit() {
@@ -67,7 +69,10 @@ export class CalendarComponent implements OnInit {
         this.realEvents = events;
         this.filterEvents();
         this.spinner.hide();
-      })
+      },error => {
+          this.appComponent.showError(error, 'Error');
+        }
+      )
   }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {

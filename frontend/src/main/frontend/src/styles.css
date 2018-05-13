@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+
+.tag-glyphicon {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.tag-glyphicon-delete:before {
+  content: url("assets/delete-button.svg");
+  cursor: pointer;
+}
