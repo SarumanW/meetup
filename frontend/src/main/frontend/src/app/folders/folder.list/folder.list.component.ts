@@ -50,11 +50,6 @@ export class FolderListComponent implements OnInit {
       checked: false,
       columnName: "Periodicity",
       objectProperty: "periodicity",
-    },
-    {
-      checked: false,
-      columnName: "Date",
-      objectProperty: "eventDate",
     }
   ];
 
@@ -117,25 +112,25 @@ export class FolderListComponent implements OnInit {
         let e = this.endDate.split(' ')[0];
 
         doc.autoTable(columns, rows, {
-          addPageContent: function() {
+          addPageContent: function () {
             doc.text("Your events on period: " + s + " to " + e, 40, 30);
           }
-        },
-          error => this.appComponent.showError(error, "Error"));
+        });
 
         this.spinner.hide();
 
-        if(this.isSent){
-          let data = new File([doc.output], docName);
+        if (this.isSent) {
+          let data = new File([doc.output()], docName);
 
           let formData = new FormData();
-          formData.append("file", data);
+          formData.append('file', data);
 
-          this.eventService.uploadEventsPlan(formData).subscribe(success =>{},error => this.appComponent.showError(error, "Error"));
+          this.eventService.uploadEventsPlan(formData).subscribe()
         }
 
         doc.save(docName);
-      }
+      },
+      error => this.appComponent.showError(error, "Error")
     )
   }
 
@@ -148,10 +143,10 @@ export class FolderListComponent implements OnInit {
 
     this.folderListService.addFolder(folder)
       .subscribe((res) => {
-        folder.folderId = res.folderId;
-        this.folders.push(folder);
-        this.spinner.hide();
-      },
+          folder.folderId = res.folderId;
+          this.folders.push(folder);
+          this.spinner.hide();
+        },
         error => this.appComponent.showError(error, "Error"));
 
     this.nameInput = null;
@@ -173,7 +168,7 @@ export class FolderListComponent implements OnInit {
             this.spinner.hide();
             this.showSuccess();
           },
-          error=> {
+          error => {
             this.appComponent.showError(error, "Error")
             this.spinner.hide();
           });
