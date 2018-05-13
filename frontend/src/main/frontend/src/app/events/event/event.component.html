@@ -15,6 +15,13 @@
 
         <br><br>
         <div class="row">
+
+          <div class="col-md-4">
+            <div class="thumbnail">
+              <img src="{{eventt.imageFilepath}}" class="event-logo">
+            </div>
+          </div>
+
           <div class="col-md-4" >
             <ul class="list-group l-g" *ngIf="eventt.participants !== null && eventt.participants.length !== 0">
               <li class="list-group-item active">Participants</li>
@@ -31,12 +38,6 @@
                 Delete participant</button>
             </div>
 
-          </div>
-
-          <div class="col-md-4">
-            <div class="thumbnail">
-              <img src="{{eventt.imageFilepath}}" class="event-logo">
-            </div>
           </div>
 
           <div class="col-md-4" *ngIf="eventt.ownerId === this.currentUserId">

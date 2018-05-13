@@ -1,7 +1,7 @@
 import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
 import {NgxSpinnerService} from "ngx-spinner";
 import {ToastrService} from "ngx-toastr";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Evento} from "../event";
 import {EventAddService} from "../event.add.service";
 import {ImageUploadService} from "../image.upload.service";
@@ -32,6 +32,8 @@ export class EventAddComponent implements OnInit {
   lat: number;
   lng: number;
   searchControl: FormControl;
+  currentUserLogin: string;
+  type: string = 'event';
 
   @ViewChild("search") searchElementRef: ElementRef;
 
@@ -42,7 +44,8 @@ export class EventAddComponent implements OnInit {
               private eventAddService: EventAddService,
               private uploadService: ImageUploadService,
               private mapsAPILoader: MapsAPILoader,
-              private ngZone: NgZone) { }
+              private ngZone: NgZone,
+              private router: Router) { }
 
   ngOnInit() {
     this.eventt = new Evento;
@@ -54,6 +57,7 @@ export class EventAddComponent implements OnInit {
 
     this.getCurrentDate();
     this.resetEvent();
+    this.currentUserLogin = JSON.parse(localStorage.currentUser).login;
     this.fileRegexp = new RegExp('^.*\\.(jpg|JPG|gif|GIF|png|PNG)$');
     this.errorFileFormat = true;
     console.log(this.eventt);
@@ -140,6 +144,8 @@ export class EventAddComponent implements OnInit {
     this.eventAddService.addEvent(this.eventt).subscribe(eventt => {
       this.spinner.hide();
       this.showSuccess();
+      this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/" +
+      this.type + "/" + eventt.eventId]);
       this.resetEvent();
     }, error => {
       this.appComponent.showError('Unsuccessful event adding', 'Adding error');
