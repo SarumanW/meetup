@@ -13,6 +13,7 @@ public final class Key {
     public static final String TABLE_ITEM = "ITEM";
     public static final String TABLE_TAG = "TAG";
     public static final String TABLE_LLIKE = "LLIKE";
+    public static final String TABLE_ITEM_COMMENT = "ITEM_COMMENT";
 
     //ITEM table fields
     public static final String ITEM_ITEM_ID = "ITEM_ID";
@@ -32,6 +33,13 @@ public final class Key {
     public static final String LLIKE_LIKE_ID = "LIKE_ID";
     public static final String LLIKE_ITEM_ID = "ITEM_ID";
     public static final String LLIKE_USER_ID = "USER_ID";
+
+    //ITEM_COMMENT table field
+    public static final String ITEM_COMMENT_COMMENT_ID = "COMMENT_ID";
+    public static final String ITEM_COMMENT_BODY_TEXT = "BODY_TEXT";
+    public static final String ITEM_COMMENT_POST_TIME = "POST_TIME";
+    public static final String ITEM_COMMENT_AUTHOR_ID = "AUTHOR_ID";
+    public static final String ITEM_COMMENT_ITEM_ID = "ITEM_ID";
 
     //TAG table fields
     public static final String TAG_TAG_ID = "TAG_ID";
@@ -141,6 +149,11 @@ public final class Key {
     public static final String TAG_SEARCH_TAGS_NAME = "tag.searchTagsName";
     public static final String ITEM_GET_LIKED_USER_LOGINS_BY_ITEM_ID = "item.getLikedUserLoginsById";
     public static final String ITEM_GET_LIKE_ID_BY_USER_ID_ITEM_ID = "item.getLikeIdByUserIdItemId";
+
+    //ItemCommentDao
+    public static final String ITEM_COMMENT_FIND_BY_ID = "itemComment.findById";
+    public static final String ITEM_COMMENT_FIND_COMMENTS_BY_ITEM_ID = "itemComment.findCommentsByItemId";
+    public static final String ITEM_COMMENT_DELETE = "itemComment.delete";
 
     //Exceptions
     public static final String EXCEPTION_AUTHENTICATION = "authentication.exception";

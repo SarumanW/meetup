@@ -22,7 +22,7 @@ import java.util.List;
 @PropertySource("classpath:strings.properties")
 public class ItemService {
 
-    private static Logger log = LoggerFactory.getLogger(ProfileService.class);
+    private static Logger log = LoggerFactory.getLogger(ItemService.class);
 
     private final UserDao userDao;
     private final ItemDao itemDao;

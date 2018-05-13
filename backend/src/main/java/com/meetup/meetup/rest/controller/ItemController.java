@@ -33,8 +33,7 @@ public class ItemController {
     }
 
     @GetMapping("/{id}/login/{login}")
-    public @ResponseBody
-    ResponseEntity<Item> getItemByUserIdItemId(@PathVariable int id, @PathVariable String login) {
+    public ResponseEntity<Item> getItemByUserIdItemId(@PathVariable int id, @PathVariable String login) {
         log.debug("Try to get item with id '{}' for user with with login '{}'", id, login);
         Item item = itemService.findByUserIdItemId(id, login);
 
@@ -43,8 +42,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public @ResponseBody
-    ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
+    public ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
         log.debug("Trying to save item '{}'", item);
         Item addedItem = itemService.addItem(item);
 
@@ -57,10 +55,8 @@ public class ItemController {
     }
 
 
-
     @PostMapping("/{id}/add")
-    public @ResponseBody
-    ResponseEntity<Item> addItemToUserWishList(@PathVariable int id, @Valid @RequestBody Item item) {
+    public ResponseEntity<Item> addItemToUserWishList(@PathVariable int id, @Valid @RequestBody Item item) {
         log.debug("Trying to add item with id '{}' to user wish list", id);
 
         Item addedItem = itemService.addItemToUserWishList(item);
@@ -69,8 +65,7 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}/delete")
-    public @ResponseBody
-    ResponseEntity deleteItemFromUserWishList(@PathVariable int id) {
+    public ResponseEntity deleteItemFromUserWishList(@PathVariable int id) {
         log.debug("Trying to delete item with id '{}' to user wish list", id);
         Item deletedItem = itemService.deleteItemFromUserWishList(id);
 
@@ -78,10 +73,9 @@ public class ItemController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-// TODO: 08.05.2018 check like
+    // TODO: 08.05.2018 check like
     @PostMapping("/{id}/like")
-    public @ResponseBody
-    ResponseEntity<Item> addLike(@PathVariable int id) {
+    public ResponseEntity<Item> addLike(@PathVariable int id) {
         log.debug("Trying to add like to item with id '{}'", id);
 
         Item likedItem = itemService.addLike(id);
@@ -89,8 +83,7 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}/like")
-    public @ResponseBody
-    ResponseEntity<Item> removeLike(@PathVariable int id) {
+    public ResponseEntity<Item> removeLike(@PathVariable int id) {
         log.debug("Trying to remove like from item with id '{}'", id);
 
         Item unlikedItem = itemService.removeLike(id);
@@ -98,8 +91,7 @@ public class ItemController {
     }
 
     @PutMapping
-    public @ResponseBody
-    ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
+    public ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
         log.debug("Trying to update item '{}'", newItem);
         Item updatedItem = itemService.updateItem(newItem);
 
@@ -108,8 +100,7 @@ public class ItemController {
     }
 
     @DeleteMapping("/delete")
-    public @ResponseBody
-    ResponseEntity deleteItem(@Valid @RequestBody Item item) {
+    public ResponseEntity deleteItem(@Valid @RequestBody Item item) {
         log.debug("Trying to delete item '{}'", item);
         Item deletedItem = itemService.deleteItem(item);
 
