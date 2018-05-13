@@ -19,6 +19,7 @@ DROP TABLE periodicity;
 DROP TABLE event_type;
 DROP TABLE uuser;
 DROP TABLE tag_item;
+DROP TABLE item_comment;
 
 CREATE TABLE uuser (
   user_id NUMBER(11) PRIMARY KEY,
@@ -30,15 +31,17 @@ CREATE TABLE uuser (
   timezone NUMBER(3),
   image_filepath VARCHAR2(200),
   bday DATE,
-  phone VARCHAR2(25)
+  phone VARCHAR2(25),
+  pined_event_id NUMBER(11),
+  periodical_email VARCHAR2(100)
 );
 
 CREATE TABLE user_item (
   user_id number NOT NULL,
   item_id number NOT NULL,
   id_who_booked number,
-  due_date timestamp,
-  priority_id number NOT NULL,
+  priority_id number,
+  due_date timestamp NOT NULL,
   UNIQUE (user_id, item_id)
 );
 
@@ -150,4 +153,13 @@ CREATE TABLE chat_type (
   chat_type_id number,
   type varchar2(10) NOT NULL,
   PRIMARY KEY (chat_type_id)
+);
+
+CREATE TABLE item_comment
+(
+  comment_id number PRIMARY KEY,
+  body_text VARCHAR2(2000) NOT NULL,
+  post_time TIMESTAMP NOT NULL,
+  author_id number NOT NULL,
+  item_id number NOT NULL
 );

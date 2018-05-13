@@ -9,10 +9,10 @@ public final class Key {
     public static final String TABLE_FRIEND = "FRIEND";
     public static final String TABLE_EVENT = "EVENT";
     public static final String TABLE_USER_EVENT = "USER_EVENT";
-    public static final String TABLE_FOLDER = "FOLDER";
+    public static final String TABLE_FOLDER= "FOLDER";
     public static final String TABLE_ITEM = "ITEM";
     public static final String TABLE_TAG = "TAG";
-
+    public static final String TABLE_LLIKE = "LLIKE";
 
     //ITEM table fields
     public static final String ITEM_ITEM_ID = "ITEM_ID";
@@ -30,6 +30,8 @@ public final class Key {
 
     //LLIKE table field
     public static final String LLIKE_LIKE_ID = "LIKE_ID";
+    public static final String LLIKE_ITEM_ID = "ITEM_ID";
+    public static final String LLIKE_USER_ID = "USER_ID";
 
     //TAG table fields
     public static final String TAG_TAG_ID = "TAG_ID";
@@ -37,65 +39,68 @@ public final class Key {
 
 
     //UUSER table fields
-    public static final String UUSER_USER_ID = "USER_ID";
-    public static final String UUSER_LOGIN = "login";
-    public static final String UUSER_PASSWORD = "password";
-    public static final String UUSER_NAME = "name";
-    public static final String UUSER_SURNAME = "surname";
-    public static final String UUSER_EMAIL = "email";
-    public static final String UUSER_TIMEZONE = "timezone";
-    public static final String UUSER_IMAGE_FILEPATH = "image_filepath";
-    public static final String UUSER_BDAY = "bday";
-    public static final String UUSER_PHONE = "phone";
+    public static final String UUSER_USER_ID ="USER_ID";
+    public static final String UUSER_LOGIN ="login";
+    public static final String UUSER_PASSWORD ="password";
+    public static final String UUSER_NAME ="name";
+    public static final String UUSER_SURNAME ="surname";
+    public static final String UUSER_EMAIL ="email";
+    public static final String UUSER_TIMEZONE ="timezone";
+    public static final String UUSER_IMAGE_FILEPATH="image_filepath";
+    public static final String UUSER_BDAY="bday";
+    public static final String UUSER_PHONE="phone";
+    public static final String UUSER_PINED_EVENT_ID="pined_event_id";
+    public static final String UUSER_PERIODICAL_EMAIL="periodical_email";
 
     //FRIEND table fields
-    public static final String FRIEND_SENDER_ID = "SENDER_ID";
-    public static final String FRIEND_RECEIVER_ID = "RECEIVER_ID";
-    public static final String FRIEND_IS_CONFIRMED = "IS_CONFIRMED";
+    public static final String FRIEND_SENDER_ID ="SENDER_ID";
+    public static final String FRIEND_RECEIVER_ID ="RECEIVER_ID";
+    public static final String FRIEND_IS_CONFIRMED="IS_CONFIRMED";
 
     //EVENT table fields
-    public static final String EVENT_EVENT_ID = "EVENT_ID";
-    public static final String EVENT_NAME = "NAME";
-    public static final String EVENT_EVENT_DATE = "EVENT_DATE";
-    public static final String EVENT_PERIODICITY_ID = "PERIODICITY_ID";
-    public static final String EVENT_DESCRIPTION = "DESCRIPTION";
-    public static final String EVENT_PLACE = "PLACE";
-    public static final String EVENT_EVENT_TYPE_ID = "EVENT_TYPE_ID";
-    public static final String EVENT_IS_DRAFT = "IS_DRAFT";
-    public static final String EVENT_FOLDER_ID = "FOLDER_ID";
-    public static final String EVENT_IMAGE_FILEPATH = "IMAGE_FILEPATH";
+    public static final String EVENT_EVENT_ID="EVENT_ID";
+    public static final String EVENT_NAME="NAME";
+    public static final String EVENT_EVENT_DATE="EVENT_DATE";
+    public static final String EVENT_PERIODICITY_ID="PERIODICITY_ID";
+    public static final String EVENT_DESCRIPTION="DESCRIPTION";
+    public static final String EVENT_PLACE="PLACE";
+    public static final String EVENT_EVENT_TYPE_ID="EVENT_TYPE_ID";
+    public static final String EVENT_IS_DRAFT="IS_DRAFT";
+    public static final String EVENT_FOLDER_ID="FOLDER_ID";
+    public static final String EVENT_IMAGE_FILEPATH="IMAGE_FILEPATH";
 
     //USER_EVENT table fields
-    public static final String USER_EVENT_USER_ID = "USER_ID";
-    public static final String USER_EVENT_EVENT_ID = "EVENT_ID";
-    public static final String USER_EVENT_ROLE_ID = "ROLE_ID";
+    public static final String USER_EVENT_USER_ID="USER_ID";
+    public static final String USER_EVENT_EVENT_ID="EVENT_ID";
+    public static final String USER_EVENT_ROLE_ID="ROLE_ID";
 
     //FOLDER table fields
-    public static final String FOLDER_FOLDER_ID = "FOLDER_ID";
-    public static final String FOLDER_NAME = "name";
-    public static final String FOLDER_USER_ID = "user_id";
+    public static final String FOLDER_FOLDER_ID="FOLDER_ID";
+    public static final String FOLDER_NAME="name";
+    public static final String FOLDER_USER_ID="user_id";
 
     //UserDao
-    public static final String USER_FIND_BY_LOGIN = "user.findByLogin";
-    public static final String USER_FIND_BY_ID = "user.findById";
-    public static final String USER_FIND_BY_EMAIL = "user.findByEmail";
-    public static final String USER_UPDATE = "user.update";
-    public static final String USER_UPDATE_PASSWORD = "user.updatePassword";
-    public static final String USER_DELETE = "user.delete";
+    public static final String USER_FIND_BY_LOGIN="user.findByLogin";
+    public static final String USER_FIND_BY_ID="user.findById";
+    public static final String USER_FIND_BY_EMAIL="user.findByEmail";
+    public static final String USER_UPDATE="user.update";
+    public static final String USER_UPDATE_PASSWORD="user.updatePassword";
+    public static final String USER_DELETE="user.delete";
     public static final String USER_GET_FRIENDS = "user.getFriends";
     public static final String USER_GET_UNCONFIRMED = "user.getUnconfirmedFriends";
-    public static final String USER_CONFIRM_FRIEND = "user.confirmFriend";
-    public static final String USER_DELETE_FRIEND = "user.deleteFriend";
-    public static final String USER_IS_LOGIN_FREE = "user.isLoginFree";
-    public static final String USER_IS_EMAIL_FREE = "user.isEmailFree";
+    public static final String USER_CONFIRM_FRIEND="user.confirmFriend";
+    public static final String USER_DELETE_FRIEND="user.deleteFriend";
+    public static final String USER_IS_LOGIN_FREE ="user.isLoginFree";
+    public static final String USER_IS_EMAIL_FREE ="user.isEmailFree";
+    public static final String USER_GET_BY_EMAIL_PERIOD="user.getByEmailPeriod";
 
     //FolderDao
-    public static final String FOLDER_GET_USER_FOLDERS = "folder.getUserFolders";
-    public static final String FOLDER_GET_BY_ID = "folder.getById";
-    public static final String FOLDER_GET_BY_NAME = "folder.getByName";
-    public static final String FOLDER_UPDATE = "folder.update";
-    public static final String FOLDER_DELETE = "folder.delete";
-    public static final String FOLDER_REMOVE_EVENTS = "folder.removeEvents";
+    public static final String FOLDER_GET_USER_FOLDERS="folder.getUserFolders";
+    public static final String FOLDER_GET_BY_ID="folder.getById";
+    public static final String FOLDER_GET_BY_NAME="folder.getByName";
+    public static final String FOLDER_UPDATE="folder.update";
+    public static final String FOLDER_DELETE="folder.delete";
+    public static final String FOLDER_REMOVE_EVENTS="folder.removeEvents";
 
     //EventDao
     public static final String EVENT_FIND_BY_USER_ID="event.findByUserId";
@@ -107,12 +112,13 @@ public final class Key {
     public static final String EVENT_FIND_BY_TYPE_IN_FOLDER="event.findByTypeInFolder";
     public static final String EVENT_GET_DRAFTS="event.getDrafts";
     public static final String EVENT_GET_IN_PERIOD="event.getInPeriod";
+    public static final String EVENT_GET_IN_PERIOD_ALL_USERS="event.getInPeriodAllUsers";
     public static final String EVENT_GET_ALL_PUBLIC="event.getAllPublic";
     public static final String EVENT_DELETE_PARTICIPANTS="event.deleteParticipants";
     public static final String EVENT_DELETE_MEMBERS="event.deleteMembers";
     public static final String EVENT_DELETE_PARTICIPANT="event.deleteParticipant";
     //RoleDao
-    public static final String GET_ROLE = "role.getRole";
+    public static final String GET_ROLE="role.getRole";
 
     //ItemDao
     public static final String ITEM_FIND_BY_ID = "item.findById";
@@ -135,13 +141,13 @@ public final class Key {
     public static final String ITEM_GET_BOOKED_ITEMS_BY_USER_ID = "item.getBookedItemsByUserId";
     public static final String ITEM_GET_ITEMS_ID_BY_TAG_NAMES = "item.getItemsIdByTagNames";
     public static final String TAG_SEARCH_TAGS_NAME = "tag.searchTagsName";
-    public static final String ITEM_GET_LIKED_USER_LOGINS_BY_ITEM_ID = "item.getLikedUserLoginsById";
+    public static final String ITEM_GET_LIKE_ID_BY_USER_ID_ITEM_ID = "item.getLikeIdByUserIdItemId";
 
     //Exceptions
     public static final String EXCEPTION_AUTHENTICATION = "authentication.exception";
     public static final String EXCEPTION_BAD_TOKEN = "bad.token.exception";
-    public static final String EXCEPTION_DATABASE_WORK = "database.work.exception";
-    public static final String EXCEPTION_EMAIL_USED = "email.used.exception";
+    public static final String EXCEPTION_DATABASE_WORK= "database.work.exception";
+    public static final String EXCEPTION_EMAIL_USED= "email.used.exception";
     public static final String EXCEPTION_LOGIN_USED = "login.used.Exception";
     public static final String EXCEPTION_ENTITY_NOT_FOUND = "entity.not.found.exception";
     public static final String EXCEPTION_LOGIN_NOT_FOUND = "login.not.found.exception";
@@ -153,9 +159,20 @@ public final class Key {
     public static final String EXCEPTION_HASH_ALGORITHM = "hash.algorithm.exception";
     public static final String EXCEPTION_NO_TOKEN = "no.token.exception";
     public static final String EXCEPTION_MAIL_SERVER = "mail.server.exception";
+    public static final String EXCEPTION_PARSE_DATE = "parse.date.exception";
 
-    private Key() {
-    }
+    //Send mail periods
+    public static final String MAIL_MONTHLY="MONTHLY";
+    public static final String MAIL_EVERY_SUNDAY="SUNDAY";
+    public static final String MAIL_EVERY_MONDAY="MONDAY";
+    public static final String MAIL_EVERY_TUESDAY="TUESDAY";
+    public static final String MAIL_EVERY_WEDNESDAY="WEDNESDAY";
+    public static final String MAIL_EVERY_THURSDATY="THURSDAY";
+    public static final String MAIL_EVERY_FRIDAY="FRIDAY";
+    public static final String MAIL_EVERY_SATURDAY="SATURDAY";
+    public static final String MAIL_DAILY="DAILY";
+
+    private Key(){}
 
     public static Key getInstance() {
         if (instance == null) {

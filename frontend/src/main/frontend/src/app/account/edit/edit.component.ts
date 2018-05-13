@@ -7,6 +7,7 @@ import {UploadFileService} from "../../upload.file/upload.file.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {FormBuilder, Validators} from "@angular/forms";
 import {ModalWindow} from "../../modal.window/modal.window.component";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'edit',
@@ -34,13 +35,14 @@ export class EditComponent implements OnInit {
     email: [Validators.required, Validators.pattern(this.emailPattern)]
   });
 
-  @ViewChild(ModalWindow) childComponent: ModalWindow
+  @ViewChild(ModalWindow) childComponent: ModalWindow;
   constructor(private accountService: AccountService,
               private router: Router,
               private fb: FormBuilder,
               private route: ActivatedRoute,
               private uploadService: UploadFileService,
-              private spinner: NgxSpinnerService) {
+              private spinner: NgxSpinnerService,
+              private appComponent:AppComponent) {
   }
 
   clickButton() {
@@ -59,11 +61,15 @@ export class EditComponent implements OnInit {
     this.account = new Profile();
     this.route.params.subscribe(params => {
       this.account.login = params['login'];
+    },error => {
+      this.appComponent.showError(error, 'Error');
     });
 
     this.accountService.profile(this.account.login).subscribe(
       (data) => {
         this.account = data;
+      },error => {
+        this.appComponent.showError(error, 'Error');
       }
     );
   }
@@ -77,6 +83,7 @@ export class EditComponent implements OnInit {
         this.spinner.hide();
       },
       response => {
+        this.appComponent.showError(response,"Error")
         if (response.status === 200) {
           let profile = JSON.parse(localStorage.currentUser);
           profile.name = this.account.name;
@@ -91,7 +98,7 @@ export class EditComponent implements OnInit {
             [JSON.parse(localStorage.currentUser).login + '/profile']);
         }
         this.spinner.hide();
-        this.processError(response)
+          this.appComponent.showError(response, 'Error');
       }
     );
   }
@@ -122,7 +129,10 @@ export class EditComponent implements OnInit {
         profile.imgPath = event.body;
         localStorage.setItem('currentUser', JSON.stringify(profile));
       }
-    });
+    },error => {
+      this.appComponent.showError(error, 'Error');
+      this.processError(error)
+    } );
 
     this.selectedFiles = undefined
 

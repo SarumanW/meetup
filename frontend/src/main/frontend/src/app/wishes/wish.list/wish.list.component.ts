@@ -7,6 +7,8 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 import "rxjs/add/operator/debounceTime";
 import {WishService} from "../wish.service";
+import {FormControl} from "@angular/forms";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-wish-list',
@@ -25,8 +27,6 @@ export class WishListComponent implements OnInit {
   title: string;
   category: string;
   profile: Profile;
-  tag: string;
-  tags: string[] = [];
   login: string;
 
   //Add item date
@@ -34,11 +34,18 @@ export class WishListComponent implements OnInit {
   dueDate: string;
   priority: string;
 
+  //Tags
+  queryTagField: FormControl = new FormControl();
+  queryTags: string[] = [];
+  tag: string;
+  tags: string[] = [];
+
   constructor(private wishListService: WishListService,
               private wishService: WishService,
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
-              private toastr: ToastrService,) {
+              private toastr: ToastrService,
+              private appComponent:AppComponent) {
   }
 
   ngOnInit() {
@@ -49,6 +56,7 @@ export class WishListComponent implements OnInit {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
 
     this.loginSubscriber();
+    this.tagsInputSubscriber();
     this.getDueDate()
   }
 
@@ -70,7 +78,8 @@ export class WishListComponent implements OnInit {
         this.title = "Own wishes:";
       }
       this.getWishList();
-    });
+    },
+      error => this.appComponent.showError(error, "Error"));
   }
 
   getWishList(withSpinner = true) {
@@ -83,22 +92,17 @@ export class WishListComponent implements OnInit {
         console.log(itemList);
         this.items = itemList;
         this.spinner.hide();
-      });
+      }, error => {
+        this.appComponent.showError(error, "Error")
+      this.spinner.hide();
+    });
   }
 
-  addSearchTag() {
-    if (this.tag.length > 2 && this.tag.length < 31 && /^[_A-Za-z0-9]*$/.test(this.tag) && this.tags.length < 8) {
-      this.tags.push(this.tag);
-      this.tag = '';
-      this.getWishList()
-    }
-  }
-
-  deleteSearchTag(tag: string) {
-    const index = this.tags.indexOf(tag);
-    if (index !== -1) {
-      this.tags.splice(index, 1)
-      this.getWishList()
+  getActionBackground(item: Item) {
+    if(item.ownerId !== this.profile.id) {
+      return 'item-action-add';
+    } else {
+      return 'item-action-del';
     }
   }
 
@@ -118,7 +122,6 @@ export class WishListComponent implements OnInit {
     });
   }
 
-  //todo check working
   bookWishItem(item: Item) {
     item.bookerId = this.profile.id;
     this.spinner.show();
@@ -137,11 +140,10 @@ export class WishListComponent implements OnInit {
       this.showSuccess('Wish item was successfully booked', 'Attention!');
     }, error => {
       this.spinner.hide();
-      this.showError('Unsuccessful wish item booking', 'Adding error');
+      this.appComponent.showError(error, "Error")
     });
   }
 
-  //todo check working
   unbookWishItem(item: Item) {
     this.spinner.show();
     this.wishService.unbookWishItem(item).subscribe(itemUnBooked => {
@@ -158,7 +160,7 @@ export class WishListComponent implements OnInit {
 
       this.showSuccess('Wish item was successfully deleted', 'Attention!');
     }, error => {
-      this.showError('Unsuccessful wish item deleting', 'Adding error');
+      this.appComponent.showError(error, "Error")
       this.spinner.hide();
     });
   }
@@ -175,7 +177,7 @@ export class WishListComponent implements OnInit {
     newItem.priority = this.priority;
 
     this.spinner.show();
-    this.wishService.addExistWishItem(newItem).subscribe(item => {
+    this.wishService.addExistWishItem(newItem).subscribe(newItem => {
       this.spinner.hide();
 
       const index = this.items.indexOf(item);
@@ -185,7 +187,7 @@ export class WishListComponent implements OnInit {
 
       this.showSuccess('Wish item was successfully added', 'Attention!');
     }, error => {
-      this.showError('Unsuccessful wish item adding', 'Adding error');
+      this.appComponent.showError(error, "Error")
       this.spinner.hide();
     });
   }
@@ -205,7 +207,7 @@ export class WishListComponent implements OnInit {
 
   deleteWishItem(item: Item) {
     this.spinner.show();
-    this.wishService.deleteWishItem(item).subscribe(item => {
+    this.wishService.deleteWishItem(item).subscribe(deletedItem => {
       this.spinner.hide();
 
       const index = this.items.indexOf(item);
@@ -215,8 +217,42 @@ export class WishListComponent implements OnInit {
 
       this.showSuccess('Wish item was successfully deleted', 'Attention!');
     }, error => {
-      this.showError('Unsuccessful wish item deleting', 'Adding error');
+      this.appComponent.showError(error, "Error")
       this.spinner.hide();
     });
+  }
+
+  tagsInputSubscriber() {
+    this.queryTagField.valueChanges
+      .debounceTime(400)
+      .distinctUntilChanged()
+      .subscribe(queryField => {
+        if (this.tag !== undefined && this.tag !== '') {
+          this.wishListService.getQueryTagList(queryField)
+            .subscribe((queryTags) => {
+              this.queryTags = queryTags;
+            }, error => {
+              this.showError(error, 'Error');
+            })
+        }
+      }, error => {
+        this.appComponent.showError(error, "Error")
+      });
+  }
+
+  addSearchTag(tag: string = this.tag) {
+    if (tag.length > 2 && tag.length < 31 && /^[_A-Za-z0-9]*$/.test(tag) && this.tags.length < 8) {
+      this.tags.push(tag);
+      this.tag = '';
+      this.getWishList();
+    }
+  }
+
+  deleteSearchTag(tag: string) {
+    const index = this.tags.indexOf(tag);
+    if (index !== -1) {
+      this.tags.splice(index, 1);
+      this.getWishList();
+    }
   }
 }
