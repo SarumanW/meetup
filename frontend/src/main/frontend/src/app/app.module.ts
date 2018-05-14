@@ -57,6 +57,7 @@ import {WishService} from "./wishes/wish.service";
 import { WishEditComponent } from './wishes/wish.edit/wish.edit.component';
 import {CountDown} from "ng2-date-countdown";
 import { CommentListComponent } from './wishes/wish/comment-list/comment-list.component';
+import {CommentService} from "./wishes/wish/comment-list/comment.service";
 
 @NgModule({
   declarations: [
@@ -123,7 +124,8 @@ import { CommentListComponent } from './wishes/wish/comment-list/comment-list.co
     CalendarService,
     ImageUploadService,
     WishListService,
-    WishService
+    WishService,
+    CommentService
   ],
   bootstrap: [AppComponent]
 })
