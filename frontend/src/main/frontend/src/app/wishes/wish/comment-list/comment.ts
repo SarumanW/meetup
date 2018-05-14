@@ -1,8 +1,7 @@
-import {Profile} from "../../../account/profile";
-
 export interface Comment {
-  id: number;
-  body: string;
-  createdAt: string;
-  author: Profile;
+  commentId: number;
+  bodyText: string;
+  postTime: string;
+  authorId: number;
+  itemId:number;
 }

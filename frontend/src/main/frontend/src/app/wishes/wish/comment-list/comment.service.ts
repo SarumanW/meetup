@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
-import {map} from "rxjs/operator/map";
 
 @Injectable()
 export class CommentService {
@@ -10,7 +9,7 @@ export class CommentService {
 
   //todo link with actual backend
 
-  add(idItem, commentText): Observable<Comment> {
+  add(idItem : number, commentText:string): Observable<any> {
     return null;
     // return this.apiService
     //   .post(
@@ -19,14 +18,18 @@ export class CommentService {
     //   ).pipe(map(data => data.comment));
   }
 
-  getAll(idItem): Observable<Comment[]> {
-    return null;
-    // return this.apiService.get(`/articles/${slug}/comments`)
-    //   .pipe(map(data => data.comments));
+  getAll(idItem: number): Observable<any> {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.get<any>('api/comment/'+idItem+'/friends', {headers:headers})
+      .map(comments => {
+        return comments;
+      })
   }
 
-  destroy(idComment, idItem) {
-
+  destroy(idComment, idItem):Observable<any> {
+    return null;
     // return this.apiService
     //   .delete(`/articles/${articleSlug}/comments/${commentId}`);
   }

@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 
 public abstract class AbstractDao<T> implements Dao<T> {
+
     @Autowired
     protected Environment env;
 
@@ -21,9 +22,5 @@ public abstract class AbstractDao<T> implements Dao<T> {
     protected JdbcTemplate jdbcTemplate;
 
     protected static Logger log;
-
-
-
-
 
 }

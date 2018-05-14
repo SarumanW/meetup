@@ -1,19 +1,14 @@
 package com.meetup.meetup.dao.impl;
 
-import com.meetup.meetup.dao.Dao;
+import com.meetup.meetup.dao.AbstractDao;
 import com.meetup.meetup.dao.ItemCommentDao;
-import com.meetup.meetup.dao.ItemDao;
 import com.meetup.meetup.dao.rowMappers.ItemCommentRowMapper;
 import com.meetup.meetup.entity.ItemComment;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -28,14 +23,11 @@ import static com.meetup.meetup.keys.Key.*;
 @PropertySource("classpath:sqlDao.properties")
 @PropertySource("classpath:strings.properties")
 @PropertySource("classpath:image.properties")
-public class ItemCommentDaoImpl implements ItemCommentDao {
-    private static Logger log = LoggerFactory.getLogger(ItemCommentDaoImpl.class);
+public class ItemCommentDaoImpl extends AbstractDao<ItemComment> implements ItemCommentDao {
 
-    @Autowired
-    private Environment env;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public ItemCommentDaoImpl(){
+        log=LoggerFactory.getLogger(ItemCommentDaoImpl.class);
+    }
 
     @Override
     public ItemComment findById(int id) {
@@ -108,12 +100,12 @@ public class ItemCommentDaoImpl implements ItemCommentDao {
 
 
     @Override
-    public List<Map<String,Object>> getCommentsForItemId(int itemId) {
+    public List<ItemComment> getCommentsForItemId(int itemId) {
         log.debug("Try get list comments by item id: '{}'", itemId);
-        List<Map<String,Object>> itemComment;
+        List<ItemComment> itemComment;
         try {
-            itemComment = jdbcTemplate.queryForList(env.getProperty(ITEM_COMMENT_FIND_COMMENTS_BY_ITEM_ID),
-                    itemId);
+            itemComment = jdbcTemplate.query(env.getProperty(ITEM_COMMENT_FIND_COMMENTS_BY_ITEM_ID),
+                    new Object[]{itemId}, new ItemCommentRowMapper());
         } catch (EmptyResultDataAccessException e) {
             log.debug("Comments not found by item id: '{}'", itemId);
             return null;
