@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/comment")
@@ -55,9 +54,9 @@ public class ItemCommentController {
     }
 
     @GetMapping("{itemId}/comments")
-    public ResponseEntity <List<Map<String,Object>>> getCommentsByItemId(@PathVariable int itemId){
+    public ResponseEntity <List<ItemComment>> getCommentsByItemId(@PathVariable int itemId){
         log.debug("Try to get comments for item with id '{}'", itemId);
-        List<Map<String,Object>> comments = itemCommentService.getCommentsByItemId(itemId);
+        List<ItemComment> comments = itemCommentService.getCommentsByItemId(itemId);
 
         log.debug("Send response body comments '{}' and status CREATED", comments);
         return new ResponseEntity<>(comments, HttpStatus.CREATED);
