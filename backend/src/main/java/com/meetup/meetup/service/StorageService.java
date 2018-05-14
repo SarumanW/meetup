@@ -39,7 +39,7 @@ public class StorageService {
         rootLocation = Paths.get(env.getProperty("profile.img.link"));
         User user = authenticationFacade.getAuthentication();
         String inFileFormat = "." + file.getOriginalFilename().split("\\.")[1];
-        user.setImgPath(env.getProperty("profile.img.link") + user.getId() + inFileFormat);
+        user.setImgPath(env.getProperty("remote.img.link") + user.getId() + inFileFormat);
         userDao.update(user);
         try {
             Files.deleteIfExists(this.rootLocation.resolve(user.getId() + inFileFormat));

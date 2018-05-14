@@ -44,7 +44,6 @@ public class User {
     @JsonIgnore
     private int timeZone;
 
-//    @JsonIgnore
     private String imgPath;
 
     private int pinedEventId;
