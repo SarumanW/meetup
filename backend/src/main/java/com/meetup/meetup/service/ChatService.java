@@ -1,5 +1,6 @@
 package com.meetup.meetup.service;
 
+import com.meetup.meetup.dao.ChatDao;
 import com.meetup.meetup.service.vm.ChatIds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +18,14 @@ public class ChatService {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private ChatDao chatDao;
+
     public ChatIds addChats(int eventId) {
-        return new ChatIds(eventId - 1, eventId + 1);
+        return new ChatIds(chatDao.createChatsByEventId(eventId));
     }
 
     public ChatIds getChatsIds(int eventId) {
-        return new ChatIds(eventId - 1, eventId + 1);
+        return new ChatIds(chatDao.findChatsIdsByEventId(eventId));
     }
 }

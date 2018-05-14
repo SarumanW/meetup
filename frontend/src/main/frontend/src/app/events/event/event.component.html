@@ -39,22 +39,11 @@
             </div>
           </div>
 
-          <div class="col-md-4" *ngIf="eventt.ownerId === this.currentUserId">
+          <div class="col-md-2" *ngIf="eventt.ownerId === this.currentUserId">
+
             <div>
               <button type="button" class="btn btn-danger" (click)="deleteEventt.show()"
               >Delete Event</button>
-            </div>
-
-            <br>
-
-            <div>
-              <button type="button" class="btn btn-primary" routerLink="/chat/{{eventt.publicChatId}}"
-              >Open public chat</button>
-            </div>
-
-            <div *ngIf="eventt.ownerId !== this.currentUserId">
-              <button type="button" class="btn btn-primary" routerLink="/chat/{{eventt.privateChatId}}"
-              >Open private chat</button>
             </div>
 
             <br>
@@ -76,10 +65,23 @@
                   <a class="dropdown-item">Draft enable/disable</a></li>
               </ul>
             </div>
-
           </div>
 
+          <div class="col-md-2">
 
+            <div>
+              <button type="button" class="btn btn-default" (click)="onPublicChat()"
+              >Public chat</button>
+            </div>
+
+            <br>
+
+            <div *ngIf="eventt.ownerId !== this.currentUserId">
+              <button type="button" class="btn btn-default" (click)="onPrivateChat()"
+              >Private chat</button>
+            </div>
+
+          </div>
 
         </div>
 
