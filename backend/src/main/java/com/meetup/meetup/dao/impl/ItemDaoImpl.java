@@ -1,5 +1,6 @@
 package com.meetup.meetup.dao.impl;
 
+import com.meetup.meetup.dao.AbstractDao;
 import com.meetup.meetup.dao.ItemDao;
 import com.meetup.meetup.dao.rowMappers.ItemRowMapper;
 import com.meetup.meetup.entity.Item;
@@ -26,15 +27,11 @@ import static com.meetup.meetup.keys.Key.*;
 @PropertySource("classpath:sqlDao.properties")
 @PropertySource("classpath:strings.properties")
 @PropertySource("classpath:image.properties")
-public class ItemDaoImpl implements ItemDao {
+public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
 
-    private static Logger log = LoggerFactory.getLogger(ItemDaoImpl.class);
-
-    @Autowired
-    private Environment env;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public ItemDaoImpl(){
+        log=LoggerFactory.getLogger(ItemDaoImpl.class);
+    }
 
     private final int numberOfPopularItem = 5;
     private final int numberOfSearchedItem = 5;
@@ -303,6 +300,7 @@ public class ItemDaoImpl implements ItemDao {
         }
         return items;
     }
+
 
     @Override
     public List<Item> findItemsByTagName(String[] tagNames) {

@@ -1,5 +1,6 @@
 package com.meetup.meetup.dao.impl;
 
+import com.meetup.meetup.dao.AbstractDao;
 import com.meetup.meetup.dao.Dao;
 import com.meetup.meetup.dao.ItemCommentDao;
 import com.meetup.meetup.dao.ItemDao;
@@ -28,14 +29,11 @@ import static com.meetup.meetup.keys.Key.*;
 @PropertySource("classpath:sqlDao.properties")
 @PropertySource("classpath:strings.properties")
 @PropertySource("classpath:image.properties")
-public class ItemCommentDaoImpl implements ItemCommentDao {
-    private static Logger log = LoggerFactory.getLogger(ItemCommentDaoImpl.class);
+public class ItemCommentDaoImpl extends AbstractDao<ItemComment> implements ItemCommentDao {
 
-    @Autowired
-    private Environment env;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public ItemCommentDaoImpl(){
+        log=LoggerFactory.getLogger(ItemCommentDaoImpl.class);
+    }
 
     @Override
     public ItemComment findById(int id) {
