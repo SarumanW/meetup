@@ -60,39 +60,18 @@ public class ChatDaoImpl implements ChatDao {
     @Transactional
     public List<Integer> createChatsByEventId(int eventId) {
         int chatIdWithOwner, chatIdWithoutOwner;
-        log.debug("Try to insert chat with owner by eventId '{}'", eventId);
 
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName(TABLE_CHAT)
-                .usingGeneratedKeyColumns(CHAT_CHAT_ID);
+        log.debug("Try to insert chat with owner with eventId '{}'", eventId);
 
-        Map<String, Object> chatWithOwner = new HashMap<>();
-        chatWithOwner.put(CHAT_CHAT_TYPE_ID, CHAT_ID_WITH_OWNER);
-        chatWithOwner.put(CHAT_EVENT_ID, eventId);
+        chatIdWithOwner = insertChat(eventId, CHAT_ID_WITH_OWNER);
 
-        try {
-            chatIdWithOwner = simpleJdbcInsert.executeAndReturnKey(chatWithOwner).intValue();
-        } catch (DataAccessException e) {
-            log.error("Query fails by insert chat with owner '{}'", chatWithOwner);
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
+        log.debug("Chat with owner was successfully inserted with id '{}'", chatIdWithOwner);
 
-        log.debug("Chat with owner was insert" + (chatIdWithOwner == 0 ? "ed with id '{}'" : "ing failed"), chatIdWithOwner);
+        log.debug("Try to insert chat without owner with eventId '{}'", eventId);
 
-        log.debug("Try to insert chat without owner by eventId '{}'", eventId);
+        chatIdWithoutOwner = insertChat(eventId, CHAT_ID_WITHOUT_OWNER);
 
-        Map<String, Object> chatWithoutOwner = new HashMap<>();
-        chatWithOwner.put(CHAT_CHAT_TYPE_ID, CHAT_ID_WITHOUT_OWNER);
-        chatWithOwner.put(CHAT_EVENT_ID, eventId);
-
-        try {
-            chatIdWithoutOwner = simpleJdbcInsert.executeAndReturnKey(chatWithoutOwner).intValue();
-        } catch (DataAccessException e) {
-            log.error("Query fails by insert chat with owner '{}'", chatWithoutOwner);
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
-
-        log.debug("Chat with owner was insert" + (chatIdWithoutOwner == 0 ? "ed with id '{}'" : "ing failed"), chatIdWithoutOwner);
+        log.debug("Chat without owner was successfully inserted with id '{}'", chatIdWithoutOwner);
 
         List<Integer> eventChats = new ArrayList<>(EVENT_CHATS_COUNT);
 
@@ -100,6 +79,31 @@ public class ChatDaoImpl implements ChatDao {
         eventChats.add(chatIdWithoutOwner);
 
         return eventChats;
+    }
+
+    private int insertChat(int eventId, int chatTypeId) {
+        int chatId;
+
+        log.debug("Try to insert chat by eventId '{}'", eventId);
+
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
+                .withTableName(TABLE_CHAT)
+                .usingGeneratedKeyColumns(CHAT_CHAT_ID);
+
+        Map<String, Object> chat = new HashMap<>();
+        chat.put(CHAT_CHAT_TYPE_ID, chatTypeId);
+        chat.put(CHAT_EVENT_ID, eventId);
+
+        try {
+            chatId = simpleJdbcInsert.executeAndReturnKey(chat).intValue();
+        } catch (DataAccessException e) {
+            log.error("Query fails by insert chat '{}'", chat);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        log.debug("Chat was insert" + (chatId == 0 ? "ed with id '{}'" : "ing failed"), chatId);
+
+        return chatId;
     }
 
     @Override
