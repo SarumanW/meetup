@@ -111,7 +111,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     setTimeout(() => {
       this.stompClient.send("/app-chat/add/" + this.chatId, {}, JSON.stringify({sender: userName, type: 'JOIN'}));
-    }, 2000)
+    }, 3000)
   }
 
   sendMessage() {

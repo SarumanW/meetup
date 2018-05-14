@@ -40,7 +40,6 @@ export class EventComponent implements OnInit {
               private spinner: NgxSpinnerService,
               private router: Router,
               private appComponent: AppComponent,
-              private router: Router,
               private chatService: ChatService) {
   }
 
