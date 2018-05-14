@@ -292,4 +292,12 @@ export class EventComponent implements OnInit {
     this.type + "/" + this.eventId + "/edit"]);
   }
 
+  onPublicChat() {
+    this.router.navigate(["/chat" + this.eventt.publicChatId]);
+  }
+
+  onPrivateChat() {
+    this.router.navigate(["/chat" + this.eventt.privateChatId]);
+  }
+
 }
