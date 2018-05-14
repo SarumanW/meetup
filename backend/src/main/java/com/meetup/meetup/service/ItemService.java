@@ -1,11 +1,9 @@
 package com.meetup.meetup.service;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meetup.meetup.dao.ItemDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.Item;
-import com.meetup.meetup.entity.ItemPriority;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
@@ -15,7 +13,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service

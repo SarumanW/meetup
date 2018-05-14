@@ -17,7 +17,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.*;
+import java.sql.Timestamp;
 import java.util.*;
 
 import static com.meetup.meetup.keys.Key.*;
