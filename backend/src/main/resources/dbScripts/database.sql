@@ -124,7 +124,7 @@ CREATE TABLE message (
   message_id number,
   sender_id number NOT NULL,
   text varchar2(250) NOT NULL,
-  message_date Date NOT NULL,
+  message_date timestamp NOT NULL,
   chat_id number NOT NULL,
   PRIMARY KEY (message_id)
 );

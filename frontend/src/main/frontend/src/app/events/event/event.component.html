@@ -47,6 +47,18 @@
 
             <br>
 
+            <div>
+              <button type="button" class="btn btn-primary" routerLink="/chat/{{eventt.publicChatId}}"
+              >Open public chat</button>
+            </div>
+
+            <div *ngIf="eventt.ownerId !== this.currentUserId">
+              <button type="button" class="btn btn-primary" routerLink="/chat/{{eventt.privateChatId}}"
+              >Open private chat</button>
+            </div>
+
+            <br>
+
             <div class="btn-group" dropdown>
               <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
                       aria-controls="dropdown-basic">
@@ -64,7 +76,10 @@
                   <a class="dropdown-item">Draft enable/disable</a></li>
               </ul>
             </div>
+
           </div>
+
+
 
         </div>
 
