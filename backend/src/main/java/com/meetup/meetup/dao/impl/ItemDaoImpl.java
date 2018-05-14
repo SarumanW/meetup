@@ -33,8 +33,8 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         log=LoggerFactory.getLogger(ItemDaoImpl.class);
     }
 
-    private final int numberOfPopularItem = 5;
-    private final int numberOfSearchedItem = 5;
+    private final static int NUMBER_OF_POPULAR_ITEMS = 5;
+    private final static int NUMBER_OF_SEARCHED_ITEMS = 5;
 
     @Override
     public List<Item> getWishListByUserId(int userId) {
@@ -69,7 +69,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         } catch (EmptyResultDataAccessException e) {
             log.debug("Item personal info not found by user id: '{}' and item id: '{}'", userId, itemId);
             return item;
-        }catch (DataAccessException e) {
+        } catch (DataAccessException e) {
             log.error("Query fails by find item by user id: '{}' and item id: '{}'", userId, itemId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
@@ -264,11 +264,6 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
     }
 
     @Override
-    public List<Item> getPopularItems(String[] tagArray) {
-        return null;
-    }
-
-    @Override
     public List<Item> findBookedItemsByUserId(int userId) {
         log.debug("Try get booked items list by user id: '{}'", userId);
         List<Item> items = new ArrayList<>();
@@ -300,7 +295,6 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         }
         return items;
     }
-
 
     @Override
     public List<Item> findItemsByTagName(String[] tagNames) {
@@ -344,13 +338,12 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
     @Transactional
     public Item delete(Item model) {
         if (getItemNumberOfUsers(model.getItemId()) == 0) {
-            deleteTagsByItemId(model.getItemId());
             log.debug("Try to delete item by item id: '{}'", model.getItemId());
             try {
                 int result = jdbcTemplate.update(env.getProperty(ITEM_DELETE), model.getItemId());
-                if(result == 0){
+                if (result == 0) {
                     log.error("Not deleted item with item id: '{}'", model.getItemId());
-                }else{
+                } else {
                     log.error("Successfully deleted item with item id: '{}'", model.getItemId());
                 }
             } catch (DataAccessException e) {
@@ -366,7 +359,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         log.debug("Try to search tags name by about tag: '{}'", aboutTag);
         try {
             return jdbcTemplate.queryForList(
-                    env.getProperty(TAG_SEARCH_TAGS_NAME), String.class, "%" + aboutTag + "%", numberOfSearchedItem);
+                    env.getProperty(TAG_SEARCH_TAGS_NAME), String.class, "%" + aboutTag + "%", NUMBER_OF_SEARCHED_ITEMS);
         } catch (EmptyResultDataAccessException e) {
             log.debug("Searched tags not found by aboutTag: '{}'", aboutTag);
             return new ArrayList<>();
@@ -376,26 +369,21 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         }
     }
 
-    // TODO: 10.05.2018 refactor it !!!
     private List<Integer> getItemsIdByTagName(String[] tagNames) {
         log.debug("Try to get items id by tag name: '{}'", Arrays.toString(tagNames));
 
-        StringBuilder builder = new StringBuilder("SELECT ITEM_ID" +
-                "  FROM TAG_ITEM " +
-                "  INNER JOIN TAG T ON TAG_ITEM.TAG_ID = T.TAG_ID " +
-                "  WHERE NAME IN (?");
+        StringBuilder query = new StringBuilder(env.getProperty(ITEM_GET_ITEMS_ID_BY_TAG_NAMES));
 
         for (int i = 1; i < tagNames.length; i++) {
-            builder.append(",?");
+            query.insert(query.indexOf("?"),"?,");
         }
-        String ps = builder.append(") GROUP BY ITEM_ID HAVING COUNT(ITEM_ID) = ?").toString();
+
         List<Object> params = new ArrayList<>(Arrays.asList(tagNames));
         params.add(tagNames.length);
 
         List<Integer> itemsIds = new ArrayList<>();
         try {
-            itemsIds = jdbcTemplate.queryForList(
-                    ps, params.toArray(), Integer.class);
+            itemsIds = jdbcTemplate.queryForList(query.toString(), params.toArray(), Integer.class);
         } catch (EmptyResultDataAccessException e) {
             log.debug("Items id not found by tag names: '{}'", Arrays.toString(tagNames));
             return itemsIds;
@@ -429,7 +417,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         List<Integer> itemsIds = new ArrayList<>();
         try {
             itemsIds = jdbcTemplate.queryForList(
-                    env.getProperty(ITEM_GET_POPULAR_ITEMS_ID), new Object[]{numberOfPopularItem}, Integer.class);
+                    env.getProperty(ITEM_GET_POPULAR_ITEMS_ID), new Object[]{NUMBER_OF_POPULAR_ITEMS}, Integer.class);
         } catch (EmptyResultDataAccessException e) {
             log.debug("Popular items id not found");
             return itemsIds;
@@ -515,7 +503,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         }
     }
 
-    private int getLikeId(int userId, int itemId){
+    private int getLikeId(int userId, int itemId) {
         log.debug("Try to find like by user id: '{}', item id: '{}'", userId, itemId);
         try {
             return jdbcTemplate.queryForObject(env.getProperty(ITEM_GET_LIKE_ID_BY_USER_ID_ITEM_ID), new Object[]{userId, itemId}, Integer.class);
@@ -547,4 +535,3 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         return userLogins;
     }
 }
-
