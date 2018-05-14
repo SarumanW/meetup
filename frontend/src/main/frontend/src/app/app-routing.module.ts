@@ -11,7 +11,7 @@ import {SendRecoveryComponent} from "./account/recovery/send.recovery.component"
 import {EventComponent} from "./events/event/event.component";
 import {EditComponent} from "./account/edit/edit.component";
 import {FriendsListComponent} from "./account/friends/friends.list.component";
-import {ChangePasswordComponent} from "./account/change.password/change.password.component";
+import {ChangePasswordComponent} from "./account/change.password/changePassword.component";
 import {ThankyouComponent} from "./account/thankyou/thankyou.component";
 import {EventListComponent} from "./events/event.list/event.list.component";
 import {EventAddComponent} from "./events/event.add/event.add.component";
@@ -20,7 +20,7 @@ import {WishListComponent} from "./wishes/wish.list/wish.list.component";
 import {WishComponent} from "./wishes/wish/wish.component";
 import {WishAddComponent} from "./wishes/wish.add/wish.add.component";
 import {EventEditComponent} from "./events/event.edit/event.edit.component";
-import {CheckPasswordComponent} from "./account/change.password/check.password/check.password.component"
+import {CheckPasswordComponent} from "./account/change.password/check.password/checkPassword.component"
 import {WishEditComponent} from "./wishes/wish.edit/wish.edit.component";
 
 const routes: Routes = [

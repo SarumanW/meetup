@@ -8,7 +8,7 @@ import {AppComponent} from "../../../app.component";
 
 @Component({
   selector: 'check.password',
-  templateUrl: './check.password.component.html'
+  templateUrl: './checkPassword.component.html'
 })
 
 export class CheckPasswordComponent implements OnInit {

@@ -75,7 +75,7 @@ export class WishListComponent implements OnInit {
         this.title = "Recommendation wishes:";
       } else {
         this.category = WishListComponent.OWN_CATEGORY;
-        this.title = "Own wishes:";
+        this.title = " Your wishes:";
       }
       this.getWishList();
     },
