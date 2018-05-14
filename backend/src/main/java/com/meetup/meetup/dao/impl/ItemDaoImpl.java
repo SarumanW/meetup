@@ -6,19 +6,15 @@ import com.meetup.meetup.dao.rowMappers.ItemRowMapper;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.ItemPriority;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.*;
+import java.sql.Timestamp;
 import java.util.*;
 
 import static com.meetup.meetup.keys.Key.*;
@@ -261,6 +257,11 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return findByUserIdItemId(userId, itemId);
+    }
+
+    @Override
+    public List<Item> getPopularItems(String[] tagArray) {
+        return null;
     }
 
     @Override
