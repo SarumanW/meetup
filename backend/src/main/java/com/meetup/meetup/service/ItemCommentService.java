@@ -11,7 +11,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -38,16 +40,22 @@ public class ItemCommentService {
         return itemCommentDao.findById(id);
     }
 
-    public ItemComment insert(ItemComment itemComment) {
+    public ItemComment insert(String bodyText, int itemId) {
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
         log.debug("User was successfully received");
+
+        ItemComment itemComment = new ItemComment();
+        itemComment.setPostTime(new Timestamp(System.currentTimeMillis()));
+        itemComment.setAuthorId(user.getId());
+        itemComment.setBodyText(bodyText);
+        itemComment.setItemId(itemId);
 
         log.debug("Trying to insert comment '{}'", itemComment);
         return itemCommentDao.insert(itemComment);
     }
 
-    public List<ItemComment> getCommentsByItemId(int itemId) {
+    public List<Map<String, Object>> getCommentsByItemId(int itemId) {
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
         log.debug("User was successfully received");

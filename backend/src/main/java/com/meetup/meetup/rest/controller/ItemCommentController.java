@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/comment")
@@ -44,19 +45,19 @@ public class ItemCommentController {
         return new ResponseEntity<>(deletedItem, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<ItemComment> insert(@Valid @RequestBody ItemComment itemComment){
+    @PostMapping("{itemId}")
+    public ResponseEntity<ItemComment> insert(@Valid @RequestBody String itemComment, @PathVariable int itemId){
         log.debug("Try to insert comment '{}'", itemComment);
-        ItemComment addedComment = itemCommentService.insert(itemComment);
+        ItemComment addedComment = itemCommentService.insert(itemComment, itemId);
 
         log.debug("Send response body saved item comment '{}' and status CREATED", addedComment);
         return new ResponseEntity<>(addedComment, HttpStatus.CREATED);
     }
 
     @GetMapping("{itemId}/comments")
-    public ResponseEntity <List<ItemComment>> getCommentsByItemId(@PathVariable int itemId){
+    public ResponseEntity <List<Map<String, Object>>> getCommentsByItemId(@PathVariable int itemId){
         log.debug("Try to get comments for item with id '{}'", itemId);
-        List<ItemComment> comments = itemCommentService.getCommentsByItemId(itemId);
+        List<Map<String, Object>> comments = itemCommentService.getCommentsByItemId(itemId);
 
         log.debug("Send response body comments '{}' and status CREATED", comments);
         return new ResponseEntity<>(comments, HttpStatus.CREATED);
