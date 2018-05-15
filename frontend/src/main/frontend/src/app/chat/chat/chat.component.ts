@@ -14,7 +14,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   serverUrl = 'http://localhost:8000/socket';
   stompClient;
-  state: string = "chat";
+  state: string = "folders";
   messageText: string;
   profile: Profile;
   chatId: number;
