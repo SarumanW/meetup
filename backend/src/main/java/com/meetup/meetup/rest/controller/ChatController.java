@@ -1,6 +1,7 @@
 package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.entity.Event;
+import com.meetup.meetup.entity.Message;
 import com.meetup.meetup.service.ChatService;
 import com.meetup.meetup.service.vm.ChatIds;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/chats")
@@ -58,5 +60,25 @@ public class ChatController {
         log.debug("Send response body eventId '{}' and status OK", eventId);
 
         return new ResponseEntity<>(eventId, HttpStatus.OK);
+    }
+
+    @PostMapping("/message")
+    public ResponseEntity<Message> addMessage(@RequestBody Message message) {
+        log.debug("Trying to add message for chat with id '{}'", message.getChatId());
+
+        Message result = chatService.addMessage(message);
+
+        log.debug("Send response body messageId '{}' and status OK", result.getMessageId());
+
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/messages/{chatId}")
+    public ResponseEntity<List<Message>> getMessages(@PathVariable int chatId) {
+        log.debug("Trying to get messages for chat with id '{}'", chatId);
+
+        List<Message> msgList = chatService.getMessagesByChatId(chatId);
+
+        return new ResponseEntity<>(msgList, HttpStatus.CREATED);
     }
 }

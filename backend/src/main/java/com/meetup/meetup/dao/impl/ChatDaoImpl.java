@@ -184,6 +184,7 @@ public class ChatDaoImpl implements ChatDao {
             return messages;
         } catch (DataAccessException e) {
             log.error("Query fails by finding messages with chatId '{}'", chatId);
+            e.printStackTrace();
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 

@@ -20,7 +20,8 @@ public class MessageRowMapper implements RowMapper<Message> {
         message.setSenderId(resultSet.getInt(MESSAGE_SENDER_ID));
         message.setChatId(resultSet.getInt(MESSAGE_CHAT_ID));
         message.setText(resultSet.getString(MESSAGE_TEXT));
-        Timestamp date = resultSet.getTimestamp(EVENT_EVENT_DATE);
+        message.setSenderLogin(resultSet.getString(MESSAGE_SENDER_LOGIN));
+        Timestamp date = resultSet.getTimestamp(MESSAGE_MESSAGE_DATE);
         message.setMessageDate(date == null ? null : date.toString());
 
         return message;

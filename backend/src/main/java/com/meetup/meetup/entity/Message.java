@@ -22,4 +22,6 @@ public class Message {
     private String text;
 
     private String messageDate;
+
+    private String senderLogin;
 }

@@ -4,4 +4,5 @@ export class Message{
   chatId: number;
   text: string;
   messageDate: string;
+  senderLogin: string;
 }

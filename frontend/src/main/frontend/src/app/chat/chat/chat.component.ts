@@ -4,6 +4,9 @@ import * as SockJS from 'sockjs-client';
 import * as $ from 'jquery';
 import {Profile} from "../../account/profile";
 import {ActivatedRoute, Router} from "@angular/router";
+import {ChatService} from "../chat.service";
+import {Message} from "../message";
+import {forEach} from "@angular/router/src/utils/collection";
 
 @Component({
   selector: 'app-chat',
@@ -25,11 +28,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   colors: any;
   color: string;
   disabled: boolean = true;
+  preventMessages: Message[] = [];
 
   isButtonHidden: boolean = false;
 
   constructor(private route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              private chatService: ChatService) {
 
   }
 
@@ -47,7 +52,44 @@ export class ChatComponent implements OnInit, OnDestroy {
       '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
     ];
 
-    this.connect();
+    this.chatService.getMessages(this.chatId).subscribe(
+      (messages) => {
+        this.preventMessages = messages;
+
+        for (let message of messages) {
+          let messageElement;
+          let color = this.colors[ChatComponent.hashCode(message.senderId) % 8];
+          let time = this.getTimeFromDate(message.messageDate);
+
+          messageElement = `<li class="chat-message" style="padding-left: 68px;
+  position: relative;">
+    <i style="position: absolute;
+  width: 42px;
+  height: 42px;
+  overflow: hidden;
+  left: 10px;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 18px;
+  line-height: 42px;
+  color: #fff;
+  text-align: center;
+  border-radius: 50%;
+  font-style: normal;
+  text-transform: uppercase;
+  background-color:${color}";>${message.senderLogin[0]}</i>
+  <span style="color: #333;
+  font-weight: 600;">${time}</span>
+    <span style="color: #333;
+  font-weight: 600;">${message.senderLogin}</span>
+    <p style="color: #43464b;">${message.text}</p>
+</li>`;
+          $('#messageArea').append(messageElement);
+        }
+
+        $('#messageArea').scrollTop($('#messageArea').prop('scrollHeight'));
+        this.connect();
+      });
   }
 
   connect() {
@@ -134,7 +176,18 @@ export class ChatComponent implements OnInit, OnDestroy {
       type: 'CHAT'
     };
 
-    this.stompClient.send("/app-chat/send/message/" + this.chatId, {}, JSON.stringify(chatMessage));
+    let mess: Message = new Message();
+    mess.chatId = this.chatId;
+    mess.text = this.messageText;
+    mess.senderId = this.profile.id;
+    mess.messageDate = this.getCurrentDate();
+
+    this.chatService.addMessage(mess).subscribe(
+      (message) => {
+        console.log(message);
+        this.stompClient.send("/app-chat/send/message/" + this.chatId, {}, JSON.stringify(chatMessage));
+      }
+    );
 
     $('#message').val('');
   }
@@ -144,12 +197,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/event/" + this.eventId]);
   }
 
-  static hashCode(name: string){
+  static hashCode(name: string) {
     let hash = 0;
     if (name.length == 0) return hash;
     for (let i = 0; i < name.length; i++) {
       let char = name.charCodeAt(i);
-      hash = ((hash<<5)-hash)+char;
+      hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // Convert to 32bit integer
     }
     return Math.abs(hash);
@@ -164,5 +217,24 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.stompClient.send("/app-chat/send/message/" + this.chatId, {}, JSON.stringify(chatMessage));
       this.ws.close();
     }
+  }
+
+  getCurrentDate(): string {
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let hour = date.getHours();
+    let min = date.getMinutes();
+    let sec = date.getSeconds();
+    let time = hour + ":" + min + ":" + sec;
+    console.log(year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day) + " " + time);
+    return year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day) + " " + time;
+  }
+
+  getTimeFromDate(date: string): string {
+    let time = date.split(" ")[1];
+    time = time.substr(0, 8);
+    return time;
   }
 }

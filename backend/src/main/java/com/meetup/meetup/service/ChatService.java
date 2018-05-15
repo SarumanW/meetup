@@ -1,6 +1,7 @@
 package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.ChatDao;
+import com.meetup.meetup.entity.Message;
 import com.meetup.meetup.exception.runtime.DeleteChatException;
 import com.meetup.meetup.service.vm.ChatIds;
 import org.slf4j.Logger;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.meetup.meetup.keys.Key.EXCEPTION_CHAT_DELETE;
 
@@ -23,6 +26,14 @@ public class ChatService {
 
     @Autowired
     private ChatDao chatDao;
+
+    public List<Message> getMessagesByChatId(int chatId){
+        return chatDao.findMessagesByChatId(chatId);
+    }
+
+    public Message addMessage(Message message){
+        return chatDao.insertMessage(message);
+    }
 
     public ChatIds addChats(int eventId) {
         return new ChatIds(chatDao.createChatsByEventId(eventId));

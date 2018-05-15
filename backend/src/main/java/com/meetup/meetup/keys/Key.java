@@ -23,6 +23,7 @@ public final class Key {
     public static final String MESSAGE_CHAT_ID = "CHAT_ID";
     public static final String MESSAGE_TEXT = "TEXT";
     public static final String MESSAGE_MESSAGE_DATE = "MESSAGE_DATE";
+    public static final String MESSAGE_SENDER_LOGIN = "SENDER_LOGIN";
 
     //CHAT_TYPE table fields
     public static final String CHAT_CHAT_TYPE_ID = "CHAT_TYPE_ID";
