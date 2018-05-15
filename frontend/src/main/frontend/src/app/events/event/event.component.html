@@ -98,7 +98,7 @@
             <ul class="list-group">
               <li class="list-group-item active justify-content-between d-flex">
                 <span>{{eventt.name}} {{eventt.eventType}}</span>
-                <div>
+                <div *ngIf="eventt.ownerId === this.currentUserId">
                   <img src="assets/edit.svg" (click)="editEvent()" height="30"
                        width="30"/>
                 </div>

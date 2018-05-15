@@ -10,6 +10,10 @@
       <home-comp [states]="state"></home-comp>
     </div>
 
+    <div *ngIf="currentUserId !== eventt.ownerId">
+      <img src="assets/perm.jpg" class="center"/>
+    </div>
+
     <div class="col-6">
       <div class="container justify-content-center">
 
@@ -133,7 +137,4 @@
     </div>
   </div>
 
-  <div *ngIf="currentUserId !== eventt.ownerId">
-    <img src="assets/perm.jpg" class="center"/>
-  </div>
 </div>
