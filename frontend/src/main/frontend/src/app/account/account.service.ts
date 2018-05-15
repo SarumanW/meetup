@@ -37,6 +37,14 @@ export class AccountService {
       .get('api/profile/' + login, {headers: headers});
   }
 
+  profileWithEvent(login: string):Observable<any>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http
+      .get('api/profile/withEvent/' + login, {headers: headers});
+  }
+
   update(account:any):Observable<any>{
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);

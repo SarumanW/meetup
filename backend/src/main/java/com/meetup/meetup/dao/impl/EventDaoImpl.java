@@ -458,7 +458,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
         int result;
         try {
              result = jdbcTemplate.update(env.getProperty(USER_DELETE_PINED_EVENT_ID),
-                    eventId, userId);
+                    userId);
 
             if (result != 0) {
                 log.debug("Pin by event name: '{}', user id: '{}' was removed", eventId, userId);

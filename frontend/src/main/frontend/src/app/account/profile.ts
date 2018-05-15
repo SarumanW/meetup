@@ -9,10 +9,10 @@ export class Profile {
   public birthDay: string;
   public token : string;
   public password : string;
-  public eventName : string;
-  public eventDate : string;
   public pinedEventId : number;
   public currentDate: string;
+  public pinedEventName:string;
+  public pinedEventDate:string;
   public startDate: string;
   public endDate: string;
 }

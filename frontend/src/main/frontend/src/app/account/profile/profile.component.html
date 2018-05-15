@@ -62,15 +62,15 @@
         </div>
 
         <br>
+        <br>
 
-        <table class="table" *ngIf="profile.pinedEventId !== 'null'">
-          <tr>
-            <br/>
-            <td>EVENT  {{profile.eventName}}</td>
-            <countdown class = "countdown" [text]="text" divider=" " units="Year | Month | Days | Hours | Minutes | Seconds"
-                       end={{profile.eventDate}}></countdown>
-          </tr>
-          </table>
+        <div class="row" *ngIf="this.eventName && this.eventDate">
+          <div align="center">
+            <h3>{{this.eventName}} in</h3>
+          </div>
+          <countdown class = "countdown" [text]="text" divider=" " units="Year | Month | Days | Hours | Minutes | Seconds"
+                     end={{this.eventDate}}></countdown>
+        </div>
 
 
         <br>
