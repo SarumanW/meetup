@@ -5,16 +5,12 @@ import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.dao.rowMappers.EventRowMapper;
 import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Event;
-import com.meetup.meetup.entity.EventType;
 import com.meetup.meetup.entity.Role;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -434,5 +430,45 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
 
         return participants;
 
+    }
+
+    @Override
+    public Event pinEvent(int userId, int eventId) {
+           log.debug("Try to pin event with id : '{}', user id: '{}'", eventId, userId);
+        int result;
+        try {
+             result = jdbcTemplate.update(env.getProperty(USER_SET_PINED_EVENT_ID),
+                    eventId, userId);
+
+                if (result != 0) {
+                    log.debug("Pin by event id: '{}', user id: '{}' was added", eventId, userId);
+                } else {
+                    log.debug("Pin by event id: '{}', user id: '{}' was not added", eventId, userId);
+                }
+            } catch (DataAccessException e) {
+            log.error("Query fails by pin event with id: '{}', user id: '{}'", eventId, userId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+           return findById(eventId);
+        }
+
+    @Override
+    public Event unpinEvent(int userId, int eventId) {
+        log.debug("Try to unpin event with id : '{}', user id: '{}'", eventId, userId);
+        int result;
+        try {
+             result = jdbcTemplate.update(env.getProperty(USER_DELETE_PINED_EVENT_ID),
+                    eventId, userId);
+
+            if (result != 0) {
+                log.debug("Pin by event name: '{}', user id: '{}' was removed", eventId, userId);
+            } else {
+                log.debug("Pin by event name: '{}', user id: '{}' was not removed", eventId, userId);
+            }
+        } catch (DataAccessException e) {
+            log.error("Query fails by pin event: '{}', user id: '{}'", eventId, userId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+       return findById(eventId);
     }
 }

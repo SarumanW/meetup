@@ -250,4 +250,23 @@ public class EventService {
         mailService.sendMailWithEventPlan(user,file);
     }
 
+    public Event pinEvent(int eventId) {
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
+        int userId = user.getId();
+
+        log.debug("Trying to pin event with id '{}' by userId '{}'", eventId, userId);
+        return eventDao.pinEvent(userId, eventId);
+    }
+
+    public Event unpinEvent(int eventId) {
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
+        int userId = user.getId();
+
+        log.debug("Trying to unpin event with id'{}' by userId '{}'", eventId, userId);
+        return eventDao.unpinEvent(userId, eventId);
+    }
 }

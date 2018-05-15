@@ -61,6 +61,19 @@
                width="40"/>
         </div>
 
+        <br>
+
+        <table class="table" *ngIf="profile.pinedEventId !== 'null'">
+          <tr>
+            <br/>
+            <td>EVENT  {{profile.eventName}}</td>
+            <countdown class = "countdown" [text]="text" divider=" " units="Year | Month | Days | Hours | Minutes | Seconds"
+                       end={{profile.eventDate}}></countdown>
+          </tr>
+          </table>
+
+
+        <br>
 
         <app-modal-window #modal class="sure-window">
           <div class="modal-header d-flex justify-content-between align-items-center">

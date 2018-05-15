@@ -23,6 +23,7 @@ public class Event {
     private String name;
 
     private String eventDate;
+    private String pinnedEvent;
 
     @NotBlank
     @Size(min = 4, max = 250)

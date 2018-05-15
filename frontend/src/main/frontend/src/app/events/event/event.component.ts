@@ -5,6 +5,7 @@ import {Evento} from "../event";
 import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
 import {AppComponent} from "../../app.component";
+import jsPDF = require("jspdf");
 
 @Component({
   selector: 'app-event',
@@ -82,6 +83,38 @@ export class EventComponent implements OnInit {
       positionClass: 'toast-top-right',
       closeButton: true
     });
+  }
+
+  pinEvent() {
+    this.spinner.show();
+    this.eventService.pinEvent(this.currentUserId, this.eventId).subscribe(
+      (event: Evento) => {
+        console.log('response');
+        this.eventt.isPinned = event.isPinned;
+        this.showSuccess('Event is successfully pinned', 'Success!');
+        this.spinner.hide();
+      },
+      error => {
+        console.log('error');
+        this.appComponent.showError('Can not pin event', 'Attention!');
+        this.spinner.hide();
+      }
+    );
+  }
+
+  unpinEvent() {
+    this.spinner.show();
+    this.eventService.unpinEvent(this.currentUserId, this.eventId).subscribe(
+      (event: Evento) => {
+        this.eventt.isPinned = event.isPinned;
+        this.showSuccess('Event is successfully unpinned', 'Success!');
+        this.spinner.hide();
+      },
+      error => {
+        this.appComponent.showError('Can not unpin event', 'Attention!');
+        this.spinner.hide();
+      }
+    );
   }
 
   addParticipant(name) {

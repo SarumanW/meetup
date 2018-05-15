@@ -17,10 +17,12 @@ export class ProfileComponent implements OnInit {
   state: string = "profile";
   profile: Profile;
   loggedUser: boolean;
-
   friendCount: number;
   isFriend: boolean;
   isConfirmed: boolean;
+  currentDate: string;
+  startDate: string;
+  endDate: string;
 
   constructor(private accountService: AccountService,
               private spinner: NgxSpinnerService,
@@ -41,8 +43,19 @@ export class ProfileComponent implements OnInit {
           this.appComponent.showError(error, 'Upload failed');
         }
       );
+
     });
+    this.getCurrentDate();
   }
+
+  getCurrentDate() {
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    this.currentDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + day;
+  }
+
 
   update() {
     this.spinner.show();
