@@ -4,6 +4,7 @@ export class Evento{
   name : string;
   eventDate : string;
   description : string;
+  periodicityId : number;
   periodicity : string;
   place : string;
   eventTypeId : number;
@@ -13,7 +14,9 @@ export class Evento{
   imageFilepath : string;
   isPinned: boolean;
   ownerId : number;
-  participants : Profile[];
+  participants : Profile[]
+  privateChatId: number;
+  publicChatId: number;
 
   clone() : Evento {
     let itemClone = new Evento();

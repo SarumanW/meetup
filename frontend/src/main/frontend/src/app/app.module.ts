@@ -39,7 +39,6 @@ import {EventAddComponent} from './events/event.add/event.add.component';
 import {EventAddService} from "./events/event.add.service";
 import {CalendarModule} from "angular-calendar";
 import {CalendarComponent} from "./calendar/calendar.component/calendar.component";
-import {CalendarHeaderComponent} from "./calendar/calendar.utils/calendar.header.component";
 import {UtilsModule} from "./calendar/calendar.utils/utils.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CalendarService} from "./calendar/calendar.service";
@@ -49,6 +48,8 @@ import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
 import {CheckPasswordComponent} from "./account/change.password/check.password/check.password.component"
 import {EventEditComponent} from "./events/event.edit/event.edit.component";
+import { ChatComponent } from './chat/chat/chat.component';
+import {ChatService} from "./chat/chat.service";
 import { WishListComponent } from './wishes/wish.list/wish.list.component';
 import { WishComponent } from './wishes/wish/wish.component';
 import {WishListService} from "./wishes/wish.list.service";
@@ -78,6 +79,8 @@ import {CountDown} from "./events/countdown/countdown";
     EventListComponent,
     EventAddComponent,
     CalendarComponent,
+    EventEditComponent,
+    ChatComponent,
     WishListComponent,
     WishComponent,
     WishAddComponent,
@@ -120,6 +123,7 @@ import {CountDown} from "./events/countdown/countdown";
     EventAddService,
     CalendarService,
     ImageUploadService,
+    ChatService,
     WishListService,
     WishService
   ],

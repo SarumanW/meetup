@@ -40,7 +40,8 @@
 
           </div>
 
-          <div class="col-md-4" *ngIf="eventt.ownerId === this.currentUserId">
+          <div class="col-md-2" *ngIf="eventt.ownerId === this.currentUserId">
+
             <div>
 
               <button type="button" class="btn btn-danger" (click)="deleteEventt.show()"
@@ -76,6 +77,22 @@
             </div>
             <div *ngIf="this.isPinned"><img src="assets/Pinned.png"(click)="unpinEvent()" height="50"
                                               width="50"/></div>
+          </div>
+
+          <div class="col-md-2">
+
+            <div>
+              <button type="button" class="btn btn-primary" (click)="onPublicChat()"
+              >Public chat</button>
+            </div>
+
+            <br>
+
+            <div *ngIf="eventt.ownerId !== this.currentUserId">
+              <button type="button" class="btn btn-primary" (click)="onPrivateChat()"
+              >Private chat</button>
+            </div>
+
           </div>
 
         </div>

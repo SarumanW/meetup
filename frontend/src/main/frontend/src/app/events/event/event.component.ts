@@ -5,6 +5,7 @@ import {Evento} from "../event";
 import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
 import {AppComponent} from "../../app.component";
+import {ChatService} from "../../chat/chat.service";
 
 @Component({
   selector: 'app-event',
@@ -39,7 +40,8 @@ export class EventComponent implements OnInit {
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
               private router: Router,
-              private appComponent: AppComponent) {
+              private appComponent: AppComponent,
+              private chatService: ChatService) {
   }
 
   ngOnInit() {
@@ -72,10 +74,34 @@ export class EventComponent implements OnInit {
       this.lng = +coordinates[1];
       this.tempType = eventt.eventType;
       this.spinner.hide();
+      if (eventt.eventType === 'EVENT') {
+        this.getChatIds(eventt);
+      }
     }, error => {
       this.spinner.hide();
       this.appComponent.showError('Unsuccessful event loading', 'Loading error');
     })
+  }
+
+  getChatIds(eventt: Evento) {
+    this.chatService.getChatIds(eventt.eventId).subscribe(
+      chat=> {
+        this.eventt.privateChatId = chat.privateChatId;
+        this.eventt.publicChatId = chat.publicChatId;
+        console.log(this.eventt.privateChatId);
+        console.log(this.eventt.publicChatId);
+      }, error => {
+        this.showError('Problem with chats loading','Attention!');
+      }
+    );
+  }
+
+  showError(message: string, title: string) {
+    this.toastr.error(message, title, {
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      closeButton: true
+    });
   }
 
   showSuccess(message: string, title: string) {
@@ -258,12 +284,21 @@ export class EventComponent implements OnInit {
       deleted => {
         this.showSuccess('Event removed successfully', 'Success!');
         this.spinner.hide();
+        this.deleteChats(this.eventId);
         this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId])
       }, error => {
         this.appComponent.showError('Can not delete event', 'Error!');
         this.spinner.hide();
       }
     );
+  }
+
+  deleteChats(eventId: number) {
+    this.chatService.deleteChats(eventId).subscribe(success => {
+      this.showSuccess('Chat deleted successfully', 'Success!');
+    }, error => {
+      this.appComponent.showError('Can not delete chats', 'Error!');
+    });
   }
 
   deleteParticipant(login: any) {
@@ -306,6 +341,16 @@ export class EventComponent implements OnInit {
   editEvent() {
     this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/" +
     this.type + "/" + this.eventId + "/edit"]);
+  }
+
+  onPublicChat() {
+    this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/event/" + this.eventId +
+    "/chat/" + this.eventt.publicChatId]);
+  }
+
+  onPrivateChat() {
+    this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/event/" + this.eventId +
+    "/chat/" + this.eventt.privateChatId]);
   }
 
 }

@@ -124,7 +124,7 @@ CREATE TABLE message (
   message_id number,
   sender_id number NOT NULL,
   text varchar2(250) NOT NULL,
-  message_date Date NOT NULL,
+  message_date timestamp NOT NULL,
   chat_id number NOT NULL,
   PRIMARY KEY (message_id)
 );
@@ -150,6 +150,6 @@ CREATE TABLE chat (
 
 CREATE TABLE chat_type (
   chat_type_id number,
-  type varchar2(10) NOT NULL,
+  type varchar2(15) NOT NULL,
   PRIMARY KEY (chat_type_id)
 );

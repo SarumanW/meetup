@@ -20,6 +20,7 @@ import {WishListComponent} from "./wishes/wish.list/wish.list.component";
 import {WishComponent} from "./wishes/wish/wish.component";
 import {WishAddComponent} from "./wishes/wish.add/wish.add.component";
 import {EventEditComponent} from "./events/event.edit/event.edit.component";
+import {ChatComponent} from "./chat/chat/chat.component";
 import {CheckPasswordComponent} from "./account/change.password/check.password/check.password.component"
 import {WishEditComponent} from "./wishes/wish.edit/wish.edit.component";
 
@@ -47,7 +48,8 @@ const routes: Routes = [
   {path: 'change.password', component: ChangePasswordComponent},
   {path: 'thankyou', component: ThankyouComponent},
   {path: ':login/event/add/:folderId', component: EventAddComponent, canActivate: [AuthGuard] },
-  {path: ':login/folders/:folderId/:type/:eventId/edit', component: EventEditComponent, canActivate: [AuthGuard]}
+  {path: ':login/folders/:folderId/:type/:eventId/edit', component: EventEditComponent, canActivate: [AuthGuard]},
+  {path: ':login/folders/:folderId/event/:eventId/chat/:chatId', component: ChatComponent, canActivate: [AuthGuard]},
 ];
 
 @NgModule({
