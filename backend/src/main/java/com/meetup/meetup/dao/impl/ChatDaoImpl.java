@@ -4,6 +4,7 @@ import com.meetup.meetup.dao.ChatDao;
 import com.meetup.meetup.dao.rowMappers.MessageRowMapper;
 import com.meetup.meetup.entity.Message;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import com.meetup.meetup.service.vm.ChatIdsVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class ChatDaoImpl implements ChatDao {
     private JdbcTemplate jdbcTemplate;
 
     private static Logger log = LoggerFactory.getLogger(ChatDaoImpl.class);
+    // TODO: 15.05.2018 Delete 
     private static final int EVENT_CHATS_COUNT = 2;
     private static final int CHAT_ID_WITH_OWNER = 1;
     private static final int CHAT_ID_WITHOUT_OWNER = 2;
@@ -60,27 +62,22 @@ public class ChatDaoImpl implements ChatDao {
 
     @Override
     @Transactional
-    public List<Integer> createChatsByEventId(int eventId) {
-        int chatIdWithOwner, chatIdWithoutOwner;
+    public ChatIdsVM createChatsByEventId(int eventId) {
+        ChatIdsVM chatIdsVM = new ChatIdsVM();
 
         log.debug("Try to insert chat with owner with eventId '{}'", eventId);
 
-        chatIdWithOwner = insertChat(eventId, CHAT_ID_WITH_OWNER);
+        chatIdsVM.setPublicChatId(insertChat(eventId, CHAT_ID_WITH_OWNER));
 
-        log.debug("Chat with owner was successfully inserted with id '{}'", chatIdWithOwner);
+        log.debug("Chat with owner was successfully inserted with id '{}'", chatIdsVM.getPublicChatId());
 
         log.debug("Try to insert chat without owner with eventId '{}'", eventId);
 
-        chatIdWithoutOwner = insertChat(eventId, CHAT_ID_WITHOUT_OWNER);
+        chatIdsVM.setPrivateChatId(insertChat(eventId, CHAT_ID_WITHOUT_OWNER));
 
-        log.debug("Chat without owner was successfully inserted with id '{}'", chatIdWithoutOwner);
+        log.debug("Chat without owner was successfully inserted with id '{}'", chatIdsVM.getPrivateChatId());
 
-        List<Integer> eventChats = new ArrayList<>(EVENT_CHATS_COUNT);
-
-        eventChats.add(chatIdWithOwner);
-        eventChats.add(chatIdWithoutOwner);
-
-        return eventChats;
+        return chatIdsVM;
     }
 
     private int insertChat(int eventId, int chatTypeId) {
@@ -149,25 +146,43 @@ public class ChatDaoImpl implements ChatDao {
     }
 
     @Override
-    public List<Integer> findChatsIdsByEventId(int eventId) {
-        List<Integer> eventChats = new ArrayList<>();
+    public ChatIdsVM findChatsIdsByEventId(int eventId) {
+        ChatIdsVM chatIdsVM = new ChatIdsVM();
 
-        log.debug("Try to find events with folder id '{}'", eventId);
+        log.debug("Try to find chat with owner with eventId '{}'", eventId);
+
+        chatIdsVM.setPublicChatId(findChatIdByEventIdAndChatTypeId(eventId, CHAT_ID_WITH_OWNER));
+
+        log.debug("Chat with owner was successfully found with id '{}'", chatIdsVM.getPublicChatId());
+
+        log.debug("Try to find chat without owner with eventId '{}'", eventId);
+
+        chatIdsVM.setPrivateChatId(findChatIdByEventIdAndChatTypeId(eventId, CHAT_ID_WITHOUT_OWNER));
+
+        log.debug("Chat without owner was successfully found with id '{}'", chatIdsVM.getPrivateChatId());
+
+        return chatIdsVM;
+    }
+
+    private int findChatIdByEventIdAndChatTypeId(int eventId, int chatTypeId) {
+        int chatId = 0;
+
+        log.debug("Try to find events with eventId '{}' and chatTypeId '{}'", eventId);
 
         try {
-            eventChats = jdbcTemplate.queryForList(env.getProperty(CHAT_FIND_CHATS_IDS_BY_EVENT_ID),
-                    new Object[]{eventId}, Integer.class);
+            chatId = jdbcTemplate.queryForObject(env.getProperty(CHAT_FIND_CHAT_ID_BY_EVENT_ID_AND_CHAT_TYPE_ID),
+                    new Object[]{eventId, chatTypeId}, Integer.class);
         } catch (EmptyResultDataAccessException e) {
-            log.debug("Chats ids not found by eventId: '{}'", eventId);
-            return eventChats;
+            log.debug("Chats id not found by eventId: '{}' and chatTypeId '{}'", eventId);
+            return chatId;
         } catch (DataAccessException e) {
-            log.error("Query fails by finding chats ids with eventId '{}'", eventId);
+            log.error("Query fails by finding chats ids with eventId '{}' and chatTypeId '{}'", eventId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        log.debug("Chats '{}' was found by eventId '{}'", eventChats, eventId);
+        log.debug("Chat '{}' was found by eventId '{}' and chatTypeId '{}'", chatId, eventId);
 
-        return eventChats;
+        return chatId;
     }
 
     @Override

@@ -164,7 +164,7 @@ public final class Key {
     //ChatDao
     public static final String CHAT_DELETE_BY_EVENT_ID = "chat.deleteChatsByEventId";
     public static final String CHAT_DELETE_MESSAGES_BY_EVENT_ID = "chat.deleteMessagesByEventId";
-    public static final String CHAT_FIND_CHATS_IDS_BY_EVENT_ID = "chat.findChatsIdsByEventId";
+    public static final String CHAT_FIND_CHAT_ID_BY_EVENT_ID_AND_CHAT_TYPE_ID = "chat.findChatIdByEventIdAndChatTypeId";
     public static final String CHAT_FIND_MESSAGES_BY_CHAT_ID = "chat.findMessagesByChatId";
 
     //Exceptions

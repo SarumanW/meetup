@@ -3,7 +3,7 @@ package com.meetup.meetup.service;
 import com.meetup.meetup.dao.ChatDao;
 import com.meetup.meetup.entity.Message;
 import com.meetup.meetup.exception.runtime.DeleteChatException;
-import com.meetup.meetup.service.vm.ChatIds;
+import com.meetup.meetup.service.vm.ChatIdsVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +35,12 @@ public class ChatService {
         return chatDao.insertMessage(message);
     }
 
-    public ChatIds addChats(int eventId) {
-        return new ChatIds(chatDao.createChatsByEventId(eventId));
+    public ChatIdsVM addChats(int eventId) {
+        return chatDao.createChatsByEventId(eventId);
     }
 
-    public ChatIds getChatsIds(int eventId) {
-        return new ChatIds(chatDao.findChatsIdsByEventId(eventId));
+    public ChatIdsVM getChatsIds(int eventId) {
+        return chatDao.findChatsIdsByEventId(eventId);
     }
 
     public void deleteChats(int eventId) {

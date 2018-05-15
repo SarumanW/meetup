@@ -1,9 +1,8 @@
 package com.meetup.meetup.rest.controller;
 
-import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.Message;
 import com.meetup.meetup.service.ChatService;
-import com.meetup.meetup.service.vm.ChatIds;
+import com.meetup.meetup.service.vm.ChatIdsVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -30,10 +28,10 @@ public class ChatController {
     private ChatService chatService;
 
     @PostMapping("/add")
-    public ResponseEntity<ChatIds> addChats(@RequestBody int eventId) {
+    public ResponseEntity<ChatIdsVM> addChats(@RequestBody int eventId) {
         log.debug("Trying to add chats for event with id '{}'", eventId);
 
-        ChatIds responseId = chatService.addChats(eventId);
+        ChatIdsVM responseId = chatService.addChats(eventId);
 
         log.debug("Send response body chatId '{}' and status OK", responseId);
 
@@ -41,10 +39,10 @@ public class ChatController {
     }
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<ChatIds> getChatsIds(@PathVariable int eventId) {
+    public ResponseEntity<ChatIdsVM> getChatsIds(@PathVariable int eventId) {
         log.debug("Trying to get chats for event with id '{}'", eventId);
 
-        ChatIds responseId = chatService.getChatsIds(eventId);
+        ChatIdsVM responseId = chatService.getChatsIds(eventId);
 
         log.debug("Send response body chatId '{}' and status OK", responseId);
 
