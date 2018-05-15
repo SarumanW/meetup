@@ -1,7 +1,7 @@
-export interface Comment {
+export class ItemComment {
   commentId: number;
   bodyText: string;
   postTime: string;
-  authorId: number;
-  itemId:number;
+  login: string;
+  imageFilepath :string;
 }

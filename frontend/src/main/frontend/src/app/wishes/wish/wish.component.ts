@@ -10,6 +10,7 @@ import {WishService} from "../wish.service";
 import {ActivatedRoute} from '@angular/router';
 import {CommentService} from "./comment-list/comment.service";
 import {FormControl} from "@angular/forms";
+import {ItemComment} from "./comment-list/comment";
 
 @Component({
   selector: 'app-wish',
@@ -26,7 +27,7 @@ export class WishComponent implements OnInit {
   idItem: number;
   login: string;
   private sub: any;
-  comments: Comment[];
+  comments: ItemComment[];
   commentControl = new FormControl();
   commentFormErrors = {};
   isSubmitting = false;
