@@ -7,6 +7,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {ChatService} from "../chat.service";
 import {Message} from "../message";
 import {forEach} from "@angular/router/src/utils/collection";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-chat',
@@ -29,12 +30,14 @@ export class ChatComponent implements OnInit, OnDestroy {
   color: string;
   disabled: boolean = true;
   preventMessages: Message[] = [];
+  chatMembers: Profile[] = [];
 
   isButtonHidden: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private chatService: ChatService) {
+              private chatService: ChatService,
+              private spinner: NgxSpinnerService) {
 
   }
 
@@ -51,6 +54,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       '#2196F3', '#32c787', '#00BCD4', '#ff5652',
       '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
     ];
+
+    this.spinner.show();
 
     this.chatService.getMessages(this.chatId).subscribe(
       (messages) => {
@@ -88,12 +93,17 @@ export class ChatComponent implements OnInit, OnDestroy {
         }
 
         $('#messageArea').scrollTop($('#messageArea').prop('scrollHeight'));
+
+        this.spinner.hide();
+
         this.connect();
       });
   }
 
   connect() {
     this.initializeWebSocketConnection();
+
+    this.chatMembers.push(this.profile);
   }
 
   initializeWebSocketConnection() {

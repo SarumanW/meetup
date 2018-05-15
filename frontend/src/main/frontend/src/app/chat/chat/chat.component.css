@@ -174,3 +174,9 @@ a {
   min-height: 400px;
   max-height: 400px;
 }
+
+.close-btn{
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
