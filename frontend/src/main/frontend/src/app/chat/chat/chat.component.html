@@ -1,4 +1,9 @@
 <div class="container-fluid">
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
   <div class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
@@ -9,43 +14,58 @@
 
         <div class="row">
 
-        <div id="chat-page" class="col-md-8">
-          <div class="chat-container">
-            <div class="chat-header">
-              <h2>Chat room</h2>
-            </div>
-
-            <ul id="messageArea">
-
-            </ul>
-
-            <form id="messageForm" name="messageForm">
-              <div class="form-group">
-                <div class="input-group clearfix">
-                  <input type="text" id="message" placeholder="Type a message..."
-                         [(ngModel)]="messageText" name="inputMessage" autocomplete="off" class="form-control"/>
-                  <button (click)="sendMessage()" class="btn btn-primary" [disabled]="disabled">Send</button>
-                </div>
+          <div id="chat-page" class="col-md-8">
+            <div class="chat-container">
+              <div class="chat-header">
+                <h2>Chat room</h2>
               </div>
-            </form>
+
+              <ul id="messageArea">
+
+              </ul>
+
+              <form id="messageForm" name="messageForm">
+                <div class="form-group">
+                  <div class="input-group clearfix">
+                    <input type="text" id="message" placeholder="Type a message..."
+                           [(ngModel)]="messageText" name="inputMessage" autocomplete="off" class="form-control"/>
+                    <button (click)="sendMessage()" class="btn btn-primary" [disabled]="disabled">Send</button>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
 
           <br>
-        <div id="event" class="col-md-2">
-          <br>
-          <button class="btn btn-primary" (click)="backToEvent()">Back to event</button>
-        </div>
+          <div id="event" class="col-md-2">
+            <br>
+            <button class="btn btn-primary" (click)="backToEvent()">Back to event</button>
+          </div>
+
+          <div id="members" class="col-md-2">
+            <br>
+            <button class="btn btn-primary" (click)="modal.show()">Chat members</button>
+          </div>
 
         </div>
 
-        <!--<form class="form-inline">-->
-          <!--<div class="form-group mx-sm-3 mb-2">-->
-            <!--<input type="text" class="form-control" id="input" name="message"-->
-                   <!--placeholder="message" [(ngModel)]="message">-->
-          <!--</div>-->
-          <!--<button (click)="sendMessage(message)" class="btn btn-primary mb-2">Send</button>-->
-        <!--</form>-->
+      </div>
+
+      <div class="view-members">
+        <app-modal-window #modal>
+          <div class="modal-header d-flex justify-content-between align-items-right">
+            <h4 class="modal-title">Chat members</h4>
+            <img class="close-btn" src="assets/close.svg" (click)="modal.hide()" alt="">
+          </div>
+          <div class="app-modal-body">
+            <ul class="list-group" *ngFor="let member of chatMembers">
+              <li class="list-group-item">{{member.login}}</li>
+            </ul>
+          </div>
+          <div class="app-modal-footer">
+            <button class="btn btn-primary" (click)="modal.hide()">Close</button>
+          </div>
+        </app-modal-window>
       </div>
     </div>
   </div>
