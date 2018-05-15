@@ -253,9 +253,9 @@ export class EventComponent implements OnInit {
 
   deleteChats(eventId: number) {
     this.chatService.deleteChats(eventId).subscribe(success => {
-      this.showSuccess('Chat deleted successfully');
+      this.showSuccess('Chat deleted successfully', 'Success!');
     }, error => {
-      this.appComponent.showError('Can not delete chats');
+      this.appComponent.showError('Can not delete chats', 'Error!');
     });
   }
 
@@ -302,12 +302,12 @@ export class EventComponent implements OnInit {
   }
 
   onPublicChat() {
-    this.router.navigate(["/" + this.currentUserLogin + "/event/" + this.eventId +
+    this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/event/" + this.eventId +
     "/chat/" + this.eventt.publicChatId]);
   }
 
   onPrivateChat() {
-    this.router.navigate(["/" + this.currentUserLogin + "/event/" + this.eventId +
+    this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/event/" + this.eventId +
     "/chat/" + this.eventt.privateChatId]);
   }
 

@@ -7,11 +7,9 @@
     <div class="col-10 py-4">
       <div class="container justify-content-center">
 
-        <div id="connect" [ngClass]="{'hidden': isButtonHidden}">
-          <button class="btn btn-primary" (click)="connect()">Join this chat</button>
-        </div>
+        <div class="row">
 
-        <div id="chat-page" [ngClass]="{'hidden': !isButtonHidden}">
+        <div id="chat-page" class="col-md-8">
           <div class="chat-container">
             <div class="chat-header">
               <h2>Chat room</h2>
@@ -26,11 +24,19 @@
                 <div class="input-group clearfix">
                   <input type="text" id="message" placeholder="Type a message..."
                          [(ngModel)]="messageText" name="inputMessage" autocomplete="off" class="form-control"/>
-                  <button (click)="sendMessage()" class="btn btn-primary">Send</button>
+                  <button (click)="sendMessage()" class="btn btn-primary" [disabled]="disabled">Send</button>
                 </div>
               </div>
             </form>
           </div>
+        </div>
+
+          <br>
+        <div id="event" class="col-md-2">
+          <br>
+          <button class="btn btn-primary" (click)="backToEvent()">Back to event</button>
+        </div>
+
         </div>
 
         <!--<form class="form-inline">-->
