@@ -4,7 +4,7 @@ import {AccountService} from "../account.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {FriendService} from "../friends/friend.service";
-import {FriendsListComponent} from "../friends/friends.list.component";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AppComponent} from "../../app.component";
 
 @Component({
@@ -35,6 +35,7 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.spinner.show();
     this.route.params.subscribe(params => {
       this.accountService.profileWithEvent(params['login']).subscribe(
         (profile) => {
@@ -43,8 +44,10 @@ export class ProfileComponent implements OnInit {
           this.eventDate = this.profile.pinedEventDate
           this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === this.profile.login;
           this.update();
+          this.spinner.hide();
         },error => {
-          this.appComponent.showError(error, 'Upload failed');
+          this.appComponent.showError(error, 'Error');
+          this.spinner.hide();
         }
       );
 

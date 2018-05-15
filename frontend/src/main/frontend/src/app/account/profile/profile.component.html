@@ -29,8 +29,9 @@
               <button routerLink="/{{profile.login}}/wishes/" type="button" class="btn btn-light border-success mt-1">Wish List</button>
 
               <button *ngIf="relation === 'Not Friends'" (click)="addFriend(profile.login)" type="button" class="btn btn-info mt-1">Add friend</button>
-              <button *ngIf="relation === 'Not Confirmed'" (click)="confirmFriend(profile.id)" type="button" class="btn btn-success mt-1">Confirm</button>
               <button *ngIf="relation === 'Friends'" (click)="modal.show()" type="button" class="btn btn-danger mt-1">Delete</button>
+              <button *ngIf="relation === 'Not Confirmed'" (click)="confirmFriend(profile.id)" type="button" class="btn btn-success mt-1">Confirm</button>
+              <button *ngIf="relation === 'Request sent'" disabled="true" type="button" class="btn btn-info mt-1">Request sent</button>
             </div>
           </div>
         </div>

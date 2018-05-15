@@ -123,4 +123,20 @@ public class ProfileService {
         User user = authenticationFacade.getAuthentication();
         return userDao.getNotFriends(user.getId(),userName);
     }
+
+    public String userRelations(int userId){
+        User user = authenticationFacade.getAuthentication();
+
+        log.debug("Authenticated user '{}'", user.toString());
+
+        if(userDao.getFriends(user.getId()).contains(userDao.findById(userId))){
+            return "Friends";
+        }else if(userDao.getFriendsRequests(user.getId()).contains(userDao.findById(userId))) {
+            return "Not Confirmed";
+        }else if(userDao.getFriendsRequests(userId).contains(userDao.findById(user.getId()))){
+            return "Request sent";
+        }else {
+            return "Not Friends";
+        }
+    }
 }

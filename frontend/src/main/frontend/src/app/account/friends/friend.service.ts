@@ -64,4 +64,11 @@ export class FriendService {
       return id;
     });
   }
+
+  getRelation(userId:number): Observable<any>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.get('api/profile/userRelations/' + userId, {headers: headers});
+  }
 }
