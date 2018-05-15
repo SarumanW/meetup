@@ -32,6 +32,10 @@ public interface EventDao extends Dao<Event> {
 
     List<Event> getAllPublic(int userId, String eventName);
 
+    Event pinEvent(int userId, int eventId);
+
+    Event unpinEvent(int userId,int eventId);
+
     Event deleteParticipants(Event event);
 
     Event deleteMembers(Event event);

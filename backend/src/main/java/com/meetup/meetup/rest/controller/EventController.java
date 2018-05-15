@@ -1,6 +1,7 @@
 package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.entity.Event;
+import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.frontend.detailed.FileUploadException;
 import com.meetup.meetup.exception.runtime.frontend.detailed.MailServerException;
@@ -198,4 +199,15 @@ public class EventController {
         return new ResponseEntity<>("All Okey", HttpStatus.OK);
     }
 
+    @GetMapping("/{userId}/event/{eventId}/pinned")
+    public ResponseEntity<Event> pinEvent(@PathVariable int userId, @PathVariable int eventId ) {
+        log.debug("Try to pin event by id '{}', user id '{}' ", eventId, userId);
+        return new ResponseEntity<>(eventService.pinEvent(eventId), HttpStatus.OK);
+        }
+
+    @DeleteMapping("/{userId}/event/{eventId}/pinned")
+    public ResponseEntity<Event> unpinEvent(@PathVariable int userId, @PathVariable int eventId ) {
+        log.debug("Try to unpin event by id '{}', user id '{}' ", eventId, userId);
+        return new ResponseEntity<>(eventService.unpinEvent(eventId), HttpStatus.OK);
+    }
 }

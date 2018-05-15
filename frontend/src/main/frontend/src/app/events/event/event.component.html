@@ -15,6 +15,13 @@
 
         <br><br>
         <div class="row">
+
+          <div class="col-md-4">
+            <div class="thumbnail">
+              <img src="{{eventt.imageFilepath}}" class="event-logo">
+            </div>
+          </div>
+
           <div class="col-md-4" >
             <ul class="list-group l-g" *ngIf="eventt.participants !== null && eventt.participants.length !== 0">
               <li class="list-group-item active">Participants</li>
@@ -33,14 +40,9 @@
 
           </div>
 
-          <div class="col-md-4">
-            <div class="thumbnail">
-              <img src="{{eventt.imageFilepath}}" class="event-logo">
-            </div>
-          </div>
-
           <div class="col-md-4" *ngIf="eventt.ownerId === this.currentUserId">
             <div>
+
               <button type="button" class="btn btn-danger" (click)="deleteEventt.show()"
               >Delete Event</button>
             </div>
@@ -64,6 +66,16 @@
                   <a class="dropdown-item">Draft enable/disable</a></li>
               </ul>
             </div>
+
+            <br>
+            <br>
+
+            <div class="pinned">
+              <div *ngIf="!this.isPinned"><img src="assets/Pin.png" (click)="pinEvent()" height="50"
+                                              width="50"/></div>
+            </div>
+            <div *ngIf="this.isPinned"><img src="assets/Pinned.png"(click)="unpinEvent()" height="50"
+                                              width="50"/></div>
           </div>
 
         </div>
@@ -86,7 +98,7 @@
             <ul class="list-group">
               <li class="list-group-item active justify-content-between d-flex">
                 <span>{{eventt.name}} {{eventt.eventType}}</span>
-                <div>
+                <div *ngIf="eventt.ownerId === this.currentUserId">
                   <img src="assets/edit.svg" (click)="editEvent()" height="30"
                        width="30"/>
                 </div>

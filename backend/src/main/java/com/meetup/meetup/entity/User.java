@@ -50,6 +50,9 @@ public class User {
 
     private String periodicalEmail;
 
+    private String pinedEventName;
+    private String pinedEventDate;
+
     @JsonIgnore
     public String getPassword() {
         return password;

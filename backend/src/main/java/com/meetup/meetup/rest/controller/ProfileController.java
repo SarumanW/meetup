@@ -1,18 +1,19 @@
 package com.meetup.meetup.rest.controller;
 
+import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.service.EventService;
 import com.meetup.meetup.service.ProfileService;
 import com.meetup.meetup.service.StorageService;
-import com.meetup.meetup.service.vm.UserAndTokenVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,11 +24,13 @@ public class ProfileController {
 
     private final ProfileService profileService;
     private final StorageService storageService;
+    private final EventService eventService;
 
     @Autowired
-    public ProfileController(ProfileService profileService, StorageService storageService) {
+    public ProfileController(ProfileService profileService, StorageService storageService, EventService eventService) {
         this.profileService = profileService;
         this.storageService = storageService;
+        this.eventService = eventService;
     }
 
     @GetMapping("/{login}")
@@ -148,5 +151,28 @@ public class ProfileController {
         log.debug("Found users '{}'", users.toString());
 
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/withEvent/{login}")
+    public ResponseEntity<User> getProfileWithEvent(@PathVariable String login){
+        log.debug("Trying to get user by login '{}'", login);
+
+        User user = profileService.getUserByLogin(login);
+
+        Event event = null;
+        log.debug("Trying to get event by id '{}'", user.getPinedEventId());
+
+        if(user.getPinedEventId() != 0) {
+            event= eventService.getEvent(user.getPinedEventId());
+        } else{
+            log.debug("There is no pined event");
+        }
+
+        log.debug("setting user and event info to response entity");
+        if(event!=null) {
+            user.setPinedEventDate(event.getEventDate());
+            user.setPinedEventName(event.getName());
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

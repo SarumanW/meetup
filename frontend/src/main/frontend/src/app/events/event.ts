@@ -4,7 +4,6 @@ export class Evento{
   name : string;
   eventDate : string;
   description : string;
-  periodicityId : number;
   periodicity : string;
   place : string;
   eventTypeId : number;
@@ -12,6 +11,27 @@ export class Evento{
   isDraft : boolean;
   folderId : number;
   imageFilepath : string;
+  isPinned: boolean;
   ownerId : number;
-  participants : Profile[]
+  participants : Profile[];
+
+  clone() : Evento {
+    let itemClone = new Evento();
+
+    itemClone.eventId = this.eventId;
+    itemClone.name = this.name;
+    itemClone.eventDate = this.eventDate;
+    itemClone.periodicity = this.periodicity;
+    itemClone.place = this.place;
+    itemClone.eventTypeId = this.eventTypeId;
+    itemClone.eventType = this.eventType;
+    itemClone.isDraft = this.isDraft;
+    itemClone.folderId = this.folderId;
+    itemClone.ownerId = this.ownerId;
+    itemClone.imageFilepath = this.imageFilepath;
+    itemClone.isPinned = this.isPinned;
+    itemClone.imageFilepath = this.imageFilepath;
+    itemClone.participants = this.participants;
+    return itemClone;
+  }
 }

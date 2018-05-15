@@ -17,10 +17,14 @@ export class ProfileComponent implements OnInit {
   state: string = "profile";
   profile: Profile;
   loggedUser: boolean;
-
   friendCount: number;
   isFriend: boolean;
   isConfirmed: boolean;
+  currentDate: string;
+  eventName: string;
+  eventDate:string;
+  startDate: string;
+  endDate: string;
 
   constructor(private accountService: AccountService,
               private spinner: NgxSpinnerService,
@@ -32,17 +36,30 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.accountService.profile(params['login']).subscribe(
+      this.accountService.profileWithEvent(params['login']).subscribe(
         (profile) => {
           this.profile = profile;
+          this.eventName = this.profile.pinedEventName
+          this.eventDate = this.profile.pinedEventDate
           this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === this.profile.login;
           this.update();
         },error => {
           this.appComponent.showError(error, 'Upload failed');
         }
       );
+
     });
+    this.getCurrentDate();
   }
+
+  getCurrentDate() {
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    this.currentDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + day;
+  }
+
 
   update() {
     this.spinner.show();

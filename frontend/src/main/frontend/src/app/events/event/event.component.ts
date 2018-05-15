@@ -32,6 +32,7 @@ export class EventComponent implements OnInit {
   shouldShow: boolean;
   hasParticipant: boolean;
   type: string;
+  isPinned:boolean
 
   constructor(private eventService: EventService,
               private route: ActivatedRoute,
@@ -53,8 +54,9 @@ export class EventComponent implements OnInit {
       this.time = "00:00";
       this.shouldShow = false;
       this.datee = this.currentDate;
-    },error => {
-        this.appComponent.showError('Unsuccessful event loading', 'Loading error');
+      this.isPinned = (this.eventId === JSON.parse(localStorage.getItem('currentUser')).pinedEventId)
+    }, error => {
+      this.appComponent.showError('Unsuccessful event loading', 'Loading error');
     });
     this.getEvent();
   }
@@ -72,7 +74,7 @@ export class EventComponent implements OnInit {
       this.spinner.hide();
     }, error => {
       this.spinner.hide();
-        this.appComponent.showError('Unsuccessful event loading', 'Loading error');
+      this.appComponent.showError('Unsuccessful event loading', 'Loading error');
     })
   }
 
@@ -82,6 +84,46 @@ export class EventComponent implements OnInit {
       positionClass: 'toast-top-right',
       closeButton: true
     });
+  }
+
+  pinEvent() {
+    console.log("pinning")
+    this.spinner.show();
+    this.eventService.pinEvent(this.currentUserId, this.eventId).subscribe(
+      (event: Evento) => {
+        console.log('response');
+        this.isPinned = !this.isPinned;
+        let profile = JSON.parse(localStorage.currentUser);
+        profile.pinedEventId = this.eventId;
+        localStorage.setItem('currentUser', JSON.stringify(profile));
+        this.showSuccess('Event is successfully pinned', 'Success!');
+        this.spinner.hide();
+      },
+      error => {
+        console.log('error');
+        this.appComponent.showError('Can not pin event', 'Attention!');
+        this.spinner.hide();
+      }
+    );
+  }
+
+  unpinEvent() {
+    console.log("unpinning")
+    this.spinner.show();
+    this.eventService.unpinEvent(this.currentUserId, this.eventId).subscribe(
+      (event: Evento) => {
+        this.isPinned = !this.isPinned;
+        let profile = JSON.parse(localStorage.currentUser);
+        profile.pinedEventId = 0;
+        localStorage.setItem('currentUser', JSON.stringify(profile));
+        this.showSuccess('Event is successfully unpinned', 'Success!');
+        this.spinner.hide();
+      },
+      error => {
+        this.appComponent.showError('Can not unpin event', 'Attention!');
+        this.spinner.hide();
+      }
+    );
   }
 
   addParticipant(name) {
@@ -128,11 +170,11 @@ export class EventComponent implements OnInit {
   }
 
   getCurrentDate() {
-    let date =  new Date();
+    let date = new Date();
     let year = date.getFullYear();
     let month = date.getMonth() + 1;
     let day = date.getDate();
-    this.currentDate =  year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
+    this.currentDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
     console.log(this.currentDate);
   }
 
@@ -258,7 +300,7 @@ export class EventComponent implements OnInit {
       this.spinner.hide();
     }
 
-    login.value="";
+    login.value = "";
   }
 
   editEvent() {

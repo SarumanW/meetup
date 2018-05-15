@@ -92,6 +92,8 @@ public final class Key {
     public static final String USER_IS_LOGIN_FREE ="user.isLoginFree";
     public static final String USER_IS_EMAIL_FREE ="user.isEmailFree";
     public static final String USER_GET_BY_EMAIL_PERIOD="user.getByEmailPeriod";
+    public static final String USER_SET_PINED_EVENT_ID="user.setPinedEventId";
+    public static final String USER_DELETE_PINED_EVENT_ID="user.deletePinedEventId";
 
     //FolderDao
     public static final String FOLDER_GET_USER_FOLDERS="folder.getUserFolders";

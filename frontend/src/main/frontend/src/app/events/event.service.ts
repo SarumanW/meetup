@@ -91,4 +91,18 @@ export class EventService {
       {headers: headers, params: {'name': queryField}});
   }
 
+  pinEvent(userId : number, eventId: number): Observable<any> {
+      let headers = new HttpHeaders()
+        .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+      return this.http.get('api/events/'+ userId + '/event/' + eventId + '/pinned',{headers: headers});
+  }
+
+  unpinEvent(userId : number, eventId: number): Observable<any> {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.delete('api/events/'+ userId + '/event/' + eventId + '/pinned',
+      {headers: headers});
+  }
 }
