@@ -52,7 +52,7 @@ public class AccountService {
 
         try {
             String md5Pass = HashMD5.hash(credentials.getPassword());
-//            credentials.setPassword(md5Pass);
+            credentials.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
             log.error("Algorithm can not get hash for password");
             throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));

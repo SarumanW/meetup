@@ -242,12 +242,21 @@ export class EventComponent implements OnInit {
       deleted => {
         this.showSuccess('Event removed successfully', 'Success!');
         this.spinner.hide();
+        this.deleteChats(this.eventId);
         this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId])
       }, error => {
         this.appComponent.showError('Can not delete event', 'Error!');
         this.spinner.hide();
       }
     );
+  }
+
+  deleteChats(eventId: number) {
+    this.chatService.deleteChats(eventId).subscribe(success => {
+      this.showSuccess('Chat deleted successfully');
+    }, error => {
+      this.appComponent.showError('Can not delete chats');
+    });
   }
 
   deleteParticipant(login: any) {
@@ -293,11 +302,13 @@ export class EventComponent implements OnInit {
   }
 
   onPublicChat() {
-    this.router.navigate(["/chat" + this.eventt.publicChatId]);
+    this.router.navigate(["/" + this.currentUserLogin + "/event/" + this.eventId +
+    "/chat/" + this.eventt.publicChatId]);
   }
 
   onPrivateChat() {
-    this.router.navigate(["/chat" + this.eventt.privateChatId]);
+    this.router.navigate(["/" + this.currentUserLogin + "/event/" + this.eventId +
+    "/chat/" + this.eventt.privateChatId]);
   }
 
 }

@@ -70,14 +70,14 @@
           <div class="col-md-2">
 
             <div>
-              <button type="button" class="btn btn-default" (click)="onPublicChat()"
+              <button type="button" class="btn btn-primary" (click)="onPublicChat()"
               >Public chat</button>
             </div>
 
             <br>
 
             <div *ngIf="eventt.ownerId !== this.currentUserId">
-              <button type="button" class="btn btn-default" (click)="onPrivateChat()"
+              <button type="button" class="btn btn-primary" (click)="onPrivateChat()"
               >Private chat</button>
             </div>
 

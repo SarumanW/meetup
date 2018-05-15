@@ -48,4 +48,15 @@ public class ChatController {
 
         return new ResponseEntity<>(responseId, HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<Integer> deleteEvent(@PathVariable int eventId) {
+        log.debug("Trying to delete eventId '{}'", eventId);
+
+        chatService.deleteChats(eventId);
+
+        log.debug("Send response body eventId '{}' and status OK", eventId);
+
+        return new ResponseEntity<>(eventId, HttpStatus.OK);
+    }
 }

@@ -18,6 +18,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   messageText: string;
   profile: Profile;
   chatId: number;
+  eventId: number;
 
   isButtonHidden: boolean = false;
 
@@ -29,6 +30,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.profile = JSON.parse(localStorage.currentUser);
     this.route.params.subscribe(params => {
       this.chatId = params['chatId'];
+      this.eventId = params['eventId'];
     });
   }
 
@@ -128,11 +130,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    let chatMessage = {
-      sender: this.profile.login,
-      type: 'LEAVE'
-    };
+    if (this.stompClient !== undefined) {
+      let chatMessage = {
+        sender: this.profile.login,
+        type: 'LEAVE'
+      };
 
-    this.stompClient.send("/app-chat/send/message/" + this.chatId, {}, JSON.stringify(chatMessage));
+      this.stompClient.send("/app-chat/send/message/" + this.chatId, {}, JSON.stringify(chatMessage));
+    }
   }
 }

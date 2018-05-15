@@ -118,7 +118,7 @@ public class ChatDaoImpl implements ChatDao {
         deleteMessagesByEventId(eventId);
 
         try {
-            result = jdbcTemplate.update(env.getProperty(CHAT_DELETE_BY_EVENT_ID));
+            result = jdbcTemplate.update(env.getProperty(CHAT_DELETE_BY_EVENT_ID), eventId);
         } catch (DataAccessException e) {
             log.error("Query fails by delete event chats with eventId '{}'", eventId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -139,7 +139,7 @@ public class ChatDaoImpl implements ChatDao {
         int result;
 
         try {
-            result = jdbcTemplate.update(env.getProperty(CHAT_DELETE_MESSAGES_BY_EVENT_ID));
+            result = jdbcTemplate.update(env.getProperty(CHAT_DELETE_MESSAGES_BY_EVENT_ID), eventId);
         } catch (DataAccessException e) {
             log.error("Query fails by delete event chats messages with eventId '{}'", eventId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
