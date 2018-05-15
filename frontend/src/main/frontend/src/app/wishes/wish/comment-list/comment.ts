@@ -1,7 +1,7 @@
 export class ItemComment {
-  commentId: number;
-  bodyText: string;
-  postTime: string;
-  login: string;
-  imageFilepath :string;
+  public commentId: number;
+  public bodyText: string;
+  public postTime: string;
+  public login: string;
+  public imageFilepath :string;
 }

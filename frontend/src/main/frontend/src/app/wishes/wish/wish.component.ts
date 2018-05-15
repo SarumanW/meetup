@@ -86,11 +86,11 @@ export class WishComponent implements OnInit {
       );
   }
 
-  onDeleteComment(comment) {
-    this.commentsService.destroy(comment.id, this.idItem)
+  onDeleteComment(commentId) {
+    this.commentsService.destroy(commentId)
       .subscribe(
         success => {
-          this.comments = this.comments.filter((item) => item !== comment);
+          this.comments = this.comments.filter((item) => item.commentId !== commentId);
         }
       );
   }

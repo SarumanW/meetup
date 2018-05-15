@@ -115,12 +115,27 @@
         <!--</fieldset>-->
       <!--</form>-->
 
-    <comment-list class="col-md-5 offset-md-2"
-      *ngFor="let comment of comments"
-      [comment]="comment" >
-      <!--(deleteComment)="onDeleteComment(comment)"-->
+  <link rel="stylesheet" href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css">
+      <div class="col-md-5 offset-md-2">
+        <div class="widget-area no-padding blank">
+          <div class="status-upload">
+            <form (ngSubmit)="addComment()">
+              <textarea [formControl]="commentControl" placeholder="What do you think about that item?" ></textarea>
+              <button type="submit" class="btn btn-success green"><i class="fa fa-share"></i> Share</button>
+            </form>
+          </div><!-- Status Upload  -->
+        </div><!-- Widget Area -->
+      </div>
 
-    </comment-list>
+    <div *ngIf="comments" class="col-md-5 offset-md-2">
+      <comment-list
+        *ngFor="let comment of comments"
+        [comment]="comment"
+        (deleteComment)="onDeleteComment(comment.commentId)">
+
+      </comment-list>
+    </div>
+
 
 </div>
 <!--</div>-->

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import {ItemComment} from "./comment";
 
 @Component({
   selector: 'comment-list',
@@ -7,7 +8,7 @@ import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 })
 export class CommentListComponent implements OnInit {
 
-  @Input() comment: Comment;
+  @Input() comment: ItemComment;
   @Output() deleteComment = new EventEmitter<boolean>();
 
   constructor() { }
