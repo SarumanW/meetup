@@ -114,18 +114,17 @@ public class ProfileController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    // TODO: 5/4/2018  Push service method
-//    @GetMapping("/userRelations/{userId}")
-//    public ResponseEntity<String> userRelations(@PathVariable() int userId){
-//
-//        log.debug("Trying to get relation between user with id '{}' and authenticated user", userId);
-//
-//        String relation = profileService.userRelations(userId);
-//
-//        log.debug("Send response body relation '{}' and status OK", relation);
-//
-//        return new ResponseEntity<>(relation, HttpStatus.OK);
-//    }
+    @GetMapping("/userRelations/{userId}")
+    public ResponseEntity<String> userRelations(@PathVariable() int userId){
+
+        log.debug("Trying to get relation between user with id '{}' and authenticated user", userId);
+
+        String relation = profileService.userRelations(userId);
+
+        log.debug("Send response body relation '{}' and status OK", relation);
+
+        return new ResponseEntity<>(relation, HttpStatus.OK);
+    }
 
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
