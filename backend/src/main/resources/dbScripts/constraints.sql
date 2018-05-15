@@ -56,7 +56,7 @@ ALTER TABLE message ADD CONSTRAINT message_fk_user FOREIGN KEY(chat_id) REFERENC
 ALTER TABLE message ADD CONSTRAINT message_fk_chat FOREIGN KEY(sender_id) REFERENCES uuser(user_id);
 
 ALTER TABLE chat ADD CONSTRAINT chat_fk_c_type FOREIGN KEY(chat_type_id) REFERENCES chat_type(chat_type_id);
-ALTER TABLE chat ADD CONSTRAINT chat_fk_event FOREIGN KEY(event_id) REFERENCES uuser(user_id);
+ALTER TABLE chat ADD CONSTRAINT chat_fk_event FOREIGN KEY(event_id) REFERENCES event(event_id);
 
 ALTER TABLE tag_item ADD CONSTRAINT tag_item_fk_tag FOREIGN KEY (tag_id) REFERENCES tag(tag_id);
 ALTER TABLE tag_item ADD CONSTRAINT tag_item_fk_item FOREIGN KEY (item_id) REFERENCES item(item_id);
