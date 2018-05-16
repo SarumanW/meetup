@@ -26,6 +26,6 @@ export class FolderListService {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.post('api/folders/delete', folder, {headers: headers});
+    return this.http.delete('api/folders/' + folder.folderId, {headers: headers});
   }
 }
