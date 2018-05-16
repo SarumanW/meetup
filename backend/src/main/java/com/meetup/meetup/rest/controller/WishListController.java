@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/api/wishes")
 public class WishListController {
 
-    private static Logger log = LoggerFactory.getLogger(FolderController.class);
+    private static Logger log = LoggerFactory.getLogger(WishListController.class);
 
     @Autowired
     private WishListService wishListService;
@@ -26,9 +26,11 @@ public class WishListController {
     @GetMapping
     public ResponseEntity<List<Item>> getWishList(){
         log.debug("Trying to get wish list");
+
         List<Item> items = wishListService.getWishList();
 
         log.debug("Send response body items '{}' and status OK", items.toString());
+
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
@@ -46,28 +48,33 @@ public class WishListController {
     @PostMapping("/recommendations")
     public ResponseEntity<List<Item>> getRecommendations(@RequestBody String[] tagArray) {
         log.debug("Trying to get  recommend wishes");
+
         List<Item> items = wishListService.getRecommendations(tagArray);
 
         log.debug("Send response body items '{}' and status OK", items.toString());
+
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
     @GetMapping("/bookings")
     public ResponseEntity<List<Item>> getBookingByUser() {
         log.debug("Trying to get booking wishes by user");
+
         List<Item> items = wishListService.getBookingByUser();
 
         log.debug("Send response body items '{}' and status OK", items.toString());
+
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
     @GetMapping("/tags/{tagPart}")
     public ResponseEntity<List<String>> getSearchTags(@PathVariable String tagPart) {
-
         log.debug("Trying to get tags by part name '{}'", tagPart);
+
         List<String> tags = wishListService.getSearchTags(tagPart);
 
         log.debug("Send response body tags '{}' and status OK", tags.toString());
+
         return new ResponseEntity<>(tags, HttpStatus.OK);
     }
 }

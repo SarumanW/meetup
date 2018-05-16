@@ -15,17 +15,6 @@ export class WishListService {
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
     let params = new HttpParams();
-    // if (tags.length !== 0) {
-    //   for (let tag of tags) {
-    //     params.set('tag', tag);
-    //     console.log(tag);
-    //     console.log(params.get('tag'));
-    //   }
-    // }
-    //
-    // console.log(params);
-    // console.log(params.getAll('tag'));
-    // console.log(params.toString());
 
     switch (category) {
       case WishListComponent.BOOKINGS_CATEGORY: {

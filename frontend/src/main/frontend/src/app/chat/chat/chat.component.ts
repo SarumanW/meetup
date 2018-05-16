@@ -32,6 +32,10 @@ export class ChatComponent implements OnInit, OnDestroy {
   preventMessages: Message[] = [];
   chatMembers: Profile[] = [];
 
+  isTyping: boolean = false;
+  typingMemberText: string = '';
+  typingMembers: string[] = [];
+
   isButtonHidden: boolean = false;
 
   constructor(private route: ActivatedRoute,
@@ -143,6 +147,28 @@ export class ChatComponent implements OnInit, OnDestroy {
   font-size: 14px;
   word-wrap: break-word;">${message.content}</p>
 </li>`;
+        } else if (message.type === 'TYPING') {
+          console.log(that.typingMembers.indexOf(message.sender));
+
+          const memberIndex = that.typingMembers.indexOf(message.sender);
+
+          if (memberIndex === -1) {
+            that.typingMembers.push(message.sender);
+          }
+
+          console.log(that.typingMembers);
+
+          that.typingsMembersNotification();
+
+        } else if (message.type === 'NOT_TYPING') {
+          const memberIndex = that.typingMembers.indexOf(message.sender);
+
+          if (memberIndex !== -1) {
+            that.typingMembers.splice(memberIndex, 1);
+          }
+
+          that.typingsMembersNotification();
+
         } else {
           that.color = that.colors[ChatComponent.hashCode(message.sender) % 8];
 
@@ -200,6 +226,53 @@ export class ChatComponent implements OnInit, OnDestroy {
     );
 
     $('#message').val('');
+    this.messageText = '';
+  }
+
+  // USER TYPE TEXT EVENTS
+
+  isUserTypingMessage() {
+    console.log(this.messageText);
+    console.log(this.typingMembers);
+    if(this.messageText === '' && this.isTyping) {
+      this.isTyping = false;
+      this.sendIsTypingMember('NOT_TYPING');
+    } else if (!this.isTyping) {
+      this.isTyping = true;
+      this.sendIsTypingMember('TYPING');
+    }
+  }
+
+  sendIsTypingMember(messageType: string) {
+    let chatMessage = {
+      sender: this.profile.login,
+      type: messageType
+    };
+
+    this.stompClient.send("/app-chat/send/message/" + this.chatId, {}, JSON.stringify(chatMessage));
+  }
+
+  typingsMembersNotification() {
+    if (this.typingMembers.length === 0) {
+      this.typingMemberText = '';
+    } else {
+      this.typingMemberText = '';
+      let that = this;
+
+      this.typingMembers.forEach(function (member) {
+        that.typingMemberText += member + ', ';
+      });
+
+      this.typingMemberText = this.typingMemberText.replace(new RegExp(', ' + '$'), ' ');
+
+      if (this.typingMembers.length === 1 && this.typingMembers[1] !== this.profile.login) {
+        this.typingMemberText += 'is typing ...';
+      } else {
+        this.typingMemberText += 'are typing ...'
+      }
+
+      console.log(this.typingMemberText);
+    }
   }
 
   backToEvent() {

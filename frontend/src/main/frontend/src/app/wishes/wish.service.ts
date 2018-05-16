@@ -26,7 +26,7 @@ export class WishService {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.post(`api/item/${item.itemId}/add`, item, {headers: headers});
+    return this.http.post(`api/item/${item.itemId}`, item, {headers: headers});
   }
 
   editWishItem(item: Item): Observable<any>{
@@ -40,7 +40,7 @@ export class WishService {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.delete(`api/item/${item.itemId}/delete`, {headers: headers});
+    return this.http.delete(`api/item/${item.itemId}`, {headers: headers});
   }
 
   bookWishItem(item: Item): Observable<any> {

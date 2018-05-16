@@ -33,85 +33,87 @@ public class ItemController {
 
 
     @GetMapping("/{id}/login/{login}")
-    public @ResponseBody
-    ResponseEntity<Item> getItemByUserIdItemId(@PathVariable int id, @PathVariable String login) {
+    public ResponseEntity<Item> getItemByUserIdItemId(@PathVariable int id, @PathVariable String login) {
         log.debug("Try to get item with id '{}' for user with with login '{}'", id, login);
+
         Item item = itemService.findByUserIdItemId(id, login);
 
         log.debug("Send response body item '{}' and status OK", item);
+
         return new ResponseEntity<>(item, HttpStatus.OK);
     }
 
     @PostMapping
-    public @ResponseBody ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
+    public ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
         log.debug("Trying to save item {}", item);
+
         Item addedItem = itemService.addItem(item);
 
         log.debug("Send response body saved item '{}' and status CREATED", addedItem);
+
         return new ResponseEntity<>(addedItem, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}/add")
-    public @ResponseBody ResponseEntity<Item> addItemToUserWishList(@Valid @RequestBody Item item, @PathVariable("id") String id){
+    @PostMapping("/{id}")
+    public ResponseEntity<Item> addItemToUserWishList(@Valid @RequestBody Item item, @PathVariable("id") String id){
         log.debug("Trying to add item with id '{}' to user wish list", item.getItemId());
 
         Item addedItem = itemService.addItemToUserWishList(item);
+
         log.info("Added item with id '{}' to user wish list", addedItem.getItemId());
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}/delete")
-    public @ResponseBody ResponseEntity deleteItem(@PathVariable int id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Item> deleteItem(@PathVariable int id) {
         log.debug("Trying to delete item with id '{}' to user wish list", id);
+
         Item deletedItem = itemService.deleteItemFromUserWishList(id);
 
         log.debug("Send response status OK");
-        return new ResponseEntity(HttpStatus.OK);
+
+        return new ResponseEntity<>(deletedItem, HttpStatus.OK);
     }
 
     @PutMapping
-    public @ResponseBody ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
+    public ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
         log.debug("Trying to update item '{}'", newItem);
+
         Item updatedItem = itemService.updateItem(newItem);
 
-       log.debug("Send response body updated '{}' and status OK");
+        log.debug("Send response body updated '{}' and status OK");
+
         return new ResponseEntity<>(updatedItem, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete")
-    public @ResponseBody ResponseEntity deleteItem(@Valid @RequestBody Item item) {
+    // TODO: 16.05.2018 IS NOT USED
+    @DeleteMapping
+    public ResponseEntity deleteItem(@Valid @RequestBody Item item) {
         log.debug("Trying to delete item '{}'", item);
+
         Item deletedItem = itemService.deleteItem(item);
 
         log.debug("Send response status OK");
+
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam MultipartFile file) {
-        log.debug("Trying to upload image '{}'", file);
-
-        String imagePath = storageService.wishItemImageStore(file);
-
-        log.debug("Image successfully uploaded send response status OK");
-        return new ResponseEntity<>(imagePath, HttpStatus.OK);
-    }
-
     @PostMapping("/{id}/like")
-    public @ResponseBody
-    ResponseEntity<Item> addLike(@PathVariable int id) {
+    public ResponseEntity<Item> addLike(@PathVariable int id) {
         log.debug("Trying to add like to item with id '{}'", id);
 
         Item likedItem = itemService.addLike(id);
+
         return new ResponseEntity<>(likedItem, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/like")
-    public @ResponseBody
-    ResponseEntity<Item> removeLike(@PathVariable int id) {
+    public ResponseEntity<Item> removeLike(@PathVariable int id) {
         log.debug("Trying to remove like from item with id '{}'", id);
 
         Item unlikedItem = itemService.removeLike(id);
+
         return new ResponseEntity<>(unlikedItem, HttpStatus.OK);
     }
 
@@ -135,6 +137,19 @@ public class ItemController {
         Item itemWithoutBooker = itemService.deleteItemBooker(ownerId, itemId);
 
         log.debug("Booker with id '{}' was deleted from item '{}'", bookerId, itemWithoutBooker);
+
         return new ResponseEntity<>(itemWithoutBooker, HttpStatus.OK);
     }
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam MultipartFile file) {
+        log.debug("Trying to upload image '{}'", file);
+
+        String imagePath = storageService.wishItemImageStore(file);
+
+        log.debug("Image successfully uploaded send response status OK");
+
+        return new ResponseEntity<>(imagePath, HttpStatus.OK);
+    }
+
 }

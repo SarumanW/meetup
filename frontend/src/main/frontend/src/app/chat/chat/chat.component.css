@@ -180,3 +180,15 @@ a {
   height: 18px;
   cursor: pointer;
 }
+
+.typing-message {
+  width: 100%;
+  text-align: center;
+  clear: both;
+}
+
+.typing-message-text {
+  color: #777;
+  font-size: 14px;
+  word-wrap: break-word;
+}
