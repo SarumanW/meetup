@@ -26,7 +26,7 @@ import {EditComponent} from "./account/edit/edit.component";
 import {FriendComponent} from "./account/friends/friend/friend.component";
 import {FriendsListComponent} from "./account/friends/friends.list.component";
 import {FriendService} from "./account/friends/friend.service";
-import {ChangePasswordComponent} from "./account/change.password/change.password.component";
+import {ChangePasswordComponent} from "./account/change.password/changePassword.component";
 import {UploadFileService} from "./upload.file/upload.file.service";
 import {ToastrModule} from "ngx-toastr";
 import {ThankyouComponent} from "./account/thankyou/thankyou.component";
@@ -46,7 +46,7 @@ import {ImageUploadService} from "./events/image.upload.service";
 import {AgmCoreModule} from "@agm/core";
 import {environment} from "./environment";
 import { TextMaskModule } from 'angular2-text-mask';
-import {CheckPasswordComponent} from "./account/change.password/check.password/check.password.component"
+import {CheckPasswordComponent} from "./account/change.password/check.password/checkPassword.component"
 import {EventEditComponent} from "./events/event.edit/event.edit.component";
 import { ChatComponent } from './chat/chat/chat.component';
 import {ChatService} from "./chat/chat.service";
@@ -57,6 +57,8 @@ import { WishAddComponent } from './wishes/wish.add/wish.add.component';
 import {WishService} from "./wishes/wish.service";
 import { WishEditComponent } from './wishes/wish.edit/wish.edit.component';
 import {CountDown} from "./events/countdown/countdown";
+import { CommentListComponent } from './wishes/wish/comment-list/comment-list.component';
+import {CommentService} from "./wishes/wish/comment-list/comment.service";
 
 @NgModule({
   declarations: [
@@ -87,7 +89,8 @@ import {CountDown} from "./events/countdown/countdown";
     EventEditComponent,
     CheckPasswordComponent,
     WishEditComponent,
-    CountDown
+    CountDown,
+    CommentListComponent
   ],
   imports: [
     ReactiveFormsModule,
@@ -125,7 +128,8 @@ import {CountDown} from "./events/countdown/countdown";
     ImageUploadService,
     ChatService,
     WishListService,
-    WishService
+    WishService,
+    CommentService
   ],
   bootstrap: [AppComponent]
 })

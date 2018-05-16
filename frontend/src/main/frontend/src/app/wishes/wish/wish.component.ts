@@ -8,7 +8,9 @@ import {ToastrService} from "ngx-toastr";
 import {Profile} from "../../account/profile";
 import {WishService} from "../wish.service";
 import {ActivatedRoute} from '@angular/router';
-import {AppComponent} from "../../app.component";
+import {CommentService} from "./comment-list/comment.service";
+import {FormControl} from "@angular/forms";
+import {ItemComment} from "./comment-list/comment";
 
 @Component({
   selector: 'app-wish',
@@ -22,52 +24,96 @@ export class WishComponent implements OnInit {
   item: Item;
   name = "ITEM";
   profile: Profile;
-  id: number;
+  idItem: number;
   login: string;
   private sub: any;
-
+  comments: ItemComment[];
+  commentControl = new FormControl();
+  commentFormErrors = {};
+  isSubmitting = false;
   minDueDate: string;
   dueDate: string;
   priority: string;
-
+  loginLikes: any;
 
   constructor(private router: Router,
               private spinner: NgxSpinnerService,
               private uploadService: UploadFileService,
               private toastr: ToastrService,
               private wishListService: WishListService,
+              private commentsService: CommentService,
               private wishService: WishService,
-              private route: ActivatedRoute,
-              private appComponent:AppComponent) {
+              private route: ActivatedRoute) {
   }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
-      this.id = +params['itemId'];
+      this.idItem = +params['itemId'];
       this.login = params['login'];
-    },
-      error => this.appComponent.showError(error, "Error"));
+    });
 
-    this.getItem(this.id);
+    this.getItem(this.idItem);
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
+
+    // Load the comments on this item
+    this.populateComments();
+
   }
 
+  populateComments() {
+    this.commentsService.getAll(this.idItem)
+      .subscribe(comments => this.comments = comments);
+  }
+
+  addComment() {
+    this.isSubmitting = true;
+    this.commentFormErrors = {};
+
+    const commentBody = this.commentControl.value;
+    this.commentsService
+      .add(this.idItem, commentBody)
+      .subscribe(
+        comment => {
+          this.comments.unshift(comment);
+          this.commentControl.reset('');
+          this.isSubmitting = false;
+        },
+        errors => {
+          this.isSubmitting = false;
+          this.commentFormErrors = errors;
+        }
+      );
+  }
+
+  onDeleteComment(commentId) {
+    this.commentsService.destroy(commentId)
+      .subscribe(
+        success => {
+          this.comments = this.comments.filter((item) => item.commentId !== commentId);
+        }
+      );
+  }
+
+  getLoginsWhoLiked(){
+    this.wishService.getLoginsWhoLiked(this.idItem).subscribe((logins:string)=> {
+        this.loginLikes = logins;
+      }
+    )
+}
 
   like() {
-    this.wishService.addLike(this.id).subscribe((item:Item)=>{
+    this.wishService.addLike(this.idItem).subscribe((item:Item)=>{
       this.item.likes = item.likes;
-      this.item.isLiked = item.isLiked;
-    },
-      error => this.appComponent.showError(error, "Error"))
+      this.item.like = item.like;
+    })
   }
 
   dislike(){
-    this.wishService.removeLike(this.id).subscribe((item:Item)=>{
+    this.wishService.removeLike(this.idItem).subscribe((item:Item)=>{
       this.item.likes = item.likes;
-      this.item.isLiked = item.isLiked;
-    },
-      error => this.appComponent.showError(error, "Error"))
+      this.item.like = item.like;
+    })
   }
 
   getItem(id: number) {
@@ -76,8 +122,7 @@ export class WishComponent implements OnInit {
     this.wishService.getWishItem(id, this.login).subscribe(item => {
       this.item = item;
       this.spinner.hide();
-    },
-      error => this.appComponent.showError(error, "Error"));
+    });
   }
 
 
@@ -89,7 +134,7 @@ export class WishComponent implements OnInit {
       this.router.navigate(
         ['/'+ this.profile.login + '/wishes']);
     }, error => {
-      this.appComponent.showError(error, "Error")
+      this.showError('Unsuccessful wish item deleting', 'Adding error');
       this.spinner.hide();
     });
   }
@@ -109,7 +154,7 @@ export class WishComponent implements OnInit {
       this.spinner.hide();
       this.showSuccess('Wish item was successfully added', 'Attention!');
     }, error => {
-      this.appComponent.showError(error, "Error")
+      this.showError('Unsuccessful wish item adding', 'Adding error');
       this.spinner.hide();
     });
   }

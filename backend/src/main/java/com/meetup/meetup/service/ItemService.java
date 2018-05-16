@@ -1,11 +1,9 @@
 package com.meetup.meetup.service;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meetup.meetup.dao.ItemDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.Item;
-import com.meetup.meetup.entity.ItemPriority;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
@@ -15,22 +13,22 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.util.List;
 
 @Service
 @PropertySource("classpath:strings.properties")
 public class ItemService {
 
-    private static Logger log = LoggerFactory.getLogger(ProfileService.class);
+    private static Logger log = LoggerFactory.getLogger(ItemService.class);
 
-    private final ItemDao itemDao;
     private final UserDao userDao;
+    private final ItemDao itemDao;
     private final AuthenticationFacade authenticationFacade;
 
     @Autowired
     public ItemService(UserDao userDao, ItemDao itemDao, AuthenticationFacade authenticationFacade, Environment env) {
-        this.itemDao = itemDao;
         this.userDao = userDao;
+        this.itemDao = itemDao;
         this.authenticationFacade = authenticationFacade;
     }
 
@@ -96,6 +94,7 @@ public class ItemService {
     }
 
 
+
     public Item addLike(int itemId){
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
@@ -122,5 +121,14 @@ public class ItemService {
     public Item deleteItemBooker(int ownerId, int itemId) {
         log.debug("Trying to remove booker from item '{}' with owner '{}'", itemId, ownerId);
         return itemDao.removeBookerForItem(ownerId, itemId);
+    }
+
+    public List<String> getUserLoginsWhoLikedItem(int itemId){
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+        log.debug("User was successfully received");
+
+        log.debug("Try to get list of login who liked item with id '{}'", itemId);
+        return itemDao.getLoginsWhoLikedItem(itemId);
     }
 }

@@ -58,8 +58,10 @@
           </table>
         </div>
         <div class="edit">
-          <img *ngIf="loggedUser" src="../../../assets/edit.png" routerLink="/{{profile.login}}/edit" height="40"
-               width="40"/>
+          <button *ngIf="loggedUser" type="button" class="btn btn-primary" routerLink="/{{profile.login}}/edit">
+            <img *ngIf="loggedUser" src="../../../assets/edit_white.png" height="40"
+                 width="40"/>
+          </button>
         </div>
 
         <br>

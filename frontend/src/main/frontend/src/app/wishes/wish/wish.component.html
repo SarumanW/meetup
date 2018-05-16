@@ -12,7 +12,8 @@
     </div>
 
     <div class="col-md-5">
-      <img *ngIf="item.imageFilepath" [src]="item.imageFilepath" onError="this.src='assets/item-icon-default.svg'" class="img-fluid">
+      <img *ngIf="item.imageFilepath" [src]="item.imageFilepath" onError="this.src='assets/item-icon-default.svg'"
+           class="img-fluid">
     </div>
 
     <div class="col-md-5">
@@ -64,53 +65,115 @@
       </form>
 
       <a routerLink="/{{profile.login}}/wishes" class="btn btn-primary">Return to wishlist</a>
-      <button *ngIf="item.ownerId !== 0 && profile.login === login" type="button" (click)="removeFromWishList()" [disabled]="!item.priority"
+      <button *ngIf="item.ownerId !== 0 && profile.login === login" type="button" (click)="removeFromWishList()"
+              [disabled]="!item.priority"
               class="btn btn-danger">Remove
       </button>
       <button type="button" (click)="add.show()" [disabled]="item.priority" class="btn btn-primary">Add</button>
-      <button *ngIf="item.ownerId !== 0 && profile.login === login"  routerLink="/{{profile.login}}/wishes/edit/{{item.itemId}}" type="button" class="btn btn-warning">Edit</button>
+      <button *ngIf="item.ownerId !== 0 && profile.login === login"
+              routerLink="/{{profile.login}}/wishes/edit/{{item.itemId}}" type="button" class="btn btn-warning">Edit
+      </button>
 
-      <div *ngIf="!item.isLiked"><img src="assets/notliked.png" (click)="like()"> {{item.likes}}</div>
-      <div *ngIf="item.isLiked"><img src="assets/liked.png" (click)="dislike()"> {{item.likes}}</div>
+      <img *ngIf="!item.like" id="one" src="assets/notliked.png" (click)="like()">
+      <img *ngIf="item.like" src="assets/liked.png" (click)="dislike()">
+      <div ngbDropdown class="d-inline-block navbar-right pr-5">
+        <button class="btn btn-default" id="dropdownBasic" ngbDropdownToggle (click)="getLoginsWhoLiked()">
+          {{item.likes}}
+        </button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic" data-spy="scroll" class="scrollspy">
+          <ul class="list-group">
+            <li id="navbar-example" *ngFor="let login of loginLikes">
+              <a class="list-group-item" href="#/{{login}}/profile"><img src="assets/liked.png"> {{login}} </a></li>
+          </ul>
+        </div>
 
+      </div>
     </div>
+
   </div>
-
-  <!--Add item-->
-
-  <app-modal-window #add>
-    <div class="modal-header d-flex justify-content-between align-items-right">
-      <h4 class="modal-title">Add item</h4>
-      <img class="close-btn" src="assets/close.svg" (click)="add.hide()" alt="">
-    </div>
-    <div class="app-modal-body">
-      <form #addItemForm="ngForm" ngForm="addItemForm">
-
-        <!--Priority-->
-
-        <div class="form-group">
-          <label for="priority">Priority:</label>
-          <select name="priority" id="priority" class="form-control" [(ngModel)]="priority" required>
-            <option value="URGENT">URGENT</option>
-            <option value="NORMAL">NORMAL</option>
-            <option value="LOW">LOW</option>
-          </select>
-        </div>
-
-        <!--Due Date-->
-
-        <div class="form-group">
-          <label class="form-control-label" for="itemDate">Choose the due day of the wish:</label>
-          <input type="date" min="{{minDueDate}}" class="form-control"
-                 id="itemDate" name="eventDate" #itemDueDate="ngModel" [(ngModel)]="dueDate" required>
-          <div *ngIf="itemDueDate.dirty && itemDueDate.invalid">
-            <small class="form-text text-danger" *ngIf="itemDueDate.error.min">
-              Minimal due date must be {{minDueDate}}.
-            </small>
-          </div>
-        </div>
-        <button [disabled]="addItemForm.form.invalid" class="btn btn-default" (click)="add.hide(); addToWishList()">Add</button>
-      </form>
-    </div>
-  </app-modal-window>
 </div>
+
+<!--Comment list-->
+<div class="row">
+  <!--<div class="col-xs-12 col-md-8 offset-md-2">-->
+
+      <!--<form class="card comment-form" (ngSubmit)="addComment()">-->
+        <!--<fieldset [disabled]="isSubmitting">-->
+          <!--<div class="card-block">-->
+                <!--<textarea class="form-control"-->
+                          <!--placeholder="Write a comment..."-->
+                          <!--rows="3"-->
+                          <!--[formControl]="commentControl"-->
+                <!--&gt;</textarea>-->
+          <!--</div>-->
+          <!--<div class="card-footer">-->
+            <!--<img [src]="currentUser.image" class="comment-author-img" />-->
+            <!--<button class="btn btn-sm btn-primary" type="submit">-->
+              <!--Post Comment-->
+            <!--</button>-->
+          <!--</div>-->
+        <!--</fieldset>-->
+      <!--</form>-->
+
+  <link rel="stylesheet" href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css">
+      <div class="col-md-5 offset-md-2">
+        <div class="widget-area no-padding blank">
+          <div class="status-upload">
+            <form (ngSubmit)="addComment()">
+              <textarea [formControl]="commentControl" placeholder="What do you think about that item?" ></textarea>
+              <button type="submit" class="btn btn-success green"><i class="fa fa-share"></i> Share</button>
+            </form>
+          </div><!-- Status Upload  -->
+        </div><!-- Widget Area -->
+      </div>
+
+    <div *ngIf="comments" class="col-md-5 offset-md-2">
+      <comment-list
+        *ngFor="let comment of comments"
+        [comment]="comment"
+        (deleteComment)="onDeleteComment(comment.commentId)">
+
+      </comment-list>
+    </div>
+
+
+</div>
+<!--</div>-->
+<!--Add item-->
+
+<app-modal-window #add>
+  <div class="modal-header d-flex justify-content-between align-items-right">
+    <h4 class="modal-title">Add item</h4>
+    <img class="close-btn" src="assets/close.svg" (click)="add.hide()" alt="">
+  </div>
+  <div class="app-modal-body">
+    <form #addItemForm="ngForm" ngForm="addItemForm">
+
+      <!--Priority-->
+
+      <div class="form-group">
+        <label for="priority">Priority:</label>
+        <select name="priority" id="priority" class="form-control" [(ngModel)]="priority" required>
+          <option value="URGENT">URGENT</option>
+          <option value="NORMAL">NORMAL</option>
+          <option value="LOW">LOW</option>
+        </select>
+      </div>
+
+      <!--Due Date-->
+
+      <div class="form-group">
+        <label class="form-control-label" for="itemDate">Choose the due day of the wish:</label>
+        <input type="date" min="{{minDueDate}}" class="form-control"
+               id="itemDate" name="eventDate" #itemDueDate="ngModel" [(ngModel)]="dueDate" required>
+        <div *ngIf="itemDueDate.dirty && itemDueDate.invalid">
+          <small class="form-text text-danger" *ngIf="itemDueDate.error.min">
+            Minimal due date must be {{minDueDate}}.
+          </small>
+        </div>
+      </div>
+      <button [disabled]="addItemForm.form.invalid" class="btn btn-default" (click)="add.hide(); addToWishList()">Add
+      </button>
+    </form>
+  </div>
+</app-modal-window>
