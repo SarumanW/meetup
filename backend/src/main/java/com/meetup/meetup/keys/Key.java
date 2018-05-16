@@ -171,7 +171,7 @@ public final class Key {
     public static final String TAG_SEARCH_TAGS_NAME = "tag.searchTagsName";
     public static final String ITEM_GET_LIKED_USER_LOGINS_BY_ITEM_ID = "item.getLikedUserLoginsById";
     public static final String ITEM_GET_LIKE_ID_BY_USER_ID_ITEM_ID = "item.getLikeIdByUserIdItemId";
-    public static final String ITEM_GET_ITEMS_ID_BY_TAG_NAMES = "item.getItemsByTagNames";
+    public static final String ITEM_GET_ITEMS_ID_BY_TAG_NAMES = "item.getItemsIdByTagNames";
 
     //ItemCommentDao
     public static final String ITEM_COMMENT_FIND_BY_ID = "itemComment.findById";

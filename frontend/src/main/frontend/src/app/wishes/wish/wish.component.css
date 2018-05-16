@@ -436,5 +436,9 @@ select.form-control:not([size]):not([multiple]) {
   margin-right: 7px;
 }
 
+.btn-space {
+  margin-right: 5px;
+}
+
 
 

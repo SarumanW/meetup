@@ -62,23 +62,30 @@ export class WishListComponent implements OnInit {
 
   loginSubscriber() {
     this.route.params.subscribe((params: Params) => {
-      this.login = params['login'];
-      if(this.login === undefined) {
-        this.login = this.profile.login;
-      }
-      let category = params['category'];
-      if (this.login === this.profile.login && category == WishListComponent.BOOKINGS_CATEGORY) {
-        this.category = WishListComponent.BOOKINGS_CATEGORY;
-        this.title = "Bookings wishes:";
-      } else if (this.login === this.profile.login && category == WishListComponent.RECOMMENDATIONS_CATEGORY) {
-        this.category = WishListComponent.RECOMMENDATIONS_CATEGORY;
-        this.title = "Recommendation wishes:";
-      } else {
-        this.category = WishListComponent.OWN_CATEGORY;
-        this.title = " Your wishes:";
-      }
-      this.getWishList();
-    },
+        this.login = params['login'];
+        if (this.login === undefined) {
+          this.login = this.profile.login;
+        }
+
+        let category = params['category'];
+        if (this.login === this.profile.login && category == WishListComponent.BOOKINGS_CATEGORY) {
+          this.category = WishListComponent.BOOKINGS_CATEGORY;
+          this.title = "Bookings wishes:";
+        } else if (this.login === this.profile.login && category == WishListComponent.RECOMMENDATIONS_CATEGORY) {
+          this.category = WishListComponent.RECOMMENDATIONS_CATEGORY;
+          this.title = "Recommendation wishes:";
+        } else {
+          this.category = WishListComponent.OWN_CATEGORY;
+          this.title = " Your wishes:";
+        }
+
+        let tag = params['tag'];
+        if (tag !== undefined) {
+          this.tags.push(tag);
+        }
+
+        this.getWishList();
+      },
       error => this.appComponent.showError(error, "Error"));
   }
 
