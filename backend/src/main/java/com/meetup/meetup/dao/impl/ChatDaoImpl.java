@@ -33,10 +33,9 @@ public class ChatDaoImpl implements ChatDao {
     private JdbcTemplate jdbcTemplate;
 
     private static Logger log = LoggerFactory.getLogger(ChatDaoImpl.class);
-    // TODO: 15.05.2018 Delete 
-    private static final int EVENT_CHATS_COUNT = 2;
     private static final int CHAT_ID_WITH_OWNER = 1;
     private static final int CHAT_ID_WITHOUT_OWNER = 2;
+    private static final int GET_MESSAGE_LIMIT = 50;
 
     @Override
     public Message insertMessage(Message message) {
@@ -193,7 +192,7 @@ public class ChatDaoImpl implements ChatDao {
 
         try {
             messages = jdbcTemplate.query(env.getProperty(CHAT_FIND_MESSAGES_BY_CHAT_ID),
-                    new Object[]{chatId}, new MessageRowMapper());
+                    new Object[]{chatId, GET_MESSAGE_LIMIT}, new MessageRowMapper());
         } catch (EmptyResultDataAccessException e) {
             log.debug("Messages not found by chatId '{}'", chatId);
             return messages;

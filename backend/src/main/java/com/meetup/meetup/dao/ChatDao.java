@@ -16,6 +16,7 @@ public interface ChatDao {
     ChatIdsVM findChatsIdsByEventId(int eventId);
 
     //Messages
+
     Message insertMessage(Message message);
 
     List<Message> findMessagesByChatId(int chatId);
