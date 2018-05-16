@@ -49,7 +49,6 @@ public class ProfileController {
         log.debug("Trying to update user '{}'", newUser.toString());
 
         User updatedUser = profileService.updateUser(newUser);
-
         if (updatedUser != null) {
             log.debug("Send response body user '{}' and status OK", updatedUser);
             return new ResponseEntity<>("Successfully updated profile", HttpStatus.OK);
