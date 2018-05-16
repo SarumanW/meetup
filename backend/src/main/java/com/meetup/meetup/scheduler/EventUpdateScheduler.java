@@ -30,8 +30,8 @@ public class EventUpdateScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(EventUpdateScheduler.class);
 
-    private static final SimpleDateFormat fullDateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss.SS");
-    private static final SimpleDateFormat hoursDateFormat = new SimpleDateFormat("YYYY-MM-dd HH");
+    private static final SimpleDateFormat fullDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
+    private static final SimpleDateFormat hoursDateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
 
     @Scheduled(cron="${cron.hourly}")
     public void changeEventDate() {
