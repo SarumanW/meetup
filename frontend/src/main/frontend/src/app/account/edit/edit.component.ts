@@ -31,6 +31,7 @@ export class EditComponent implements OnInit {
   errorPhoneFormat: string;
   mask: any[] = ['+', '3', ' ', '8', ' ', '(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
   phonePattern = /\+3\s8\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}/;
+  periodicity:string;
   editForm = this.fb.group({
     email: [Validators.required, Validators.pattern(this.emailPattern)]
   });
@@ -55,10 +56,15 @@ export class EditComponent implements OnInit {
     }
   }
 
+  showPer(){
+    console.log(this.profile.periodicalEmail);
+  }
+
   ngOnInit() {
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
     this.editForm.get('email').setValidators(Validators.email);
     this.account = new Profile();
+    this.account.periodicalEmail = this.profile.periodicalEmail;
     this.route.params.subscribe(params => {
       this.account.login = params['login'];
     },error => {
