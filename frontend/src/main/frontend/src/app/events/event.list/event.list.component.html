@@ -10,7 +10,10 @@
     </div>
 
     <div class="col-10 py-4">
-      <h1 class="mb-4">Type: {{eventType}}</h1>
+      <h1 *ngIf="eventType === 'public'" class="mb-4">Your {{eventType}} events:</h1>
+      <h1 *ngIf="eventType === 'private'" class="mb-4">Your {{eventType}} events:</h1>
+      <h1 *ngIf="eventType === 'notes'" class="mb-4">Your {{eventType}}:</h1>
+      <h1 *ngIf="eventType === 'drafts'" class="mb-4">Your {{eventType}}:</h1>
       <div class="row">
 
         <div class="col-md-4">

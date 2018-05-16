@@ -9,7 +9,7 @@ import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'change.password',
-  templateUrl: './change.password.component.html'
+  templateUrl: './changePassword.component.html'
 })
 
 export class ChangePasswordComponent implements OnInit {

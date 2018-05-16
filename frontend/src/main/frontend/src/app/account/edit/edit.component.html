@@ -121,6 +121,22 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label for="priority">Send events plan:</label>
+          <select name="priority" id="priority" class="form-control" [(ngModel)]="this.account.periodicalEmail" required>
+            <option value="null">DISABLE</option>
+            <option value="DAILY">DAILY</option>
+            <option value="SUNDAY">EVERY SUNDAY</option>
+            <option value="MONDAY">EVERY MONDAY</option>
+            <option value="TUESDAY">EVERY TUESDAY</option>
+            <option value="WEDNESDAY">EVERY WEDNESDAY</option>
+            <option value="THURSDAY">EVERY THURSDAY</option>
+            <option value="FRIDAY">EVERY FRIDAY</option>
+            <option value="SATURDAY">EVERY SATURDAY</option>
+            <option value="MONTHLY">MONTHLY</option>
+          </select>
+        </div>
+
         <button type="button" class="btn btn-primary"  [disabled]="editForm.form.invalid || email.errors?.pattern" data-toggle="modal" (click)="clickButton()">
           Save changes
         </button>

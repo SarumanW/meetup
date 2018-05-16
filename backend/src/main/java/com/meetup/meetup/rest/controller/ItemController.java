@@ -1,7 +1,6 @@
 package com.meetup.meetup.rest.controller;
 
 
-
 import com.meetup.meetup.entity.Item;
 
 import com.meetup.meetup.service.StorageService;
@@ -15,6 +14,7 @@ import com.meetup.meetup.service.ItemService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/item")
@@ -30,7 +30,6 @@ public class ItemController {
         this.itemService = itemService;
         this.storageService = storageService;
     }
-
 
     @GetMapping("/{id}/login/{login}")
     public ResponseEntity<Item> getItemByUserIdItemId(@PathVariable int id, @PathVariable String login) {
@@ -139,6 +138,15 @@ public class ItemController {
         log.debug("Booker with id '{}' was deleted from item '{}'", bookerId, itemWithoutBooker);
 
         return new ResponseEntity<>(itemWithoutBooker, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/likes")
+    public ResponseEntity<List<String>> getUserLoginsWhoLikedItem(@PathVariable int id) {
+        log.debug("Try to get login who liked item with idItem '{}'", id);
+        List<String> logins = itemService.getUserLoginsWhoLikedItem(id);
+
+        log.debug("Send response body login who liked item '{}' and status OK", logins);
+        return new ResponseEntity<>(logins, HttpStatus.OK);
     }
 
     @PostMapping("/upload")
