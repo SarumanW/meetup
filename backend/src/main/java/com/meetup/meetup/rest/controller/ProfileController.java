@@ -45,16 +45,16 @@ public class ProfileController {
     }
 
     @PutMapping
-    public ResponseEntity<String> updateProfile(@RequestBody User newUser) {
+    public ResponseEntity<User> updateProfile(@RequestBody User newUser) {
         log.debug("Trying to update user '{}'", newUser.toString());
 
         User updatedUser = profileService.updateUser(newUser);
         if (updatedUser != null) {
             log.debug("Send response body user '{}' and status OK", updatedUser);
-            return new ResponseEntity<>("Successfully updated profile", HttpStatus.OK);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
         }
         log.debug("Updating user '{}' failed", newUser.toString());
-        return new ResponseEntity<>("Updating failed", HttpStatus.NOT_MODIFIED);
+        return new ResponseEntity<>(newUser, HttpStatus.NOT_MODIFIED);
     }
 
     @GetMapping("/{login}/friends")

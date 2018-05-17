@@ -82,29 +82,30 @@ export class EditComponent implements OnInit {
 
   save() {
     this.spinner.show();
-
+    if(this.selectedFiles){
+      this.upload()
+    }
     this.accountService.update(this.account).subscribe(
-      () => {
+      response => {
+        console.log("update sss")
         this.success = true;
         this.spinner.hide();
-      },
-      response => {
-        this.appComponent.showError(response,"Error")
-        if (response.status === 200) {
-          let profile = JSON.parse(localStorage.currentUser);
-          profile.name = this.account.name;
-          profile.lastname = this.account.lastname;
-          profile.email = this.account.email;
-          profile.birthDay = this.account.birthDay;
-          profile.phone = this.account.phone;
-          //profile.imgPath = .body;
-          localStorage.setItem('currentUser', JSON.stringify(profile));
+        let profile = JSON.parse(localStorage.currentUser);
+        profile.name = response.name;
+        profile.lastname = response.lastname;
+        profile.email = response.email;
+        profile.birthDay = response.birthDay;
+        profile.phone = response.phone;
 
-          this.router.navigate(
-            [JSON.parse(localStorage.currentUser).login + '/profile']);
-        }
+        localStorage.setItem('currentUser', JSON.stringify(profile));
+
+        this.router.navigate(
+          [JSON.parse(localStorage.currentUser).login + '/profile']);
+      },
+      error => {
+        console.log("Eroor  "+error.status)
+        this.appComponent.showError(error,"Error")
         this.spinner.hide();
-          this.appComponent.showError(response, 'Error');
       }
     );
   }
