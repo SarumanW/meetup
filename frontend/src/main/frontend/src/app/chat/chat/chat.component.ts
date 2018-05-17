@@ -8,6 +8,9 @@ import {ChatService} from "../chat.service";
 import {Message} from "../message";
 import {forEach} from "@angular/router/src/utils/collection";
 import {NgxSpinnerService} from "ngx-spinner";
+import {EventService} from "../../events/event.service";
+import {Evento} from "../../events/event";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-chat',
@@ -22,7 +25,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   messageText: string;
   profile: Profile;
   chatId: number;
-  eventId: number;
+  event: Evento;
   currentUserLogin: string;
   folderId: number;
   ws: any;
@@ -41,15 +44,20 @@ export class ChatComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private chatService: ChatService,
-              private spinner: NgxSpinnerService) {
+              private eventService: EventService,
+              private spinner: NgxSpinnerService,
+              private appComponent:AppComponent,) {
 
   }
 
   ngOnInit() {
     this.profile = JSON.parse(localStorage.currentUser);
+
+    let eventId = 0;
+
     this.route.params.subscribe(params => {
       this.chatId = params['chatId'];
-      this.eventId = params['eventId'];
+      eventId = params['eventId'];
       this.folderId = params['folderId'];
     });
     this.currentUserLogin = JSON.parse(localStorage.currentUser).login;
@@ -60,6 +68,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     ];
 
     this.spinner.show();
+
+    this.eventService.getEvent(eventId).subscribe(
+      event => {
+        this.event = event;
+      }, error => this.appComponent.showError(error, "Error"));
 
     this.chatService.getMessages(this.chatId).subscribe(
       (messages) => {
@@ -147,6 +160,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   font-size: 14px;
   word-wrap: break-word;">${message.content}</p>
 </li>`;
+          that.stopTypingMember(message.sender);
         } else if (message.type === 'TYPING') {
           console.log(that.typingMembers.indexOf(message.sender));
 
@@ -161,14 +175,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           that.typingsMembersNotification();
 
         } else if (message.type === 'NOT_TYPING') {
-          const memberIndex = that.typingMembers.indexOf(message.sender);
-
-          if (memberIndex !== -1) {
-            that.typingMembers.splice(memberIndex, 1);
-          }
-
-          that.typingsMembersNotification();
-
+          that.stopTypingMember(message.sender);
         } else {
           that.color = that.colors[ChatComponent.hashCode(message.sender) % 8];
 
@@ -193,6 +200,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   font-weight: 600;">${message.sender}</span>
     <p style="color: #43464b;">${message.content}</p>
 </li>`;
+          that.stopTypingMember(message.sender);
         }
 
         $('#messageArea').append(messageElement);
@@ -225,8 +233,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
     );
 
-    $('#message').val('');
     this.messageText = '';
+    this.isUserTypingMessage();
   }
 
   // USER TYPE TEXT EVENTS
@@ -250,6 +258,16 @@ export class ChatComponent implements OnInit, OnDestroy {
     };
 
     this.stompClient.send("/app-chat/send/message/" + this.chatId, {}, JSON.stringify(chatMessage));
+  }
+
+  stopTypingMember(sender: string) {
+    const memberIndex = this.typingMembers.indexOf(sender);
+
+    if (memberIndex !== -1) {
+      this.typingMembers.splice(memberIndex, 1);
+    }
+
+    this.typingsMembersNotification();
   }
 
   typingsMembersNotification() {
@@ -277,7 +295,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   backToEvent() {
     this.ngOnDestroy();
-    this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/event/" + this.eventId]);
+    this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/event/" + this.event.eventId]);
   }
 
   static hashCode(name: string) {

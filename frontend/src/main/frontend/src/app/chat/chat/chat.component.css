@@ -20,6 +20,10 @@ body:before {
   z-index: 0;
 }
 
+.btn {
+  margin-left: 5px;
+}
+
 .clearfix:after {
   display: block;
   content: "";
@@ -62,6 +66,7 @@ a {
 #chat-page {
   position: relative;
   height: 100%;
+  width: 100%;
 }
 
 .chat-container {
@@ -74,6 +79,12 @@ a {
   height: calc(100% - 60px);
   max-height: 600px;
   position: relative;
+}
+
+.chat-info {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #chat-page ul {
@@ -125,6 +136,10 @@ a {
 }
 
 @media screen and (max-width: 730px) {
+  .chat-info {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 
   .chat-container {
     margin-left: 10px;
@@ -134,6 +149,7 @@ a {
 }
 
 @media screen and (max-width: 480px) {
+
   .chat-container {
     height: calc(100% - 30px);
   }
