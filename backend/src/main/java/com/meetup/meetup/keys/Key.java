@@ -216,11 +216,5 @@ public final class Key {
 
     private Key(){}
 
-    public static Key getInstance() {
-        if (instance == null) {
-            instance = new Key();
-        }
-        return instance;
-    }
 
 }

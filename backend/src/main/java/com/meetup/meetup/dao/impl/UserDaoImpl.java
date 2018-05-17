@@ -301,7 +301,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         try {
             result = jdbcTemplate.update(env.getProperty(USER_UPDATE),
                     model.getLogin(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
-                    model.getImgPath(), Date.valueOf(model.getBirthDay()), model.getPhone(), model.getPeriodicalEmail(), model.getId());
+                    model.getImgPath(), (model.getBirthDay()==null?null:Date.valueOf(model.getBirthDay())), model.getPhone(), model.getPeriodicalEmail(), model.getId());
         } catch (DataAccessException e) {
             log.error("Query fails by update user with id '{}'", model.getId());
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
