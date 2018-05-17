@@ -61,30 +61,6 @@
             </div>
           </div>
 
-          <!--Description-->
-
-          <div class="form-group">
-            <label class="form-control-label" for="itemDescription">Description:</label>
-            <input type="text" class="form-control" [(ngModel)]="editItem.description"
-                   id="itemDescription" name="description"
-                   #description="ngModel" placeholder="Enter item description"
-                   minlength="4" maxlength="250" pattern="^[_A-Za-z0-9-.?!,:;'\s]*$" required>
-            <div *ngIf="description.dirty && description.invalid">
-              <small class="form-text text-danger" *ngIf="description.errors.required">
-                Wish description is required.
-              </small>
-              <small class="form-text text-danger" *ngIf="description.errors.minlength">
-                Wish description is required to be at least 4 character.
-              </small>
-              <small class="form-text text-danger" *ngIf="description.errors.maxlength">
-                Wish description cannot be longer than 250 characters.
-              </small>
-              <small class="form-text text-danger" *ngIf="description.errors.pattern">
-                Wish description can only contain letters and digits.
-              </small>
-            </div>
-          </div>
-
           <!--Priority-->
 
           <div class="form-group">
@@ -119,6 +95,30 @@
             <div *ngIf="itemDueDate.dirty && itemDueDate.invalid">
               <small class="form-text text-danger" *ngIf="itemDueDate.error.min">
                 Minimal due date must be {{minDueDate}}.
+              </small>
+            </div>
+          </div>
+
+          <!--Description-->
+
+          <div class="form-group">
+            <label class="form-control-label" for="itemDescription">Description:</label>
+            <textarea class="form-control" [(ngModel)]="editItem.description"
+                      id="itemDescription" name="description" style="min-height: 6em;"
+                      #description="ngModel" placeholder="Enter item description"
+                      minlength="4" maxlength="250" pattern="^[_A-Za-z0-9-.?!,:;'\s]*$" required></textarea>
+            <div *ngIf="description.dirty && description.invalid">
+              <small class="form-text text-danger" *ngIf="description.errors.required">
+                Wish description is required.
+              </small>
+              <small class="form-text text-danger" *ngIf="description.errors.minlength">
+                Wish description is required to be at least 4 character.
+              </small>
+              <small class="form-text text-danger" *ngIf="description.errors.maxlength">
+                Wish description cannot be longer than 250 characters.
+              </small>
+              <small class="form-text text-danger" *ngIf="description.errors.pattern">
+                Wish description can only contain letters and digits.
               </small>
             </div>
           </div>
