@@ -147,6 +147,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   font-size: 14px;
   word-wrap: break-word;">${message.content}</p>
 </li>`;
+          that.stopTypingMember(message.sender);
         } else if (message.type === 'TYPING') {
           console.log(that.typingMembers.indexOf(message.sender));
 
@@ -161,14 +162,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           that.typingsMembersNotification();
 
         } else if (message.type === 'NOT_TYPING') {
-          const memberIndex = that.typingMembers.indexOf(message.sender);
-
-          if (memberIndex !== -1) {
-            that.typingMembers.splice(memberIndex, 1);
-          }
-
-          that.typingsMembersNotification();
-
+          that.stopTypingMember(message.sender);
         } else {
           that.color = that.colors[ChatComponent.hashCode(message.sender) % 8];
 
@@ -193,6 +187,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   font-weight: 600;">${message.sender}</span>
     <p style="color: #43464b;">${message.content}</p>
 </li>`;
+          that.stopTypingMember(message.sender);
         }
 
         $('#messageArea').append(messageElement);
@@ -225,8 +220,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
     );
 
-    $('#message').val('');
     this.messageText = '';
+    this.isUserTypingMessage();
   }
 
   // USER TYPE TEXT EVENTS
@@ -250,6 +245,16 @@ export class ChatComponent implements OnInit, OnDestroy {
     };
 
     this.stompClient.send("/app-chat/send/message/" + this.chatId, {}, JSON.stringify(chatMessage));
+  }
+
+  stopTypingMember(sender: string) {
+    const memberIndex = this.typingMembers.indexOf(sender);
+
+    if (memberIndex !== -1) {
+      this.typingMembers.splice(memberIndex, 1);
+    }
+
+    this.typingsMembersNotification();
   }
 
   typingsMembersNotification() {
