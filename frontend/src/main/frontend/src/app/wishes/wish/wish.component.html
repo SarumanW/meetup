@@ -82,7 +82,7 @@
               [disabled]="!item.priority"
               class="btn btn-danger">Remove
       </button>
-      <button type="button" (click)="add.show()" [disabled]="item.priority" class="btn btn-primary">Add</button>
+      <button *ngIf="item.ownerId !== profile.id" type="button" (click)="add.show()" [disabled]="item.priority" class="btn btn-primary">Add</button>
       <button *ngIf="item.ownerId !== 0 && profile.login === login"
               routerLink="/{{profile.login}}/wishes/edit/{{item.itemId}}" type="button" class="btn btn-warning">Edit
       </button>
