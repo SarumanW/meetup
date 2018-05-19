@@ -108,5 +108,13 @@ export class CountDown {
 
     this.displayNumbers = returnNumbers.split('|');
     this.display = this.displayString.split('|');
+
+if (this.units==='0'){
+  this.stopTimer();
+}
+
+  }
+  stopTimer(){
+    this.units = null;
   }
 }

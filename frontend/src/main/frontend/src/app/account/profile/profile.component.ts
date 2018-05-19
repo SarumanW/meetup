@@ -1,15 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Profile} from "../profile";
 import {AccountService} from "../account.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {FriendService} from "../friends/friend.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AppComponent} from "../../app.component";
 
 @Component({
+  selector: 'app-event',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class ProfileComponent implements OnInit {
@@ -23,8 +24,6 @@ export class ProfileComponent implements OnInit {
   currentDate: string;
   eventName: string;
   eventDate:string;
-  startDate: string;
-  endDate: string;
 
   constructor(private accountService: AccountService,
               private spinner: NgxSpinnerService,
@@ -33,6 +32,8 @@ export class ProfileComponent implements OnInit {
               private appComponent: AppComponent) {
     this.profile = new Profile();
   }
+
+
 
   ngOnInit() {
     this.spinner.show();
