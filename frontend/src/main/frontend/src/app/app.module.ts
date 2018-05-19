@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {HttpClientModule} from "@angular/common/http";
 
 import {AppComponent} from './app.component';
 import {RegisterComponent} from "./account/register/register.component";
@@ -56,7 +56,7 @@ import {WishListService} from "./wishes/wish.list.service";
 import { WishAddComponent } from './wishes/wish.add/wish.add.component';
 import {WishService} from "./wishes/wish.service";
 import { WishEditComponent } from './wishes/wish.edit/wish.edit.component';
-import {CountDown} from "./events/countdown/countdown";
+import {CountDown} from "./account/countdown/countdown";
 import { CommentListComponent } from './wishes/wish/comment-list/comment-list.component';
 import {CommentService} from "./wishes/wish/comment-list/comment.service";
 

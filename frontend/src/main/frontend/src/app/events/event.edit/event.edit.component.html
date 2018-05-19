@@ -106,9 +106,6 @@
               <input type="file" (change)="selectFile($event)">
             </label>
 
-            <button class="btn btn-success" [disabled]="errorFileFormat || !selectedFiles" (click)="upload()">Upload
-            </button>
-
             <div>
               <small class="form-text text-danger" *ngIf="errorFileFormat">
                 Incorrect file format. Only jpg, png, gif enabled.
@@ -119,7 +116,8 @@
             </div>
           </div>
 
-          <button type="button" [disabled]="editEventForm.form.invalid || currentUserId !== eventt.ownerId"  (click)="updateEvent()" class="btn btn-primary">
+          <button type="button" [disabled]="errorFileFormat || editEventForm.form.invalid ||
+           currentUserId !== eventt.ownerId"  (click)="update()" class="btn btn-primary">
             Save changes
           </button>
 

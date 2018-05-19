@@ -59,6 +59,8 @@ export class EventEditComponent implements OnInit {
       this.appComponent.showError(error, 'Loading error');
     });
     this.getEvent();
+    this.errorFileFormat = false;
+    this.fileRegexp = new RegExp('^.*\\.(jpg|JPG|gif|GIF|png|PNG)$');
 
     this.searchControl = new FormControl();
     console.log(this.searchControl);
@@ -121,6 +123,14 @@ export class EventEditComponent implements OnInit {
       this.eventt.eventDate = this.datee + " " + this.time;
   }
 
+  update() {
+    if (this.selectedFiles) {
+      this.upload();
+    } else {
+      this.updateEvent();
+    }
+  }
+
   updateEvent() {
     this.spinner.show();
     this.formatDate();
@@ -156,12 +166,7 @@ export class EventEditComponent implements OnInit {
   selectFile(event) {
     this.selectedFiles = event.target.files;
     let filename: string = this.selectedFiles.item(0).name.toLowerCase();
-    if (!this.fileRegexp.test(filename)) {
-      this.showError("Incorrect file format " + this.selectedFiles.item(0).name, 'File format error');
-      this.errorFileFormat = true;
-    } else {
-      this.errorFileFormat = false;
-    }
+    this.errorFileFormat = !this.fileRegexp.test(filename);
   }
 
   upload() {
@@ -173,6 +178,7 @@ export class EventEditComponent implements OnInit {
       console.log(event);
       this.imageLoaded = true;
       this.eventt.imageFilepath = event;
+      this.updateEvent();
       console.log(this.eventt.imageFilepath);
       this.spinner.hide();
     }, error => {
