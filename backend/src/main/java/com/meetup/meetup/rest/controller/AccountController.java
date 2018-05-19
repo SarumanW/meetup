@@ -52,6 +52,17 @@ public class AccountController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
+    @PostMapping("/confirmation")
+    public ResponseEntity confirmRegistration(@Valid @RequestBody RecoveryPasswordVM model) throws Exception {
+        log.debug("Trying to confirm password for user by token '{}'", model.getToken());
+
+        accountService.confirmRegistration(model);
+
+        log.debug("Send response status OK");
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @GetMapping("/recovery/{email}")
     public ResponseEntity mailRecoveryPassword(@PathVariable String email) throws Exception {
         log.debug("Trying to recovery password by email '{}'", email);
@@ -67,7 +78,7 @@ public class AccountController {
     public ResponseEntity passwordRecovery(@Valid @RequestBody RecoveryPasswordVM model) throws Exception{
         log.debug("Trying to recovery password by token '{}'", model.getToken());
 
-        accountService.recoveryPassword(model);
+        accountService.confirmRegistration(model);
 
         log.debug("Send response status OK");
 

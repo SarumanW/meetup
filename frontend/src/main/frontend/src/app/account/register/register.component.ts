@@ -13,7 +13,6 @@ import {AppComponent} from "../../app.component";
 })
 
 export class RegisterComponent implements OnInit {
-  confirmPassword: string;
   doNotMatch: string;
   error: string;
   errorEmailExists: string;
@@ -41,26 +40,19 @@ export class RegisterComponent implements OnInit {
   register() {
     this.spinner.show();
 
-    if (this.account.password !== this.confirmPassword) {
-      this.doNotMatch = 'ERROR';
-    }
+    this.doNotMatch = null;
 
-    else {
-      this.doNotMatch = null;
-      console.log(this.account);
+    this.accountService.save(this.account).subscribe(
+      () => {
+        this.success = true;
+        this.spinner.hide();
+      }, error => {
+        this.appComponent.showError(error, 'Error');
+        this.processError(error);
+        this.spinner.hide();
+      }
+    );
 
-      this.accountService.save(this.account).subscribe(
-        () => {
-          this.success = true;
-          this.spinner.hide();
-          this.router.navigate(['/thankyou']);
-        }, error => {
-          this.appComponent.showError(error, 'Error');
-          this.processError(error)
-          this.spinner.hide();
-        }
-      );
-    }
   }
 
   get email() {

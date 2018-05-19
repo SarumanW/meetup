@@ -23,17 +23,18 @@ public class User {
 
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    @Pattern(regexp = "^[_.@A-Za-z0-9-]*$")
-    @Size(min = 6, max = 50)
     private String password;
 
+    @NotBlank
     @Email
     @Size(min = 5, max = 100)
     private String email;
 
+    @NotBlank
     @Size(min = 4, max = 254)
     private String name;
 
+    @NotBlank
     @Size(min = 4, max = 254)
     private String lastname;
 
@@ -52,6 +53,8 @@ public class User {
 
     private String pinedEventName;
     private String pinedEventDate;
+
+    private String registerDate;
 
     @JsonIgnore
     public String getPassword() {

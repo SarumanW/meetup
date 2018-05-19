@@ -27,6 +27,23 @@ public class MailService {
 
     private static final String HTTP = "http://";
 
+    //DOMAIN
+
+    private static final String SERVER_DOMAIN = "server.domain";
+
+    //PATHS
+
+    private static final String CONFIRM_REGISTRATION_PATH = "mail.confirmRegistration";
+    private static final String RECOVERY_PATH = "mail.recovery";
+    private static final String LOGIN_PATH = "mail.login";
+
+    //TEMPLATES
+
+    private static final String CONFIRM_REGISTRATION_TEMPLATE = "confirmationRegistrationTemplate";
+    private static final String EVENT_PLAN_TEMPLATE = "eventPlanTemplate";
+    private static final String RECOVERY_PASSWORD_TEMPLATE = "recoveryPasswordTemplate";
+    private static final String REGISTER_MAIL_TEMPLATE = "registerMailTemplate";
+
     private final JavaMailSender mailSender;
     private final Environment environment;
     private final TemplateEngine templateEngine;
@@ -38,9 +55,29 @@ public class MailService {
         this.templateEngine = templateEngine;
     }
 
+    @Async
+    public void sendMailConfirmationRegistration(User user, String token) throws MailException {
+        log.debug("Trying to build message");
+
+        MimeMessagePreparator messagePreparator = new MailBuilder(templateEngine)
+                .setTo(user.getEmail())
+                .setSubject("Confirmation of registration")
+                .setVariable("name", user.getName())
+                .setVariable("link", HTTP +
+                        environment.getProperty(SERVER_DOMAIN) +
+                        environment.getProperty(CONFIRM_REGISTRATION_PATH) + token)
+                .setTemplate(environment.getProperty(CONFIRM_REGISTRATION_TEMPLATE))
+                .build();
+
+        log.debug("Trying to send message");
+
+        mailSender.send(messagePreparator);
+
+        log.debug("Mail was sent successfully");
+    }
 
     @Async
-    public void sendMailRegistration(User user) throws MailException {
+    public void sendMailSuccessfulRegistration(User user) throws MailException {
         log.debug("Trying to build message");
 
         MimeMessagePreparator messagePreparator = new MailBuilder(templateEngine)
@@ -49,10 +86,11 @@ public class MailService {
                 .setVariable("name", user.getName() + ' ' + user.getLastname())
                 .setVariable("login", user.getLogin())
                 .setVariable("link", HTTP +
-                        environment.getProperty("server.domain") +
-                        environment.getProperty("mail.login"))
-                .setTemplate(environment.getProperty("registerMailTemplate"))
+                        environment.getProperty(SERVER_DOMAIN) +
+                        environment.getProperty(LOGIN_PATH))
+                .setTemplate(environment.getProperty(REGISTER_MAIL_TEMPLATE))
                 .build();
+
         log.debug("Trying to send message");
 
         mailSender.send(messagePreparator);
@@ -69,10 +107,11 @@ public class MailService {
                 .setSubject("Password recovery")
                 .setVariable("name", user.getName())
                 .setVariable("link", HTTP +
-                        environment.getProperty("server.domain") +
-                        environment.getProperty("mail.recovery") + token)
-                .setTemplate(environment.getProperty("recoveryPasswordTemplate"))
+                        environment.getProperty(SERVER_DOMAIN) +
+                        environment.getProperty(RECOVERY_PATH) + token)
+                .setTemplate(environment.getProperty(RECOVERY_PASSWORD_TEMPLATE))
                 .build();
+
         log.debug("Trying to send message");
 
         mailSender.send(messagePreparator);
@@ -83,14 +122,17 @@ public class MailService {
     @Async
     public void sendMailWithEventPlan(User user, MultipartFile file) {
         log.debug("Trying to build message");
-        System.out.println("Mail service : " + file.getSize());
+
+        log.debug("Mail service : " + file.getSize());
+
         MimeMessagePreparator messagePreparator = new MailBuilder(templateEngine)
                 .setTo(user.getEmail())
                 .setSubject("Event Plan")
                 .setVariable("name", user.getName())
-                .setTemplate(environment.getProperty("eventPlanTemplate"))
+                .setTemplate(environment.getProperty(EVENT_PLAN_TEMPLATE))
                 .setFile(file)
                 .build();
+
         log.debug("Trying to send message");
 
         mailSender.send(messagePreparator);
@@ -101,13 +143,15 @@ public class MailService {
     @Async
     public void sendMailWithEventPlan(User user, File file, String date) {
         log.debug("Trying to build message");
+
         MimeMessagePreparator messagePreparator = new MailBuilder(templateEngine)
                 .setTo(user.getEmail())
                 .setSubject("Event Plan")
                 .setVariable("name", user.getName())
-                .setTemplate(environment.getProperty("eventPlanTemplate"))
+                .setTemplate(environment.getProperty(EVENT_PLAN_TEMPLATE))
                 .setFile(file, date)
                 .build();
+
         log.debug("Trying to send message");
 
         mailSender.send(messagePreparator);

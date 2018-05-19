@@ -79,6 +79,7 @@ public final class Key {
     public static final String UUSER_PHONE="phone";
     public static final String UUSER_PINED_EVENT_ID="pined_event_id";
     public static final String UUSER_PERIODICAL_EMAIL="periodical_email";
+    public static final String UUSER_REGISTER_DATE="register_date";
 
     //FRIEND table fields
     public static final String FRIEND_SENDER_ID ="SENDER_ID";
@@ -123,6 +124,7 @@ public final class Key {
     public static final String USER_GET_BY_EMAIL_PERIOD="user.getByEmailPeriod";
     public static final String USER_SET_PINED_EVENT_ID="user.setPinedEventId";
     public static final String USER_DELETE_PINED_EVENT_ID="user.deletePinedEventId";
+    public static final String USER_DELETE_UNCONFIRMED_ACCOUNTS="user.deleteUnconfirmedAccounts";
 
     //FolderDao
     public static final String FOLDER_GET_USER_FOLDERS="folder.getUserFolders";

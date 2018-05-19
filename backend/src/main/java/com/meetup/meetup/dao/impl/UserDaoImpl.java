@@ -23,6 +23,7 @@ import static com.meetup.meetup.keys.Key.*;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -252,7 +253,9 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public User insert(User model) {
         log.debug("Try to insert user with login '{}'", model.getLogin());
+
         int id;
+
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName(TABLE_UUSER)
                 .usingGeneratedKeyColumns(UUSER_USER_ID);
@@ -269,15 +272,17 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         parameters.put(UUSER_IMAGE_FILEPATH, model.getImgPath());
         parameters.put(UUSER_BDAY, (model.getBirthDay() != null ? Date.valueOf(model.getBirthDay()) : null));
         parameters.put(UUSER_PHONE, model.getPhone());
+        parameters.put(UUSER_REGISTER_DATE, model.getRegisterDate());
+
         try {
             log.debug("Try to execute statement");
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
             model.setId(id);
-
         } catch (DataAccessException e) {
             log.error("Query fails by insert User");
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
+
         if (model.getId() != 0) {
             log.debug("user was added with id '{}'", id);
         } else {
@@ -287,8 +292,11 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         Folder folder = new Folder();
         folder.setName("general");
         folder.setUserId(id);
+
         log.debug("Try to insert general folder by folderDao");
+
         Folder folder2 = folderDao.insert(folder);
+
         log.debug("general folder was inserted with id '{}'", folder2.getFolderId());
 
         return model;
@@ -317,13 +325,16 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public boolean updatePassword(User user) {
         log.debug("Try to update password, user with id '{}'", user.getId());
+
         int result;
+
         try {
             result = jdbcTemplate.update(env.getProperty(USER_UPDATE_PASSWORD), user.getPassword(), user.getId());
         } catch (DataAccessException e) {
             log.error("Query fails by update user password with user id '{}'", user.getId());
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
+
         if (result != 0) {
             log.debug("user with id '{}' update password", user.getId());
             return true;
@@ -375,5 +386,24 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         return userRowMapper.mapRow(userParamsList);
 
+    }
+
+    @Override
+    public int deleteUnconfirmedAccounts() {
+        log.debug("Try to delete unconfirmed accounts");
+
+        int result;
+
+        try {
+            Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+            result = jdbcTemplate.update(env.getProperty(USER_DELETE_UNCONFIRMED_ACCOUNTS), currentTimestamp);
+        } catch (DataAccessException e) {
+            log.error("Query fails by delete unconfirmed accounts");
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        log.debug("Deleted {} unconfirmed accounts", result);
+
+        return result;
     }
 }

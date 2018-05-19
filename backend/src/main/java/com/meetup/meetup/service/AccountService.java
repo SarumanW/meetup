@@ -21,6 +21,7 @@ import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
 
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 
 import static com.meetup.meetup.keys.Key.*;
 
@@ -108,17 +109,10 @@ public class AccountService {
         }
 
         log.debug("No user found with this email '{}' in database", user.getEmail());
-        log.debug("Trying to hash user password");
+        log.debug("Add register date to user entity");
 
-        try {
-            String md5Pass = HashMD5.hash(user.getPassword());
-            user.setPassword(md5Pass);
-        } catch (NoSuchAlgorithmException e) {
-            log.error("Algorithm can not create hash for password");
-            throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
-        }
+        user.setRegisterDate(new Timestamp(System.currentTimeMillis()).toString());
 
-        log.debug("Has been given a hashed password to the user");
         log.debug("Trying to insert data about user '{}' in database", user.toString());
 
         if (userDao.insert(user).getId() == 0) { //checking adding to DB
@@ -130,13 +124,28 @@ public class AccountService {
         log.debug("Trying to send mail for user");
         
         try {
-            mailService.sendMailRegistration(user);
+            mailService.sendMailConfirmationRegistration(user, jwtService.tokenForConfirmationRegistration(user));
         } catch (MailException e) {
             log.error("Letter can not be sent");
             log.debug("Trying delete user from database");
             
             userDao.delete(user);
 
+            throw new MailServerException(env.getProperty(EXCEPTION_MAIL_SERVER));
+        }
+
+        log.debug("User '{}' is successfully registered in the system", user.toString());
+    }
+
+    public void confirmRegistration(RecoveryPasswordVM model) throws Exception{
+        User user = recoveryPassword(model);
+
+        log.debug("Trying to send mail for user about successful registration");
+
+        try {
+            mailService.sendMailSuccessfulRegistration(user);
+        } catch (MailException e) {
+            log.error("");
             throw new MailServerException(env.getProperty(EXCEPTION_MAIL_SERVER));
         }
 
@@ -176,7 +185,7 @@ public class AccountService {
         log.debug("Letter has been sent successfully");
     }
 
-    public void recoveryPassword(RecoveryPasswordVM model) throws Exception{
+    public User recoveryPassword(RecoveryPasswordVM model) throws Exception{
         log.debug("Trying to verify token '{}' for user", model.getToken());
 
         User user = jwtService.verifyForRecoveryPassword(model.getToken());
@@ -206,6 +215,8 @@ public class AccountService {
         }
 
         log.debug("Password was successfully updated");
+
+        return user;
     }
 
     public void checkPassword(RecoveryPasswordVM model) throws Exception{

@@ -24,7 +24,7 @@ DROP TABLE item_comment;
 CREATE TABLE uuser (
   user_id NUMBER(11) PRIMARY KEY,
   login VARCHAR2(50) NOT NULL UNIQUE,
-  password VARCHAR2(50) NOT NULL,
+  password VARCHAR2(50) NULL,
   name VARCHAR2(254) NOT NULL,
   surname VARCHAR2(254) NOT NULL,
   email VARCHAR2(100) NOT NULL UNIQUE,
@@ -33,7 +33,8 @@ CREATE TABLE uuser (
   bday DATE,
   phone VARCHAR2(25),
   pined_event_id NUMBER(11),
-  periodical_email VARCHAR2(100)
+  periodical_email VARCHAR2(100),
+  REGISTER_DATE timestamp
 );
 
 CREATE TABLE user_item (

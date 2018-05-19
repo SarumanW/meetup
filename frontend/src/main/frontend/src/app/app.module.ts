@@ -59,6 +59,7 @@ import { WishEditComponent } from './wishes/wish.edit/wish.edit.component';
 import {CountDown} from "./events/countdown/countdown";
 import { CommentListComponent } from './wishes/wish/comment-list/comment-list.component';
 import {CommentService} from "./wishes/wish/comment-list/comment.service";
+import {ConfirmationComponent} from "./account/confirmation/confirmation.component";
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import {CommentService} from "./wishes/wish/comment-list/comment.service";
     CheckPasswordComponent,
     WishEditComponent,
     CountDown,
-    CommentListComponent
+    CommentListComponent,
+    ConfirmationComponent,
   ],
   imports: [
     ReactiveFormsModule,
