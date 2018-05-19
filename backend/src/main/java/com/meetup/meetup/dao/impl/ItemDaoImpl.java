@@ -2,6 +2,7 @@ package com.meetup.meetup.dao.impl;
 
 import com.meetup.meetup.dao.AbstractDao;
 import com.meetup.meetup.dao.ItemDao;
+import com.meetup.meetup.dao.rowMappers.ItemFullInfoRowMapper;
 import com.meetup.meetup.dao.rowMappers.ItemRowMapper;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.ItemPriority;
@@ -25,8 +26,8 @@ import static com.meetup.meetup.keys.Key.*;
 @PropertySource("classpath:image.properties")
 public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
 
-    public ItemDaoImpl(){
-        log=LoggerFactory.getLogger(ItemDaoImpl.class);
+    public ItemDaoImpl() {
+        log = LoggerFactory.getLogger(ItemDaoImpl.class);
     }
 
     private final static int NUMBER_OF_POPULAR_ITEMS = 5;
@@ -37,7 +38,19 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         log.debug("Try get wish list by user id: '{}'", userId);
 
         List<Item> items = new ArrayList<>();
-        getUserItemsId(userId).forEach((itemId) -> items.add(findByUserIdItemId(userId, itemId)));
+        try {
+            items = jdbcTemplate.query(
+                    env.getProperty(ITEM_GET_ITEMS_BY_USER_ID), new Object[]{userId}, new ItemFullInfoRowMapper());
+            items.forEach(item -> {
+                item.setTags(getTagsByItemId(item.getItemId()));
+            });
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("Items not found by user id: '{}'", userId);
+            return items;
+        } catch (DataAccessException e) {
+            log.error("Query fails by finding user items with user id '{}'", userId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
 
         if (items.isEmpty()) {
             log.debug("Wish list don't found by user id: '{}'", userId);
@@ -129,7 +142,16 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         log.debug("Try get popular items");
 
         List<Item> items = new ArrayList<>();
-        getPopularItemsId().forEach(itemId -> items.add(findById(itemId)));
+        try {
+            items = jdbcTemplate.query(
+                    env.getProperty(ITEM_GET_POPULAR_ITEMS), new Object[]{NUMBER_OF_POPULAR_ITEMS}, new ItemRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("Popular items not found");
+            return items;
+        } catch (DataAccessException e) {
+            log.error("Query fails by finding popular items");
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
 
         return items;
     }
@@ -260,33 +282,15 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
     }
 
     @Override
-    public List<Item> getPopularItems(String[] tagArray) {
-        return null;
-    }
-
-    @Override
     public List<Item> findBookedItemsByUserId(int userId) {
         log.debug("Try get booked items list by user id: '{}'", userId);
         List<Item> items = new ArrayList<>();
         try {
             items = jdbcTemplate.query(env.getProperty(ITEM_GET_BOOKED_ITEMS_BY_USER_ID), new Object[]{userId},
-                    (resultSet, i) -> {
-                        Item item = new Item();
-                        item.setItemId(resultSet.getInt(ITEM_ITEM_ID));
-                        item.setName(resultSet.getString(ITEM_NAME));
-                        item.setDescription(resultSet.getString(ITEM_DESCRIPTION));
-                        item.setImageFilepath(resultSet.getString(ITEM_IMAGE_FILEPATH));
-                        item.setLink(resultSet.getString(ITEM_LINK));
-                        Timestamp date = resultSet.getTimestamp(ITEM_DUE_DATE);
-                        item.setDueDate(date == null ? null : date.toString());
-                        item.setOwnerId(resultSet.getInt(USER_ITEM_USER_ID));
-                        item.setBookerId(resultSet.getInt(USER_ITEM_BOOKER_ID));
-                        item.setPriority(ItemPriority.values()[resultSet.getInt(USER_ITEM_PRIORITY_ID) - 1]);
-                        item.setLikes(resultSet.getInt(ITEM_LIKES));
-                        item.setLike(getLikeId(userId, item.getItemId()) != 0);
-                        item.setTags(getTagsByItemId(item.getItemId()));
-                        return item;
-                    });
+                    new ItemFullInfoRowMapper());
+            items.forEach(item -> {
+                item.setTags(getTagsByItemId(item.getItemId()));
+            });
         } catch (EmptyResultDataAccessException e) {
             log.debug("Booked items not found by user id: '{}'", userId);
             return items;
@@ -301,9 +305,26 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
     public List<Item> findItemsByTagName(String[] tagNames) {
         log.debug("Try get items list by tag name: '{}'", Arrays.toString(tagNames));
 
-        List<Item> items = new ArrayList<>();
-        getItemsIdByTagName(tagNames).forEach((itemId) -> items.add(findById(itemId)));
+        StringBuilder query = new StringBuilder(env.getProperty(ITEM_GET_ITEMS_BY_TAG_NAMES));
 
+        for (int i = 1; i < tagNames.length; i++) {
+            query.insert(query.indexOf("?"), "?,");
+        }
+
+        List<Object> params = new ArrayList<>(Arrays.asList(tagNames));
+        params.add(tagNames.length);
+        params.add(NUMBER_OF_SEARCHED_ITEMS);
+
+        List<Item> items = new ArrayList<>();
+        try {
+            items = jdbcTemplate.query(query.toString(), params.toArray(), new ItemRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("Items id not found by tag names: '{}'", Arrays.toString(tagNames));
+            return items;
+        } catch (DataAccessException e) {
+            log.error("Query fails by finding item's ids with tag name: '{}'", Arrays.toString(tagNames));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
         return items;
     }
 
@@ -319,7 +340,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
             try {
                 int result = jdbcTemplate.update(env.getProperty(ITEM_UPDATE),
                         model.getName(), model.getDescription(), model.getImageFilepath(), model.getLink(), model.getItemId());
-                    result += jdbcTemplate.update(env.getProperty(ITEM_UPDATE_USER_ITEM_INFO),
+                result += jdbcTemplate.update(env.getProperty(ITEM_UPDATE_USER_ITEM_INFO),
                         model.getPriority().ordinal() + 1, model.getDueDate(), model.getOwnerId(), model.getItemId());
                 if (result > 0) {
                     log.debug("Item was updated item: '{}'", model);
@@ -370,63 +391,10 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         }
     }
 
-    private List<Integer> getItemsIdByTagName(String[] tagNames) {
-        log.debug("Try to get items id by tag name: '{}'", Arrays.toString(tagNames));
-
-        StringBuilder query = new StringBuilder(env.getProperty(ITEM_GET_ITEMS_ID_BY_TAG_NAMES));
-
-        for (int i = 1; i < tagNames.length; i++) {
-            query.insert(query.indexOf("?"),"?,");
-        }
-
-        List<Object> params = new ArrayList<>(Arrays.asList(tagNames));
-        params.add(tagNames.length);
-
-        List<Integer> itemsIds = new ArrayList<>();
-        try {
-            itemsIds = jdbcTemplate.queryForList(query.toString(), params.toArray(), Integer.class);
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Items id not found by tag names: '{}'", Arrays.toString(tagNames));
-            return itemsIds;
-        } catch (DataAccessException e) {
-            log.error("Query fails by finding item's ids with tag name: '{}'", Arrays.toString(tagNames));
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
-        return itemsIds;
-    }
-
-    private List<Integer> getUserItemsId(int userId) {
-        log.debug("Try to getUserItemsIds by user id '{}'", userId);
-
-        List<Integer> itemsIds = new ArrayList<>();
-        try {
-            itemsIds = jdbcTemplate.queryForList(env.getProperty(ITEM_GET_ITEMS_ID_BY_USER_ID),
-                    new Object[]{userId}, Integer.class);
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Items id not found by user id: '{}'", userId);
-            return itemsIds;
-        } catch (DataAccessException e) {
-            log.error("Query fails by finding user item's ids with user id '{}'", userId);
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
-        return itemsIds;
-    }
-
-    private List<Integer> getPopularItemsId() {
-        log.debug("Try to get popular item's id");
-
-        List<Integer> itemsIds = new ArrayList<>();
-        try {
-            itemsIds = jdbcTemplate.queryForList(
-                    env.getProperty(ITEM_GET_POPULAR_ITEMS_ID), new Object[]{NUMBER_OF_POPULAR_ITEMS}, Integer.class);
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Popular items id not found");
-            return itemsIds;
-        } catch (DataAccessException e) {
-            log.error("Query fails by finding popular item's ids");
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
-        return itemsIds;
+    @Override
+    public boolean itemExistInWishList(Item item) {
+        log.debug("Check whether an item exists '{}'", item);
+        return getWishListByUserId(item.getOwnerId()).contains(item);
     }
 
     private void addTags(List<String> tags, int itemId) {
@@ -516,6 +484,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
     }
+
     public List<String> getLoginsWhoLikedItem(int itemId) {
         log.debug("Try to getUserLikesByItemId for item with id '{}'", itemId);
 

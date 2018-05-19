@@ -25,8 +25,6 @@ public interface ItemDao extends Dao<Item> {
 
     Item removeLike(int itemId, int userId);
 
-    List<Item> getPopularItems(String[] tagArray);
-
     List<Item> findBookedItemsByUserId(int userId);
 
     List<Item> findItemsByTagName(String[] tagName);
@@ -35,4 +33,5 @@ public interface ItemDao extends Dao<Item> {
 
     List<String> getLoginsWhoLikedItem(int itemId);
 
+    boolean itemExistInWishList(Item item);
 }
