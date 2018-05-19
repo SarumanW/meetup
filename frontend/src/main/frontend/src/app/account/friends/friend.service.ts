@@ -44,7 +44,6 @@ export class FriendService {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
     return this.http.post<any>('api/profile/addFriend', newFriend, {headers:headers}).map(message => {
-      console.log(message);
       return message;
     });
   }

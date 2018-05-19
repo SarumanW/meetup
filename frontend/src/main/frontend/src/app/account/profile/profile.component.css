@@ -42,11 +42,10 @@
 }
 
 .countdown{
-  width: 100%;
+  width: 1330px;
   height: 70px;
   background: #007bff;
   color: white;
-  font-size: 20px;
 }
 .countdown .two-dots {
   display: none;

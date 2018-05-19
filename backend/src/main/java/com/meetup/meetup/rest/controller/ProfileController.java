@@ -86,7 +86,7 @@ public class ProfileController {
         if (profileService.addFriend(friendLogin)) {
             log.debug("Friend successfully added");
             log.debug("Send response status OK");
-            return new ResponseEntity<>("Successfully send request to " + friendLogin, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
 
         log.debug("Send response status EXPECTATION_FAILED");
