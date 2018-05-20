@@ -151,6 +151,7 @@ public final class Key {
     public static final String EVENT_DELETE_PARTICIPANT="event.deleteParticipant";
     //RoleDao
     public static final String GET_ROLE="role.getRole";
+    public static final String ROLE_NAME = "name";
 
     //ItemDao
     public static final String ITEM_FIND_BY_ID = "item.findById";
@@ -185,6 +186,7 @@ public final class Key {
     public static final String CHAT_DELETE_MESSAGES_BY_EVENT_ID = "chat.deleteMessagesByEventId";
     public static final String CHAT_FIND_CHAT_ID_BY_EVENT_ID_AND_CHAT_TYPE_ID = "chat.findChatIdByEventIdAndChatTypeId";
     public static final String CHAT_FIND_MESSAGES_BY_CHAT_ID = "chat.findMessagesByChatId";
+    public static final String CHAT_CAN_JOIN_CHAT = "chat.canJoinChat";
 
     //Exceptions
     public static final String EXCEPTION_AUTHENTICATION = "authentication.exception";

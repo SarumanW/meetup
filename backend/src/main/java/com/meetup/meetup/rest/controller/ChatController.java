@@ -10,6 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
 
+    @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
     @PostMapping("/add")
     public ResponseEntity<ChatIdsVM> addChats(@RequestBody int eventId) {
         log.debug("Trying to add chats for event with id '{}'", eventId);
@@ -38,6 +40,7 @@ public class ChatController {
         return new ResponseEntity<>(responseId, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("@chatPermissionChecker.checkByEventId(#eventId)")
     @GetMapping("/{eventId}")
     public ResponseEntity<ChatIdsVM> getChatsIds(@PathVariable int eventId) {
         log.debug("Trying to get chats for event with id '{}'", eventId);
@@ -49,8 +52,9 @@ public class ChatController {
         return new ResponseEntity<>(responseId, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
     @DeleteMapping("/{eventId}")
-    public ResponseEntity<Integer> deleteEvent(@PathVariable int eventId) {
+    public ResponseEntity<Integer> deleteChats(@PathVariable int eventId) {
         log.debug("Trying to delete eventId '{}'", eventId);
 
         chatService.deleteChats(eventId);
@@ -60,6 +64,7 @@ public class ChatController {
         return new ResponseEntity<>(eventId, HttpStatus.OK);
     }
 
+    @PreAuthorize("@chatPermissionChecker.checkById(#message.chatId)")
     @PostMapping("/message")
     public ResponseEntity<Message> addMessage(@RequestBody Message message) {
         log.debug("Trying to add message for chat with id '{}'", message.getChatId());
@@ -71,6 +76,7 @@ public class ChatController {
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("@chatPermissionChecker.checkById(#chatId)")
     @GetMapping("/messages/{chatId}")
     public ResponseEntity<List<Message>> getMessages(@PathVariable int chatId) {
         log.debug("Trying to get messages for chat with id '{}'", chatId);
