@@ -60,7 +60,6 @@ export class CountDown {
         i,
         unit: any;
 
-
       for (i in this.units) {
         if (this.units.hasOwnProperty(i)) {
 
