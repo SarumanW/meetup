@@ -114,6 +114,9 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.spinner.hide();
 
         this.connect();
+      }, error => {
+        this.appComponent.showError('Unsuccessful message loading', 'Loading error');
+        this.spinner.hide();
       });
   }
 
