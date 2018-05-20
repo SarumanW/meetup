@@ -204,7 +204,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         log.debug("Try to add booker by owner id: '{}', item id: '{}'", ownerId, itemId);
         try {
             int result = jdbcTemplate.update(env.getProperty(ITEM_SET_BOOKER_ID_FOR_ITEM),
-                    bookerId, ownerId, itemId);
+                    bookerId, ownerId, itemId, null);
 
             if (result != 0) {
                 log.debug("Booker by owner id: '{}', item id: '{}' was added", ownerId, itemId);
@@ -219,19 +219,19 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
     }
 
     @Override
-    public Item removeBookerForItem(int ownerId, int itemId) {
-        log.debug("Try to remove booker by owner id: '{}', item id: '{}'", ownerId, itemId);
+    public Item removeBookerForItem(int ownerId, int itemId, int bookerId) {
+        log.debug("Try to remove booker by owner id: '{}', item id: '{}', booker id: '{}'", ownerId, itemId, bookerId);
         try {
             int result = jdbcTemplate.update(env.getProperty(ITEM_SET_BOOKER_ID_FOR_ITEM),
-                    null, ownerId, itemId);
+                    null, ownerId, itemId, bookerId);
 
             if (result != 0) {
-                log.debug("Booker by owner id: '{}', item id: '{}' was removed", ownerId, itemId);
+                log.debug("Booker by owner id: '{}', item id: '{}', booker id: '{}' was removed", ownerId, itemId, bookerId);
             } else {
-                log.debug("Booker by owner id: '{}', item id: '{}' was not removed", ownerId, itemId);
+                log.debug("Booker by owner id: '{}', item id: '{}', booker id: '{}' was not removed", ownerId, itemId, bookerId);
             }
         } catch (DataAccessException e) {
-            log.error("Query fails by remove booker by owner id: '{}', item id: '{}'", ownerId, itemId);
+            log.error("Query fails by remove booker by owner id: '{}', item id: '{}', booker id: '{}'", ownerId, itemId, bookerId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return findByUserIdItemId(ownerId, itemId);

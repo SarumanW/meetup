@@ -16,119 +16,84 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@PropertySource("classpath:strings.properties")
 public class ItemService {
 
     private static Logger log = LoggerFactory.getLogger(ItemService.class);
 
     private final UserDao userDao;
     private final ItemDao itemDao;
-    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    public ItemService(UserDao userDao, ItemDao itemDao, AuthenticationFacade authenticationFacade, Environment env) {
+    public ItemService(UserDao userDao, ItemDao itemDao) {
         this.userDao = userDao;
         this.itemDao = itemDao;
-        this.authenticationFacade = authenticationFacade;
     }
 
-    public Item findByUserIdItemId(int id, String login) {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
-        Item authUserItem = itemDao.findByUserIdItemId(user.getId(), id);
-
+    public Item findByUserIdItemId(int itemId, String login) {
         User userItem = userDao.findByLogin(login);
-        log.debug("Trying to get item with id '{}' for user with id '{}'", id, userItem.getId());
-        Item requestedUserItem = itemDao.findByUserIdItemId(userItem.getId(),id);
-        requestedUserItem.setLike(authUserItem.isLike());
-        return requestedUserItem;
+
+        log.debug("Trying to get item with id '{}' for user with id '{}'", itemId, userItem.getId());
+
+        return itemDao.findByUserIdItemId(userItem.getId(),itemId);
     }
 
     public Item addItem(Item item) {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
-
         log.debug("Trying to insert item to database");
+
         return itemDao.insert(item);
     }
 
     public Item updateItem(Item item) {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
-
         log.debug("Trying to update item '{}' in database", item);
+
         return itemDao.update(item);
     }
 
     public Item deleteItem(Item item) {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
-
         log.debug("Trying to delete item '{}' from database", item);
+
         return itemDao.delete(item);
     }
 
-    public Item addItemToUserWishList(Item item) {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
-
-        item.setOwnerId(user.getId());
-
-        log.debug("Trying to add item with id '{}' in user '{}' wish list", item.getItemId() ,user.getId());
+    public Item addItemToUserWishList(int userId, Item item) {
+        log.debug("Trying to add item with id '{}' in user '{}' wish list", item.getItemId(), userId);
 
         return itemDao.addToUserWishList(item);
     }
 
-    public Item deleteItemFromUserWishList(int itemId) {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
+    public Item deleteItemFromUserWishList(int userId, int itemId) {
+        log.debug("Trying to delete item with id '{}' from user '{}' wish list", itemId, userId);
 
-        log.debug("Trying to delete item with id '{}' from user '{}' wish list", itemId, user.getId());
-        return itemDao.deleteFromUserWishList(user.getId(), itemId);
+        return itemDao.deleteFromUserWishList(userId, itemId);
     }
 
+    public Item addLike(int userId, int itemId){
+        log.debug("Try to add like for item with id '{}' for user with id '{}'", itemId, userId);
 
-
-    public Item addLike(int itemId){
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
-
-        log.debug("Try to add like for item with id '{}' for user with id '{}'", itemId, user.getId());
-        return itemDao.addLike(itemId, user.getId());
+        return itemDao.addLike(itemId, userId);
     }
 
-    public Item removeLike(int itemId){
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
+    public Item removeLike(int userId, int itemId){
+        log.debug("Try to delete like for item with id '{}' for user with id '{}'", itemId, userId);
 
-        log.debug("Try to delete like for item with id '{}' for user with id '{}'", itemId, user.getId());
-        return itemDao.removeLike(itemId, user.getId());
+        return itemDao.removeLike(itemId, userId);
     }
 
     public Item addItemBooker(int ownerId, int itemId, int bookerId) {
         log.debug("Trying to add booker '{}' to item '{}' with owner '{}'", bookerId, itemId, ownerId);
+
         return itemDao.addBookerForItem(ownerId, itemId, bookerId);
     }
 
-    public Item deleteItemBooker(int ownerId, int itemId) {
+    public Item deleteItemBooker(int ownerId, int itemId, int bookerId) {
         log.debug("Trying to remove booker from item '{}' with owner '{}'", itemId, ownerId);
-        return itemDao.removeBookerForItem(ownerId, itemId);
+
+        return itemDao.removeBookerForItem(ownerId, itemId, bookerId);
     }
 
-    public List<String> getUserLoginsWhoLikedItem(int itemId){
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
-
+    public List<String> getUserLoginsWhoLikedItem(int itemId) {
         log.debug("Try to get list of login who liked item with id '{}'", itemId);
+
         return itemDao.getLoginsWhoLikedItem(itemId);
     }
 }
