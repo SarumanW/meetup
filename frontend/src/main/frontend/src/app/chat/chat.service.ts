@@ -41,4 +41,25 @@ export class ChatService {
 
     return this.http.get('api/chats/messages/' + chatId, {headers: headers});
   }
+
+  getMembers(chatId: any): Observable<any> {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.get('api/chats/'  + chatId + '/members/', {headers: headers});
+  }
+
+  addMember(login: any, chatId: any): Observable<any> {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.post('api/chats/' + chatId + '/member', login, {headers: headers});
+  }
+
+  deleteMember(login: any, chatId: any): Observable<any> {
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.delete('api/chats/' + chatId + '/member/' + login, {headers: headers});
+  }
 }

@@ -33,7 +33,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   color: string;
   disabled: boolean = true;
   preventMessages: Message[] = [];
-  chatMembers: Profile[] = [];
+  chatMembers: string[] = [];
 
   isTyping: boolean = false;
   typingMemberText: string = '';
@@ -121,7 +121,14 @@ export class ChatComponent implements OnInit, OnDestroy {
   connect() {
     this.initializeWebSocketConnection();
 
-    this.chatMembers.push(this.profile);
+    this.chatService.getMembers(this.chatId).subscribe(members => {
+      console.log(members);
+      if (members !== null) {
+        this.chatMembers = members;
+      }
+    }, error => {
+      console.log(error);
+    });
   }
 
   initializeWebSocketConnection() {
@@ -142,7 +149,16 @@ export class ChatComponent implements OnInit, OnDestroy {
         if (message.type === 'JOIN') {
           if (message.sender === that.currentUserLogin) {
             that.disabled = false;
+            that.chatService.addMember(that.currentUserLogin, that.chatId).subscribe(
+              member => {
+                console.log(member.toString());
+              }, error => {
+                console.error(error);
+              }
+            );
           }
+
+          that.chatMembers.push(message.sender);
           message.content = message.sender + ' joined!';
           messageElement = `<li class="event-message" style="width: 100%;
   text-align: center;
@@ -160,6 +176,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   font-size: 14px;
   word-wrap: break-word;">${message.content}</p>
 </li>`;
+
+          that.chatMembers.splice(that.chatMembers.indexOf(message.sender), 1);
           that.stopTypingMember(message.sender);
         } else if (message.type === 'TYPING') {
           console.log(that.typingMembers.indexOf(message.sender));
@@ -312,6 +330,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+
+    this.chatService.deleteMember(this.currentUserLogin, this.chatId).subscribe( login => {
+      console.log(login);
+    }, error => {
+      console.log(error);
+    });
+
     if (this.stompClient !== undefined) {
       let chatMessage = {
         sender: this.profile.login,

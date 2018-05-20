@@ -206,6 +206,7 @@ public final class Key {
     public static final String EXCEPTION_MAIL_SERVER = "mail.server.exception";
     public static final String EXCEPTION_PARSE_DATE = "parse.date.exception";
     public static final String EXCEPTION_CHAT_DELETE= "chat.delete.exception";
+    public static final String EXCEPTION_CHAT_MEMBER_DELETE= "chat.member.delete.exception";
 
     //Send mail periods
     public static final String MAIL_MONTHLY="MONTHLY";

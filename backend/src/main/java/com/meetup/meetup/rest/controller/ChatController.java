@@ -23,7 +23,7 @@ public class ChatController {
     private static Logger log = LoggerFactory.getLogger(EventController.class);
 
     @Autowired
-    private Environment env;
+    private WebSocketController webSocketController;
 
     @Autowired
     private ChatService chatService;
@@ -49,7 +49,7 @@ public class ChatController {
 
         log.debug("Send response body chatId '{}' and status OK", responseId);
 
-        return new ResponseEntity<>(responseId, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseId, HttpStatus.OK);
     }
 
     @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
@@ -71,7 +71,7 @@ public class ChatController {
 
         Message result = chatService.addMessage(message);
 
-        log.debug("Send response body messageId '{}' and status OK", result.getMessageId());
+        log.debug("Send response body message '{}' and status CREATED", result.getMessageId());
 
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
@@ -83,6 +83,29 @@ public class ChatController {
 
         List<Message> msgList = chatService.getMessagesByChatId(chatId);
 
-        return new ResponseEntity<>(msgList, HttpStatus.CREATED);
+        return new ResponseEntity<>(msgList, HttpStatus.OK);
+    }
+
+    @PreAuthorize("@chatPermissionChecker.checkById(#chatId)")
+    @GetMapping("{chatId}/members")
+    public ResponseEntity<List<String>> getMembers(@PathVariable int chatId) {
+        log.debug("Trying to get members of chat with chatId '{}'", chatId);
+        return new ResponseEntity<>(chatService.getUserLogins(chatId), HttpStatus.OK);
+    }
+
+    @PreAuthorize("@chatPermissionChecker.checkById(#chatId)")
+    @PostMapping("{chatId}/member")
+    public ResponseEntity<String> addMember(@RequestBody String login, @PathVariable int chatId) {
+        log.debug("Trying to add member of chat with chatId '{}'", chatId);
+        chatService.addUserLogin(login, chatId);
+        return new ResponseEntity<>(login, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("@chatPermissionChecker.checkById(#chatId)")
+    @DeleteMapping("{chatId}/member/{login}")
+    public ResponseEntity<String> deleteMember(@PathVariable String login, @PathVariable int chatId) {
+        log.debug("Trying to delete member of chat with chatId '{}'", chatId);
+        chatService.deleteUserLogin(login, chatId);
+        return new ResponseEntity<>(login, HttpStatus.OK);
     }
 }
