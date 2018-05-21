@@ -26,7 +26,7 @@ export class EventComponent implements OnInit {
   lat: number;
   lng: number;
   currentDate: string;
-  datee: string;
+  datee: any;
   time: string;
   tempType: string;
   tempTypeShow: string;
@@ -62,6 +62,14 @@ export class EventComponent implements OnInit {
       this.appComponent.showError('Unsuccessful event loading', 'Loading error');
     });
     this.getEvent();
+  }
+
+  showCountdown() {
+    let givenDate: any = new Date(this.eventt.eventDate);
+    let now: any = new Date();
+    let dateDifference: any = givenDate - now;
+
+    return dateDifference >= 0;
   }
 
   getEvent() {
