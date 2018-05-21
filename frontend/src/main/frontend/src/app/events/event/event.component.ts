@@ -299,21 +299,12 @@ export class EventComponent implements OnInit {
       deleted => {
         this.showSuccess('Event removed successfully', 'Success!');
         this.spinner.hide();
-        this.deleteChats(this.eventId);
         this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId])
       }, error => {
         this.appComponent.showError('Can not delete event', 'Error!');
         this.spinner.hide();
       }
     );
-  }
-
-  deleteChats(eventId: number) {
-    this.chatService.deleteChats(eventId).subscribe(success => {
-      this.showSuccess('Chat deleted successfully', 'Success!');
-    }, error => {
-      this.appComponent.showError('Can not delete chats', 'Error!');
-    });
   }
 
   deleteParticipant(login: any) {

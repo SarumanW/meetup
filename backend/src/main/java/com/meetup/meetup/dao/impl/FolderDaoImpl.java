@@ -1,37 +1,31 @@
 package com.meetup.meetup.dao.impl;
 
+import com.meetup.meetup.dao.AbstractDao;
 import com.meetup.meetup.dao.FolderDao;
 import com.meetup.meetup.dao.rowMappers.FolderRowMapper;
-import com.meetup.meetup.entity.*;
+import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-
-import static com.meetup.meetup.keys.Key.*;
-
-import com.meetup.meetup.dao.AbstractDao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.meetup.meetup.keys.Key.*;
+
 @Repository
 @PropertySource("classpath:sqlDao.properties")
 @PropertySource("classpath:strings.properties")
-public class FolderDaoImpl extends AbstractDao<Folder>  implements FolderDao {
+public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
 
 
-    public FolderDaoImpl(){
-        log=LoggerFactory.getLogger(FolderDaoImpl.class);
+    public FolderDaoImpl() {
+        log = LoggerFactory.getLogger(FolderDaoImpl.class);
     }
 
 
@@ -43,9 +37,6 @@ public class FolderDaoImpl extends AbstractDao<Folder>  implements FolderDao {
         try {
             userFolders = jdbcTemplate.query(env.getProperty(FOLDER_GET_USER_FOLDERS),
                     new Object[]{id}, new FolderRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Folders with userId '{}' was not found", id);
-            return userFolders;
         } catch (DataAccessException e) {
             log.error("Query fails by getting folders for user with id '{}'", id);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -66,9 +57,6 @@ public class FolderDaoImpl extends AbstractDao<Folder>  implements FolderDao {
                     env.getProperty(FOLDER_GET_BY_ID),
                     new Object[]{id}, new FolderRowMapper()
             );
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Folder with folderId '{}' was not found", id);
-            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by finding folder with id '{}'", id);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -89,9 +77,6 @@ public class FolderDaoImpl extends AbstractDao<Folder>  implements FolderDao {
                     env.getProperty(FOLDER_GET_BY_NAME),
                     new Object[]{name}, new FolderRowMapper()
             );
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Folder with name '{}'  was not found", name);
-            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by finding folder with name '{}'", name);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -131,9 +116,6 @@ public class FolderDaoImpl extends AbstractDao<Folder>  implements FolderDao {
                     env.getProperty(FOLDER_GET_BY_ID),
                     new Object[]{id, userId}, new FolderRowMapper()
             );
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Folder with folderId '{}' for user with userId '{}' was not found", id, userId);
-            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by finding folder with id '{}' for user with id '{}'", id, userId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));

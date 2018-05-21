@@ -8,7 +8,6 @@ import com.meetup.meetup.exception.runtime.DatabaseWorkException;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -25,8 +24,8 @@ import static com.meetup.meetup.keys.Key.*;
 @PropertySource("classpath:image.properties")
 public class ItemCommentDaoImpl extends AbstractDao<ItemComment> implements ItemCommentDao {
 
-    public ItemCommentDaoImpl(){
-        log=LoggerFactory.getLogger(ItemCommentDaoImpl.class);
+    public ItemCommentDaoImpl() {
+        log = LoggerFactory.getLogger(ItemCommentDaoImpl.class);
     }
 
     @Override
@@ -35,9 +34,6 @@ public class ItemCommentDaoImpl extends AbstractDao<ItemComment> implements Item
         ItemComment itemComment;
         try {
             itemComment = jdbcTemplate.queryForObject(env.getProperty(ITEM_COMMENT_FIND_BY_ID), new Object[]{id}, new ItemCommentRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Comment not found by comment id: '{}'", id);
-            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by find comment by comment id: '{}'", id);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -98,17 +94,13 @@ public class ItemCommentDaoImpl extends AbstractDao<ItemComment> implements Item
     }
 
 
-
     @Override
-    public List<Map<String,Object>> getCommentsForItemId(int itemId) {
+    public List<Map<String, Object>> getCommentsForItemId(int itemId) {
         log.debug("Try get list comments by item id: '{}'", itemId);
-        List<Map<String,Object>> itemComment;
+        List<Map<String, Object>> itemComment;
         try {
             itemComment = jdbcTemplate.queryForList(env.getProperty(ITEM_COMMENT_FIND_COMMENTS_BY_ITEM_ID),
                     itemId);
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Comments not found by item id: '{}'", itemId);
-            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by find comments by item id: '{}'", itemId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));

@@ -7,28 +7,21 @@ import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
 import com.meetup.meetup.exception.runtime.EntityNotFoundException;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import static com.meetup.meetup.keys.Key.*;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 
 @Repository
@@ -42,8 +35,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Autowired
     private UserRowMapper userRowMapper;
 
-    public UserDaoImpl(){
-        log=LoggerFactory.getLogger(UserDaoImpl.class);
+    public UserDaoImpl() {
+        log = LoggerFactory.getLogger(UserDaoImpl.class);
     }
 
     /**
@@ -98,9 +91,6 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                     new Object[]{login}, new UserRowMapper() {
                     }
             );
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("User with login '{}' was not found", login);
-            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with login '{}'", login);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "login", login));
@@ -123,9 +113,6 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                     new Object[]{email}, new UserRowMapper() {
                     }
             );
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("User with email '{}' was not found", email);
-            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with email '{}'", email);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "email", email));
@@ -139,7 +126,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     public List<User> getFriends(int userId) {
         log.debug("Try to getFriends by userId '{}'", userId);
 
-        List<User> friends = jdbcTemplate.query(env.getProperty(USER_GET_FRIENDS), new Object[]{userId,userId}, new UserRowMapper());
+        List<User> friends = jdbcTemplate.query(env.getProperty(USER_GET_FRIENDS), new Object[]{userId, userId}, new UserRowMapper());
         log.debug("Freinds found: '{}'", friends);
 
         return friends;
@@ -181,7 +168,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     public List<User> getFriendsRequests(int userId) {
         log.debug("Try to getUnconfirmedIds by userId '{}'", userId);
 
-        List<User> friendsRequests = jdbcTemplate.query(env.getProperty(USER_GET_UNCONFIRMED), new Object[] {userId}, new UserRowMapper());
+        List<User> friendsRequests = jdbcTemplate.query(env.getProperty(USER_GET_UNCONFIRMED), new Object[]{userId}, new UserRowMapper());
         log.debug("Friends request found '{}'", friendsRequests);
 
         return friendsRequests;
@@ -235,9 +222,6 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                     }
             );
 
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("User with userId '{}' was not found", id);
-            return null;
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with id '{}'", id);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -309,7 +293,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         try {
             result = jdbcTemplate.update(env.getProperty(USER_UPDATE),
                     model.getLogin(), model.getName(), model.getLastname(), model.getEmail(), model.getTimeZone(),
-                    model.getImgPath(), (model.getBirthDay()==null?null:Date.valueOf(model.getBirthDay())), model.getPhone(), model.getPeriodicalEmail(), model.getId());
+                    model.getImgPath(), (model.getBirthDay() == null ? null : Date.valueOf(model.getBirthDay())), model.getPhone(), model.getPeriodicalEmail(), model.getId());
         } catch (DataAccessException e) {
             log.error("Query fails by update user with id '{}'", model.getId());
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -365,8 +349,9 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     /**
      * Actual method of searching unknown users for specific user.
-     * @param userId    id of specific user.
-     * @param userName  username pattern of unknown users
+     *
+     * @param userId   id of specific user.
+     * @param userName username pattern of unknown users
      * @return List<User>
      */
     @Override
@@ -376,9 +361,6 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         try {
             userParamsList = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"), userId, userId, userName + "%");
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Users with username like '{}' was not found", userName);
-            return new ArrayList<>();
         } catch (DataAccessException e) {
             log.error("Query fails by delete user with id '{}'", userName);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
