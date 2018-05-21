@@ -37,7 +37,7 @@ ALTER TABLE uuser DROP CONSTRAINT uuser_fk_event;
 
 
 ALTER TABLE item_comment ADD CONSTRAINT item_comment_user_id_fk FOREIGN KEY (author_id) REFERENCES uuser(user_id);
-ALTER TABLE item_comment ADD CONSTRAINT item_comment_item_id_fk FOREIGN KEY (item_id) REFERENCES item(item_id);
+ALTER TABLE item_comment ADD CONSTRAINT item_comment_item_id_fk FOREIGN KEY (item_id) REFERENCES item(item_id) ON DELETE CASCADE;
 
 ALTER TABLE user_item ADD CONSTRAINT u_item_fk_booker FOREIGN KEY(id_who_booked) REFERENCES uuser(user_id);
 

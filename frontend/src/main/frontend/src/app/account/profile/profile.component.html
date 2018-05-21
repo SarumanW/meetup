@@ -67,11 +67,11 @@
         <br>
         <br>
 
-        <div class="row" *ngIf="this.eventName && this.eventDate">
+        <div class="row" *ngIf="this.eventName && this.eventDate && this.showCountdown()==true">
           <div align="center">
-            <h3>{{this.eventName}} in</h3>
-          </div>
-          <countdown class = "countdown" divider=" " units=" Year | Month | Days | Hours | Minutes | Seconds "
+            <h3>{{this.eventName}} in </h3>
+        </div>
+          <countdown class = "countdown" divider='&#160;' units="Year | Month | Days | Hours | Minutes | Seconds"
                      end={{this.eventDate}}></countdown>
         </div>
 

@@ -21,13 +21,6 @@ export class ChatService {
     return this.http.get('api/chats/' + eventId, {headers: headers});
   }
 
-  deleteChats(eventId: any):Observable<any>{
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
-
-    return this.http.delete('api/chats/' + eventId, {headers: headers});
-  }
-
   addMessage(message: any):Observable<any>{
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);

@@ -86,6 +86,7 @@
         <!--Wish list-->
 
         <div class="row">
+          <div *ngIf="items.length===0"><h3>There is no items</h3></div>
           <div *ngFor="let item of items" class="col-sm-6 col-md-4 col-lg-3 mt-4">
             <div class="card card-inverse card-info">
               <img class="card-img-top" [src]="item.imageFilepath" alt="..."

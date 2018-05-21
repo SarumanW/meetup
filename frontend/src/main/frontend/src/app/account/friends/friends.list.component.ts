@@ -88,12 +88,11 @@ export class FriendsListComponent implements OnInit {
 
   addFriend(login: string) {
     this.spinner.show();
-    // console.log("adding friend " + form.form.value.newFriendName)
-    // this.friendService.addFriend(form.form.value.newFriendName)
     this.friendService.addFriend(login)
       .subscribe(
         (message) => {
-          this.message = "Successfully sent request";
+          this.queryField.setValue("");
+          this.message = "Successfully sent request to the "+ login;
           this.spinner.hide();
         },
         (error) => {

@@ -99,9 +99,9 @@
 
         <br>
 
-        <div class="row" *ngIf="eventt.eventType !== 'NOTE'">
+        <div class="row" *ngIf="eventt.eventType !== 'NOTE' && this.showCountdown()==true">
           <div class="col-md-8">
-            <countdown class = "countdown" divider=" " units="Year | Month | Days | Hours | Minutes | Seconds"
+            <countdown class = "countdown" divider="&#160;" units="Year | Month | Days | Hours | Minutes | Seconds"
                        end={{eventt.eventDate}}></countdown>
           </div>
         </div>

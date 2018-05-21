@@ -26,7 +26,7 @@ export class EventComponent implements OnInit {
   lat: number;
   lng: number;
   currentDate: string;
-  datee: string;
+  datee: any;
   time: string;
   tempType: string;
   tempTypeShow: string;
@@ -62,6 +62,14 @@ export class EventComponent implements OnInit {
       this.appComponent.showError('Unsuccessful event loading', 'Loading error');
     });
     this.getEvent();
+  }
+
+  showCountdown() {
+    let givenDate: any = new Date(this.eventt.eventDate);
+    let now: any = new Date();
+    let dateDifference: any = givenDate - now;
+
+    return dateDifference >= 0;
   }
 
   getEvent() {
@@ -299,21 +307,12 @@ export class EventComponent implements OnInit {
       deleted => {
         this.showSuccess('Event removed successfully', 'Success!');
         this.spinner.hide();
-        this.deleteChats(this.eventId);
         this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId])
       }, error => {
         this.appComponent.showError('Can not delete event', 'Error!');
         this.spinner.hide();
       }
     );
-  }
-
-  deleteChats(eventId: number) {
-    this.chatService.deleteChats(eventId).subscribe(success => {
-      this.showSuccess('Chat deleted successfully', 'Success!');
-    }, error => {
-      this.appComponent.showError('Can not delete chats', 'Error!');
-    });
   }
 
   deleteParticipant(login: any) {

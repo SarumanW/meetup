@@ -61,6 +61,8 @@ public final class Key {
     public static final String ITEM_COMMENT_POST_TIME = "POST_TIME";
     public static final String ITEM_COMMENT_AUTHOR_ID = "AUTHOR_ID";
     public static final String ITEM_COMMENT_ITEM_ID = "ITEM_ID";
+    public static final String ITEM_COMMENT_AUTHOR_LOGIN = "AUTHOR_LOGIN";
+    public static final String ITEM_COMMENT_AUTHOR_IMG = "AUTHOR_IMG";
 
     //TAG table fields
     public static final String TAG_TAG_ID = "TAG_ID";
@@ -208,6 +210,8 @@ public final class Key {
     public static final String EXCEPTION_PARSE_DATE = "parse.date.exception";
     public static final String EXCEPTION_CHAT_DELETE= "chat.delete.exception";
     public static final String EXCEPTION_CHAT_MEMBER_DELETE= "chat.member.delete.exception";
+    public static final String EXCEPTION_ITEM_IS_IN_WISHLIST= "item.is.in.wishlist.exception";
+    public static final String EXCEPTION_REQUEST_ALREADY_SENT= "request.already.sent.exception";
 
     //Send mail periods
     public static final String MAIL_MONTHLY="MONTHLY";

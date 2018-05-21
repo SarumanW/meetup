@@ -1,5 +1,6 @@
 package com.meetup.meetup.service;
 
+import com.meetup.meetup.dao.ChatDao;
 import com.meetup.meetup.dao.EventDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.*;
@@ -20,9 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.meetup.meetup.keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
 import static com.meetup.meetup.keys.Key.EXCEPTION_LOGIN_NOT_FOUND;
@@ -36,17 +35,21 @@ public class EventService {
     @Autowired
     protected Environment env;
 
+    private final PdfCreatService pdfCreatService;
+    private final ChatDao chatDao;
     private final EventDao eventDao;
     private final UserDao userDao;
     private final AuthenticationFacade authenticationFacade;
     private final MailService mailService;
 
     @Autowired
-    public EventService(EventDao eventDao, UserDao userDao, MailService mailService, AuthenticationFacade authenticationFacade, PdfCreatService pdfCreatService) {
+    public EventService(EventDao eventDao, UserDao userDao, MailService mailService, AuthenticationFacade authenticationFacade, PdfCreatService pdfCreatService, ChatDao chatDao) {
+        this.chatDao = chatDao;
         this.eventDao = eventDao;
         this.userDao = userDao;
         this.mailService = mailService;
         this.authenticationFacade = authenticationFacade;
+        this.pdfCreatService = pdfCreatService;
     }
 
     public Event getEvent(int eventId) {
@@ -176,6 +179,10 @@ public class EventService {
         log.debug("Trying to delete members with eventId '{}' from database", eventId);
 
         event = eventDao.deleteMembers(event);
+
+        log.debug("Trying to delete chats with eventId '{}' from database", eventId);
+
+        chatDao.deleteChatsByEventId(eventId);
 
         log.debug("Trying to delete eventId '{}' from database", eventId);
         return eventDao.delete(event);

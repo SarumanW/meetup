@@ -91,19 +91,19 @@ export class CountDown {
 
       if (this.text === null || !this.text) {
         this.text = {
-          Year: ' Year',
-          Month: ' Month',
-          Weeks: ' Weeks',
-          Days: ' Days',
-          Hours: ' Hours',
-          Minutes: ' Minutes',
-          Seconds: ' Seconds',
-          MilliSeconds: ' Milliseconds'
+          Year: 'Year(s)',
+          Month: 'Month(s)',
+          Weeks: 'Week(s)',
+          Days: 'Day(s)',
+          Hours: 'Hour(s)',
+          Minutes: 'Minute(s)',
+          Seconds: 'Second(s)',
+          MilliSeconds: 'Millisecond(s)x  '
         };
       }
 
       this.displayString = returnText
-        .replace(' Year', this.text.Year + ' | ')
+        .replace(' Year', ' '+ this.text.Year + ' | ')
         .replace(' Month', this.text.Month + ' | ')
         .replace(' Weeks', this.text.Weeks + ' | ')
         .replace(' Days', this.text.Days + ' | ')

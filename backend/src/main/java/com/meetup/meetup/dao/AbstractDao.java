@@ -23,4 +23,6 @@ public abstract class AbstractDao<T> implements Dao<T> {
 
     protected static Logger log;
 
+    public AbstractDao() {
+    }
 }

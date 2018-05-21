@@ -10,6 +10,8 @@ public class ItemComment {
     private int commentId;
     private String bodyText;
     private Timestamp postTime;
+    private String login;
+    private String imageFilepath;
     @NotNull
     private int authorId;
     @NotNull

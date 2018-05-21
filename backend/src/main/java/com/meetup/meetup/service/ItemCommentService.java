@@ -32,12 +32,11 @@ public class ItemCommentService {
     }
 
     public ItemComment findById(int id) {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
 
         log.debug("Trying to get comment with id '{}'", id);
+
         return itemCommentDao.findById(id);
+
     }
 
     public ItemComment insert(String bodyText, int itemId) {
@@ -48,26 +47,32 @@ public class ItemCommentService {
         ItemComment itemComment = new ItemComment();
         itemComment.setPostTime(new Timestamp(System.currentTimeMillis()));
         itemComment.setAuthorId(user.getId());
+        itemComment.setLogin(user.getLogin());
+        itemComment.setImageFilepath(user.getImgPath());
         itemComment.setBodyText(bodyText);
         itemComment.setItemId(itemId);
 
         log.debug("Trying to insert comment '{}'", itemComment);
+
         return itemCommentDao.insert(itemComment);
     }
 
     public List<Map<String, Object>> getCommentsByItemId(int itemId) {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
 
         log.debug("Trying to get comments for item with id '{}'", itemId);
+
         return itemCommentDao.getCommentsForItemId(itemId);
+
     }
 
 
+
     public ItemComment deleteById(int commentId) {
+
         ItemComment deleteItem = findById(commentId);
         log.debug("Trying to delete comment with id '{}'", commentId);
+
         return itemCommentDao.delete(deleteItem);
+
     }
 }

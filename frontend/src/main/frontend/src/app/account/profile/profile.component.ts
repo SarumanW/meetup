@@ -1,7 +1,7 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Profile} from "../profile";
 import {AccountService} from "../account.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {FriendService} from "../friends/friend.service";
 import {AppComponent} from "../../app.component";
@@ -21,9 +21,9 @@ export class ProfileComponent implements OnInit {
   friendCount: number;
   relation: string;
 
+  eventDate: any;
   currentDate: string;
   eventName: string;
-  eventDate:string;
 
   constructor(private accountService: AccountService,
               private spinner: NgxSpinnerService,
@@ -32,8 +32,6 @@ export class ProfileComponent implements OnInit {
               private appComponent: AppComponent) {
     this.profile = new Profile();
   }
-
-
 
   ngOnInit() {
     this.spinner.show();
@@ -54,6 +52,14 @@ export class ProfileComponent implements OnInit {
 
     });
     this.getCurrentDate();
+  }
+
+  showCountdown() {
+    let givenDate: any = new Date(this.eventDate);
+    let now: any = new Date();
+    let dateDifference: any = givenDate - now;
+
+    return dateDifference >= 0;
   }
 
   getCurrentDate() {
