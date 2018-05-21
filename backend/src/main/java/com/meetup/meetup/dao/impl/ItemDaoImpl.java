@@ -133,7 +133,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
     public List<Item> getPopularItems() {
         log.debug("Try get popular items");
 
-        List<Item> items = new ArrayList<>();
+        List<Item> items;
         try {
             items = jdbcTemplate.query(
                     env.getProperty(ITEM_GET_POPULAR_ITEMS), new Object[]{NUMBER_OF_POPULAR_ITEMS}, new ItemRowMapper());
