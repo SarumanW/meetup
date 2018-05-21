@@ -24,27 +24,21 @@ public class WishListService {
     private static Logger log = LoggerFactory.getLogger(WishListService.class);
 
     private final ItemDao itemDao;
-    private final AuthenticationFacade authenticationFacade;
     private final UserDao userDao;
     private final Environment env;
 
     @Autowired
-    public WishListService(ItemDao itemDao, AuthenticationFacade authenticationFacade, UserDao userDao, Environment env) {
+    public WishListService(ItemDao itemDao, UserDao userDao, Environment env) {
         this.itemDao = itemDao;
-        this.authenticationFacade = authenticationFacade;
         this.userDao = userDao;
         this.env = env;
     }
 
 
-    public List<Item> getWishList() {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
+    public List<Item> getWishList(int userId) {
+        log.debug("Trying to get all WishList for user '{}'", userId);
 
-        log.debug("User was successfully received");
-
-        log.debug("Trying to get all WishList for user '{}'", user.toString());
-        return itemDao.getWishListByUserId(user.getId());
+        return itemDao.getWishListByUserId(userId);
     }
 
     public List<Item> getWishesByUser(String login) {
@@ -69,14 +63,15 @@ public class WishListService {
         return itemDao.findItemsByTagName(tagArray);
     }
 
-    public List<Item> getBookingByUser() {
-        User user = authenticationFacade.getAuthentication();
-        log.debug("Trying to get booking wishes from dao for user '{}'", user);
-        return itemDao.findBookedItemsByUserId(user.getId());
+    public List<Item> getBookingByUser(int userId) {
+        log.debug("Trying to get booking wishes from dao for user '{}'", userId);
+
+        return itemDao.findBookedItemsByUserId(userId);
     }
 
     public List<String> getSearchTags(String tagPart) {
         log.debug("Trying to get tags from dao by tag part '{}'", tagPart);
+
         return itemDao.searchTag(tagPart);
     }
 }

@@ -10,22 +10,16 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class WebSocketController {
-
-    private final SimpMessagingTemplate template;
-
-    @Autowired
-    public WebSocketController(SimpMessagingTemplate template) {
-        this.template = template;
-    }
 
     @MessageMapping("/send/message/{chatId}")
     @SendTo("/chat/{chatId}")
     public ChatMessage onRecievedMessage(@Payload ChatMessage message,
                                          @DestinationVariable int chatId){
-//        this.template.convertAndSend("/chat",
-//                new SimpleDateFormat("HH:mm:ss").format(new Date()) + " - " + message);
         return message;
     }
 
@@ -34,8 +28,6 @@ public class WebSocketController {
     public ChatMessage addUser(@Payload ChatMessage message,
                                          SimpMessageHeaderAccessor headerAccessor,
                                @DestinationVariable int chatId){
-//        this.template.convertAndSend("/chat",
-//                new SimpleDateFormat("HH:mm:ss").format(new Date()) + " - " + message);
         headerAccessor.getSessionAttributes().put("username", message.getSender());
         return message;
     }

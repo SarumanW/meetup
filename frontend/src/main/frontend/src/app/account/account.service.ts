@@ -14,6 +14,10 @@ export class AccountService {
     return this.http.post('api/register', account);
   }
 
+  confirm(data: any):Observable<any>{
+    return this.http.post('api/recovery/',data);
+  }
+
   upImg(img:any):Observable<any>{
     return this.http.post('api/profile/img', img);
   }

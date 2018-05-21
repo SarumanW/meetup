@@ -1,81 +1,129 @@
 import {Injectable} from "@angular/core";
-import { Observable } from 'rxjs/Observable';
+import {Observable} from 'rxjs/Observable';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Item} from "./item";
 
 @Injectable()
 export class WishService {
 
-  constructor(private http: HttpClient) {}
+  currentUser;
+  prePath: string;
 
-  getWishItem(id: number, login:string): Observable<any> {
+  constructor(private http: HttpClient) {
+  }
+
+  initPrePath() {
+    this.currentUser = JSON.parse(localStorage.currentUser);
+    this.prePath = `api/users/${this.currentUser.id}/`;
+  }
+
+  getWishItem(itemId: number, login: string): Observable<any> {
+    this.initPrePath();
+
     let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
 
-    return this.http.get<any>(`api/item/${id}/login/${login}`, {headers: headers});
+    let url = `${this.prePath}/items/${itemId}/login/${login}`;
+
+    return this.http.get<any>(url, {headers: headers});
   }
 
   addWishItem(item: Item): Observable<any> {
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    this.initPrePath();
 
-    return this.http.post('api/item/', item, {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    let url = `${this.prePath}/items/`;
+
+    return this.http.post(url, item, {headers: headers});
   }
 
   addExistWishItem(item: Item): Observable<any> {
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    this.initPrePath();
 
-    return this.http.post(`api/item/${item.itemId}`, item, {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    let url = `${this.prePath}/items/${item.itemId}`;
+
+    return this.http.post(url, item, {headers: headers});
   }
 
-  editWishItem(item: Item): Observable<any>{
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+  editWishItem(item: Item): Observable<any> {
+    this.initPrePath();
 
-    return this.http.put('api/item/', item, {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    let url = `${this.prePath}/items/${item.itemId}`;
+
+    return this.http.put(url, item, {headers: headers});
   }
 
   deleteWishItem(item: Item): Observable<any> {
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    this.initPrePath();
 
-    return this.http.delete(`api/item/${item.itemId}`, {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    let url = `${this.prePath}/items/${item.itemId}`;
+
+    return this.http.delete(url, {headers: headers});
   }
 
   bookWishItem(item: Item): Observable<any> {
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    this.initPrePath();
 
-    let url = `/api/item/${item.itemId}/owner/${item.ownerId}/booker/${item.bookerId}`;
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    let url = `${this.prePath}/items/${item.itemId}/owner/${item.ownerId}`;
 
     return this.http.post(url, item, {headers: headers});
   }
 
   unbookWishItem(item: Item): Observable<any> {
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    this.initPrePath();
 
-    let url = `/api/item/${item.itemId}/owner/${item.ownerId}/booker/${item.bookerId}`;
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    let url = `${this.prePath}/items/${item.itemId}/owner/${item.ownerId}`;
 
     return this.http.delete(url, {headers: headers});
   }
 
-  addLike(id:number){
-    let headers = new HttpHeaders().set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
-    let url = `api/item/${id}/like`;
-    return this.http.post(url, {},{headers: headers})
+  addLike(itemId: number) {
+    this.initPrePath();
+
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    let url = `${this.prePath}/items/${itemId}/like`;
+
+    return this.http.post(url, {}, {headers: headers})
   }
 
-  removeLike(id: number){
-    let headers = new HttpHeaders().set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
-    let url = `api/item/${id}/like`;
-    return this.http.delete(url,{headers: headers})
+  removeLike(itemId: number) {
+    this.initPrePath();
+
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    let url = `${this.prePath}/items/${itemId}/like`;
+
+    return this.http.delete(url, {headers: headers})
   }
 
-  getLoginsWhoLiked(id: number){
-    let headers = new HttpHeaders().set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
-    let url = `api/item/${id}/likes`;
-    return this.http.get(url,{headers: headers})
+  getLoginsWhoLiked(itemId: number) {
+    this.initPrePath();
+
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    let url = `${this.prePath}/items/${itemId}/likes`;
+
+    return this.http.get(url, {headers: headers})
   }
 }

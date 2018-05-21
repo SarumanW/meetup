@@ -6,15 +6,15 @@ import {ActivatedRoute, Router} from "@angular/router"
 import {AppComponent} from "../../app.component";
 
 @Component({
-  selector: 'app-recovery',
-  templateUrl: './recovery.component.html'
+  selector: 'app-confirm',
+  templateUrl: './confirmation.component.html'
 })
-export class RecoveryComponent implements OnInit {
+export class ConfirmationComponent implements OnInit {
   confirmPassword: string;
   doNotMatch: string;
   error: string;
   success: boolean;
-  recovery: RecoveryProfile;
+  confirmation: RecoveryProfile;
 
   constructor(private accountService: AccountService,
               private router: Router, private route: ActivatedRoute,
@@ -22,34 +22,26 @@ export class RecoveryComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('success: ' + this.success);
-
     this.success = false;
-    this.recovery = new RecoveryProfile();
-
-    console.log('success: ' + this.success);
+    this.confirmation = new RecoveryProfile();
 
     this.route.params.subscribe(params => {
-      this.recovery.token = params['token'];
-    },error => {
+        this.confirmation.token = params['token'];
+      },error => {
         this.appComponent.showError(error, 'Upload failed');
       }
     );
-
-    console.log('success: ' + this.success);
   }
 
-  recover() {
-    if (this.recovery.password !== this.confirmPassword) {
+  confirm() {
+    if (this.confirmation.password !== this.confirmPassword) {
       this.doNotMatch = 'ERROR';
     } else {
       this.doNotMatch = null;
-      this.accountService.recovery(this.recovery).subscribe(
+      this.accountService.confirm(this.confirmation).subscribe(
         () => {
           this.success = true;
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 10000);
+          this.router.navigate(['/thankyou']);
         },error => {
           this.appComponent.showError(error, 'Upload failed');
           this.processError(error)

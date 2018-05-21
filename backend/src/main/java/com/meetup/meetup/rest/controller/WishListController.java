@@ -8,14 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@PropertySource("classpath:strings.properties")
-@RequestMapping("/api/wishes")
+@RequestMapping("/api/users/{userId}/wishes")
 public class WishListController {
 
     private static Logger log = LoggerFactory.getLogger(WishListController.class);
@@ -24,18 +24,21 @@ public class WishListController {
     private WishListService wishListService;
 
     @GetMapping
-    public ResponseEntity<List<Item>> getWishList(){
+    @PreAuthorize("@wishListAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<Item>> getWishList(@PathVariable int userId){
         log.debug("Trying to get wish list");
 
-        List<Item> items = wishListService.getWishList();
+        List<Item> items = wishListService.getWishList(userId);
 
         log.debug("Send response body items '{}' and status OK", items.toString());
 
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
+
     @GetMapping("/{login}")
-    public ResponseEntity<List<Item>> getWishesByUser(@PathVariable String login) {
+    @PreAuthorize("@wishListAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<Item>> getWishesByUser(@PathVariable int userId, @PathVariable String login) {
         log.debug("Trying to get wishes by login '{}'", login);
 
         List<Item> userWishes = wishListService.getWishesByUser(login);
@@ -46,7 +49,8 @@ public class WishListController {
     }
 
     @PostMapping("/recommendations")
-    public ResponseEntity<List<Item>> getRecommendations(@RequestBody String[] tagArray) {
+    @PreAuthorize("@wishListAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<Item>> getRecommendations(@PathVariable int userId, @RequestBody String[] tagArray) {
         log.debug("Trying to get  recommend wishes");
 
         List<Item> items = wishListService.getRecommendations(tagArray);
@@ -57,10 +61,11 @@ public class WishListController {
     }
 
     @GetMapping("/bookings")
-    public ResponseEntity<List<Item>> getBookingByUser() {
-        log.debug("Trying to get booking wishes by user");
+    @PreAuthorize("@wishListAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<Item>> getBookingByUser(@PathVariable int userId) {
+        log.debug("Trying to get booking wishes by userId '{}'", userId);
 
-        List<Item> items = wishListService.getBookingByUser();
+        List<Item> items = wishListService.getBookingByUser(userId);
 
         log.debug("Send response body items '{}' and status OK", items.toString());
 
@@ -68,7 +73,8 @@ public class WishListController {
     }
 
     @GetMapping("/tags/{tagPart}")
-    public ResponseEntity<List<String>> getSearchTags(@PathVariable String tagPart) {
+    @PreAuthorize("@wishListAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<String>> getSearchTags(@PathVariable int userId, @PathVariable String tagPart) {
         log.debug("Trying to get tags by part name '{}'", tagPart);
 
         List<String> tags = wishListService.getSearchTags(tagPart);

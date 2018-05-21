@@ -38,12 +38,6 @@ public class EventController {
     private static Logger log = LoggerFactory.getLogger(EventController.class);
 
     @Autowired
-    private PdfCreatService pdfCreatService;
-
-    @Autowired
-    private Environment env;
-
-    @Autowired
     private EventService eventService;
 
     @Autowired
@@ -94,7 +88,7 @@ public class EventController {
         return new ResponseEntity<>(responseEvent, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("@eventPermissionChecker.canUpdateEvent(#event)")
+    @PreAuthorize("@eventPermissionChecker.checkByEntity(#event)")
     @PutMapping
     public ResponseEntity<Event> updateEvent(@Valid @RequestBody Event event) {
         log.debug("Trying to update event '{}'", event.toString());
@@ -106,7 +100,7 @@ public class EventController {
         return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
     }
 
-    @PreAuthorize("@eventPermissionChecker.canDeleteEvent(#eventId)")
+    @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
     @DeleteMapping("/{eventId}")
     public ResponseEntity<Event> deleteEvent(@PathVariable int eventId) {
         log.debug("Trying to delete eventId '{}'", eventId);
@@ -118,7 +112,7 @@ public class EventController {
         return new ResponseEntity<>(deletedEvent, HttpStatus.OK);
     }
 
-    @PreAuthorize("@eventPermissionChecker.canDeleteEvent(#eventId)")
+    @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
     @PostMapping("/{eventId}/participant/add")
     public ResponseEntity<User> addParticipant(@PathVariable int eventId, @RequestBody String login) {
         return new ResponseEntity<>(eventService.addParticipant(eventId, login), HttpStatus.CREATED);
@@ -158,7 +152,7 @@ public class EventController {
         return new ResponseEntity<>(message, httpStatus);
     }
 
-    @PreAuthorize("@eventPermissionChecker.canDeleteEvent(#eventId)")
+    @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
     @DeleteMapping("/participants/{eventId}")
     public ResponseEntity<Event> deleteParticipants(@PathVariable int eventId) {
         log.debug("Trying to delete participants of eventId '{}'", eventId);
@@ -170,7 +164,7 @@ public class EventController {
         return new ResponseEntity<>(deletedParticipantsEvent, HttpStatus.OK);
     }
 
-    @PreAuthorize("@eventPermissionChecker.canDeleteEvent(#eventId)")
+    @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
     @DeleteMapping("{eventId}/participant/{login}")
     public ResponseEntity<String> deleteParticipant(@PathVariable int eventId, @PathVariable String login) {
         HttpStatus httpStatus;

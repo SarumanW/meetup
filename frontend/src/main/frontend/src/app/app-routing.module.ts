@@ -23,6 +23,7 @@ import {EventEditComponent} from "./events/event.edit/event.edit.component";
 import {ChatComponent} from "./chat/chat/chat.component";
 import {CheckPasswordComponent} from "./account/change.password/check.password/checkPassword.component"
 import {WishEditComponent} from "./wishes/wish.edit/wish.edit.component";
+import {ConfirmationComponent} from "./account/confirmation/confirmation.component";
 
 const routes: Routes = [
   {path: 'register', component: RegisterComponent},
@@ -30,6 +31,7 @@ const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full'},
   {path: ':login/profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'recovery/:token', component: RecoveryComponent},
+  {path: 'confirmation/:token', component: ConfirmationComponent},
   {path: 'recovery', component: SendRecoveryComponent},
   {path: ':login/edit', component: EditComponent, canActivate: [AuthGuard]},
   {path: ':login/friends', component: FriendsListComponent, canActivate: [AuthGuard]},

@@ -1,7 +1,7 @@
 <div>
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <h1>Recovery</h1>
+      <h1>Confirmation of registration</h1>
       <div class="alert alert-success" *ngIf="success">
         <strong>Password was changed. Go to <a href="#/login">login page</a> for using service</strong>
         <br>Auto redirect in 10 seconds.
@@ -22,7 +22,7 @@
         <div class="form-group">
           <label class="form-control-label" for="password">Password</label>
           <input type="password" class="form-control" id="password" name="password" #password="ngModel"
-                 placeholder="password" [(ngModel)]="recovery.password" minlength=6 maxlength=50
+                 placeholder="password" [(ngModel)]="confirmation.password" minlength=6 maxlength=50
                  pattern="^[_.@A-Za-z0-9-]*$" required>
           <div *ngIf="password.dirty && password.invalid">
             <small class="form-text text-danger" *ngIf="password.errors.required">
@@ -55,8 +55,8 @@
             </small>
           </div>
         </div>
-        <button type="button" (click)="recover()" [disabled]="registerForm.form.invalid" class="btn btn-primary">
-          Recover
+        <button type="button" (click)="confirm()" [disabled]="registerForm.form.invalid" class="btn btn-primary">
+          Confirm Registration
         </button>
 
       </form>

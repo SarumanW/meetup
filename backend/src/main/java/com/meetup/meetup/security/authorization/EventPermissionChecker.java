@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EventPermissionChecker {
 
-    private static Logger log = LoggerFactory.getLogger(FolderPermissionChecker.class);
+    private static Logger log = LoggerFactory.getLogger(EventPermissionChecker.class);
 
     @Autowired
     private EventDao eventDao;
@@ -49,7 +49,7 @@ public class EventPermissionChecker {
     }
 
     /**
-     * Check if current user can update event
+     * Check if current user can edit event
      *
      * @param event entity of event for update
      * @return true if authenticated user is owner of event
@@ -58,31 +58,31 @@ public class EventPermissionChecker {
      * @see FolderPermissionChecker
      * @see AuthenticationFacade
      */
-    public boolean canUpdateEvent(Event event) {
-        log.debug("Check permission for update event '{}'", event);
+    public boolean checkByEntity(Event event) {
+        log.debug("Check permission for edit event by entity '{}'", event);
 
         boolean permission = checkPermission(event.getEventId()) &&
                 folderPermissionChecker.checkPermission(event.getFolderId());
 
-        log.info("Update permission '{}'", permission);
+        log.info("Edit permission '{}'", permission);
 
         return permission;
     }
 
     /**
-     * Check if current user can delete event
+     * Check if current user can edit event
      *
      * @param eventId id of event
      * @return true if authenticated user is owner of event
      * @see Event
      * @see AuthenticationFacade
      */
-    public boolean canDeleteEvent(int eventId) {
-        log.debug("Check permission for delete event '{}'", eventId);
+    public boolean checkById(int eventId) {
+        log.debug("Check permission for edit event by id'{}'", eventId);
 
         boolean permission = checkPermission(eventId);
 
-        log.info("Delete permission '{}'", permission);
+        log.info("Edit permission '{}'", permission);
 
         return permission;
     }

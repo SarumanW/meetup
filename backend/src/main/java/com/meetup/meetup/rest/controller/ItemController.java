@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.meetup.meetup.service.ItemService;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +18,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/item")
+@RequestMapping(path = "/api/users/{userId}/items")
 public class ItemController {
 
     private static Logger log = LoggerFactory.getLogger(ItemController.class);
@@ -31,11 +32,12 @@ public class ItemController {
         this.storageService = storageService;
     }
 
-    @GetMapping("/{id}/login/{login}")
-    public ResponseEntity<Item> getItemByUserIdItemId(@PathVariable int id, @PathVariable String login) {
-        log.debug("Try to get item with id '{}' for user with with login '{}'", id, login);
+    @GetMapping("/{itemId}/login/{login}")
+    @PreAuthorize("@itemAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<Item> getItemByUserLoginAndItemId(@PathVariable int userId, @PathVariable int itemId, @PathVariable String login) {
+        log.debug("Try to get item with id '{}' for user with with login '{}'", itemId, login);
 
-        Item item = itemService.findByUserIdItemId(id, login);
+        Item item = itemService.findByUserIdItemId(itemId, login);
 
         log.debug("Send response body item '{}' and status OK", item);
 
@@ -43,7 +45,8 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<Item> addItem(@Valid @RequestBody Item item) {
+    @PreAuthorize("@itemAuthorization.isCorrectItem(#userId, #item)")
+    public ResponseEntity<Item> addItem(@PathVariable int userId, @Valid @RequestBody Item item) {
         log.debug("Trying to save item {}", item);
 
         Item addedItem = itemService.addItem(item);
@@ -53,30 +56,21 @@ public class ItemController {
         return new ResponseEntity<>(addedItem, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<Item> addItemToUserWishList(@Valid @RequestBody Item item, @PathVariable("id") String id){
+    @PostMapping("/{itemId}")
+    @PreAuthorize("@itemAuthorization.isCorrectItem(#userId, #itemId, #item)")
+    public ResponseEntity<Item> addItemToUserWishList(@PathVariable int userId, @PathVariable int itemId, @Valid @RequestBody Item item){
         log.debug("Trying to add item with id '{}' to user wish list", item.getItemId());
 
-        Item addedItem = itemService.addItemToUserWishList(item);
+        Item addedItem = itemService.addItemToUserWishList(userId, item);
 
         log.info("Added item with id '{}' to user wish list", addedItem.getItemId());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Item> deleteItem(@PathVariable int id) {
-        log.debug("Trying to delete item with id '{}' to user wish list", id);
-
-        Item deletedItem = itemService.deleteItemFromUserWishList(id);
-
-        log.debug("Send response status OK");
-
-        return new ResponseEntity<>(deletedItem, HttpStatus.OK);
-    }
-
-    @PutMapping
-    public ResponseEntity<Item> updateItem(@Valid @RequestBody Item newItem) {
+    @PutMapping("/{itemId}")
+    @PreAuthorize("@itemAuthorization.isCorrectItem(#userId, #itemId, #newItem)")
+    public ResponseEntity<Item> updateItem(@PathVariable int userId, @PathVariable int itemId, @Valid @RequestBody Item newItem) {
         log.debug("Trying to update item '{}'", newItem);
 
         Item updatedItem = itemService.updateItem(newItem);
@@ -86,9 +80,46 @@ public class ItemController {
         return new ResponseEntity<>(updatedItem, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{itemId}")
+    @PreAuthorize("@itemAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<Item> deleteItem(@PathVariable int userId, @PathVariable int itemId) {
+        log.debug("Trying to delete item with id '{}' to user wish list", itemId);
+
+        Item deletedItem = itemService.deleteItemFromUserWishList(userId, itemId);
+
+        log.debug("Send response status OK");
+
+        return new ResponseEntity<>(deletedItem, HttpStatus.OK);
+    }
+
+    @PostMapping("/{itemId}/owner/{ownerId}")
+    @PreAuthorize("@itemAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<Item> addItemBooker(@PathVariable int itemId, @PathVariable int ownerId, @PathVariable int userId){
+        log.debug("Trying to add item with id '{}' to user wish list", itemId);
+
+        Item itemWithBooker = itemService.addItemBooker(ownerId, itemId, userId);
+
+        log.debug("Booker with id '{}' was added to item '{}'", userId, itemWithBooker);
+
+        return new ResponseEntity<>(itemWithBooker, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{itemId}/owner/{ownerId}")
+    @PreAuthorize("@itemAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity deleteItemBooker(@PathVariable int itemId, @PathVariable int ownerId, @PathVariable int userId) {
+        log.debug("Trying to delete item with id '{}' to user wish list", itemId);
+
+        Item itemWithoutBooker = itemService.deleteItemBooker(ownerId, itemId, userId);
+
+        log.debug("Booker with id '{}' was deleted from item '{}'", userId, itemWithoutBooker);
+
+        return new ResponseEntity<>(itemWithoutBooker, HttpStatus.OK);
+    }
+
     // TODO: 16.05.2018 IS NOT USED
     @DeleteMapping
-    public ResponseEntity deleteItem(@Valid @RequestBody Item item) {
+    @PreAuthorize("@itemAuthorization.isCorrectItem(#userId, #item)")
+    public ResponseEntity deleteItem(@PathVariable int userId, @Valid @RequestBody Item item) {
         log.debug("Trying to delete item '{}'", item);
 
         Item deletedItem = itemService.deleteItem(item);
@@ -98,59 +129,41 @@ public class ItemController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/like")
-    public ResponseEntity<Item> addLike(@PathVariable int id) {
-        log.debug("Trying to add like to item with id '{}'", id);
+    @PostMapping("/{itemId}/like")
+    @PreAuthorize("@itemAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<Item> addLike(@PathVariable int userId, @PathVariable int itemId) {
+        log.debug("Trying to add like to item with id '{}'", itemId);
 
-        Item likedItem = itemService.addLike(id);
+        Item likedItem = itemService.addLike(userId, itemId);
 
         return new ResponseEntity<>(likedItem, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}/like")
-    public ResponseEntity<Item> removeLike(@PathVariable int id) {
-        log.debug("Trying to remove like from item with id '{}'", id);
+    @DeleteMapping("/{itemId}/like")
+    @PreAuthorize("@itemAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<Item> removeLike(@PathVariable int userId, @PathVariable int itemId) {
+        log.debug("Trying to remove like from item with id '{}'", itemId);
 
-        Item unlikedItem = itemService.removeLike(id);
+        Item unlikedItem = itemService.removeLike(userId, itemId);
 
         return new ResponseEntity<>(unlikedItem, HttpStatus.OK);
     }
 
-    //Booking
+    @GetMapping("/{itemId}/likes")
+    @PreAuthorize("@itemAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<String>> getUserLoginsWhoLikedItem(@PathVariable int userId, @PathVariable int itemId) {
+        log.debug("Try to get login who liked item with idItem '{}'", itemId);
 
-    @PostMapping("/{itemId}/owner/{ownerId}/booker/{bookerId}")
-    public ResponseEntity<Item> addItemBooker(@PathVariable int itemId, @PathVariable int ownerId, @PathVariable int bookerId){
-        log.debug("Trying to add item with id '{}' to user wish list", itemId);
-
-        Item itemWithBooker = itemService.addItemBooker(ownerId, itemId, bookerId);
-
-        log.debug("Booker with id '{}' was added to item '{}'", bookerId, itemWithBooker);
-
-        return new ResponseEntity<>(itemWithBooker, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{itemId}/owner/{ownerId}/booker/{bookerId}")
-    public ResponseEntity deleteItemBooker(@PathVariable int itemId, @PathVariable int ownerId, @PathVariable int bookerId) {
-        log.debug("Trying to delete item with id '{}' to user wish list", itemId);
-
-        Item itemWithoutBooker = itemService.deleteItemBooker(ownerId, itemId);
-
-        log.debug("Booker with id '{}' was deleted from item '{}'", bookerId, itemWithoutBooker);
-
-        return new ResponseEntity<>(itemWithoutBooker, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}/likes")
-    public ResponseEntity<List<String>> getUserLoginsWhoLikedItem(@PathVariable int id) {
-        log.debug("Try to get login who liked item with idItem '{}'", id);
-        List<String> logins = itemService.getUserLoginsWhoLikedItem(id);
+        List<String> logins = itemService.getUserLoginsWhoLikedItem(itemId);
 
         log.debug("Send response body login who liked item '{}' and status OK", logins);
+
         return new ResponseEntity<>(logins, HttpStatus.OK);
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam MultipartFile file) {
+    @PreAuthorize("@itemAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<String> handleFileUpload(@PathVariable int userId, @RequestParam MultipartFile file) {
         log.debug("Trying to upload image '{}'", file);
 
         String imagePath = storageService.wishItemImageStore(file);

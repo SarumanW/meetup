@@ -19,13 +19,11 @@ public interface ItemDao extends Dao<Item> {
 
     Item addBookerForItem(int ownerId, int itemId, int bookerId);
 
-    Item removeBookerForItem(int ownerId, int itemId);
+    Item removeBookerForItem(int ownerId, int itemId, int bookerId);
 
     Item addLike(int itemId, int userId);
 
     Item removeLike(int itemId, int userId);
-
-    List<Item> getPopularItems(String[] tagArray);
 
     List<Item> findBookedItemsByUserId(int userId);
 
@@ -35,4 +33,5 @@ public interface ItemDao extends Dao<Item> {
 
     List<String> getLoginsWhoLikedItem(int itemId);
 
+    boolean itemExistInWishList(Item item);
 }

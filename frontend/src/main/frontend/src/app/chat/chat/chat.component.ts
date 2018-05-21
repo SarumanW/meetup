@@ -33,13 +33,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   color: string;
   disabled: boolean = true;
   preventMessages: Message[] = [];
-  chatMembers: Profile[] = [];
+  chatMembers: string[] = [];
 
   isTyping: boolean = false;
   typingMemberText: string = '';
   typingMembers: string[] = [];
-
-  isButtonHidden: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -100,10 +98,10 @@ export class ChatComponent implements OnInit, OnDestroy {
   font-style: normal;
   text-transform: uppercase;
   background-color:${color}";>${message.senderLogin[0]}</i>
-  <span style="color: #333;
-  font-weight: 600;">${time}</span>
     <span style="color: #333;
   font-weight: 600;">${message.senderLogin}</span>
+  <span style="color: #333;
+  font-weight: 600;">${time}</span>
     <p style="color: #43464b;">${message.text}</p>
 </li>`;
           $('#messageArea').append(messageElement);
@@ -114,20 +112,28 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.spinner.hide();
 
         this.connect();
+      }, error => {
+        this.appComponent.showError('Unsuccessful message loading', 'Loading error');
+        this.spinner.hide();
       });
   }
 
   connect() {
     this.initializeWebSocketConnection();
 
-    this.chatMembers.push(this.profile);
+    this.chatService.getMembers(this.chatId).subscribe(members => {
+      console.log(members);
+      if (members !== null) {
+        this.chatMembers = members;
+      }
+    }, error => {
+      console.log(error);
+    });
   }
 
   initializeWebSocketConnection() {
 
     let userName = this.profile.login;
-
-    this.isButtonHidden = true;
 
     this.ws = new SockJS(this.serverUrl);
     this.stompClient = Stomp.over(this.ws);
@@ -138,11 +144,21 @@ export class ChatComponent implements OnInit, OnDestroy {
 
         let message = JSON.parse(payload.body);
         let messageElement;
+        let time = that.getTimeFromDate(message.messageDate);
 
         if (message.type === 'JOIN') {
           if (message.sender === that.currentUserLogin) {
             that.disabled = false;
+            that.chatService.addMember(that.currentUserLogin, that.chatId).subscribe(
+              member => {
+                console.log(member.toString());
+              }, error => {
+                console.error(error);
+              }
+            );
           }
+
+          that.chatMembers.push(message.sender);
           message.content = message.sender + ' joined!';
           messageElement = `<li class="event-message" style="width: 100%;
   text-align: center;
@@ -160,6 +176,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   font-size: 14px;
   word-wrap: break-word;">${message.content}</p>
 </li>`;
+
+          that.chatMembers.splice(that.chatMembers.indexOf(message.sender), 1);
           that.stopTypingMember(message.sender);
         } else if (message.type === 'TYPING') {
           console.log(that.typingMembers.indexOf(message.sender));
@@ -198,6 +216,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   background-color:${that.color}";>${message.sender[0]}</i>
     <span style="color: #333;
   font-weight: 600;">${message.sender}</span>
+  <span style="color: #333;
+  font-weight: 600;">${time}</span>
     <p style="color: #43464b;">${message.content}</p>
 </li>`;
           that.stopTypingMember(message.sender);
@@ -310,6 +330,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+
+    this.chatService.deleteMember(this.currentUserLogin, this.chatId).subscribe( login => {
+      console.log(login);
+    }, error => {
+      console.log(error);
+    });
+
     if (this.stompClient !== undefined) {
       let chatMessage = {
         sender: this.profile.login,
@@ -328,12 +355,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     let hour = date.getHours();
     let min = date.getMinutes();
     let sec = date.getSeconds();
-    let time = hour + ":" + min + ":" + sec;
-    console.log(year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day) + " " + time);
-    return year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day) + " " + time;
+    let time = ChatComponent.formatDate(hour) + ":" + ChatComponent.formatDate(min) + ":" + ChatComponent.formatDate(sec);
+    console.log(year + "-" + ChatComponent.formatDate(month) + "-" + ChatComponent.formatDate(day) + " " + time);
+    return year + "-" + ChatComponent.formatDate(month) + "-" + ChatComponent.formatDate(day) + " " + time;
+  }
+
+  static formatDate(dateUnit: number): string {
+    return (dateUnit < 10 ? "0" + dateUnit : dateUnit.toString());
   }
 
   getTimeFromDate(date: string): string {
+    if (!date) {
+      date = this.getCurrentDate();
+    }
     let time = date.split(" ")[1];
     time = time.substr(0, 8);
     return time;

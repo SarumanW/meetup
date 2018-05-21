@@ -34,4 +34,6 @@ public interface UserDao extends Dao<User> {
 
     List<User> getByEmailPeriod(String period);
 
+    int deleteUnconfirmedAccounts();
+
 }

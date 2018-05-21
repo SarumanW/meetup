@@ -61,7 +61,6 @@ export class EventAddComponent implements OnInit {
     this.resetEvent();
     this.currentUserLogin = JSON.parse(localStorage.currentUser).login;
     this.fileRegexp = new RegExp('^.*\\.(jpg|JPG|gif|GIF|png|PNG)$');
-    this.errorFileFormat = true;
     console.log(this.eventt);
 
     this.searchControl = new FormControl();
@@ -108,6 +107,7 @@ export class EventAddComponent implements OnInit {
     this.time = "23:59";
     this.lat = 50.447011182312195;
     this.lng = 30.456780195127067;
+    this.errorFileFormat = false;
   }
 
   formatDate() {
@@ -128,7 +128,11 @@ export class EventAddComponent implements OnInit {
 
   addDraft() {
     this.eventt.isDraft = true;
-    this.addEntity();
+    if (this.selectedFiles) {
+      this.upload();
+    } else {
+      this.addEntity();
+    }
   }
 
   showSuccess() {
@@ -172,19 +176,18 @@ export class EventAddComponent implements OnInit {
   addEvent() {
     console.log("addEvent");
     this.eventt.isDraft = false;
-    this.addEntity();
+    if (this.selectedFiles) {
+      this.upload();
+    } else {
+      this.addEntity();
+    }
     console.log(this.eventt);
   }
 
   selectFile(event) {
     this.selectedFiles = event.target.files;
     let filename: string = this.selectedFiles.item(0).name.toLowerCase();
-    if (!this.fileRegexp.test(filename)) {
-      this.appComponent.showError("Incorrect file format " + this.selectedFiles.item(0).name, 'File format error');
-      this.errorFileFormat = true;
-    } else {
-      this.errorFileFormat = false;
-    }
+    this.errorFileFormat = !this.fileRegexp.test(filename);
   }
 
   upload() {
@@ -197,6 +200,7 @@ export class EventAddComponent implements OnInit {
         this.imageLoaded = true;
         this.eventt.imageFilepath = event;
         console.log(this.eventt.imageFilepath);
+        this.addEntity();
       this.spinner.hide();
     }, error => {
       this.appComponent.showError(error, 'Upload failed');

@@ -3,7 +3,9 @@ package com.meetup.meetup.dao.impl;
 import com.meetup.meetup.dao.ChatDao;
 import com.meetup.meetup.dao.rowMappers.MessageRowMapper;
 import com.meetup.meetup.entity.Message;
+import com.meetup.meetup.entity.Role;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import com.meetup.meetup.service.vm.ChatCheckEntity;
 import com.meetup.meetup.service.vm.ChatIdsVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -196,12 +198,35 @@ public class ChatDaoImpl implements ChatDao {
                     new Object[]{chatId, GET_MESSAGE_LIMIT}, new MessageRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by finding messages with chatId '{}'", chatId);
-            e.printStackTrace();
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
         log.debug("Chat messages '{}' was found by chatId '{}'", messages, chatId);
 
         return messages;
+    }
+
+    @Override
+    public ChatCheckEntity canJoinChat(int userId, int chatId) {
+
+        ChatCheckEntity checkEntity = new ChatCheckEntity();
+        final String[] role = new String[1];
+
+        log.debug("Try to find permissions with chatId '{}' and userId '{}'", chatId, userId);
+
+        try {
+            jdbcTemplate.query(env.getProperty(CHAT_CAN_JOIN_CHAT), new Object[]{chatId, userId, chatId},
+                    (resultSet, i) -> {
+                        checkEntity.setChatTypeId(resultSet.getInt(CHAT_TYPE_ID));
+                        role[0] = resultSet.getString(ROLE_NAME);
+                        checkEntity.setRole( role[0] == null ? Role.NULL : Role.valueOf(role[0]));
+                        return checkEntity;
+                    });
+        } catch (DataAccessException e) {
+            log.error("Query fails by finding messages with chatId '{}' and userId '{}'", chatId, userId);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+        return checkEntity;
+
     }
 }

@@ -93,15 +93,11 @@ export class FriendsListComponent implements OnInit {
     this.friendService.addFriend(login)
       .subscribe(
         (message) => {
-          this.message = message;
+          this.message = "Successfully sent request";
           this.spinner.hide();
         },
         (error) => {
-          if (error.status === 200) {
-            this.message = error.error.text;
-          } else {
-            this.appComponent.showError(error, 'Error');
-          }
+          this.appComponent.showError(error, 'Error');
           this.spinner.hide();
         }
       );

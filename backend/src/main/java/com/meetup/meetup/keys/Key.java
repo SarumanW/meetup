@@ -79,6 +79,7 @@ public final class Key {
     public static final String UUSER_PHONE="phone";
     public static final String UUSER_PINED_EVENT_ID="pined_event_id";
     public static final String UUSER_PERIODICAL_EMAIL="periodical_email";
+    public static final String UUSER_REGISTER_DATE="register_date";
 
     //FRIEND table fields
     public static final String FRIEND_SENDER_ID ="SENDER_ID";
@@ -123,6 +124,7 @@ public final class Key {
     public static final String USER_GET_BY_EMAIL_PERIOD="user.getByEmailPeriod";
     public static final String USER_SET_PINED_EVENT_ID="user.setPinedEventId";
     public static final String USER_DELETE_PINED_EVENT_ID="user.deletePinedEventId";
+    public static final String USER_DELETE_UNCONFIRMED_ACCOUNTS="user.deleteUnconfirmedAccounts";
 
     //FolderDao
     public static final String FOLDER_GET_USER_FOLDERS="folder.getUserFolders";
@@ -149,14 +151,15 @@ public final class Key {
     public static final String EVENT_DELETE_PARTICIPANT="event.deleteParticipant";
     //RoleDao
     public static final String GET_ROLE="role.getRole";
+    public static final String ROLE_NAME = "name";
 
     //ItemDao
     public static final String ITEM_FIND_BY_ID = "item.findById";
-    public static final String ITEM_GET_ITEMS_ID_BY_USER_ID = "item.getItemsIdByUserId";
+    public static final String ITEM_GET_ITEMS_BY_USER_ID = "item.getItemsByUserId";
     public static final String ITEM_DELETE = "item.delete";
     public static final String ITEM_UPDATE = "item.update";
     public static final String ITEM_GET_TAG_BY_ITEM_ID = "item.getTagByItemId";
-    public static final String ITEM_GET_POPULAR_ITEMS_ID ="item.getPopularItemsIds";
+    public static final String ITEM_GET_POPULAR_ITEMS ="item.getPopularItems";
     public static final String ITEM_GET_PERSONAL_INFO_BY_ITEM_ID_USER_ID = "item.getPersonalInfoByUserIdItemId";
     public static final String ITEM_UPDATE_USER_ITEM = "item.updateUserItem";
     public static final String ITEM_DELETE_FROM_WISH_LIST = "item.deleteFromWishList";
@@ -171,7 +174,7 @@ public final class Key {
     public static final String TAG_SEARCH_TAGS_NAME = "tag.searchTagsName";
     public static final String ITEM_GET_LIKED_USER_LOGINS_BY_ITEM_ID = "item.getLikedUserLoginsById";
     public static final String ITEM_GET_LIKE_ID_BY_USER_ID_ITEM_ID = "item.getLikeIdByUserIdItemId";
-    public static final String ITEM_GET_ITEMS_ID_BY_TAG_NAMES = "item.getItemsIdByTagNames";
+    public static final String ITEM_GET_ITEMS_BY_TAG_NAMES = "item.getItemsByTagNames";
 
     //ItemCommentDao
     public static final String ITEM_COMMENT_FIND_BY_ID = "itemComment.findById";
@@ -183,6 +186,7 @@ public final class Key {
     public static final String CHAT_DELETE_MESSAGES_BY_EVENT_ID = "chat.deleteMessagesByEventId";
     public static final String CHAT_FIND_CHAT_ID_BY_EVENT_ID_AND_CHAT_TYPE_ID = "chat.findChatIdByEventIdAndChatTypeId";
     public static final String CHAT_FIND_MESSAGES_BY_CHAT_ID = "chat.findMessagesByChatId";
+    public static final String CHAT_CAN_JOIN_CHAT = "chat.canJoinChat";
 
     //Exceptions
     public static final String EXCEPTION_AUTHENTICATION = "authentication.exception";
@@ -202,6 +206,7 @@ public final class Key {
     public static final String EXCEPTION_MAIL_SERVER = "mail.server.exception";
     public static final String EXCEPTION_PARSE_DATE = "parse.date.exception";
     public static final String EXCEPTION_CHAT_DELETE= "chat.delete.exception";
+    public static final String EXCEPTION_CHAT_MEMBER_DELETE= "chat.member.delete.exception";
 
     //Send mail periods
     public static final String MAIL_MONTHLY="MONTHLY";

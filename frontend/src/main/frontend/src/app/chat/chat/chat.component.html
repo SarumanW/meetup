@@ -15,7 +15,7 @@
         <div id="chat-page">
 
           <div class="chat-info py-4 d-flex justify-content-between flex-wrap align-items-center">
-            <h2>{{event.name}}</h2>
+            <h2 *ngIf="event">{{event.name}}</h2>
             <div class="row">
               <button class="btn btn-primary" (click)="backToEvent()">Back to event</button>
               <button class="btn btn-primary" (click)="modal.show()">Chat members</button>
@@ -56,7 +56,7 @@
           </div>
           <div class="app-modal-body">
             <ul class="list-group" *ngFor="let member of chatMembers">
-              <li class="list-group-item">{{member.login}}</li>
+              <li class="list-group-item">{{member}}</li>
             </ul>
           </div>
           <div class="app-modal-footer">

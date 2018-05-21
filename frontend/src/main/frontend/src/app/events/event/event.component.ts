@@ -33,7 +33,8 @@ export class EventComponent implements OnInit {
   shouldShow: boolean;
   hasParticipant: boolean;
   type: string;
-  isPinned:boolean
+  isPinned:boolean;
+  isParticipant: boolean;
 
   constructor(private eventService: EventService,
               private route: ActivatedRoute,
@@ -73,6 +74,7 @@ export class EventComponent implements OnInit {
       this.lat = +coordinates[0];
       this.lng = +coordinates[1];
       this.tempType = eventt.eventType;
+      this.isParticipantt();
       this.spinner.hide();
       if (eventt.eventType === 'EVENT') {
         this.getChatIds(eventt);
@@ -81,6 +83,19 @@ export class EventComponent implements OnInit {
       this.spinner.hide();
       this.appComponent.showError('Unsuccessful event loading', 'Loading error');
     })
+  }
+
+  isParticipantt() {
+    if (this.eventt.participants !== null) {
+      for (let profile of this.eventt.participants) {
+        if (profile.id === this.currentUserId) {
+          this.isParticipant = true;
+          break;
+        }
+      }
+    } else {
+      this.eventt.participants = [];
+    }
   }
 
   getChatIds(eventt: Evento) {
@@ -113,7 +128,7 @@ export class EventComponent implements OnInit {
   }
 
   pinEvent() {
-    console.log("pinning")
+    console.log("pinning");
     this.spinner.show();
     this.eventService.pinEvent(this.currentUserId, this.eventId).subscribe(
       (event: Evento) => {
@@ -134,7 +149,7 @@ export class EventComponent implements OnInit {
   }
 
   unpinEvent() {
-    console.log("unpinning")
+    console.log("unpinning");
     this.spinner.show();
     this.eventService.unpinEvent(this.currentUserId, this.eventId).subscribe(
       (event: Evento) => {

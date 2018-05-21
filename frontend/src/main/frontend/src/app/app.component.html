@@ -5,7 +5,7 @@
            class="d-inline-block align-top " alt="">
     </a>
 
-    <div *ngIf="showLogout && profile.login" ngbDropdown class="d-inline-block navbar-right pr-5">
+    <div *ngIf="showLogout && profile" ngbDropdown class="d-inline-block navbar-right pr-5">
       <button class="btn btn-default" id="dropdownBasic" ngbDropdownToggle>Welcome, {{login()}} </button>
       <div ngbDropdownMenu aria-labelledby="dropdownBasic" class="">
         <button class="dropdown-item" routerLink="/{{profile.login}}/profile">Profile</button>

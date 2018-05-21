@@ -74,21 +74,21 @@
             <div class="pinned">
               <div *ngIf="!this.isPinned"><img src="assets/Pin.png" (click)="pinEvent()" height="50"
                                               width="50"/></div>
-            </div>
-            <div *ngIf="this.isPinned"><img src="assets/Pinned.png"(click)="unpinEvent()" height="50"
+            <div *ngIf="this.isPinned"><img src="assets/Pined.png"(click)="unpinEvent()" height="50"
                                               width="50"/></div>
+          </div>
           </div>
 
           <div class="col-md-2">
 
-            <div>
+            <div *ngIf="isParticipant || eventt.ownerId === this.currentUserId">
               <button type="button" class="btn btn-primary" (click)="onPublicChat()"
               >Public chat</button>
             </div>
 
             <br>
 
-            <div *ngIf="eventt.ownerId !== this.currentUserId">
+            <div *ngIf="eventt.ownerId !== this.currentUserId && isParticipant">
               <button type="button" class="btn btn-primary" (click)="onPrivateChat()"
               >Private chat</button>
             </div>
@@ -101,7 +101,7 @@
 
         <div class="row" *ngIf="eventt.eventType !== 'NOTE'">
           <div class="col-md-8">
-            <countdown class = "countdown" [text]="text" divider=" " units="Year | Month | Days | Hours | Minutes | Seconds"
+            <countdown class = "countdown" divider=" " units="Year | Month | Days | Hours | Minutes | Seconds"
                        end={{eventt.eventDate}}></countdown>
           </div>
         </div>
