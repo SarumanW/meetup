@@ -24,6 +24,12 @@
           <h3>{{item.name}}</h3>
         </div>
 
+        <!--Item owner-->
+
+        <div class="form-group">
+          <label class="form-control-label"><u>Item owner:</u></label>
+          <div><a href="#/{{login}}/profile">{{login}}</a></div>
+        </div>
 
         <!--Description-->
 
@@ -68,8 +74,7 @@
           <div class="container">
             <div class="row">
               <div *ngFor="let tag of item.tags">
-                <a style="color: white;" class="btn btn-info btn-sm btn-space"
-                   routerLink="/{{ profile.login }}/wishes/category/recommendations/{{ tag }}">#{{ tag }}</a>
+                  <a style="color: white;" class="badge badge-pill badge-primary m-1" routerLink="/{{ profile.login }}/wishes/category/recommendations/{{ tag }}">#{{ tag }}</a>
               </div>
             </div>
           </div>
