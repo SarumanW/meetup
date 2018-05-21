@@ -61,6 +61,8 @@ public final class Key {
     public static final String ITEM_COMMENT_POST_TIME = "POST_TIME";
     public static final String ITEM_COMMENT_AUTHOR_ID = "AUTHOR_ID";
     public static final String ITEM_COMMENT_ITEM_ID = "ITEM_ID";
+    public static final String ITEM_COMMENT_AUTHOR_LOGIN = "AUTHOR_LOGIN";
+    public static final String ITEM_COMMENT_AUTHOR_IMG = "AUTHOR_IMG";
 
     //TAG table fields
     public static final String TAG_TAG_ID = "TAG_ID";

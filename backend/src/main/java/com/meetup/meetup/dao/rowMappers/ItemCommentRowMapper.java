@@ -17,6 +17,8 @@ public class ItemCommentRowMapper implements RowMapper<ItemComment> {
         itemComment.setBodyText(rs.getString(ITEM_COMMENT_BODY_TEXT));
         itemComment.setItemId(rs.getInt(ITEM_COMMENT_ITEM_ID));
         itemComment.setAuthorId(rs.getInt(ITEM_COMMENT_AUTHOR_ID));
+        itemComment.setLogin(rs.getString(ITEM_COMMENT_AUTHOR_LOGIN));
+        itemComment.setImageFilepath(rs.getString(ITEM_COMMENT_AUTHOR_IMG));
         return itemComment;
     }
 }
