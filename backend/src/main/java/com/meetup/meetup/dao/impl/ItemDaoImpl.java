@@ -7,9 +7,11 @@ import com.meetup.meetup.dao.rowMappers.ItemRowMapper;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.ItemPriority;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import com.meetup.meetup.exception.runtime.frontend.detailed.ItemIsInWishListException;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -161,7 +163,10 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
                 log.debug("Item by user id: '{}', item id: '{}', due date: '{}', priority: '{}' was not added to wish list",
                         item.getOwnerId(), item.getItemId(), item.getDueDate(), item.getPriority());
             }
-        } catch (DataAccessException e) {
+        }catch(DuplicateKeyException e){
+            throw new ItemIsInWishListException(env.getProperty(EXCEPTION_ITEM_IS_IN_WISHLIST));
+        }
+        catch (DataAccessException e) {
             log.error("Query fails by add item to wish list by user id: '{}', item id: '{}', priority: '{}'",
                     item.getOwnerId(), item.getItemId(), item.getPriority());
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));

@@ -98,7 +98,7 @@ export class CountDown {
           Hours: 'Hour(s)',
           Minutes: 'Minute(s)',
           Seconds: 'Second(s)',
-          MilliSeconds: 'Millisecond(s)'
+          MilliSeconds: 'Millisecond(s)x  '
         };
       }
 
