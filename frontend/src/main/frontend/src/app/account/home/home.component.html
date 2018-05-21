@@ -1,7 +1,7 @@
 <div class="list-group py-4" role="tablist">
   <div>
-    <img *ngIf="profile.imgPath===null"
-         src="http://tuzikgreet.ru/i/files/stati/9-veshhey-kotorye-hochet-skazat-vam-vasha-sobaka-1.jpg"
+    <img *ngIf="!profile.imgPath"
+         src="../../../assets/avatar-default.jpg"
          class="profile-logo">
     <img *ngIf="profile.imgPath" [src]="profile.imgPath" onError="this.src='assets/avatar-default.jpg'"
          class="profile-logo">

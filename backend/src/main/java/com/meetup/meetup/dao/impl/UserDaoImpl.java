@@ -7,10 +7,12 @@ import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
 import com.meetup.meetup.exception.runtime.EntityNotFoundException;
+import com.meetup.meetup.exception.runtime.frontend.detailed.RequestAlreadySentException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -136,7 +138,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public boolean addFriend(int senderId, int receiverId) {
         log.debug("Try to addFriend from '{}' to '{}'", senderId, receiverId);
-        int result;
+        int result = 0;
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName(TABLE_FRIEND);
@@ -149,7 +151,10 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         try {
             result = simpleJdbcInsert.execute((parameters));
 
-        } catch (DataAccessException e) {
+        }catch (DuplicateKeyException e){
+            log.error("Request from '{}' to '{}' already exists",senderId, receiverId);
+            throw new RequestAlreadySentException(env.getProperty(EXCEPTION_REQUEST_ALREADY_SENT));
+        }catch (DataAccessException e) {
             log.error("Query fails by addFriend from '{}' to '{}'", senderId, receiverId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
