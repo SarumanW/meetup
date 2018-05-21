@@ -5,7 +5,6 @@ import {ActivatedRoute} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {FriendService} from "../friends/friend.service";
 import {AppComponent} from "../../app.component";
-import {CountDown} from '../countdown/countdown';
 
 @Component({
   selector: 'app-event',
