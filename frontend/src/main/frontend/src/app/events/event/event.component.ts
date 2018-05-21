@@ -320,7 +320,7 @@ export class EventComponent implements OnInit {
 
     this.spinner.show();
 
-    let deletedProfileIndex;
+    let deletedProfileIndex = -1;
 
     this.hasParticipant = false;
 
@@ -334,8 +334,8 @@ export class EventComponent implements OnInit {
       }
     }
 
-    if (this.currentUserLogin !== login.value && this.hasParticipant) {
-      this.eventService.deleteParticipant(this.eventt, login.value).subscribe(
+    if (this.currentUserLogin !== login.value && deletedProfileIndex !== -1) {
+      this.eventService.deleteParticipant(this.eventt, deletedProfileIndex).subscribe(
         deleted => {
           this.showSuccess(deleted.toString(), 'Success!');
           this.eventt.participants.splice(deletedProfileIndex, 1);

@@ -31,8 +31,7 @@ import java.util.List;
 import static com.meetup.meetup.keys.Key.EXCEPTION_MAIL_SERVER;
 
 @RestController
-@RequestMapping(path = "/api/events")
-@PropertySource("classpath:strings.properties")
+@RequestMapping(path = "/api/users/{userId}/events")
 public class EventController {
 
     private static Logger log = LoggerFactory.getLogger(EventController.class);
@@ -43,18 +42,8 @@ public class EventController {
     @Autowired
     private EventImageService eventImageService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Event> getEvent(@PathVariable int id) {
-        log.debug("Trying to get event by id '{}'", id);
-
-        Event event = eventService.getEvent(id);
-
-        log.debug("Send response body event '{}' and status OK", event.toString());
-
-        return new ResponseEntity<>(event, HttpStatus.OK);
-    }
-
-    @GetMapping("/user/{userId}")
+    @GetMapping
+    @PreAuthorize("@eventAuthorization.isUserCorrect(#userId)")
     public ResponseEntity<List<Event>> getEventsByUser(@PathVariable int userId) {
         log.debug("Trying to get event by userId '{}'", userId);
 
@@ -65,32 +54,33 @@ public class EventController {
         return new ResponseEntity<>(userEvents, HttpStatus.OK);
     }
 
-    @GetMapping("/folder/{folderId}")
-    public ResponseEntity<List<Event>> getFolderEvents(@PathVariable int folderId) {
-        log.debug("Trying to get event by folderId '{}'", folderId);
+    // TODO: 21.05.2018 check permission if needed
+    @GetMapping("/{eventId}")
+    public ResponseEntity<Event> getEvent(@PathVariable int userId, @PathVariable int eventId) {
+        log.debug("Trying to get event by id '{}'", eventId);
 
-        List<Event> events = eventService.getFolderEvents(folderId);
+        Event event = eventService.getEvent(eventId);
 
-        log.debug("Send response body events '{}' and status OK", events.toString());
+        log.debug("Send response body event '{}' and status OK", event);
 
-        return new ResponseEntity<>(events, HttpStatus.OK);
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
-    @PreAuthorize("@eventPermissionChecker.canCreateEvent(#event)")
-    @PostMapping("/add")
-    public ResponseEntity<Event> addEvent(@Valid @RequestBody Event event) {
+    @PostMapping
+    @PreAuthorize("@eventAuthorization.isEventCorrect(#userId, #event)")
+    public ResponseEntity<Event> addEvent(@PathVariable int userId, @Valid @RequestBody Event event) {
         log.debug("Trying to save event '{}'", event.toString());
 
-        Event responseEvent = eventService.addEvent(event);
+        Event responseEvent = eventService.addEvent(userId, event);
 
         log.debug("Send response body event '{}' and status OK", responseEvent.toString());
 
         return new ResponseEntity<>(responseEvent, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("@eventPermissionChecker.checkByEntity(#event)")
-    @PutMapping
-    public ResponseEntity<Event> updateEvent(@Valid @RequestBody Event event) {
+    @PutMapping("/{eventId}")
+    @PreAuthorize("@eventAuthorization.isEventCorrect(#userId, #eventId, #event)")
+    public ResponseEntity<Event> updateEvent(@PathVariable int userId, @PathVariable int eventId, @Valid @RequestBody Event event) {
         log.debug("Trying to update event '{}'", event.toString());
 
         Event updatedEvent = eventService.updateEvent(event);
@@ -100,9 +90,9 @@ public class EventController {
         return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
     }
 
-    @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
     @DeleteMapping("/{eventId}")
-    public ResponseEntity<Event> deleteEvent(@PathVariable int eventId) {
+    @PreAuthorize("@eventAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<Event> deleteEvent(@PathVariable int userId, @PathVariable int eventId) {
         log.debug("Trying to delete eventId '{}'", eventId);
 
         Event deletedEvent = eventService.deleteEvent(eventId);
@@ -112,66 +102,41 @@ public class EventController {
         return new ResponseEntity<>(deletedEvent, HttpStatus.OK);
     }
 
-    @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
-    @PostMapping("/{eventId}/participant/add")
-    public ResponseEntity<User> addParticipant(@PathVariable int eventId, @RequestBody String login) {
-        return new ResponseEntity<>(eventService.addParticipant(eventId, login), HttpStatus.CREATED);
+    //Participants
+
+    @PostMapping("/{eventId}/participants")
+    @PreAuthorize("@eventAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<User> addParticipant(@PathVariable int userId, @PathVariable int eventId, @RequestBody String login) {
+        log.debug("Trying to add participant with login '{}' for eventId '{}'", login, eventId);
+
+        User participant = eventService.addParticipant(userId, eventId, login);
+
+        log.debug("Send response body participant '{}' and status OK", participant);
+
+        return new ResponseEntity<>(participant, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{folderId}/getByType/{eventType}")
-    public ResponseEntity<List<Event>> getByType(@PathVariable String eventType, @PathVariable int folderId) {
-        return new ResponseEntity<>(eventService.getEventsByType(eventType, folderId), HttpStatus.OK);
-    }
-
-    @GetMapping("/getInPeriod")
-    public ResponseEntity<List<Event>> getInPeriod(@RequestParam("startDate") String startDate,
-                                                   @RequestParam("endDate") String endDate) {
-        return new ResponseEntity<>(eventService.getEventsByPeriod(startDate, endDate), HttpStatus.OK);
-    }
-
-    @GetMapping("/{folderId}/drafts")
-    public ResponseEntity<List<Event>> getDrafts(@PathVariable int folderId) {
-        return new ResponseEntity<>(eventService.getDrafts(folderId), HttpStatus.OK);
-    }
-
-    @GetMapping("/{userId}/public")
-    public ResponseEntity<List<Event>> getPublicEvents(@PathVariable int userId, @RequestParam("name") String name) {
-        return new ResponseEntity<>(eventService.getPublicEvents(userId, name), HttpStatus.OK);
-    }
-
-    @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
-        log.debug("Trying to upload event image '{}'", file);
-
-        String message;
-        HttpStatus httpStatus;
-        message = eventImageService.store(file);
-        log.debug("Image successfully uploaded send response status OK");
-        httpStatus = HttpStatus.OK;
-
-        return new ResponseEntity<>(message, httpStatus);
-    }
-
-    @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
-    @DeleteMapping("/participants/{eventId}")
-    public ResponseEntity<Event> deleteParticipants(@PathVariable int eventId) {
+    @DeleteMapping("/{eventId}/participants")
+    @PreAuthorize("@eventAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<Event> deleteParticipants(@PathVariable int userId, @PathVariable int eventId) {
         log.debug("Trying to delete participants of eventId '{}'", eventId);
 
-        Event deletedParticipantsEvent = eventService.deleteParticipants(eventId);
+        Event deletedParticipantsEvent = eventService.deleteParticipants(userId, eventId);
 
         log.debug("Send response body event '{}' and status OK", deletedParticipantsEvent);
 
         return new ResponseEntity<>(deletedParticipantsEvent, HttpStatus.OK);
     }
 
-    @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
-    @DeleteMapping("{eventId}/participant/{login}")
-    public ResponseEntity<String> deleteParticipant(@PathVariable int eventId, @PathVariable String login) {
+    @DeleteMapping("{eventId}/participants/{participantId}")
+    @PreAuthorize("@eventAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<String> deleteParticipant(@PathVariable int userId, @PathVariable int eventId, @PathVariable int participantId) {
+        log.debug("Trying to delete participant with id {} of eventId '{}'", participantId, eventId);
+
+        int result = eventService.deleteParticipant(userId, eventId, participantId);
+
         HttpStatus httpStatus;
         String message;
-        log.debug("Trying to delete participant with login {} of eventId '{}'", login, eventId);
-
-        int result = eventService.deleteParticipant(eventId, login);
 
         if (result == 0) {
             httpStatus = HttpStatus.NOT_FOUND;
@@ -183,25 +148,126 @@ public class EventController {
 
         log.debug("Send response body event '{}' and status {}", message, httpStatus);
 
-        return new ResponseEntity<String>(message, httpStatus);
+        return new ResponseEntity<>(message, httpStatus);
     }
 
-    @PostMapping("/sendEventPlan")
-    public ResponseEntity<String> sendEventPlan(@RequestParam MultipartFile file) {
-        log.debug("Try to send {} to email", file.getOriginalFilename());
-        eventService.sendEventPlan(file);
-        return new ResponseEntity<>("All Okey", HttpStatus.OK);
+    //Folders events
+
+    @GetMapping("/folders/{folderId}")
+    @PreAuthorize("@eventAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<Event>> getFolderEvents(@PathVariable int userId, @PathVariable int folderId) {
+        log.debug("Trying to get event by folderId '{}'", folderId);
+
+        List<Event> events = eventService.getFolderEvents(userId, folderId);
+
+        log.debug("Send response body events '{}' and status OK", events.toString());
+
+        return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}/event/{eventId}/pinned")
-    public ResponseEntity<Event> pinEvent(@PathVariable int userId, @PathVariable int eventId ) {
+    @GetMapping("/folders/{folderId}/type/{type}")
+    @PreAuthorize("@eventAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<Event>> getByType(@PathVariable int userId, @PathVariable String type, @PathVariable int folderId) {
+        log.debug("Trying to get event by folderId '{}' and type '{}'", folderId, type);
+
+        List<Event> events = eventService.getEventsByType(userId, type, folderId);
+
+        log.debug("Send response body events '{}' and status OK", events.toString());
+
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    @GetMapping("/folders/{folderId}/drafts")
+    @PreAuthorize("@eventAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<Event>> getDrafts(@PathVariable int userId, @PathVariable int folderId) {
+        log.debug("Trying to get drafts by folderId '{}'", folderId);
+
+        List<Event> drafts = eventService.getDrafts(userId, folderId);
+
+        log.debug("Send response body drafts '{}' and status OK", drafts.toString());
+
+        return new ResponseEntity<>(drafts, HttpStatus.OK);
+    }
+
+    //Period
+
+    @GetMapping("/period")
+    @PreAuthorize("@eventAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<Event>> getInPeriod(@PathVariable int userId,
+                                                   @RequestParam("startDate") String startDate,
+                                                   @RequestParam("endDate") String endDate) {
+        log.debug("Trying to get events by period from '{}' to '{}'", startDate, endDate);
+
+        List<Event> events = eventService.getEventsByPeriod(userId, startDate, endDate);
+
+        log.debug("Send response body events '{}' and status OK", events.toString());
+
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    //Public
+
+    // TODO: 21.05.2018 check permission if needed
+    @GetMapping("/public")
+    public ResponseEntity<List<Event>> getPublicEvents(@PathVariable int userId, @RequestParam("name") String name) {
+        log.debug("Trying to get user public events by userId '{}'", userId);
+
+        List<Event> events = eventService.getPublicEvents(userId, name);
+
+        log.debug("Send response body events '{}' and status OK", events.toString());
+
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    //Pinned
+
+    @GetMapping("/{eventId}/pinned")
+    @PreAuthorize("@eventAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<Event> pinEvent(@PathVariable int userId, @PathVariable int eventId) {
         log.debug("Try to pin event by id '{}', user id '{}' ", eventId, userId);
-        return new ResponseEntity<>(eventService.pinEvent(eventId), HttpStatus.OK);
-        }
 
-    @DeleteMapping("/{userId}/event/{eventId}/pinned")
-    public ResponseEntity<Event> unpinEvent(@PathVariable int userId, @PathVariable int eventId ) {
+        Event event = eventService.pinEvent(userId, eventId);
+
+        log.debug("Send response body events '{}' and status OK", event);
+
+        return new ResponseEntity<>(event, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{eventId}/pinned")
+    @PreAuthorize("@eventAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<Event> unpinEvent(@PathVariable int userId, @PathVariable int eventId) {
         log.debug("Try to unpin event by id '{}', user id '{}' ", eventId, userId);
-        return new ResponseEntity<>(eventService.unpinEvent(eventId), HttpStatus.OK);
+
+        Event event = eventService.unpinEvent(userId, eventId);
+
+        log.debug("Send response body events '{}' and status OK", event);
+
+        return new ResponseEntity<>(event, HttpStatus.OK);
+    }
+
+    //Plan
+
+    @PostMapping("/plan/send")
+    public ResponseEntity sendEventPlan(@RequestParam MultipartFile file) {
+        log.debug("Try to send {} to email", file.getOriginalFilename());
+
+        eventService.sendEventPlan(file);
+
+        log.debug("Send response status OK");
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    //Uploading files
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+        log.debug("Trying to upload event image '{}'", file);
+
+        String message = eventImageService.store(file);
+
+        log.debug("Image successfully uploaded send response status OK");
+
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }

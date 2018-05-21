@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ChatPermissionChecker {
-    private static Logger log = LoggerFactory.getLogger(EventPermissionChecker.class);
+    private static Logger log = LoggerFactory.getLogger(ChatPermissionChecker.class);
 
     @Autowired
     private ChatDao chatDao;

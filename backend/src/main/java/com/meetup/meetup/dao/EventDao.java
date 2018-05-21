@@ -12,11 +12,11 @@ public interface EventDao extends Dao<Event> {
 
     List<Event> findByUserId(int userId);
 
-    List<Event> findByFolderId(int folderId);
+    List<Event> findByFolderId(int userId, int folderId);
 
-    List<Event> getDrafts(int folderId);
+    List<Event> getDrafts(int userId, int folderId);
 
-    List<Event> findByType(String eventType, int folderId);
+    List<Event> findByType(int userId, String eventType, int folderId);
 
     List<User> getParticipants(Event event);
 
@@ -24,7 +24,7 @@ public interface EventDao extends Dao<Event> {
 
     Event createEvent(Event model, int userId);
 
-    void addParticipant(int participantId, int eventId);
+    void addParticipant(int ownerId, int participantId, int eventId);
 
     List<Event> getPeriodEvents(int userId, String startDate, String endDate);
 
@@ -36,9 +36,9 @@ public interface EventDao extends Dao<Event> {
 
     Event unpinEvent(int userId,int eventId);
 
-    Event deleteParticipants(Event event);
+    Event deleteParticipants(int ownerId, Event event);
 
     Event deleteMembers(Event event);
 
-    int deleteParticipant(int eventId, String login);
+    int deleteParticipant(int ownerId, int eventId, int participantId);
 }

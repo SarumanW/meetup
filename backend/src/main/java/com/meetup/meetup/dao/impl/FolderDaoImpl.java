@@ -4,6 +4,7 @@ import com.meetup.meetup.dao.FolderDao;
 import com.meetup.meetup.dao.rowMappers.FolderRowMapper;
 import com.meetup.meetup.entity.*;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,7 +134,7 @@ public class FolderDaoImpl extends AbstractDao<Folder>  implements FolderDao {
             );
         } catch (EmptyResultDataAccessException e) {
             log.debug("Folder with folderId '{}' for user with userId '{}' was not found", id, userId);
-            return null;
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "Folder", "folderId", id));
         } catch (DataAccessException e) {
             log.error("Query fails by finding folder with id '{}' for user with id '{}'", id, userId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));

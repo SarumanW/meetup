@@ -17,7 +17,6 @@ import {AuthGuard} from "./account/auth.guard";
 import {FolderListComponent} from "./folders/folder.list/folder.list.component";
 import {FolderListService} from "./folders/folder.list.service";
 import {FolderComponent} from "./folders/folder/folder.component";
-import {FolderService} from "./folders/folder.service";
 import {EventComponent} from './events/event/event.component';
 import {EventService} from './events/event.service';
 import {ModalWindow} from "./modal.window/modal.window.component";
@@ -36,7 +35,6 @@ import {Ng2TableModule} from "ng2-table";
 import {TooltipModule, PaginationModule, BsDropdownModule} from "ngx-bootstrap";
 import {PopupModule} from "ng2-opd-popup";
 import {EventAddComponent} from './events/event.add/event.add.component';
-import {EventAddService} from "./events/event.add.service";
 import {CalendarModule} from "angular-calendar";
 import {CalendarComponent} from "./calendar/calendar.component/calendar.component";
 import {UtilsModule} from "./calendar/calendar.utils/utils.module";
@@ -121,11 +119,9 @@ import {ConfirmationComponent} from "./account/confirmation/confirmation.compone
   providers: [AccountService,
     AuthGuard,
     FolderListService,
-    FolderService,
     EventService,
     FriendService,
     UploadFileService,
-    EventAddService,
     CalendarService,
     ImageUploadService,
     ChatService,

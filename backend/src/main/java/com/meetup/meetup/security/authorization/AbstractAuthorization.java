@@ -2,7 +2,7 @@ package com.meetup.meetup.security.authorization;
 
 import com.meetup.meetup.security.AuthenticationFacade;
 
-public class AbstractAuthorization {
+public abstract class AbstractAuthorization {
 
     protected AuthenticationFacade authenticationFacade;
 

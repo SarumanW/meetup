@@ -33,38 +33,20 @@ public class EventService {
 
     private static Logger log = LoggerFactory.getLogger(EventService.class);
 
+    @Autowired
+    protected Environment env;
+
     private final EventDao eventDao;
-    private final AuthenticationFacade authenticationFacade;
     private final UserDao userDao;
-    private final Map<EventPeriodicity, Integer> periodicityMap;
-    private final Map<EventType, Integer> eventTypeMap;
+    private final AuthenticationFacade authenticationFacade;
     private final MailService mailService;
 
     @Autowired
-    private Environment env;
-
-    @Autowired
-    private PdfCreatService pdfCreatService;
-
-    @Autowired
-    public EventService(EventDao eventDao, AuthenticationFacade authenticationFacade, UserDao userDao, MailService mailService) {
+    public EventService(EventDao eventDao, UserDao userDao, MailService mailService, AuthenticationFacade authenticationFacade, PdfCreatService pdfCreatService) {
         this.eventDao = eventDao;
-        this.authenticationFacade = authenticationFacade;
         this.userDao = userDao;
         this.mailService = mailService;
-
-        this.periodicityMap = new HashMap<>();
-        periodicityMap.put(EventPeriodicity.ONCE, 6);
-        periodicityMap.put(EventPeriodicity.HOUR, 1);
-        periodicityMap.put(EventPeriodicity.DAY, 2);
-        periodicityMap.put(EventPeriodicity.WEEK, 3);
-        periodicityMap.put(EventPeriodicity.MONTH, 4);
-        periodicityMap.put(EventPeriodicity.YEAR, 5);
-
-        this.eventTypeMap = new HashMap<>();
-        eventTypeMap.put(EventType.EVENT, 1);
-        eventTypeMap.put(EventType.NOTE, 2);
-        eventTypeMap.put(EventType.PRIVATE_EVENT, 3);
+        this.authenticationFacade = authenticationFacade;
     }
 
     public Event getEvent(int eventId) {
@@ -72,33 +54,35 @@ public class EventService {
 
         Event event = eventDao.findById(eventId);
 
-        if (event == null) {
-            log.error("Event was not found by eventId '{}'", eventId);
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Event", "eventId", eventId));
-        }
-
         log.debug("Found event '{}'", event.toString());
 
         return event;
     }
 
     public List<Event> getEventsByUser(int userId){
-        return eventDao.findByUserId(userId);
+        log.debug("Trying to get events from dao by userId '{}'", userId);
+
+        List<Event> events = eventDao.findByUserId(userId);
+
+        log.debug("Found events '{}'", events.toString());
+
+        return events;
     }
 
-    public List<Event> getEventsByType(String eventType, int folderID) {
-        return eventDao.findByType(eventType, folderID);
+    public List<Event> getEventsByType(int userId, String eventType, int folderId) {
+        log.debug("Trying to get events from dao by folderId '{}' and userId '{}'", folderId, userId);
+
+        List<Event> events = eventDao.findByType(userId, eventType, folderId);
+
+        log.debug("Found events '{}'", events.toString());
+
+        return events;
     }
 
-    public List<Event> getFolderEvents(int folderId) {
-        log.debug("Trying to get events from dao by folderId '{}'", folderId);
+    public List<Event> getFolderEvents(int userId, int folderId) {
+        log.debug("Trying to get events from dao by folderId '{}' and userId '{}'", folderId, userId);
 
-        List<Event> events = eventDao.findByFolderId(folderId);
-
-        if (events == null) {
-            log.error("Events was not found by   folderId '{}'", folderId);
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "folderId", folderId));
-        }
+        List<Event> events = eventDao.findByFolderId(userId, folderId);
 
         log.debug("Found events '{}'", events.toString());
 
@@ -110,27 +94,15 @@ public class EventService {
 
         List<Event> events = eventDao.getAllPublic(userId, eventName);
 
-        if (events == null) {
-            log.error("Events were not found by userId '{}'", userId);
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "userId", userId));
-        }
-
         log.debug("Found events '{}'", events.toString());
 
         return events;
     }
 
-    public List<Event> getEventsByPeriod(String startDate, String endDate) {
-        User user = authenticationFacade.getAuthentication();
-        int userId = user.getId();
-
+    public List<Event> getEventsByPeriod(int userId, String startDate, String endDate) {
         log.debug("Trying to get events from dao by userId '{}'", userId);
-        List<Event> events = eventDao.getPeriodEvents(userId, startDate, endDate);
 
-        if (events == null) {
-            log.error("Events was not found by userId '{}'", userId);
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "userId", userId));
-        }
+        List<Event> events = eventDao.getPeriodEvents(userId, startDate, endDate);
 
         log.debug("Found events '{}'", events.toString());
 
@@ -138,53 +110,57 @@ public class EventService {
     }
 
     public List<Event> getEventsByPeriodForAllUsers(String startDate, String endDate) {
-
         log.debug("Trying to get events from dao ");
-        List<Event> events = eventDao.getPeriodEventsAllUsers(startDate, endDate);
 
-        if (events == null) {
-            log.error("Events was not found");
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "period", "one day"));
-        }
+        List<Event> events = eventDao.getPeriodEventsAllUsers(startDate, endDate);
 
         log.debug("Found events '{}'", events.toString());
 
         return events;
     }
 
-    public List<Event> getDrafts(int folderId) {
-        return eventDao.getDrafts(folderId);
+    public List<Event> getDrafts(int userId, int folderId) {
+        log.debug("Trying to get drafts from dao by user id '{}' and folder id '{}'", userId, folderId);
+
+        List<Event> events = eventDao.getDrafts(userId, folderId);
+
+        log.debug("Found events '{}'", events.toString());
+
+        return events;
     }
 
     @Transactional
-    public Event addEvent(Event event) {
+    public Event addEvent(int userId, Event event) {
         log.debug("Trying to insert event '{}' to database", event.toString());
 
-        User user = authenticationFacade.getAuthentication();
+        int eventPeriodicityId = event.getPeriodicity().getValue();
 
-        int eventTypeId = eventTypeMap.get(event.getEventType());
-
-        int eventPeriodicityId = periodicityMap.get(event.getPeriodicity());
         event.setPeriodicityId(eventPeriodicityId);
+
         log.debug("Set eventPeriodicity id '{}'", eventPeriodicityId);
 
+        int eventTypeId = event.getEventType().getValue();
 
         event.setEventTypeId(eventTypeId);
+
         log.debug("Set eventType id '{}'", eventTypeId);
-        return eventDao.createEvent(event, user.getId());
+
+        return eventDao.createEvent(event, userId);
     }
 
     public Event updateEvent(Event event) {
         log.debug("Trying to update event '{}' in database", event.toString());
 
-        int eventTypeId = eventTypeMap.get(event.getEventType());
+        int eventPeriodicityId = event.getPeriodicity().getValue();
 
-        int eventPeriodicityId = periodicityMap.get(event.getPeriodicity());
         event.setPeriodicityId(eventPeriodicityId);
+
         log.debug("Set eventPeriodicity id '{}'", eventPeriodicityId);
 
+        int eventTypeId = event.getEventType().getValue();
 
         event.setEventTypeId(eventTypeId);
+
         log.debug("Set eventType id '{}'", eventTypeId);
 
         return eventDao.update(event);
@@ -205,8 +181,7 @@ public class EventService {
         return eventDao.delete(event);
     }
 
-    public User addParticipant(int eventId, String login) {
-
+    public User addParticipant(int ownerId, int eventId, String login) {
         log.debug("Trying to add participant with login '{}'", login);
 
         User user = userDao.findByLogin(login);
@@ -216,57 +191,64 @@ public class EventService {
             throw new LoginNotFoundException(env.getProperty(EXCEPTION_LOGIN_NOT_FOUND));
         }
 
-        eventDao.addParticipant(user.getId(), eventId);
+        eventDao.addParticipant(ownerId, user.getId(), eventId);
 
         log.debug("Participant with login '{}' was added", login);
+
         return user;
     }
 
-    public Event deleteParticipants(int eventId) {
+    public Event deleteParticipants(int ownerId, int eventId) {
         log.debug("Trying to find event by id '{}'", eventId);
 
         Event event = getEvent(eventId);
 
         log.debug("Trying to delete eventId '{}' from database", eventId);
 
-        return eventDao.deleteParticipants(event);
+        return eventDao.deleteParticipants(ownerId, event);
     }
 
-    public int deleteParticipant(int eventId, String login) {
-        return eventDao.deleteParticipant(eventId, login);
+    public int deleteParticipant(int ownerId, int eventId, int participantId) {
+        log.debug("Trying to delete events from DB by ownerId '{}', eventId '{}' and participantId '{}'", ownerId, eventId, participantId);
+
+        int rowsAffected = eventDao.deleteParticipant(ownerId, eventId, participantId);
+
+        log.debug("Rows affected '{}'", rowsAffected);
+
+        return rowsAffected;
     }
 
     public void sendEventPlan(MultipartFile file) {
+        log.debug("Try to get authenticated user");
+
         User user = authenticationFacade.getAuthentication();
+
+        log.debug("Get user '{}' successful", user);
+
         Path rootLocation = Paths.get(".");
+
         try {
             log.debug("Try to copy {} to local storage", file.getOriginalFilename());
             Files.deleteIfExists(rootLocation.resolve(file.getOriginalFilename()));
-            Files.copy(file.getInputStream(),rootLocation.resolve(file.getOriginalFilename()));
+            Files.copy(file.getInputStream(), rootLocation.resolve(file.getOriginalFilename()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         log.debug("Try send mail with file");
-        mailService.sendMailWithEventPlan(user,file);
+
+        mailService.sendMailWithEventPlan(user, file);
     }
 
-    public Event pinEvent(int eventId) {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
-        int userId = user.getId();
-
+    public Event pinEvent(int userId, int eventId) {
         log.debug("Trying to pin event with id '{}' by userId '{}'", eventId, userId);
+
         return eventDao.pinEvent(userId, eventId);
     }
 
-    public Event unpinEvent(int eventId) {
-        log.debug("Trying to get authenticated user");
-        User user = authenticationFacade.getAuthentication();
-        log.debug("User was successfully received");
-        int userId = user.getId();
-
+    public Event unpinEvent(int userId, int eventId) {
         log.debug("Trying to unpin event with id'{}' by userId '{}'", eventId, userId);
+
         return eventDao.unpinEvent(userId, eventId);
     }
 }

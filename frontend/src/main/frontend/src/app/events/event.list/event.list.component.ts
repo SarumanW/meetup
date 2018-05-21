@@ -3,7 +3,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Evento} from "../event";
 import {Profile} from "../../account/profile";
 import {NgxSpinnerService} from "ngx-spinner";
-import {FolderService} from "../../folders/folder.service";
 import {EventService} from "../event.service";
 import {EVENT_COLUMNS} from "./config/event.columns";
 import {NOTE_COLUMNS} from "./config/note.columns";
@@ -41,14 +40,11 @@ export class EventListComponent implements OnInit {
     className: ['table-striped', 'table-bordered']
   };
 
-  constructor(private folderService: FolderService,
-              private eventService: EventService,
+  constructor(private eventService: EventService,
               private route: ActivatedRoute,
               private router: Router,
               private spinner: NgxSpinnerService,
-              private appComponent: AppComponent) {
-
-  }
+              private appComponent: AppComponent) { }
 
   ngOnInit() {
 

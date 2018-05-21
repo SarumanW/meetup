@@ -5,27 +5,51 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 @Injectable()
 export class FolderListService {
 
-  constructor(private http: HttpClient) {}
+  currentUser;
+  prePath: string;
 
-  getFoldersList():Observable<any>{
+  constructor(private http: HttpClient) {
+  }
+
+  initPrePath() {
+    this.currentUser = JSON.parse(localStorage.currentUser);
+    this.prePath = `api/users/${this.currentUser.id}/`;
+  }
+
+  getFoldersList(): Observable<any> {
+    this.initPrePath();
+
     let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
 
     return this.http
-      .get<any>('api/folders/', {headers: headers});
+      .get<any>(`${this.prePath}/folders/`, {headers: headers});
   }
 
-  addFolder(folder : any):Observable<any>{
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+  addFolder(folder: any): Observable<any> {
+    this.initPrePath();
 
-    return this.http.post('api/folders/add', folder, {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    return this.http.post(`${this.prePath}/folders/`, folder, {headers: headers});
   }
 
-  deleteFolder(folder : any):Observable<any>{
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+  updateFolder(folder: any): Observable<any> {
+    this.initPrePath();
 
-    return this.http.delete('api/folders/' + folder.folderId, {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    return this.http.put(`${this.prePath}/folders/${folder.folderId}`, folder, {headers: headers});
+  }
+
+  deleteFolder(folder: any): Observable<any> {
+    this.initPrePath();
+
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    return this.http.delete(`${this.prePath}/folders/` + folder.folderId, {headers: headers});
   }
 }

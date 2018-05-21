@@ -3,13 +3,13 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {ToastrService} from "ngx-toastr";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Evento} from "../event";
-import {EventAddService} from "../event.add.service";
 import {ImageUploadService} from "../image.upload.service";
 import {FormControl} from "@angular/forms";
 import {MapsAPILoader} from "@agm/core";
 import {} from '@types/googlemaps';
 import {ChatService} from "../../chat/chat.service";
 import {AppComponent} from "../../app.component";
+import {EventService} from "../event.service";
 
 @Component({
   selector: 'app-event.add',
@@ -42,9 +42,9 @@ export class EventAddComponent implements OnInit {
               private appComponent: AppComponent,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
-              private eventAddService: EventAddService,
               private uploadService: ImageUploadService,
               private mapsAPILoader: MapsAPILoader,
+              private eventService: EventService,
               private ngZone: NgZone,
               private router: Router,
               private chatService: ChatService) { }
@@ -147,7 +147,7 @@ export class EventAddComponent implements OnInit {
     this.spinner.show();
     this.formatDate();
     this.eventt.place = this.lat + " " + this.lng;
-    this.eventAddService.addEvent(this.eventt).subscribe(eventt => {
+    this.eventService.addEvent(this.eventt).subscribe(eventt => {
       this.spinner.hide();
       this.showSuccess();
 

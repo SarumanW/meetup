@@ -146,9 +146,10 @@ public final class Key {
     public static final String EVENT_GET_IN_PERIOD="event.getInPeriod";
     public static final String EVENT_GET_IN_PERIOD_ALL_USERS="event.getInPeriodAllUsers";
     public static final String EVENT_GET_ALL_PUBLIC="event.getAllPublic";
+    public static final String EVENT_ADD_PARTICIPANT="event.addParticipant";
+    public static final String EVENT_DELETE_PARTICIPANT="event.deleteParticipant";
     public static final String EVENT_DELETE_PARTICIPANTS="event.deleteParticipants";
     public static final String EVENT_DELETE_MEMBERS="event.deleteMembers";
-    public static final String EVENT_DELETE_PARTICIPANT="event.deleteParticipant";
     //RoleDao
     public static final String GET_ROLE="role.getRole";
     public static final String ROLE_NAME = "name";

@@ -19,62 +19,41 @@ import java.util.List;
 import static com.meetup.meetup.keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
 
 @Service
-@PropertySource("classpath:strings.properties")
 public class FolderService {
 
     private static Logger log = LoggerFactory.getLogger(FolderService.class);
 
     private final FolderDao folderDao;
     private final EventDao eventDao;
-    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    private Environment env;
-
-    @Autowired
-    public FolderService(FolderDao folderDao, EventDao eventDao, AuthenticationFacade authenticationFacade) {
+    public FolderService(FolderDao folderDao, EventDao eventDao) {
         log.info("Initializing FolderService");
         this.folderDao = folderDao;
         this.eventDao = eventDao;
-        this.authenticationFacade = authenticationFacade;
     }
 
-    public List<Folder> getUserFolders() {
-        log.debug("Trying to get authenticated user");
+    public List<Folder> getUserFolders(int userId) {
+        log.debug("Trying to get all folders for user with id '{}'", userId);
 
-        User user = authenticationFacade.getAuthentication();
-
-        log.debug("User was successfully received");
-        log.debug("Trying to get all folders for user '{}'", user.toString());
-
-        return folderDao.getUserFolders(user.getId());
+        return folderDao.getUserFolders(userId);
     }
 
-    public Folder getFolder(int folderId){
-        return getFolder(folderId, true);
+    public Folder getFolder(int userId, int folderId){
+        return getFolder(userId, folderId, true);
     }
 
-    public Folder getFolder(int folderId, boolean withEvents) {
-        log.debug("Trying to get authenticated user");
+    public Folder getFolder(int userId, int folderId, boolean withEvents) {
+        log.debug("Trying to get folder for user with id '{}' by folderId '{}'", userId, folderId);
 
-        User user = authenticationFacade.getAuthentication();
-
-        log.debug("User was successfully received");
-        log.debug("Trying to get folder for user '{}' by folderId '{}'", user, folderId);
-
-        Folder folder = folderDao.findById(folderId, user.getId());
-
-        if (folder == null) {
-            log.error("Folder was not found by folderId '{}' for user '{}'", folderId, user);
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Folder", "folderId", folderId));
-        }
+        Folder folder = folderDao.findById(folderId, userId);
 
         log.debug("Folder was successfully found '{}'", folder);
 
         if (withEvents) {
             log.debug("Trying to get events by folderId '{}'", folderId);
 
-            List<Event> events = eventDao.findByFolderId(folderId);
+            List<Event> events = eventDao.findByFolderId(userId, folderId);
             folder.setEvents(events);
 
             log.debug("Return folder with events '{}'", folder);
@@ -95,10 +74,10 @@ public class FolderService {
         return folderDao.update(folder);
     }
 
-    public Folder deleteFolder(int folderId) {
+    public Folder deleteFolder(int userId, int folderId) {
         log.debug("If folder is not general set all events to general");
 
-        Folder folder = getFolder(folderId, false);
+        Folder folder = getFolder(userId, folderId, false);
 
         if (!folder.getName().equals("general")) {
             log.debug("Trying set all events from '{}' general folder", folder);
