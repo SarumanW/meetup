@@ -41,9 +41,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         try {
             items = jdbcTemplate.query(
                     env.getProperty(ITEM_GET_ITEMS_BY_USER_ID), new Object[]{userId}, new ItemFullInfoRowMapper());
-            items.forEach(item -> {
-                item.setTags(getTagsByItemId(item.getItemId()));
-            });
+            items.forEach(item -> item.setTags(getTagsByItemId(item.getItemId())));
         } catch (EmptyResultDataAccessException e) {
             log.debug("Items not found by user id: '{}'", userId);
             return items;
@@ -145,6 +143,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         try {
             items = jdbcTemplate.query(
                     env.getProperty(ITEM_GET_POPULAR_ITEMS), new Object[]{NUMBER_OF_POPULAR_ITEMS}, new ItemRowMapper());
+            items.forEach(item -> item.setTags(getTagsByItemId(item.getItemId())));
         } catch (EmptyResultDataAccessException e) {
             log.debug("Popular items not found");
             return items;
