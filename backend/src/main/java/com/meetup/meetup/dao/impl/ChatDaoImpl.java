@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -169,11 +168,13 @@ public class ChatDaoImpl implements ChatDao {
         log.debug("Try to find events with eventId '{}' and chatTypeId '{}'", eventId);
 
         try {
-            chatId = jdbcTemplate.queryForObject(env.getProperty(CHAT_FIND_CHAT_ID_BY_EVENT_ID_AND_CHAT_TYPE_ID),
-                    new Object[]{eventId, chatTypeId}, Integer.class);
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Chats id not found by eventId: '{}' and chatTypeId '{}'", eventId);
-            return chatId;
+            List<Integer> chatIds = jdbcTemplate.query(env.getProperty(CHAT_FIND_CHAT_ID_BY_EVENT_ID_AND_CHAT_TYPE_ID),
+                    new Object[]{eventId, chatTypeId}, (rs,rowNum)->rs.getInt(1));
+            if(chatIds.isEmpty()){
+                return 0;
+            } else{
+                chatId = chatIds.get(0);
+            }
         } catch (DataAccessException e) {
             log.error("Query fails by finding chats ids with eventId '{}' and chatTypeId '{}'", eventId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -193,9 +194,6 @@ public class ChatDaoImpl implements ChatDao {
         try {
             messages = jdbcTemplate.query(env.getProperty(CHAT_FIND_MESSAGES_BY_CHAT_ID),
                     new Object[]{chatId, GET_MESSAGE_LIMIT}, new MessageRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("Messages not found by chatId '{}'", chatId);
-            return messages;
         } catch (DataAccessException e) {
             log.error("Query fails by finding messages with chatId '{}'", chatId);
             e.printStackTrace();

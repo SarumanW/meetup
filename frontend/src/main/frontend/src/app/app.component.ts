@@ -63,7 +63,7 @@ export class AppComponent {
   }
 
   login():string{
-    return this.profile.login;
+    return JSON.parse(localStorage.getItem('currentUser')).login;
   }
 
 }
