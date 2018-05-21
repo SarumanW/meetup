@@ -2,6 +2,7 @@ package com.meetup.meetup.dao.impl;
 
 import com.meetup.meetup.dao.AbstractDao;
 import com.meetup.meetup.dao.ItemDao;
+import com.meetup.meetup.dao.rowMappers.ItemFullInfoRowMapper;
 import com.meetup.meetup.dao.rowMappers.ItemRowMapper;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.ItemPriority;
