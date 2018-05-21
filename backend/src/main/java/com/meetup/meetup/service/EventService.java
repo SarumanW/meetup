@@ -1,5 +1,6 @@
 package com.meetup.meetup.service;
 
+import com.meetup.meetup.dao.ChatDao;
 import com.meetup.meetup.dao.EventDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.*;
@@ -34,6 +35,7 @@ public class EventService {
     private static Logger log = LoggerFactory.getLogger(EventService.class);
 
     private final EventDao eventDao;
+    private final ChatDao chatDao;
     private final AuthenticationFacade authenticationFacade;
     private final UserDao userDao;
     private final Map<EventPeriodicity, Integer> periodicityMap;
@@ -47,11 +49,12 @@ public class EventService {
     private PdfCreatService pdfCreatService;
 
     @Autowired
-    public EventService(EventDao eventDao, AuthenticationFacade authenticationFacade, UserDao userDao, MailService mailService) {
+    public EventService(EventDao eventDao, ChatDao chatDao, AuthenticationFacade authenticationFacade, UserDao userDao, MailService mailService) {
         this.eventDao = eventDao;
         this.authenticationFacade = authenticationFacade;
         this.userDao = userDao;
         this.mailService = mailService;
+        this.chatDao = chatDao;
 
         this.periodicityMap = new HashMap<>();
         periodicityMap.put(EventPeriodicity.ONCE, 6);
@@ -200,6 +203,10 @@ public class EventService {
         log.debug("Trying to delete members with eventId '{}' from database", eventId);
 
         event = eventDao.deleteMembers(event);
+
+        log.debug("Trying to delete chats with eventId '{}' from database", eventId);
+
+        chatDao.deleteChatsByEventId(eventId);
 
         log.debug("Trying to delete eventId '{}' from database", eventId);
         return eventDao.delete(event);
