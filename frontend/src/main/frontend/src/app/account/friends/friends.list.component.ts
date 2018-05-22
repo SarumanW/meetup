@@ -35,6 +35,7 @@ export class FriendsListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.spinner.show();
     this.route.params.subscribe(params => {
         this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === params['login'];
         this.user = params['login'];
@@ -52,16 +53,13 @@ export class FriendsListComponent implements OnInit {
           );
         this.spinner.hide();
       }, error => {
+        this.spinner.hide();
         this.appComponent.showError(error, 'Error');
       }
     );
   }
 
   getInfo() {
-
-    this.spinner.show();
-
-    // if (this.loggedUser) {
     this.friendService.getFriendsRequests()
       .subscribe((requests) => {
           this.unconfirmedFriends = requests;
@@ -69,13 +67,11 @@ export class FriendsListComponent implements OnInit {
           this.appComponent.showError(error, 'Error');
         }
       );
-    // }
     this.route.params.subscribe(params => {
         this.friendService.getFriends(params['login'])
         // this.friendService.getFriends()
           .subscribe((friends) => {
               this.friends = friends;
-              this.spinner.hide();
             }, error => {
               this.appComponent.showError(error, 'Error');
             }
@@ -92,7 +88,7 @@ export class FriendsListComponent implements OnInit {
       .subscribe(
         (message) => {
           this.queryField.setValue("");
-          this.message = "Successfully sent request to the "+ login;
+          this.message = "Successfully sent request to the " + login;
           this.spinner.hide();
         },
         (error) => {

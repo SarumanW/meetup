@@ -57,7 +57,7 @@ public class ItemCommentService {
         return itemCommentDao.insert(itemComment);
     }
 
-    public List<Map<String, Object>> getCommentsByItemId(int itemId) {
+    public List<ItemComment> getCommentsByItemId(int itemId) {
 
         log.debug("Trying to get comments for item with id '{}'", itemId);
 
