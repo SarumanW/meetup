@@ -74,5 +74,11 @@ export class AccountService {
     return this.http.post('/api/change.password/', account, {headers: headers});
   }
 
+  getLoginById(id:any):Observable<any>{
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+
+    return this.http.get('/api/profile/login/'+id, {headers: headers, responseType: 'text'} );
+  }
 
 }

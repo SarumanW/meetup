@@ -47,6 +47,10 @@ public class ProfileService {
         return user;
     }
 
+    public String getUserLoginById(int id){
+        return userDao.findLoginById(id);
+    }
+
 
     // TODO for further improvements of user search
     /*public List<User> searchUsers(String login, String name, String surname, Integer limit) {

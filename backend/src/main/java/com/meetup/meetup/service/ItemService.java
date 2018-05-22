@@ -29,12 +29,8 @@ public class ItemService {
         this.itemDao = itemDao;
     }
 
-    public Item findByUserIdItemId(int itemId, String login) {
-        User userItem = userDao.findByLogin(login);
-
-        log.debug("Trying to get item with id '{}' for user with id '{}'", itemId, userItem.getId());
-
-        return itemDao.findByUserIdItemId(userItem.getId(),itemId);
+    public Item findByUserIdItemId(int itemId, int userId) {
+        return itemDao.findByUserIdItemId(userId,itemId);
     }
 
     public Item addItem(Item item) {

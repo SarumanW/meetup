@@ -16,14 +16,13 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import static com.meetup.meetup.keys.Key.*;
-
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.meetup.meetup.keys.Key.*;
 
 
 @Repository
@@ -151,10 +150,10 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         try {
             result = simpleJdbcInsert.execute((parameters));
 
-        }catch (DuplicateKeyException e){
-            log.error("Request from '{}' to '{}' already exists",senderId, receiverId);
+        } catch (DuplicateKeyException e) {
+            log.error("Request from '{}' to '{}' already exists", senderId, receiverId);
             throw new RequestAlreadySentException(env.getProperty(EXCEPTION_REQUEST_ALREADY_SENT));
-        }catch (DataAccessException e) {
+        } catch (DataAccessException e) {
             log.error("Query fails by addFriend from '{}' to '{}'", senderId, receiverId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
@@ -392,5 +391,19 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         log.debug("Deleted {} unconfirmed accounts", result);
 
         return result;
+    }
+
+    @Override
+    public String findLoginById(int id) {
+        String login;
+        try {
+             login = jdbcTemplate.queryForObject(
+                    env.getProperty(USER_GET_LOGIN_BY_ID),
+                    new Object[]{id}, String.class);
+        } catch (DataAccessException e) {
+            log.error("Query fails by finding user with id '{}'", id);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+        return login;
     }
 }

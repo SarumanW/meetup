@@ -8,6 +8,7 @@ export class WishService {
 
   currentUser;
   prePath: string;
+  username:string
 
   constructor(private http: HttpClient) {
   }
@@ -15,6 +16,7 @@ export class WishService {
   initPrePath() {
     this.currentUser = JSON.parse(localStorage.currentUser);
     this.prePath = `api/users/${this.currentUser.id}/`;
+    this.username = this.currentUser.login;
   }
 
   getWishItem(itemId: number, login: string): Observable<any> {
@@ -23,7 +25,7 @@ export class WishService {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${this.currentUser.token}`);
 
-    let url = `${this.prePath}/items/${itemId}/login/${login}`;
+    let url = 'api/users/'+login+'/items/'+itemId+'/login/'+this.username;
 
     return this.http.get<any>(url, {headers: headers});
   }

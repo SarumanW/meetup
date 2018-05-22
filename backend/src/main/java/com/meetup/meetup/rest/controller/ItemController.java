@@ -33,11 +33,10 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}/login/{login}")
-    @PreAuthorize("@itemAuthorization.isUserCorrect(#userId)")
     public ResponseEntity<Item> getItemByUserLoginAndItemId(@PathVariable int userId, @PathVariable int itemId, @PathVariable String login) {
         log.debug("Try to get item with id '{}' for user with with login '{}'", itemId, login);
 
-        Item item = itemService.findByUserIdItemId(itemId, login);
+        Item item = itemService.findByUserIdItemId(itemId, userId);
 
         log.debug("Send response body item '{}' and status OK", item);
 

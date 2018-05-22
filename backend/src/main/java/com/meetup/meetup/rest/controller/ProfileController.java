@@ -44,6 +44,17 @@ public class ProfileController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @GetMapping("/login/{id}")
+    public ResponseEntity<Object> getLoginById(@PathVariable int id) {
+        log.debug("Trying to get user's login by id '{}'", id);
+
+        String login= profileService.getUserLoginById(id);
+
+        log.debug("Send response body login '{}' and status OK", login);
+
+        return new ResponseEntity<>(login, HttpStatus.OK);
+    }
+
     @PutMapping
     public ResponseEntity<User> updateProfile(@RequestBody User newUser) {
         log.debug("Trying to update user '{}'", newUser.toString());

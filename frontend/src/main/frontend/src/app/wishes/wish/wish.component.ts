@@ -11,6 +11,7 @@ import {ActivatedRoute} from '@angular/router';
 import {CommentService} from "./comment-list/comment.service";
 import {FormControl} from "@angular/forms";
 import {ItemComment} from "./comment-list/comment";
+import {AccountService} from "../../account/account.service";
 
 @Component({
   selector: 'app-wish',
@@ -26,6 +27,7 @@ export class WishComponent implements OnInit {
   profile: Profile;
   idItem: number;
   login: string;
+  ownerLogin:string;
   private sub: any;
   comments: ItemComment[];
   commentControl = new FormControl();
@@ -43,13 +45,14 @@ export class WishComponent implements OnInit {
               private wishListService: WishListService,
               private commentsService: CommentService,
               private wishService: WishService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private accountService: AccountService) {
   }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
       this.idItem = +params['itemId'];
-      this.login = params['login'];
+      this.login = params['login']
     });
 
     this.getItem(this.idItem);
@@ -121,6 +124,11 @@ export class WishComponent implements OnInit {
 
     this.wishService.getWishItem(id, this.login).subscribe(item => {
       this.item = item;
+      this.accountService.getLoginById(this.item.ownerId).subscribe(
+        login=>{
+          this.ownerLogin = login;
+        }
+      )
       this.spinner.hide();
     });
   }

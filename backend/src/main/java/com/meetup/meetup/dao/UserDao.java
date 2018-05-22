@@ -36,4 +36,6 @@ public interface UserDao extends Dao<User> {
 
     int deleteUnconfirmedAccounts();
 
+    String findLoginById(int id);
+
 }
