@@ -147,15 +147,14 @@ public class ProfileController {
 
         log.debug("Image successfully uploaded send response status OK");
         return new ResponseEntity<>(updatedUser.getImgPath(), HttpStatus.OK);
-
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<User>> searchUsers(@RequestParam String username) {
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String username, @RequestParam String type) {
         log.debug("Trying to search users by username '{}'",
                 username);
 
-        List<User> users = profileService.getUnknownUsers(username);
+        List<User> users = profileService.getUnknownUsers(username, type);
 
         log.debug("Found users '{}'", users.toString());
 

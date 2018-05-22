@@ -18,16 +18,17 @@ export class FriendService {
       })
   }
 
-  getUnknownUsers(userName : string) : Observable<any> {
-    if (userName.trim().length === 0){
+  getUsersByUsernamePart(userName: string, type: string = 'unknown'): Observable<any> {
+    if (userName.trim().length === 0) {
       return new EmptyObservable();
     }
 
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
-    return this.http.get<any>('api/profile/search',{headers:headers, params: {'username' : userName}})
-      .map(unknownUsers => {
-        return unknownUsers;
+
+    return this.http.get<any>('api/profile/search',{headers:headers, params: {'username' : userName, 'type': type}})
+      .map(users => {
+        return users;
       })
   }
 

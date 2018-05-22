@@ -123,9 +123,17 @@ public class ProfileService {
         }
     }
 
-    public List<User> getUnknownUsers(String userName){
+    public List<User> getUnknownUsers(String userName, String type){
         User user = authenticationFacade.getAuthentication();
-        return userDao.getNotFriends(user.getId(),userName);
+
+        switch(type) {
+            case "unknown":
+                return userDao.getNotFriendsByUsernamePart(user.getId(), userName);
+            case "friends":
+                return userDao.getFriendsByUsernamePart(user.getId(), userName);
+            default:
+                return userDao.getAllByUsernamePart(userName);
+        }
     }
 
     public String userRelations(int userId){
