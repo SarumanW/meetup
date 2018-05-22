@@ -3,7 +3,6 @@ import {FriendService} from "./friend.service";
 import {FormControl} from "@angular/forms";
 import {Profile} from "../profile";
 import "rxjs/add/observable/timer";
-import {NgForm} from "@angular/forms";
 import {NgxSpinnerService} from "ngx-spinner";
 import {ActivatedRoute} from "@angular/router";
 import "rxjs/add/operator/debounceTime";
@@ -26,6 +25,7 @@ export class FriendsListComponent implements OnInit {
   message: string;
   loggedUser: boolean;
   user: string;
+  hide: boolean
   queryField: FormControl = new FormControl();
 
   constructor(private friendService: FriendService,
@@ -51,7 +51,7 @@ export class FriendsListComponent implements OnInit {
               this.appComponent.showError(error, 'Error');
             }
           );
-        this.spinner.hide();
+
       }, error => {
         this.spinner.hide();
         this.appComponent.showError(error, 'Error');
@@ -62,8 +62,18 @@ export class FriendsListComponent implements OnInit {
   getInfo() {
     this.friendService.getFriendsRequests()
       .subscribe((requests) => {
+          if (this.hide) {
+            this.spinner.hide();
+          } else {
+            this.hide = true;
+          }
           this.unconfirmedFriends = requests;
         }, error => {
+          if (this.hide) {
+            this.spinner.hide();
+          } else {
+            this.hide = true;
+          }
           this.appComponent.showError(error, 'Error');
         }
       );
@@ -72,7 +82,17 @@ export class FriendsListComponent implements OnInit {
         // this.friendService.getFriends()
           .subscribe((friends) => {
               this.friends = friends;
+              if (this.hide) {
+                this.spinner.hide();
+              } else {
+                this.hide = true;
+              }
             }, error => {
+              if (this.hide) {
+                this.spinner.hide();
+              } else {
+                this.hide = true;
+              }
               this.appComponent.showError(error, 'Error');
             }
           );

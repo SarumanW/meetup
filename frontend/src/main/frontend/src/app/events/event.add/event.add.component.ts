@@ -50,6 +50,7 @@ export class EventAddComponent implements OnInit {
               private chatService: ChatService) { }
 
   ngOnInit() {
+    this.spinner.show()
     this.eventt = new Evento;
     this.route.params.subscribe(params => {
       this.folderId = params['folderId'];
@@ -83,6 +84,7 @@ export class EventAddComponent implements OnInit {
         });
       });
     });
+    this.spinner.hide()
   }
 
   setCurrentPosition() {
