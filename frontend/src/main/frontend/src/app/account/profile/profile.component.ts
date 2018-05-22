@@ -30,7 +30,6 @@ export class ProfileComponent implements OnInit {
               private route: ActivatedRoute,
               private friendService: FriendService,
               private appComponent: AppComponent) {
-    this.profile = new Profile();
   }
 
   ngOnInit() {
@@ -39,8 +38,8 @@ export class ProfileComponent implements OnInit {
       this.accountService.profileWithEvent(params['login']).subscribe(
         (profile) => {
           this.profile = profile;
-          this.eventName = this.profile.pinedEventName
-          this.eventDate = this.profile.pinedEventDate
+          this.eventName = this.profile.pinedEventName;
+          this.eventDate = this.profile.pinedEventDate;
           this.loggedUser = JSON.parse(localStorage.getItem('currentUser')).login === this.profile.login;
           this.update();
           this.spinner.hide();
@@ -49,7 +48,6 @@ export class ProfileComponent implements OnInit {
           this.spinner.hide();
         }
       );
-
     });
     this.getCurrentDate();
   }

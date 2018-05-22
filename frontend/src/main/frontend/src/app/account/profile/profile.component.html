@@ -16,22 +16,33 @@
       </div>
       <div>
         <div class="user" *ngIf="!loggedUser">
-
-          <img *ngIf="!profile.imgPath"
-               src="../../../assets/avatar-default.jpg"
-               class="profile-logo">
-          <img *ngIf="profile.imgPath" [src]="profile.imgPath" class="profile-logo">
+          <div class="logo">
+            <img *ngIf="!profile.imgPath"
+                 src="../../../assets/avatar-default.jpg"
+                 class="profile-logo">
+            <img *ngIf="profile.imgPath" [src]="profile.imgPath" class="profile-logo">
+          </div>
           <div>
             <div class="bt-1">
               <button type="button" class="btn btn-light border-success mt-1" routerLink="/{{profile.login}}/friends">
                 Friends
                 <span class="badge badge-pill badge-info">{{friendCount}}</span></button>
-              <button routerLink="/{{profile.login}}/wishes/" type="button" class="btn btn-light border-success mt-1">Wish List</button>
+              <button routerLink="/{{profile.login}}/wishes/" type="button" class="btn btn-light border-success mt-1">
+                Wish List
+              </button>
 
-              <button *ngIf="relation === 'Not Friends'" (click)="addFriend(profile.login)" type="button" class="btn btn-info mt-1">Add friend</button>
-              <button *ngIf="relation === 'Friends'" (click)="modal.show()" type="button" class="btn btn-danger mt-1">Delete</button>
-              <button *ngIf="relation === 'Not Confirmed'" (click)="confirmFriend(profile.id)" type="button" class="btn btn-success mt-1">Confirm</button>
-              <button *ngIf="relation === 'Request sent'" disabled="true" type="button" class="btn btn-info mt-1">Request sent</button>
+              <button *ngIf="relation === 'Not Friends'" (click)="addFriend(profile.login)" type="button"
+                      class="btn btn-info mt-1">Add friend
+              </button>
+              <button *ngIf="relation === 'Friends'" (click)="modal.show()" type="button" class="btn btn-danger mt-1">
+                Delete
+              </button>
+              <button *ngIf="relation === 'Not Confirmed'" (click)="confirmFriend(profile.id)" type="button"
+                      class="btn btn-success mt-1">Confirm
+              </button>
+              <button *ngIf="relation === 'Request sent'" disabled="true" type="button" class="btn btn-info mt-1">
+                Request sent
+              </button>
             </div>
           </div>
         </div>
@@ -58,7 +69,8 @@
           </table>
         </div>
         <div class="edit">
-          <button *ngIf="loggedUser" type="button" class="btn btn-primary" routerLink="/{{profile.login}}/edit">
+          <button *ngIf="loggedUser" type="button" class="btn btn-primary" routerLink="/{{profile.login}}/edit"
+                  style="width: 57px">
             <img *ngIf="loggedUser" src="../../../assets/edit_white.png" height="40"
                  width="40"/>
           </button>
@@ -67,11 +79,12 @@
         <br>
         <br>
 
-        <div class="row" *ngIf="this.eventName && this.eventDate && this.showCountdown()==true">
+        <div *ngIf="this.eventName && this.eventDate && this.showCountdown()==true">
+          <hr>
           <div align="center">
             <h3>{{this.eventName}} in </h3>
-        </div>
-          <countdown class = "countdown" divider='&#160;' units="Year | Month | Days | Hours | Minutes | Seconds"
+          </div>
+          <countdown class="countdown" divider='&#160;' units="Year | Month | Days | Hours | Minutes | Seconds"
                      end={{this.eventDate}}></countdown>
         </div>
 

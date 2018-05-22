@@ -91,10 +91,16 @@ h5 {
   box-shadow: none;
 }
 
+.wish-card-logo{
+  width: 250px;
+  height: 200px;
+}
+
 .card-img-top {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   background: #007bff;
 }
 

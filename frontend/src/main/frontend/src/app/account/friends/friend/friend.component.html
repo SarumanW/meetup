@@ -1,14 +1,16 @@
-<div class="friend-info">
-  <button type="button" routerLink="/{{user.login}}/profile"
-          class="list-group-item list-group-item-action"
-          [ngClass]="{'border-primary': confirmed,
+<div class="row">
+  <div class="friend-info">
+    <button type="button" routerLink="/{{user.login}}/profile"
+            class="list-group-item list-group-item-action"
+            [ngClass]="{'border-primary': confirmed,
                       'border-warning' : !confirmed}">
-    User name: {{user.name}}
-  </button>
-</div>
-<div class="friend-action" *ngIf="loggedUser">
-  <button *ngIf="!confirmed" type="button" (click)="confirmFriend(user.id)" class="btn btn-success">Confirm</button>
-  <button type="button" (click)="modal.show()" class="btn btn-danger">Delete</button>
+      User name: {{user.name}}
+    </button>
+  </div>
+  <div class="friend-action" *ngIf="loggedUser">
+    <button *ngIf="!confirmed" type="button" (click)="confirmFriend(user.id)" class="btn btn-success">Confirm</button>
+    <button type="button" (click)="modal.show()" class="btn btn-danger">Delete</button>
+  </div>
 </div>
 
 <app-modal-window #modal class="sure-window">

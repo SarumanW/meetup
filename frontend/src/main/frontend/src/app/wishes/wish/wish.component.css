@@ -29,9 +29,6 @@ header{
 
 }
 
-
-/**/
-
 .folder .card{
   overflow: hidden;
   width: calc(25% - 15px);
