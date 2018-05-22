@@ -117,6 +117,9 @@ public final class Key {
     public static final String USER_UPDATE="user.update";
     public static final String USER_UPDATE_PASSWORD="user.updatePassword";
     public static final String USER_DELETE="user.delete";
+    public static final String USER_GET_ALL_BY_PART = "user.getAllByUsernamePart";
+    public static final String USER_GET_FRIENDS_BY_USERNAME_PART = "user.getFriendsByUsernamePart";
+    public static final String USER_GET_NOT_FRIENDS_BY_USERNAME_PART = "user.getNotFriendsByUsernamePart";
     public static final String USER_GET_FRIENDS = "user.getFriends";
     public static final String USER_GET_UNCONFIRMED = "user.getUnconfirmedFriends";
     public static final String USER_CONFIRM_FRIEND="user.confirmFriend";

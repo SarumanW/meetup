@@ -45,7 +45,7 @@ export class FriendsListComponent implements OnInit {
           .distinctUntilChanged()
           .subscribe(queryField => {
               this.unknownUsers = [];
-              this.friendService.getUnknownUsers(queryField)
+              this.friendService.getUsersByUsernamePart(queryField)
                 .subscribe((unknownUsers) => this.unknownUsers = unknownUsers)
             }, error => {
               this.appComponent.showError(error, 'Error');

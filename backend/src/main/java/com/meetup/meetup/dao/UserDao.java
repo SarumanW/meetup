@@ -24,7 +24,11 @@ public interface UserDao extends Dao<User> {
 
     List<User> getFriends(int userId);
 
-    List<User> getNotFriends(int userId, String userName);
+    List<User> getAllByUsernamePart(String userName);
+
+    List<User> getFriendsByUsernamePart(int userId, String userName);
+
+    List<User> getNotFriendsByUsernamePart(int userId, String userName);
 
     boolean addFriend(int senderId, int receiverId);
 

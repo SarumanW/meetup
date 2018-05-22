@@ -153,8 +153,15 @@
           <form name="form" role="form" #addParticipantForm="ngForm">
             <div class="form-group">
               <label for="name">Login:</label>
-              <input class="form-control" id="name" placeholder="Enter participant login" name="name"  #name
+              <input class="form-control" id="name" [formControl]="addParticipantQueryField" placeholder="Enter participant login" name="name"  #name
                      [(ngModel)]="loginInput" required>
+              <div *ngIf="addParticipantQueryField.value">
+                <div style="margin-left: 10px" class="row">
+                  <div *ngFor="let user of queryUsers">
+                    <a style="color: white; cursor: pointer;" class="badge badge-pill badge-primary m-1" (click)="addParticipantQueryField.setValue(user.login); queryUsers = []">{{ user.login }}</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </form>
         </div>
@@ -236,8 +243,15 @@
           <form name="form" role="form" #deleteParticipantForm="ngForm">
             <div class="form-group">
               <label for="login">Login:</label>
-              <input class="form-control" id="login" placeholder="Enter participant login" #login
+              <input class="form-control" id="login" placeholder="Enter participant login" #login [formControl]="deleteParticipantQueryField"
                      required>
+              <div *ngIf="deleteParticipantQueryField.value">
+                <div style="margin-left: 10px" class="row">
+                  <div *ngFor="let login of queryDeleteParticipants">
+                    <a style="color: white; cursor: pointer;" class="badge badge-pill badge-primary m-1" (click)="deleteParticipantQueryField.setValue(login)">{{ login }}</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </form>
         </div>
