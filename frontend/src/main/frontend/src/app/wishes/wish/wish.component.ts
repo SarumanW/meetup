@@ -121,15 +121,19 @@ export class WishComponent implements OnInit {
   }
 
   getItem(id: number) {
-      this.wishService.getWishItem(id, this.login).subscribe(item => {
+    console.log(id);
+    this.wishService.getWishItem(id, this.login).subscribe(item => {
       this.item = item;
+      console.log(this.item.ownerId);
       this.accountService.getLoginById(this.item.ownerId).subscribe(
-        login=>{
-          this.ownerLogin = login
+        login => {
+          this.ownerLogin = login;
+          this.spinner.hide();
+        }, error => {
+          this.ownerLogin = null;
           this.spinner.hide();
         }
       )
-
     });
   }
 

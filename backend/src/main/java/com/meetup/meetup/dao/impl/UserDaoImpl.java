@@ -396,7 +396,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         List<Map<String, Object>> userParamsList;
 
         try {
-            userParamsList = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"), userId, userId, userName + "%");
+            userParamsList = jdbcTemplate.queryForList(env.getProperty(USER_GET_NOT_FRIENDS_BY_USERNAME_PART), userId, userId, userName + "%");
         } catch (DataAccessException e) {
             log.error("Query fails by delete user with id '{}'", userName);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));

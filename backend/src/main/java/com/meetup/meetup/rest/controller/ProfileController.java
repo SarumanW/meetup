@@ -48,7 +48,7 @@ public class ProfileController {
     public ResponseEntity<Object> getLoginById(@PathVariable int id) {
         log.debug("Trying to get user's login by id '{}'", id);
 
-        String login= profileService.getUserLoginById(id);
+        String login = profileService.getUserLoginById(id);
 
         log.debug("Send response body login '{}' and status OK", login);
 
