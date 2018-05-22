@@ -95,12 +95,12 @@ public class ItemCommentDaoImpl extends AbstractDao<ItemComment> implements Item
 
 
     @Override
-    public List<Map<String, Object>> getCommentsForItemId(int itemId) {
+    public List<ItemComment> getCommentsForItemId(int itemId) {
         log.debug("Try get list comments by item id: '{}'", itemId);
-        List<Map<String, Object>> itemComment;
+        List<ItemComment> itemComment;
         try {
-            itemComment = jdbcTemplate.queryForList(env.getProperty(ITEM_COMMENT_FIND_COMMENTS_BY_ITEM_ID),
-                    itemId);
+            itemComment = jdbcTemplate.query(env.getProperty(ITEM_COMMENT_FIND_COMMENTS_BY_ITEM_ID),
+                    new Object[]{itemId} , new ItemCommentRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by find comments by item id: '{}'", itemId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
