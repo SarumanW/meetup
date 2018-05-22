@@ -26,7 +26,7 @@ export class UploadFileService {
 
   pushWishFileToStorage(file: File): Observable<HttpEvent<{}>> {
     let currentUser = JSON.parse(localStorage.currentUser);
-    let prePath = `api/users/${currentUser.id}/`;
+    let prePath = `api/users/${currentUser.id}`;
 
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${currentUser.token}`);

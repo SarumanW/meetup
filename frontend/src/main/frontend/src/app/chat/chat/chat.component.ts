@@ -19,7 +19,7 @@ import {AppComponent} from "../../app.component";
 })
 export class ChatComponent implements OnInit, OnDestroy {
 
-  serverUrl = 'http://localhost:8000/socket';
+  serverUrl = 'http://meetupnc.ga/socket';
   stompClient;
   state: string = "folders";
   messageText: string;
@@ -78,7 +78,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
         for (let message of messages) {
           let messageElement;
-          let color = this.colors[ChatComponent.hashCode(message.senderId) % 8];
+          this.color = this.colors[ChatComponent.hashCode(message.senderId.toString()) % 8];
+          console.log(ChatComponent.hashCode(message.senderId) % 8);
+          console.log(this.color);
           let time = this.getTimeFromDate(message.messageDate);
 
           messageElement = `<li class="chat-message" style="padding-left: 68px;
@@ -97,7 +99,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   border-radius: 50%;
   font-style: normal;
   text-transform: uppercase;
-  background-color:${color}";>${message.senderLogin[0]}</i>
+  background-color:${this.color}";>${message.senderLogin[0]}</i>
     <span style="color: #333;
   font-weight: 600;">${message.senderLogin}</span>
   <span style="color: #333;
@@ -371,5 +373,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     let time = date.split(" ")[1];
     time = time.substr(0, 8);
     return time;
+  }
+
+  goToProfile(member: string) {
+    this.ngOnDestroy();
+    this.router.navigate(["/" + member + "/profile"]);
   }
 }
