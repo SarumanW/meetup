@@ -14,7 +14,7 @@ export class EventService {
 
   initPrePath() {
     this.currentUser = JSON.parse(localStorage.currentUser);
-    this.prePath = `api/users/${this.currentUser.id}/`;
+    this.prePath = `api/users/${this.currentUser.id}`;
   }
 
   getEvent(eventId: number): Observable<Evento> {

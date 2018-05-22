@@ -13,7 +13,7 @@ export class CalendarService {
 
   initPrePath() {
     this.currentUser = JSON.parse(localStorage.currentUser);
-    this.prePath = `api/users/${this.currentUser.id}/`;
+    this.prePath = `api/users/${this.currentUser.id}`;
   }
 
   getUserEvents(userId: number): Observable<any> {

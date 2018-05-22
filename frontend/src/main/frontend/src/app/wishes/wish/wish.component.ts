@@ -50,6 +50,7 @@ export class WishComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.spinner.show();
     this.sub = this.route.params.subscribe(params => {
       this.idItem = +params['itemId'];
       this.login = params['login']
@@ -120,16 +121,15 @@ export class WishComponent implements OnInit {
   }
 
   getItem(id: number) {
-    this.spinner.show();
-
-    this.wishService.getWishItem(id, this.login).subscribe(item => {
+      this.wishService.getWishItem(id, this.login).subscribe(item => {
       this.item = item;
       this.accountService.getLoginById(this.item.ownerId).subscribe(
         login=>{
-          this.ownerLogin = login;
+          this.ownerLogin = login
+          this.spinner.hide();
         }
       )
-      this.spinner.hide();
+
     });
   }
 

@@ -19,7 +19,7 @@ import {AppComponent} from "../../app.component";
 })
 export class ChatComponent implements OnInit, OnDestroy {
 
-  serverUrl = 'http://localhost:8000/socket';
+  serverUrl = 'http://meetupnc.ga/socket';
   stompClient;
   state: string = "folders";
   messageText: string;

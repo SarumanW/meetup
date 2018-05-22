@@ -82,12 +82,9 @@ export class EditComponent implements OnInit {
 
   save() {
     this.spinner.show();
-    if(this.selectedFiles){
-      this.upload()
-    }
+
     this.accountService.update(this.account).subscribe(
       response => {
-        console.log("update sss")
         this.success = true;
         this.spinner.hide();
         let profile = JSON.parse(localStorage.currentUser);
@@ -98,12 +95,13 @@ export class EditComponent implements OnInit {
         profile.phone = response.phone;
 
         localStorage.setItem('currentUser', JSON.stringify(profile));
-
+        if(this.selectedFiles){
+          this.upload()
+        }
         this.router.navigate(
           [JSON.parse(localStorage.currentUser).login + '/profile']);
       },
       error => {
-        console.log("Eroor  "+error.status)
         this.appComponent.showError(error,"Error")
         this.spinner.hide();
       }

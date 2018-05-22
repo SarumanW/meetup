@@ -199,7 +199,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         log.debug("Try to add booker by owner id: '{}', item id: '{}'", ownerId, itemId);
         try {
             int result = jdbcTemplate.update(env.getProperty(ITEM_SET_BOOKER_ID_FOR_ITEM),
-                    bookerId, ownerId, itemId, null);
+                    bookerId, ownerId, itemId);
 
             if (result != 0) {
                 log.debug("Booker by owner id: '{}', item id: '{}' was added", ownerId, itemId);
