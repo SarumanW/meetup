@@ -61,6 +61,7 @@ export class EditComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.spinner.show()
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
     this.editForm.get('email').setValidators(Validators.email);
     this.account = new Profile();
@@ -74,7 +75,9 @@ export class EditComponent implements OnInit {
     this.accountService.profile(this.account.login).subscribe(
       (data) => {
         this.account = data;
+        this.spinner.hide()
       },error => {
+        this.spinner.hide()
         this.appComponent.showError(error, 'Error');
       }
     );
