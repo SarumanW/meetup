@@ -34,6 +34,7 @@ export class EventAddComponent implements OnInit {
   lng: number;
   searchControl: FormControl;
   currentUserLogin: string;
+  currentUserId: number;
   type: string = 'event';
 
   @ViewChild("search") searchElementRef: ElementRef;
@@ -61,6 +62,7 @@ export class EventAddComponent implements OnInit {
     this.getCurrentDate();
     this.resetEvent();
     this.currentUserLogin = JSON.parse(localStorage.currentUser).login;
+    this.currentUserId = JSON.parse(localStorage.currentUser).id;
     this.fileRegexp = new RegExp('^.*\\.(jpg|JPG|gif|GIF|png|PNG)$');
     console.log(this.eventt);
 
@@ -155,6 +157,7 @@ export class EventAddComponent implements OnInit {
       if (eventt.eventType === 'EVENT') {
         this.addChat(eventt);
       } else {
+        this.spinner.hide();
         this.redirectToEvent(eventt);
       }
 
@@ -205,13 +208,12 @@ export class EventAddComponent implements OnInit {
     this.imageLoaded = false;
 
     this.currentFileUpload = this.selectedFiles.item(0);
-    this.uploadService.pushFileToStorage(this.currentFileUpload).subscribe(event => {
+    this.uploadService.pushFileToStorage(this.currentFileUpload, this.currentUserId).subscribe(event => {
       console.log(event);
         this.imageLoaded = true;
         this.eventt.imageFilepath = event;
         console.log(this.eventt.imageFilepath);
         this.addEntity();
-      this.spinner.hide();
     }, error => {
       this.appComponent.showError(error, 'Upload failed');
       this.spinner.hide();

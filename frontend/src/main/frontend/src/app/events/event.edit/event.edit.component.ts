@@ -175,7 +175,7 @@ export class EventEditComponent implements OnInit {
     this.imageLoaded = false;
 
     this.currentFileUpload = this.selectedFiles.item(0);
-    this.uploadService.pushFileToStorage(this.currentFileUpload).subscribe(event => {
+    this.uploadService.pushFileToStorage(this.currentFileUpload, this.currentUserId).subscribe(event => {
       console.log(event);
       this.imageLoaded = true;
       this.eventt.imageFilepath = event;
