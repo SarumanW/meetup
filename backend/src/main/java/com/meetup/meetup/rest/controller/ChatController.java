@@ -28,7 +28,7 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
 
-    @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
+    // TODO: 23.05.2018 Check permisssion 
     @PostMapping("/add")
     public ResponseEntity<ChatIdsVM> addChats(@RequestBody int eventId) {
         log.debug("Trying to add chats for event with id '{}'", eventId);
@@ -52,7 +52,7 @@ public class ChatController {
         return new ResponseEntity<>(responseId, HttpStatus.OK);
     }
 
-    @PreAuthorize("@eventPermissionChecker.checkById(#eventId)")
+    // TODO: 23.05.2018 Check permission 
     @DeleteMapping("/{eventId}")
     public ResponseEntity<Integer> deleteChats(@PathVariable int eventId) {
         log.debug("Trying to delete eventId '{}'", eventId);

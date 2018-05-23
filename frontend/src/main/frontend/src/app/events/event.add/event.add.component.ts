@@ -150,14 +150,11 @@ export class EventAddComponent implements OnInit {
     this.formatDate();
     this.eventt.place = this.lat + " " + this.lng;
     this.eventService.addEvent(this.eventt).subscribe(eventt => {
-      this.spinner.hide();
       this.showSuccess();
 
       if (eventt.eventType === 'EVENT') {
         this.addChat(eventt);
       }
-      this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/" +
-      this.type + "/" + eventt.eventId]);
       this.resetEvent();
     }, error => {
       this.appComponent.showError('Unsuccessful event adding', 'Adding error');
@@ -168,9 +165,14 @@ export class EventAddComponent implements OnInit {
   addChat(eventt: Evento) {
     this.chatService.addChat(eventt.eventId).subscribe(
       chat => {
-        console.log(chat);
+        this.spinner.hide();
+        this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/" +
+        this.type + "/" + eventt.eventId]);
       }, error => {
-        console.log("Can not create chat");
+        this.spinner.hide();
+        this.appComponent.showError("Can not create chat", 'Adding error');
+        this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/" +
+        this.type + "/" + eventt.eventId]);
       }
     )
   }
