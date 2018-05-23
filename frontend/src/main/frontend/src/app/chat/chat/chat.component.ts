@@ -1,4 +1,7 @@
-import {Component, OnDestroy, OnInit, Renderer2, RendererFactory2, ViewEncapsulation} from '@angular/core';
+import {
+  Component, HostListener, OnDestroy, OnInit, Renderer2, RendererFactory2,
+  ViewEncapsulation
+} from '@angular/core';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import * as $ from 'jquery';
@@ -378,5 +381,15 @@ export class ChatComponent implements OnInit, OnDestroy {
   goToProfile(member: string) {
     this.ngOnDestroy();
     this.router.navigate(["/" + member + "/profile"]);
+  }
+
+  @HostListener('window:unload', [ '$event' ])
+  unloadHandler(event) {
+    this.ngOnDestroy();
+  }
+
+  @HostListener('window:beforeunload', [ '$event' ])
+  beforeUnloadHander(event) {
+    this.ngOnDestroy();
   }
 }

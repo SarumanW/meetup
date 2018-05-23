@@ -367,4 +367,8 @@ export class EventComponent implements OnInit {
     "/chat/" + this.eventt.privateChatId]);
   }
 
+  goToProfile(member: string) {
+    this.router.navigate(["/" + member + "/profile"]);
+  }
+
 }
