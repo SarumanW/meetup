@@ -376,6 +376,11 @@ export class EventComponent implements OnInit {
     "/chat/" + this.eventt.privateChatId]);
   }
 
+
+  goToProfile(member: string) {
+    this.router.navigate(["/" + member + "/profile"]);
+  }
+
   participantInputSubscriber() {
     this.addParticipantQueryField.valueChanges
       .debounceTime(400)
@@ -412,6 +417,7 @@ export class EventComponent implements OnInit {
       }, error => {
         this.appComponent.showError(error, "Error")
       });
+
   }
 
 }
