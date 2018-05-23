@@ -29,8 +29,16 @@ public class ItemService {
         this.itemDao = itemDao;
     }
 
-    public Item findByUserIdItemId(int itemId, int userId) {
-        return itemDao.findByUserIdItemId(userId,itemId);
+    public Item findByUserIdItemId(int itemId, String ownerLogin) {
+        log.debug("Trying to insert item to database");
+
+        if(ownerLogin.equals("no")) {
+            return itemDao.findById(itemId);
+        }
+
+        User owner = userDao.findByLogin(ownerLogin);
+
+        return itemDao.findByUserIdItemId(owner.getId(), itemId);
     }
 
     public Item addItem(Item item) {

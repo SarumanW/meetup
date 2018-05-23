@@ -4,11 +4,12 @@ import {WishListService} from "../wish.list.service";
 import {Profile} from "../../account/profile";
 import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
-import {ActivatedRoute, Params} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import "rxjs/add/operator/debounceTime";
 import {WishService} from "../wish.service";
 import {FormControl} from "@angular/forms";
 import {AppComponent} from "../../app.component";
+import {AccountService} from "../../account/account.service";
 
 @Component({
   selector: 'app-wish-list',
@@ -41,17 +42,19 @@ export class WishListComponent implements OnInit {
   tag: string;
   tags: string[] = [];
 
-  constructor(private wishListService: WishListService,
+  constructor(private router: Router,
+              private wishListService: WishListService,
               private wishService: WishService,
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
               private toastr: ToastrService,
-              private appComponent: AppComponent) {
+              private appComponent: AppComponent,
+              private accountService: AccountService) {
   }
 
   ngOnInit() {
-    console.log("show")
-    this.spinner.show()
+    console.log("show");
+    this.spinner.show();
     this.login = this.route.snapshot.params['login'];
     this.category = WishListComponent.OWN_CATEGORY;
     this.title = "Own wishes:";
@@ -270,6 +273,25 @@ export class WishListComponent implements OnInit {
     if (index !== -1) {
       this.tags.splice(index, 1);
       this.getWishList();
+    }
+  }
+
+  details(item: Item) {
+    if(this.category === WishListComponent.OWN_CATEGORY) {
+      this.router.navigate([`./${this.login}/wishes/${item.itemId}`]);
+    } else if(this.category === WishListComponent.BOOKINGS_CATEGORY && item.ownerId !== 0) {
+      this.spinner.show();
+      this.accountService.getLoginById(item.ownerId).subscribe(
+        login => {
+          this.spinner.hide();
+          this.router.navigate([`./${login}/wishes/${item.itemId}`]);
+        }, error => {
+          this.spinner.hide();
+          this.router.navigate([`./${this.profile.login}/wishes/${item.itemId}`]);
+        }
+      );
+    } else {
+      this.router.navigate([`./no/wishes/${item.itemId}`]);
     }
   }
 }

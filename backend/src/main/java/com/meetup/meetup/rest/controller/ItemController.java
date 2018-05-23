@@ -36,7 +36,7 @@ public class ItemController {
     public ResponseEntity<Item> getItemByUserLoginAndItemId(@PathVariable int userId, @PathVariable int itemId, @PathVariable String login) {
         log.debug("Try to get item with id '{}' for user with with login '{}'", itemId, login);
 
-        Item item = itemService.findByUserIdItemId(itemId, userId);
+        Item item = itemService.findByUserIdItemId(itemId, login);
 
         log.debug("Send response body item '{}' and status OK", item);
 

@@ -25,7 +25,7 @@
 
           <!--Item owner-->
 
-          <div *ngIf="this.item.ownerId !==0 " class="form-group">
+          <div *ngIf="this.item.ownerId !== 0" class="form-group">
             <label class="form-control-label"><u>Item owner:</u></label>
             <div><a href="#/{{ownerLogin}}/profile">{{ownerLogin}}</a></div>
           </div>
@@ -39,7 +39,7 @@
 
           <!--Priority-->
 
-          <div class="form-group">
+          <div *ngIf="item.priority" class="form-group">
             <label class="form-control-label"><u>Priority:</u></label>
             <div *ngIf="item.priority === 'URGENT'">
               <a class="btn btn-danger" style="cursor: default; color: white;">{{item.priority}}</a>
@@ -54,14 +54,14 @@
 
           <!--Link-->
 
-          <div class="form-group">
+          <div *ngIf="item.link" class="form-group">
             <label class="form-control-label"><u>Link:</u></label>
             <div><a [href]="this.item.link">Click here for full info</a></div>
           </div>
 
           <!--Due Date-->
 
-          <div class="form-group">
+          <div *ngIf="item.dueDate" class="form-group">
             <label class="form-control-label"><u>Duedate:</u></label>
             <div>{{item.dueDate}}</div>
           </div>
@@ -87,7 +87,7 @@
                 [disabled]="!item.priority"
                 class="btn btn-danger">Remove
         </button>
-        <button *ngIf="item.ownerId !== profile.id" type="button" (click)="add.show()" [disabled]="item.priority"
+        <button *ngIf="item.ownerId !== profile.id" type="button" (click)="add.show()"
                 class="btn btn-primary">Add
         </button>
         <button *ngIf="item.ownerId !== 0 && profile.login === login"
