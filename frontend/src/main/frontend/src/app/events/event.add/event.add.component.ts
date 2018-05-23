@@ -154,7 +154,10 @@ export class EventAddComponent implements OnInit {
 
       if (eventt.eventType === 'EVENT') {
         this.addChat(eventt);
+      } else {
+        this.redirectToEvent(eventt);
       }
+
       this.resetEvent();
     }, error => {
       this.appComponent.showError('Unsuccessful event adding', 'Adding error');
@@ -166,15 +169,18 @@ export class EventAddComponent implements OnInit {
     this.chatService.addChat(eventt.eventId).subscribe(
       chat => {
         this.spinner.hide();
-        this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/" +
-        this.type + "/" + eventt.eventId]);
+        this.redirectToEvent(eventt);
       }, error => {
         this.spinner.hide();
         this.appComponent.showError("Can not create chat", 'Adding error');
-        this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/" +
-        this.type + "/" + eventt.eventId]);
+        this.redirectToEvent(eventt);
       }
     )
+  }
+
+  redirectToEvent(eventt: Evento) {
+    this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/" +
+    this.type + "/" + eventt.eventId]);
   }
 
   addEvent() {
