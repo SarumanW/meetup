@@ -198,7 +198,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
     public Item addBookerForItem(int ownerId, int itemId, int bookerId) {
         log.debug("Try to add booker by owner id: '{}', item id: '{}'", ownerId, itemId);
         try {
-            int result = jdbcTemplate.update(env.getProperty(ITEM_SET_BOOKER_ID_FOR_ITEM),
+            int result = jdbcTemplate.update(env.getProperty(ITEM_ADD_BOOKER_ID_FOR_ITEM),
                     bookerId, ownerId, itemId);
 
             if (result != 0) {
@@ -217,7 +217,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
     public Item removeBookerForItem(int ownerId, int itemId, int bookerId) {
         log.debug("Try to remove booker by owner id: '{}', item id: '{}', booker id: '{}'", ownerId, itemId, bookerId);
         try {
-            int result = jdbcTemplate.update(env.getProperty(ITEM_SET_BOOKER_ID_FOR_ITEM),
+            int result = jdbcTemplate.update(env.getProperty(ITEM_DELETE_BOOKER_ID_FOR_ITEM),
                     null, ownerId, itemId, bookerId);
 
             if (result != 0) {
@@ -227,6 +227,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
             }
         } catch (DataAccessException e) {
             log.error("Query fails by remove booker by owner id: '{}', item id: '{}', booker id: '{}'", ownerId, itemId, bookerId);
+            e.printStackTrace();
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return findByUserIdItemId(ownerId, itemId);

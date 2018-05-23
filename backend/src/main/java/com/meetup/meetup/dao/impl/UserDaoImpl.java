@@ -351,6 +351,38 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         return model;
     }
 
+    @Override
+    public List<User> getAllByUsernamePart(String userName) {
+
+        List<Map<String, Object>> userParamsList;
+
+        try {
+            userParamsList = jdbcTemplate.queryForList(env.getProperty(USER_GET_ALL_BY_PART), userName + "%");
+        } catch (DataAccessException e) {
+            log.error("Query fails by delete user with id '{}'", userName);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        return userRowMapper.mapRow(userParamsList);
+
+    }
+
+    @Override
+    public List<User> getFriendsByUsernamePart(int userId, String userName) {
+
+        List<Map<String, Object>> userParamsList;
+
+        try {
+            userParamsList = jdbcTemplate.queryForList(env.getProperty(USER_GET_FRIENDS_BY_USERNAME_PART), userId, userId, userName + "%");
+        } catch (DataAccessException e) {
+            log.error("Query fails by delete user with id '{}'", userName);
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        return userRowMapper.mapRow(userParamsList);
+
+    }
+
     /**
      * Actual method of searching unknown users for specific user.
      *
@@ -359,12 +391,12 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
      * @return List<User>
      */
     @Override
-    public List<User> getNotFriends(int userId, String userName) {
+    public List<User> getNotFriendsByUsernamePart(int userId, String userName) {
 
         List<Map<String, Object>> userParamsList;
 
         try {
-            userParamsList = jdbcTemplate.queryForList(env.getProperty("user.getNotFriends"), userId, userId, userName + "%");
+            userParamsList = jdbcTemplate.queryForList(env.getProperty(USER_GET_NOT_FRIENDS_BY_USERNAME_PART), userId, userId, userName + "%");
         } catch (DataAccessException e) {
             log.error("Query fails by delete user with id '{}'", userName);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));

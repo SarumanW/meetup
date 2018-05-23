@@ -4,12 +4,12 @@
                size = "default"
                color = "#fff"
                type = "ball-beat"></ngx-spinner>
-  <div class="row">
+  <div  class="row">
     <div class="col-2">
       <home-comp [states]="state"></home-comp>
     </div>
 
-    <div class="col-10">
+    <div *ngIf="items" class="col-10">
       <div class="container justify-content-center">
 
         <!--Category-->
@@ -125,7 +125,7 @@
                           (click)="unbook.show()" class="btn btn-danger btn-sm">Unbook
                   </button>
                 </div>
-                <a routerLink="/{{item.ownerId}}/wishes/{{item.itemId}}" class="btn btn-primary float-right btn-sm">Details</a>
+                <a routerLink="/{{profile.login}}/wishes/{{item.itemId}}" class="btn btn-primary float-right btn-sm">Details</a>
               </div>
             </div>
 

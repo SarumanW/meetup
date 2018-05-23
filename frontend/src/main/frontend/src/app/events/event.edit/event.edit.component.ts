@@ -7,7 +7,6 @@ import {EventService} from "../event.service";
 import {ImageUploadService} from "../image.upload.service";
 import {FormControl} from "@angular/forms";
 import {MapsAPILoader} from "@agm/core";
-import {$} from "protractor";
 import {AppComponent} from "../../app.component";
 
 @Component({
@@ -49,6 +48,8 @@ export class EventEditComponent implements OnInit {
               private appComponent: AppComponent) { }
 
   ngOnInit() {
+    this.spinner.show()
+
     this.route.params.subscribe(params => {
       this.eventId = params['eventId'];
       this.folderId = params['folderId'];

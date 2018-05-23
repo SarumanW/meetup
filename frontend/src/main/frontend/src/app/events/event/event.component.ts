@@ -6,6 +6,8 @@ import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
 import {AppComponent} from "../../app.component";
 import {ChatService} from "../../chat/chat.service";
+import {FriendService} from "../../account/friends/friend.service";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-event',
@@ -35,8 +37,13 @@ export class EventComponent implements OnInit {
   type: string;
   isPinned:boolean;
   isParticipant: boolean;
+  deleteParticipantQueryField: FormControl = new FormControl();
+  addParticipantQueryField: FormControl = new FormControl();
+  queryDeleteParticipants: string[] = [];
+  queryUsers: string[] = [];
 
   constructor(private eventService: EventService,
+              private friendService: FriendService,
               private route: ActivatedRoute,
               private toastr: ToastrService,
               private spinner: NgxSpinnerService,
@@ -62,6 +69,8 @@ export class EventComponent implements OnInit {
       this.appComponent.showError('Unsuccessful event loading', 'Loading error');
     });
     this.getEvent();
+    this.participantInputSubscriber();
+    this.deleteParticipantInputSubscriber();
   }
 
   showCountdown() {
@@ -90,7 +99,7 @@ export class EventComponent implements OnInit {
     }, error => {
       this.spinner.hide();
       this.appComponent.showError('Unsuccessful event loading', 'Loading error');
-    })
+    });
   }
 
   isParticipantt() {
@@ -367,8 +376,42 @@ export class EventComponent implements OnInit {
     "/chat/" + this.eventt.privateChatId]);
   }
 
-  goToProfile(member: string) {
-    this.router.navigate(["/" + member + "/profile"]);
+  participantInputSubscriber() {
+    this.addParticipantQueryField.valueChanges
+      .debounceTime(400)
+      .distinctUntilChanged()
+      .subscribe(loginInput => {
+        if (loginInput !== undefined && loginInput !== '') {
+          this.friendService.getUsersByUsernamePart(this.loginInput, 'all')
+            .subscribe((queryLogins) => {
+              this.queryUsers = queryLogins;
+            }, error => {
+              this.showError(error, 'Error');
+            })
+        }
+      }, error => {
+        this.appComponent.showError(error, "Error")
+      });
+  }
+
+  deleteParticipantInputSubscriber() {
+    this.deleteParticipantQueryField.valueChanges
+      .debounceTime(400)
+      .distinctUntilChanged()
+      .subscribe(input => {
+        if (input !== undefined && input !== '') {
+          this.queryDeleteParticipants = [];
+          for (let participant of this.eventt.participants) {
+            console.log(participant.login);
+            console.log(input);
+            if(participant.login.includes(input)) {
+              this.queryDeleteParticipants.push(participant.login);
+            }
+          }
+        }
+      }, error => {
+        this.appComponent.showError(error, "Error")
+      });
   }
 
 }

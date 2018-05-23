@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Item} from "../item";
 import {WishListService} from "../wish.list.service";
 import {Profile} from "../../account/profile";
 import {ToastrService} from "ngx-toastr";
 import {NgxSpinnerService} from "ngx-spinner";
-import {Router, ActivatedRoute, Params} from "@angular/router";
+import {ActivatedRoute, Params} from "@angular/router";
 import "rxjs/add/operator/debounceTime";
 import {WishService} from "../wish.service";
 import {FormControl} from "@angular/forms";
@@ -28,6 +28,7 @@ export class WishListComponent implements OnInit {
   category: string;
   profile: Profile;
   login: string;
+  hide:boolean
 
   //Add item date
   minDueDate: string;
@@ -45,10 +46,12 @@ export class WishListComponent implements OnInit {
               private spinner: NgxSpinnerService,
               private route: ActivatedRoute,
               private toastr: ToastrService,
-              private appComponent:AppComponent) {
+              private appComponent: AppComponent) {
   }
 
   ngOnInit() {
+    console.log("show")
+    this.spinner.show()
     this.login = this.route.snapshot.params['login'];
     this.category = WishListComponent.OWN_CATEGORY;
     this.title = "Own wishes:";
@@ -86,27 +89,29 @@ export class WishListComponent implements OnInit {
 
         this.getWishList();
       },
-      error => this.appComponent.showError(error, "Error"));
+      error => {
+
+        this.appComponent.showError(error, "Error")
+      });
   }
 
   getWishList(withSpinner = true) {
-    if (withSpinner) {
-      this.spinner.show();
-    }
+       this.spinner.show();
 
     this.wishListService.getWishList(this.category, this.login, this.tags).subscribe(
       itemList => {
         console.log(itemList);
         this.items = itemList;
-        this.spinner.hide();
+          this.spinner.hide();
       }, error => {
         this.appComponent.showError(error, "Error")
-      this.spinner.hide();
-    });
+         this.spinner.hide();
+        console.log("hide")
+      });
   }
 
   getActionBackground(item: Item) {
-    if(item.ownerId !== this.profile.id) {
+    if (item.ownerId !== this.profile.id) {
       return 'item-action-add';
     } else {
       return 'item-action-del';
@@ -141,11 +146,12 @@ export class WishListComponent implements OnInit {
       }
 
       console.log(item);
-
+      console.log("hide")
       this.spinner.hide();
 
       this.showSuccess('Wish item was successfully booked', 'Attention!');
     }, error => {
+      console.log("hide")
       this.spinner.hide();
       this.appComponent.showError(error, "Error")
     });
@@ -160,7 +166,7 @@ export class WishListComponent implements OnInit {
       if (index !== -1) {
         this.items[index] = itemUnBooked;
       }
-
+      console.log("hide")
       this.spinner.hide();
 
       console.log(item);
@@ -186,7 +192,7 @@ export class WishListComponent implements OnInit {
     this.spinner.show();
     this.wishService.addExistWishItem(newItem).subscribe(newItem => {
       this.spinner.hide();
-
+      console.log("hide")
       const index = this.items.indexOf(item);
       if (index !== -1) {
         this.items.splice(index, 1)
@@ -196,6 +202,7 @@ export class WishListComponent implements OnInit {
     }, error => {
       this.appComponent.showError(error, "Error")
       this.spinner.hide();
+      console.log("hide")
     });
   }
 
@@ -216,7 +223,7 @@ export class WishListComponent implements OnInit {
     this.spinner.show();
     this.wishService.deleteWishItem(item).subscribe(deletedItem => {
       this.spinner.hide();
-
+      console.log("hide")
       const index = this.items.indexOf(item);
       if (index !== -1) {
         this.items.splice(index, 1)
@@ -226,6 +233,7 @@ export class WishListComponent implements OnInit {
     }, error => {
       this.appComponent.showError(error, "Error")
       this.spinner.hide();
+      console.log("hide")
     });
   }
 
@@ -243,6 +251,8 @@ export class WishListComponent implements OnInit {
             })
         }
       }, error => {
+          this.spinner.hide();
+        console.log("hide")
         this.appComponent.showError(error, "Error")
       });
   }

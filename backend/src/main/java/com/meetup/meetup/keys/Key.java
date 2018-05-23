@@ -117,6 +117,9 @@ public final class Key {
     public static final String USER_UPDATE="user.update";
     public static final String USER_UPDATE_PASSWORD="user.updatePassword";
     public static final String USER_DELETE="user.delete";
+    public static final String USER_GET_ALL_BY_PART = "user.getAllByUsernamePart";
+    public static final String USER_GET_FRIENDS_BY_USERNAME_PART = "user.getFriendsByUsernamePart";
+    public static final String USER_GET_NOT_FRIENDS_BY_USERNAME_PART = "user.getNotFriendsByUsernamePart";
     public static final String USER_GET_FRIENDS = "user.getFriends";
     public static final String USER_GET_UNCONFIRMED = "user.getUnconfirmedFriends";
     public static final String USER_CONFIRM_FRIEND="user.confirmFriend";
@@ -167,7 +170,8 @@ public final class Key {
     public static final String ITEM_GET_PERSONAL_INFO_BY_ITEM_ID_USER_ID = "item.getPersonalInfoByUserIdItemId";
     public static final String ITEM_UPDATE_USER_ITEM = "item.updateUserItem";
     public static final String ITEM_DELETE_FROM_WISH_LIST = "item.deleteFromWishList";
-    public static final String ITEM_SET_BOOKER_ID_FOR_ITEM = "item.setBookerId";
+    public static final String ITEM_ADD_BOOKER_ID_FOR_ITEM = "item.addBookerId";
+    public static final String ITEM_DELETE_BOOKER_ID_FOR_ITEM = "item.deleteBookerId";
     public static final String ITEM_GET_NUMBER_OF_ITEM_USERS = "item.getNumberOfItemUsers";
     public static final String ITEM_GET_TAG_ID = "item.getTagIdByName";
     public static final String ITEM_ADD_TAG_TO_ITEM = "item.addTagToItem";

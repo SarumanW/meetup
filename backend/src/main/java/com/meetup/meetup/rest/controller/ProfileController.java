@@ -48,7 +48,7 @@ public class ProfileController {
     public ResponseEntity<Object> getLoginById(@PathVariable int id) {
         log.debug("Trying to get user's login by id '{}'", id);
 
-        String login= profileService.getUserLoginById(id);
+        String login = profileService.getUserLoginById(id);
 
         log.debug("Send response body login '{}' and status OK", login);
 
@@ -147,15 +147,14 @@ public class ProfileController {
 
         log.debug("Image successfully uploaded send response status OK");
         return new ResponseEntity<>(updatedUser.getImgPath(), HttpStatus.OK);
-
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<User>> searchUsers(@RequestParam String username) {
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String username, @RequestParam String type) {
         log.debug("Trying to search users by username '{}'",
                 username);
 
-        List<User> users = profileService.getUnknownUsers(username);
+        List<User> users = profileService.getUnknownUsers(username, type);
 
         log.debug("Found users '{}'", users.toString());
 
