@@ -45,6 +45,9 @@ export class RegisterComponent implements OnInit {
     this.accountService.save(this.account).subscribe(
       () => {
         this.success = true;
+        this.error = null;
+        this.errorEmailExists = null;
+        this.errorLoginExists = null;
         this.spinner.hide();
       }, error => {
         this.appComponent.showError(error, 'Error');
@@ -63,10 +66,19 @@ export class RegisterComponent implements OnInit {
     this.success = null;
     console.log(response);
     if (response.error === 'Login already used') {
+      this.success = null
+      this.error = null;
+      this.errorEmailExists = null;
       this.errorLoginExists = 'ERROR';
     } else if (response.error === 'Email already used') {
+      this.success = null
+      this.error = null;
+      this.errorLoginExists = null;
       this.errorEmailExists = 'ERROR';
     } else {
+      this.success = null
+      this.errorEmailExists = null;
+      this.errorLoginExists = null;
       this.error = 'ERROR';
     }
 

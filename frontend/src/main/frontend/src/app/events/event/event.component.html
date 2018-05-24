@@ -30,7 +30,7 @@
               </div>
             </ul>
             <br>
-            <div *ngIf="eventt.ownerId === this.currentUserId && eventt.eventType === 'EVENT'">
+            <div *ngIf="eventt.ownerId === this.currentUserId && eventt.eventType === 'EVENT' &&eventt.isDraft===false">
               <button type="button" class="btn btn-primary" (click)="modal.show()"
                       data-toggle="modal">Add participant</button>
               <button type="button" class="btn btn-danger" (click)="deleteParticipantt.show()"
@@ -81,14 +81,14 @@
 
           <div class="col-md-2">
 
-            <div *ngIf="isParticipant || eventt.ownerId === this.currentUserId">
+            <div *ngIf="(isParticipant || eventt.ownerId === this.currentUserId)&&eventt.eventType==='EVENT'&&eventt.isDraft===false">
               <button type="button" class="btn btn-primary" (click)="onPublicChat()"
               >Public chat</button>
             </div>
 
             <br>
 
-            <div *ngIf="eventt.ownerId !== this.currentUserId && isParticipant">
+            <div *ngIf="(eventt.ownerId !== this.currentUserId && isParticipant)&&eventt.eventType==='EVENT'&&eventt.isDraft===false">
               <button type="button" class="btn btn-primary" (click)="onPrivateChat()"
               >Private chat</button>
             </div>
@@ -122,6 +122,7 @@
               </li>
               <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Event Date: {{eventt.eventDate}}</li>
               <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
+              <li class="list-group-item">Place: {{place}}</li>
               <li *ngIf="eventt.isDraft === true" class="list-group-item">Draft</li>
               <li *ngIf="eventt.description" class="list-group-item">Description: {{eventt.description}}</li>
             </ul>
@@ -158,7 +159,8 @@
               <div *ngIf="addParticipantQueryField.value">
                 <div style="margin-left: 10px" class="row">
                   <div *ngFor="let user of queryUsers">
-                    <a style="color: white; cursor: pointer;" class="badge badge-pill badge-primary m-1" (click)="addParticipantQueryField.setValue(user.login); queryUsers = []">{{ user.login }}</a>
+                    <a style="color: white; cursor: pointer;" class="badge badge-pill badge-primary m-1" (click)="addParticipantQueryField.setValue(user.login); queryUsers = [];
+modal.hide(); addParticipant(addParticipantQueryField.value); ">{{ user.login }}</a>
                   </div>
                 </div>
               </div>
@@ -243,12 +245,12 @@
           <form name="form" role="form" #deleteParticipantForm="ngForm">
             <div class="form-group">
               <label for="login">Login:</label>
-              <input class="form-control" id="login" placeholder="Enter participant login" #login [formControl]="deleteParticipantQueryField"
+              <input class="form-control" id="login" placeholder="Enter participant login" name="login" #login [formControl]="deleteParticipantQueryField" [(ngModel)]="loginInput"
                      required>
               <div *ngIf="deleteParticipantQueryField.value">
                 <div style="margin-left: 10px" class="row">
                   <div *ngFor="let login of queryDeleteParticipants">
-                    <a style="color: white; cursor: pointer;" class="badge badge-pill badge-primary m-1" (click)="deleteParticipantQueryField.setValue(login)">{{ login }}</a>
+                    <a style="color: white; cursor: pointer;" class="badge badge-pill badge-primary m-1" (click)="deleteParticipantQueryField.setValue(login); deleteParticipantt.hide(); deleteParticipant(login);">{{ login }}</a>
                   </div>
                 </div>
               </div>
@@ -258,7 +260,7 @@
 
         <div class="app-modal-footer">
           <button class="btn btn-danger" [disabled]="deleteParticipantForm.form.invalid"
-                  (click)="deleteParticipantt.hide(); deleteParticipant(login)">Delete</button>
+                  (click)="deleteParticipantt.hide(); deleteParticipant(login.value)">Delete</button>
         </div>
       </app-modal-window>
     </div>

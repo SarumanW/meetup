@@ -156,4 +156,10 @@ export class EventService {
     return this.http
       .get<any>(`${this.prePath}/events/folder/` + folderId, {headers: headers});
   }
+
+  getPlace(coords:string): Observable<any>{
+    let lat = coords.split(' ')[0];
+    let lng = coords.split(' ')[1];
+    return this.http.get<any>("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&sensor=true")
+  }
 }

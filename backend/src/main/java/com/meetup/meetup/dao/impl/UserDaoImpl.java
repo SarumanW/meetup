@@ -85,9 +85,9 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public User findByLogin(String login) {
         log.debug("Try to find User by login: '{}'", login);
-        User user;
+        List<User> users;
         try {
-            user = jdbcTemplate.queryForObject(
+            users = jdbcTemplate.query(
                     env.getProperty(USER_FIND_BY_LOGIN),
                     new Object[]{login}, new UserRowMapper() {
                     }
@@ -99,8 +99,11 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         log.debug("User with login '{}' was found", login);
 
-        return user;
+        if(users.isEmpty()){
+            return null;
+        }
 
+        return users.get(0);
     }
 
     @Override
@@ -282,7 +285,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         folder.setUserId(id);
 
         log.debug("Try to insert general folder by folderDao");
-
+// TODO: 5/23/2018  delete
         Folder folder2 = folderDao.insert(folder);
 
         log.debug("general folder was inserted with id '{}'", folder2.getFolderId());

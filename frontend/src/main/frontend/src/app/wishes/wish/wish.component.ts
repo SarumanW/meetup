@@ -124,7 +124,7 @@ export class WishComponent implements OnInit {
     console.log('login: ' + this.login);
     this.wishService.getWishItem(id, this.login).subscribe(item => {
       this.item = item;
-      console.log(this.item.ownerId);
+      console.log("owner id " + this.item.ownerId);
       this.accountService.getLoginById(this.item.ownerId).subscribe(
         login => {
           this.ownerLogin = login;

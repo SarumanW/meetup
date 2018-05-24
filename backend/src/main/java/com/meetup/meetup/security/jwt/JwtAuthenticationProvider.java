@@ -29,7 +29,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     private Environment env;
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication) {
         log.debug("Try to get token from Authentication");
 
         String token = (String) authentication.getCredentials();
@@ -43,7 +43,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             JwtAuthenticatedProfile authenticatedProfile = new JwtAuthenticatedProfile(user, token);
             SecurityContextHolder.getContext().setAuthentication(authenticatedProfile);
             return authenticatedProfile;
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
             log.error("Failed authentication of user with token '{}'", token);
             throw new JwtAuthenticationException(env.getProperty(EXCEPTION_JWT_AUTHENTICATION), e);
         }

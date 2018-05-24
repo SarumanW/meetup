@@ -44,7 +44,7 @@ public class JwtService {
         this.userDao = userDao;
     }
 
-    public User verify(String token) throws Exception {
+    public User verify(String token) {
         log.debug("Trying to get secret key form SecretKeyProvider");
 
         byte[] secretKey = secretKeyProvider.getKey();

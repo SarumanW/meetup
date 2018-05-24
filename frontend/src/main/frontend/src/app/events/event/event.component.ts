@@ -41,6 +41,7 @@ export class EventComponent implements OnInit {
   addParticipantQueryField: FormControl = new FormControl();
   queryDeleteParticipants: string[] = [];
   queryUsers: string[] = [];
+  place:string
 
   constructor(private eventService: EventService,
               private friendService: FriendService,
@@ -92,10 +93,18 @@ export class EventComponent implements OnInit {
       this.lng = +coordinates[1];
       this.tempType = eventt.eventType;
       this.isParticipantt();
-      this.spinner.hide();
       if (eventt.eventType === 'EVENT') {
         this.getChatIds(eventt);
       }
+      this.eventService.getPlace(eventt.place).subscribe(
+        place => {
+          this.place = place.results[0].formatted_address
+          this.spinner.hide();
+        }, error1 => {
+          this.spinner.hide();
+          this.appComponent.showError('Unsuccessful event loading', 'Loading error');
+        }
+      )
     }, error => {
       this.spinner.hide();
       this.appComponent.showError('Unsuccessful event loading', 'Loading error');
@@ -324,8 +333,7 @@ export class EventComponent implements OnInit {
     );
   }
 
-  deleteParticipant(login: any) {
-
+  deleteParticipant(login: string) {
     this.spinner.show();
 
     let deletedProfileIndex = -1;
@@ -334,15 +342,15 @@ export class EventComponent implements OnInit {
 
     if (this.eventt.participants !== null && this.eventt.participants.length !== 0) {
       for (let profile of this.eventt.participants) {
-        if (profile.login === login.value) {
+        if (profile.login === login) {
           this.hasParticipant = true;
           deletedProfileIndex = this.eventt.participants.indexOf(profile, 0);
           break;
         }
       }
     }
-
-    if (this.currentUserLogin !== login.value && deletedProfileIndex !== -1) {
+    this.loginInput = "";
+    if (this.currentUserLogin !== login && deletedProfileIndex !== -1) {
       this.eventService.deleteParticipant(this.eventt, deletedProfileIndex).subscribe(
         deleted => {
           this.showSuccess(deleted.toString(), 'Success!');
@@ -358,7 +366,7 @@ export class EventComponent implements OnInit {
       this.spinner.hide();
     }
 
-    login.value = "";
+    login = "";
   }
 
   editEvent() {

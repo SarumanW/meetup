@@ -57,7 +57,7 @@
 
           <div *ngIf="item.dueDate" class="form-group">
             <label class="form-control-label"><u>Duedate:</u></label>
-            <div>{{item.dueDate}}</div>
+            <div>{{item.dueDate.split(' ')[0]}}</div>
           </div>
 
           <!--Tags-->
@@ -84,7 +84,7 @@
         </form>
 
         <a routerLink="/{{profile.login}}/wishes" class="btn btn-primary">Return to wishlist</a>
-        <button *ngIf="item.ownerId !== 0 && profile.login === login" type="button" (click)="removeFromWishList()"
+        <button *ngIf="item.ownerId !== 0 && profile.login === login" type="button" (click)="delete.show()"
                 [disabled]="!item.priority"
                 class="btn btn-danger">Remove
         </button>
@@ -176,5 +176,21 @@
       <button [disabled]="addItemForm.form.invalid" class="btn btn-default" (click)="add.hide(); addToWishList()">Add
       </button>
     </form>
+  </div>
+</app-modal-window>
+
+<!--Delete item-->
+
+<app-modal-window #delete class="sure-window">
+  <div class="modal-header d-flex justify-content-between align-items-center">
+    <h4 class="modal-title">Delete item</h4>
+    <img class="close-btn" src="assets/close.svg" (click)="delete.hide()" alt="">
+  </div>
+  <div class="app-modal-body">
+    <p>Are you really want to remove this item from wish list?</p>
+  </div>
+  <div class="app-modal-footer">
+    <button class="btn btn-primary" (click)="delete.hide(); removeFromWishList()" >Yes</button>
+    <button class="btn btn-default" (click)="delete.hide();">Cancel</button>
   </div>
 </app-modal-window>

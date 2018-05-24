@@ -7,17 +7,15 @@ export class ImageUploadService {
 
   constructor(private http: HttpClient) { }
 
-  pushFileToStorage(file: File): Observable<any> {
-    let user = JSON.parse(localStorage.currentUser);
-
+  pushFileToStorage(file: File, userId: number): Observable<any> {
     let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${user.token}`);
+      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
     let formdata: FormData = new FormData();
 
     formdata.append('file', file);
 
-    return this.http.post(`/api/users/${user.id}/events/upload`, formdata, {headers: headers});
+    return this.http.post('/api/users/' + userId + '/events/upload', formdata, {headers: headers});
   }
 
 }
