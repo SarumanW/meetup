@@ -162,4 +162,5 @@ export class EventService {
     let lng = coords.split(' ')[1];
     return this.http.get<any>("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&sensor=true")
   }
+
 }
