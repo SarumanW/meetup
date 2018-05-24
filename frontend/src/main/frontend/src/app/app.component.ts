@@ -54,7 +54,12 @@ export class AppComponent {
     if(error.status === 418) {
       message = 'Please try again later';
       title = 'Server Error'
-    } else {
+    } if(error.status === 401){
+      message = 'Please login to the system again';
+      title = 'Authentication failed'
+      this.logout()
+    }
+    else {
       message = error.error;
     }
       this.toastr.error(message, title, {

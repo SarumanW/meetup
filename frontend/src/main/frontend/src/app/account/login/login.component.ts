@@ -9,7 +9,7 @@ import {AppComponent} from "../../app.component";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: [ './login.component.css' ]
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
   success: boolean;
@@ -28,24 +28,26 @@ export class LoginComponent implements OnInit {
   }
 
   logIn() {
-      this.spinner.show();
-      this.accountService.login(this.account).subscribe(
-        (profile) => {
-            this.success = true;
-            this.spinner.hide();
-            this.router.navigate(
-              ['/'+ profile.login + '/profile']);
-        },error => {
-          this.appComponent.showError(error, 'Error');
-          this.processError(error)
-          this.spinner.hide();
-        }
-      );
-    }
+    this.spinner.show();
+    this.accountService.login(this.account).subscribe(
+      (profile) => {
+        this.success = true;
+        this.spinner.hide();
+        this.router.navigate(
+          ['/' + profile.login + '/profile']);
+      }, error => {
+        this.appComponent.showError(error, 'Error');
+        this.processError(error)
+        this.spinner.hide();
+      }
+    );
+  }
 
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
-    this.errorMessage = response.error;
+    if (response.status !== 401) {
+      this.errorMessage = response.error;
+    }
   }
 }
