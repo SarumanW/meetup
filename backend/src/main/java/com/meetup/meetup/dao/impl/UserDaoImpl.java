@@ -285,10 +285,10 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         folder.setUserId(id);
 
         log.debug("Try to insert general folder by folderDao");
-// TODO: 5/23/2018  delete
-        Folder folder2 = folderDao.insert(folder);
 
-        log.debug("general folder was inserted with id '{}'", folder2.getFolderId());
+        int generalFolderId = folderDao.insert(folder).getFolderId();
+
+        log.debug("general folder was inserted with id '{}'", generalFolderId);
 
         return model;
     }

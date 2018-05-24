@@ -169,7 +169,7 @@ export class WishEditComponent implements OnInit {
   addWish() {
     console.log('run "add wish" method');
     this.wishService.editWishItem(this.editItem).subscribe(item => {
-      this.showSuccess('Wish item was successfully added', 'Attention!');
+      this.showSuccess('Wish item was successfully edited', 'Attention!');
       this.spinner.hide();
       console.log('./' + this.profile.login + '/wishes/' + item.itemId);
       this.router.navigate(['./' + this.profile.login + '/wishes/' + item.itemId]);
