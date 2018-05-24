@@ -41,6 +41,7 @@ export class EventComponent implements OnInit {
   addParticipantQueryField: FormControl = new FormControl();
   queryDeleteParticipants: string[] = [];
   queryUsers: string[] = [];
+  place:string
 
   constructor(private eventService: EventService,
               private friendService: FriendService,
@@ -92,10 +93,18 @@ export class EventComponent implements OnInit {
       this.lng = +coordinates[1];
       this.tempType = eventt.eventType;
       this.isParticipantt();
-      this.spinner.hide();
       if (eventt.eventType === 'EVENT') {
         this.getChatIds(eventt);
       }
+      this.eventService.getPlace(eventt.place).subscribe(
+        place => {
+          this.place = place.results[0].formatted_address
+          this.spinner.hide();
+        }, error1 => {
+          this.spinner.hide();
+          this.appComponent.showError('Unsuccessful event loading', 'Loading error');
+        }
+      )
     }, error => {
       this.spinner.hide();
       this.appComponent.showError('Unsuccessful event loading', 'Loading error');
