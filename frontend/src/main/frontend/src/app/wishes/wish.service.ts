@@ -24,7 +24,7 @@ export class WishService {
       .set("Authorization", `Bearer ${this.currentUser.token}`);
 
     let url = `${this.prePath}/items/${itemId}/login/`+login;
-
+  console.log(url);
     return this.http.get<any>(url, {headers: headers});
   }
 

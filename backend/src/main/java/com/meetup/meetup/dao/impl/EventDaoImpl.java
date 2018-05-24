@@ -121,11 +121,8 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             log.error("Query fails by insert event with name '{}' by owner with id '{}'", model.getName(), model.getOwnerId());
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
-        if (model.getEventId() != 0) {
             log.debug("Event with name '{}' by owner with id '{}' was inserted with id '{}'", model.getName(), model.getOwnerId(), id);
-        } else {
-            log.debug("Event with name '{}' by owner with id '{}' inserting failed", model.getEventId(), model.getOwnerId());
-        }
+
         return model;
     }
 
