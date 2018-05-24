@@ -120,6 +120,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
             addToUserWishList(model);
         } catch (DataAccessException e) {
             log.error("Query fails by insert item '{}'", model);
+            e.printStackTrace();
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -169,6 +170,7 @@ public class ItemDaoImpl extends AbstractDao<Item> implements ItemDao {
         catch (DataAccessException e) {
             log.error("Query fails by add item to wish list by user id: '{}', item id: '{}', priority: '{}'",
                     item.getOwnerId(), item.getItemId(), item.getPriority());
+            e.printStackTrace();
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return item;

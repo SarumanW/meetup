@@ -106,16 +106,13 @@
             <textarea class="form-control" [(ngModel)]="editItem.description"
                       id="itemDescription" name="description" style="min-height: 6em;"
                       #description="ngModel" placeholder="Enter item description"
-                      minlength="4" maxlength="250" pattern="^[_A-Za-z0-9-.?!,:;'\s]*$" required></textarea>
+                      maxlength="1023" pattern="^[_A-Za-z0-9-.?!,:;'\s]*$"></textarea>
             <div *ngIf="description.dirty && description.invalid">
               <small class="form-text text-danger" *ngIf="description.errors.required">
                 Wish description is required.
               </small>
-              <small class="form-text text-danger" *ngIf="description.errors.minlength">
-                Wish description is required to be at least 4 character.
-              </small>
               <small class="form-text text-danger" *ngIf="description.errors.maxlength">
-                Wish description cannot be longer than 250 characters.
+                Wish description cannot be longer than 1023 characters.
               </small>
               <small class="form-text text-danger" *ngIf="description.errors.pattern">
                 Wish description can only contain letters and digits.

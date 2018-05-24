@@ -123,6 +123,8 @@ export class WishAddComponent implements OnInit {
   onSubmit() {
     this.newItem.ownerId = this.profile.id;
 
+    console.log('length = ' + this.newItem.description.length);
+
     this.setCorrectDate();
 
     this.spinner.show();

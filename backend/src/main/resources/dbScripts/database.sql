@@ -63,7 +63,7 @@ CREATE TABLE llike (
 CREATE TABLE item (
   item_id number,
   name varchar2(50) NOT NULL,
-  description varchar2(200) NOT NULL,
+  description varchar2(1023),
   image_filepath varchar2(200) NOT NULL,
   link varchar2(200),
   PRIMARY KEY (item_id)
@@ -112,7 +112,7 @@ CREATE TABLE event (
   event_id number,
   name varchar2(50) NOT NULL,
   event_date timestamp,
-  description varchar2(250) NOT NULL,
+  description varchar2(1023),
   periodicity_id number,
   place varchar2(100),
   event_type_id number NOT NULL,

@@ -79,17 +79,10 @@
             <label for="description">Description:</label>
             <textarea class="form-control" [(ngModel)]="eventt.description" style="min-height: 6em;"
                       id="description" name="description" #description="ngModel" placeholder="description"
-                      minlength="4" maxlength="250" pattern="^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$"
-                      required></textarea>
+                      maxlength="1023" pattern="^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$"></textarea>
             <div *ngIf="description.dirty && description.invalid">
-              <small class="form-text text-danger" *ngIf="description.errors.required">
-                Description is required.
-              </small>
-              <small class="form-text text-danger" *ngIf="description.errors.minlength">
-                Description is required to be at least 4 character.
-              </small>
               <small class="form-text text-danger" *ngIf="description.errors.maxlength">
-                Description can not be longer than 250 characters.
+                Description can not be longer than 1023 characters.
               </small>
               <small class="form-text text-danger" *ngIf="description.errors.pattern">
                 Description can only contain letters and digits.

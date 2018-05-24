@@ -14,6 +14,7 @@
       <div class="col-md-5">
         <img *ngIf="item.imageFilepath" [src]="item.imageFilepath" onError="this.src='assets/item-icon-default.svg'"
              class="img-fluid">
+
       </div>
 
       <div class="col-md-5">
@@ -28,13 +29,6 @@
           <div *ngIf="this.item.ownerId !== 0" class="form-group">
             <label class="form-control-label"><u>Item owner:</u></label>
             <div><a href="#/{{ownerLogin}}/profile">{{ownerLogin}}</a></div>
-          </div>
-
-          <!--Description-->
-
-          <div class="form-group">
-            <label class="form-control-label"><u>Description:</u></label>
-            <div>{{item.description}}</div>
           </div>
 
           <!--Priority-->
@@ -78,6 +72,13 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <!--Description-->
+
+          <div *ngIf="item.description" class="form-group">
+            <label class="form-control-label"><u>Description:</u></label>
+            <div>{{item.description}}</div>
           </div>
           <hr/>
         </form>

@@ -121,9 +121,9 @@
                 </div>
               </li>
               <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Event Date: {{eventt.eventDate}}</li>
-              <li class="list-group-item">Description: {{eventt.description}}</li>
               <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
               <li *ngIf="eventt.isDraft === true" class="list-group-item">Draft</li>
+              <li *ngIf="eventt.description" class="list-group-item">Description: {{eventt.description}}</li>
             </ul>
           </div>
 
