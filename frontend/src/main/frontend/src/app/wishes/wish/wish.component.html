@@ -120,11 +120,12 @@
         <div class="widget-area no-padding blank">
           <div class="status-upload">
             <form (ngSubmit)="addComment()">
-              <textarea [formControl]="commentControl" placeholder="What do you think about that item?"></textarea>
-              <button type="submit" class="btn btn-success green"><i class="fa fa-share"></i> Share</button>
+              <textarea [formControl]="commentControl"  placeholder="What do you think about that item?"
+                        name="comment" maxlength="2000"></textarea>
+              <button [disabled]="commentControl.invalid | isSubmitting" type="submit" class="btn btn-success green"><i class="fa fa-share"></i> Share</button>
             </form>
-          </div><!-- Status Upload  -->
-        </div><!-- Widget Area -->
+          </div>
+        </div>
       </div>
 
       <div *ngIf="comments" class="col-md-5 offset-md-2">
@@ -139,8 +140,8 @@
 
     </div>
   </div>
-  <!--</div>-->
-  <!--Add item-->
+
+
 </div>
 <app-modal-window #add>
   <div class="modal-header d-flex justify-content-between align-items-right">

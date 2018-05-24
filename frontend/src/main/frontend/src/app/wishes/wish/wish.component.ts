@@ -21,7 +21,6 @@ import {AccountService} from "../../account/account.service";
 export class WishComponent implements OnInit {
   state: string = "wishes";
   success: boolean;
-  errorMessage: string;
   item: Item;
   name = "ITEM";
   profile: Profile;
@@ -31,7 +30,6 @@ export class WishComponent implements OnInit {
   private sub: any;
   comments: ItemComment[];
   commentControl = new FormControl();
-  commentFormErrors = {};
   isSubmitting = false;
   minDueDate: string;
   dueDate: string;
@@ -60,7 +58,6 @@ export class WishComponent implements OnInit {
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
 
-    // Load the comments on this item
     this.populateComments();
 
   }
@@ -72,22 +69,25 @@ export class WishComponent implements OnInit {
 
   addComment() {
     this.isSubmitting = true;
-    this.commentFormErrors = {};
 
     const commentBody = this.commentControl.value;
+    var createdComment = new ItemComment();
+    createdComment.bodyText = commentBody;
+    this.spinner.show();
     this.commentsService
-      .add(this.idItem, commentBody)
+      .add(this.idItem, createdComment)
       .subscribe(
         comment => {
           this.comments.unshift(comment);
           this.commentControl.reset('');
-          this.isSubmitting = false;
         },
         errors => {
-          this.isSubmitting = false;
-          this.commentFormErrors = errors;
+
+          this.showError('Unsuccessful comment adding. The length of comment must be less than 2000 symbols', 'Posting comment error');
         }
       );
+    this.spinner.hide();
+    this.isSubmitting = false;
   }
 
   onDeleteComment(commentId) {

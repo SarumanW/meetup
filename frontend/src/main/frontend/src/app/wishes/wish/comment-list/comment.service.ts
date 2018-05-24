@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
+import {ItemComment} from "./comment";
 
 @Injectable()
 export class CommentService {
 
   constructor(private http: HttpClient) {}
 
-  //todo link with actual backend
-
-  add(idItem : number, commentText:string): Observable<any> {
+  add(idItem : number, comment:ItemComment): Observable<any> {
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.post<any>('api/comment/'+idItem, commentText, {headers:headers}).map(comment => {
+    return this.http.post<any>('api/comment/'+idItem, comment, {headers:headers}).map(comment => {
       console.log(comment);
       return comment;
     });
