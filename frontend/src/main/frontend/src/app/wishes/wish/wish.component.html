@@ -97,7 +97,7 @@
 
         <img *ngIf="!item.like" id="one" src="assets/notliked.png" (click)="like()">
         <img *ngIf="item.like" src="assets/liked.png" (click)="dislike()">
-        <div ngbDropdown class="d-inline-block navbar-right pr-5">
+        <div ngbDropdown class="d-inline-block navbar-right ">
           <button class="btn btn-default" id="dropdownBasic" ngbDropdownToggle (click)="getLoginsWhoLiked()">
             {{item.likes}}
           </button>
