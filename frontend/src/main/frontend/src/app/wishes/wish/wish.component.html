@@ -63,7 +63,7 @@
 
           <div *ngIf="item.dueDate" class="form-group">
             <label class="form-control-label"><u>Duedate:</u></label>
-            <div>{{item.dueDate}}</div>
+            <div>{{item.dueDate.split(' ')[0]}}</div>
           </div>
 
           <!--Tags-->
