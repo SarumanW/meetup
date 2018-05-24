@@ -30,7 +30,7 @@
               </div>
             </ul>
             <br>
-            <div *ngIf="eventt.ownerId === this.currentUserId && eventt.eventType === 'EVENT'">
+            <div *ngIf="eventt.ownerId === this.currentUserId && eventt.eventType === 'EVENT' &&eventt.isDraft===false">
               <button type="button" class="btn btn-primary" (click)="modal.show()"
                       data-toggle="modal">Add participant</button>
               <button type="button" class="btn btn-danger" (click)="deleteParticipantt.show()"
@@ -81,14 +81,14 @@
 
           <div class="col-md-2">
 
-            <div *ngIf="isParticipant || eventt.ownerId === this.currentUserId">
+            <div *ngIf="(isParticipant || eventt.ownerId === this.currentUserId)&&eventt.eventType==='EVENT'&&eventt.isDraft===false">
               <button type="button" class="btn btn-primary" (click)="onPublicChat()"
               >Public chat</button>
             </div>
 
             <br>
 
-            <div *ngIf="eventt.ownerId !== this.currentUserId && isParticipant">
+            <div *ngIf="(eventt.ownerId !== this.currentUserId && isParticipant)&&eventt.eventType==='EVENT'&&eventt.isDraft===false">
               <button type="button" class="btn btn-primary" (click)="onPrivateChat()"
               >Private chat</button>
             </div>
