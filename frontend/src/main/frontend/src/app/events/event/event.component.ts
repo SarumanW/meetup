@@ -333,8 +333,7 @@ export class EventComponent implements OnInit {
     );
   }
 
-  deleteParticipant(login: any) {
-
+  deleteParticipant(login: string) {
     this.spinner.show();
 
     let deletedProfileIndex = -1;
@@ -343,15 +342,15 @@ export class EventComponent implements OnInit {
 
     if (this.eventt.participants !== null && this.eventt.participants.length !== 0) {
       for (let profile of this.eventt.participants) {
-        if (profile.login === login.value) {
+        if (profile.login === login) {
           this.hasParticipant = true;
           deletedProfileIndex = this.eventt.participants.indexOf(profile, 0);
           break;
         }
       }
     }
-
-    if (this.currentUserLogin !== login.value && deletedProfileIndex !== -1) {
+    this.loginInput = "";
+    if (this.currentUserLogin !== login && deletedProfileIndex !== -1) {
       this.eventService.deleteParticipant(this.eventt, deletedProfileIndex).subscribe(
         deleted => {
           this.showSuccess(deleted.toString(), 'Success!');
@@ -367,7 +366,7 @@ export class EventComponent implements OnInit {
       this.spinner.hide();
     }
 
-    login.value = "";
+    login = "";
   }
 
   editEvent() {

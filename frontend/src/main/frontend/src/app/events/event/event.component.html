@@ -159,7 +159,8 @@
               <div *ngIf="addParticipantQueryField.value">
                 <div style="margin-left: 10px" class="row">
                   <div *ngFor="let user of queryUsers">
-                    <a style="color: white; cursor: pointer;" class="badge badge-pill badge-primary m-1" (click)="addParticipantQueryField.setValue(user.login); queryUsers = []">{{ user.login }}</a>
+                    <a style="color: white; cursor: pointer;" class="badge badge-pill badge-primary m-1" (click)="addParticipantQueryField.setValue(user.login); queryUsers = [];
+modal.hide(); addParticipant(addParticipantQueryField.value); ">{{ user.login }}</a>
                   </div>
                 </div>
               </div>
@@ -244,12 +245,12 @@
           <form name="form" role="form" #deleteParticipantForm="ngForm">
             <div class="form-group">
               <label for="login">Login:</label>
-              <input class="form-control" id="login" placeholder="Enter participant login" #login [formControl]="deleteParticipantQueryField"
+              <input class="form-control" id="login" placeholder="Enter participant login" name="login" #login [formControl]="deleteParticipantQueryField" [(ngModel)]="loginInput"
                      required>
               <div *ngIf="deleteParticipantQueryField.value">
                 <div style="margin-left: 10px" class="row">
                   <div *ngFor="let login of queryDeleteParticipants">
-                    <a style="color: white; cursor: pointer;" class="badge badge-pill badge-primary m-1" (click)="deleteParticipantQueryField.setValue(login)">{{ login }}</a>
+                    <a style="color: white; cursor: pointer;" class="badge badge-pill badge-primary m-1" (click)="deleteParticipantQueryField.setValue(login); deleteParticipantt.hide(); deleteParticipant(login);">{{ login }}</a>
                   </div>
                 </div>
               </div>
@@ -259,7 +260,7 @@
 
         <div class="app-modal-footer">
           <button class="btn btn-danger" [disabled]="deleteParticipantForm.form.invalid"
-                  (click)="deleteParticipantt.hide(); deleteParticipant(login)">Delete</button>
+                  (click)="deleteParticipantt.hide(); deleteParticipant(login.value)">Delete</button>
         </div>
       </app-modal-window>
     </div>
