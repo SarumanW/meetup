@@ -34,7 +34,7 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
     @Override
     public List<Folder> getUserFolders(int id) {
         log.debug("Try to get folders for user with id '{}'", id);
-        List<Folder> userFolders = new ArrayList<>();
+        List<Folder> userFolders;
 
         try {
             userFolders = jdbcTemplate.query(env.getProperty(FOLDER_GET_USER_FOLDERS),
@@ -45,7 +45,6 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
         }
 
         log.debug("Users folders for user with id '{}' were founded counted '{}' pcs", id, userFolders.size());
-
         return userFolders;
     }
 
@@ -65,7 +64,6 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
         }
 
         log.debug("Folder with id '{}' founded", id);
-
         return folder;
     }
 
@@ -85,7 +83,6 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
         }
 
         log.debug("Folder with name '{}' found", name);
-
         return folder;
     }
 
@@ -104,7 +101,6 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
         boolean isSuccessful = result == 0;
 
         log.debug("Moving events to general with id '{}' was {}", id, isSuccessful ? "successful" : "failed");
-
         return isSuccessful;
     }
 
@@ -124,7 +120,6 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
         }
 
         log.debug("Folder with id '{}' for user with id '{}' was found", id, userId);
-
         return folder;
     }
 
@@ -149,10 +144,7 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        if (model.getFolderId() != 0) {
-            log.debug("Inserting folder with name '{}' by user with id '{}' successful folder id '{}'", model.getName(), model.getUserId(), model.getFolderId());
-        }
-
+        log.debug("Inserting folder with name '{}' by user with id '{}' successful folder id '{}'", model.getName(), model.getUserId(), model.getFolderId());
         return model;
     }
 
@@ -169,7 +161,6 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
         }
 
         log.debug("Updating folder with id '{}' {}", model.getFolderId(), result == 0 ? "failed" : "successful");
-
         return model;
     }
 
@@ -185,7 +176,6 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
         }
 
         log.debug("Deleting folder with id '{}' {}", model.getFolderId(), result == 0 ? "failed" : "successful");
-
         return model;
     }
 }
