@@ -16,21 +16,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/chats")
+@RequestMapping(path = "/api/users/{userId}/chats")
 @PropertySource("classpath:strings.properties")
 public class ChatController {
 
     private static Logger log = LoggerFactory.getLogger(EventController.class);
 
     @Autowired
-    private WebSocketController webSocketController;
-
-    @Autowired
     private ChatService chatService;
 
-    // TODO: 23.05.2018 Check permisssion 
-    @PostMapping("/add")
-    public ResponseEntity<ChatIdsVM> addChats(@RequestBody int eventId) {
+    @PostMapping
+    @PreAuthorize("@chatAuthorization.isUserOwnerOfEvent(#userId, #eventId)")
+    public ResponseEntity<ChatIdsVM> addChats(@PathVariable int userId, @RequestBody int eventId) {
         log.debug("Trying to add chats for event with id '{}'", eventId);
 
         ChatIdsVM responseId = chatService.addChats(eventId);
@@ -40,9 +37,9 @@ public class ChatController {
         return new ResponseEntity<>(responseId, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("@chatPermissionChecker.checkByEventId(#eventId)")
     @GetMapping("/{eventId}")
-    public ResponseEntity<ChatIdsVM> getChatsIds(@PathVariable int eventId) {
+    @PreAuthorize("@chatAuthorization.checkByEventId(#userId, #eventId)")
+    public ResponseEntity<ChatIdsVM> getChatsIds(@PathVariable int userId, @PathVariable int eventId) {
         log.debug("Trying to get chats for event with id '{}'", eventId);
 
         ChatIdsVM responseId = chatService.getChatsIds(eventId);
@@ -52,9 +49,9 @@ public class ChatController {
         return new ResponseEntity<>(responseId, HttpStatus.OK);
     }
 
-    // TODO: 23.05.2018 Check permission 
     @DeleteMapping("/{eventId}")
-    public ResponseEntity<Integer> deleteChats(@PathVariable int eventId) {
+    @PreAuthorize("@chatAuthorization.isUserOwnerOfEvent(#userId, #eventId)")
+    public ResponseEntity<Integer> deleteChats(@PathVariable int userId, @PathVariable int eventId) {
         log.debug("Trying to delete eventId '{}'", eventId);
 
         chatService.deleteChats(eventId);
@@ -64,9 +61,9 @@ public class ChatController {
         return new ResponseEntity<>(eventId, HttpStatus.OK);
     }
 
-    @PreAuthorize("@chatPermissionChecker.checkById(#message.chatId)")
     @PostMapping("/message")
-    public ResponseEntity<Message> addMessage(@RequestBody Message message) {
+    @PreAuthorize("@chatAuthorization.checkByChatId(#userId, #message.chatId)")
+    public ResponseEntity<Message> addMessage(@PathVariable int userId, @RequestBody Message message) {
         log.debug("Trying to add message for chat with id '{}'", message.getChatId());
 
         Message result = chatService.addMessage(message);
@@ -76,36 +73,51 @@ public class ChatController {
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("@chatPermissionChecker.checkById(#chatId)")
     @GetMapping("/messages/{chatId}")
-    public ResponseEntity<List<Message>> getMessages(@PathVariable int chatId) {
+    @PreAuthorize("@chatAuthorization.checkByChatId(#userId, #chatId)")
+    public ResponseEntity<List<Message>> getMessages(@PathVariable int userId, @PathVariable int chatId) {
         log.debug("Trying to get messages for chat with id '{}'", chatId);
 
         List<Message> msgList = chatService.getMessagesByChatId(chatId);
 
+        log.debug("Send response body list messages and status OK");
+
         return new ResponseEntity<>(msgList, HttpStatus.OK);
     }
 
-    @PreAuthorize("@chatPermissionChecker.checkById(#chatId)")
     @GetMapping("{chatId}/members")
-    public ResponseEntity<List<String>> getMembers(@PathVariable int chatId) {
+    @PreAuthorize("@chatAuthorization.checkByChatId(#userId, #chatId)")
+    public ResponseEntity<List<String>> getMembers(@PathVariable int userId, @PathVariable int chatId) {
         log.debug("Trying to get members of chat with chatId '{}'", chatId);
-        return new ResponseEntity<>(chatService.getUserLogins(chatId), HttpStatus.OK);
+
+        List<String> memberLogins = chatService.getUserLogins(chatId);
+
+        log.debug("Received members '{}' from cache by chatId '{}'", chatId);
+
+        return new ResponseEntity<>(memberLogins, HttpStatus.OK);
     }
 
-    @PreAuthorize("@chatPermissionChecker.checkById(#chatId)")
     @PostMapping("{chatId}/member")
-    public ResponseEntity<String> addMember(@RequestBody String login, @PathVariable int chatId) {
+    @PreAuthorize("@chatAuthorization.checkByChatId(#userId, #chatId)")
+    public ResponseEntity<String> addMember(@RequestBody String login, @PathVariable int userId,  @PathVariable int chatId) {
         log.debug("Trying to add member of chat with chatId '{}'", chatId);
+
         chatService.addUserLogin(login, chatId);
+
+        log.debug("Added member '{}' from cache by chatId '{}'", login, chatId);
+
         return new ResponseEntity<>(login, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("@chatPermissionChecker.checkById(#chatId)")
     @DeleteMapping("{chatId}/member/{login}")
-    public ResponseEntity<String> deleteMember(@PathVariable String login, @PathVariable int chatId) {
+    @PreAuthorize("@chatAuthorization.checkByChatId(#userId, #chatId)")
+    public ResponseEntity<String> deleteMember(@PathVariable String login, @PathVariable int userId, @PathVariable int chatId) {
         log.debug("Trying to delete member of chat with chatId '{}'", chatId);
+
         chatService.deleteUserLogin(login, chatId);
+
+        log.debug("Deleted member '{}' from cache by chatId '{}'", login, chatId);
+
         return new ResponseEntity<>(login, HttpStatus.OK);
     }
 }

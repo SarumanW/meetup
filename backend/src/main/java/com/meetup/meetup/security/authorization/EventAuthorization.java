@@ -2,11 +2,13 @@ package com.meetup.meetup.security.authorization;
 
 import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.security.AuthenticationFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EventAuthorization extends AbstractAuthorization {
 
+    @Autowired
     public EventAuthorization(AuthenticationFacade authenticationFacade) {
         super(authenticationFacade);
     }

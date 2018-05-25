@@ -2,6 +2,7 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.ChatDao;
 import com.meetup.meetup.entity.Message;
+import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.DeleteChatException;
 import com.meetup.meetup.service.vm.ChatIdsVM;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.meetup.meetup.keys.Key.EXCEPTION_CHAT_DELETE;
 import static com.meetup.meetup.keys.Key.EXCEPTION_CHAT_MEMBER_DELETE;
@@ -31,45 +33,81 @@ public class ChatService {
     @Autowired
     private ChatDao chatDao;
 
-    private Map<Integer, List<String>> userLogins = new HashMap<>();
-
-    public List<Message> getMessagesByChatId(int chatId){
-        return chatDao.findMessagesByChatId(chatId);
-    }
-
-    public Message addMessage(Message message){
-        return chatDao.insertMessage(message);
-    }
+    private static Map<Integer, List<String>> userLogins = new ConcurrentHashMap<>();
 
     public ChatIdsVM addChats(int eventId) {
-        return chatDao.createChatsByEventId(eventId);
+        log.debug("Trying to add chats for event with id '{}'", eventId);
+
+        ChatIdsVM chatIdsVM = chatDao.createChatsByEventId(eventId);
+
+        log.debug("Created chats '{}' by eventId '{}'", chatIdsVM, eventId);
+
+        return chatIdsVM;
     }
 
     public ChatIdsVM getChatsIds(int eventId) {
-        return chatDao.findChatsIdsByEventId(eventId);
+        log.debug("Trying to get chats for event with id '{}'", eventId);
+
+        ChatIdsVM chatIdsVM = chatDao.findChatsIdsByEventId(eventId);
+
+        log.debug("Received chats '{}' by eventId '{}'", chatIdsVM, eventId);
+
+        return chatIdsVM;
     }
 
     public void deleteChats(int eventId) {
+        log.debug("Trying to delete chats for event with id '{}'", eventId);
 
         boolean success = chatDao.deleteChatsByEventId(eventId);
 
         if (!success) {
+            log.error("Failed deleting chats for event with id '{}'", eventId);
             throw new DeleteChatException(EXCEPTION_CHAT_DELETE);
         }
 
+        log.debug("Chats deleted successful for event with id '{}'", eventId);
+    }
+
+    public Message addMessage(Message message){
+        log.debug("Trying to add message '{}'", message);
+
+        Message addedMessage = chatDao.insertMessage(message);
+
+        log.debug("Message '{}' added successful", addedMessage);
+
+        return addedMessage;
+    }
+
+    public List<Message> getMessagesByChatId(int chatId){
+        log.debug("Trying to get messages by chat id '{}'", chatId);
+
+        List<Message> messages = chatDao.findMessagesByChatId(chatId);
+
+        log.debug("Messages was received");
+
+        return messages;
     }
 
     public void addUserLogin(String login, int chatId) {
         log.debug("Trying to add member of chat with chatId '{}' and login '{}'", chatId, login);
-        if (!userLogins.containsKey(chatId)) {
-            userLogins.put(chatId, new ArrayList<>());
+
+        if (!ChatService.userLogins.containsKey(chatId)) {
+            ChatService.userLogins.put(chatId, new ArrayList<>());
         }
 
-        userLogins.get(chatId).add(login);
+        ChatService.userLogins.get(chatId).add(login);
+
+        log.debug("Member was added to chat");
     }
 
     public List<String> getUserLogins(int chatId) {
-        return userLogins.get(chatId);
+        log.debug("Trying to get members of chat '{}'", chatId);
+
+        List<String> members = ChatService.userLogins.get(chatId);
+
+        log.debug("Received members '{}'", members);
+
+        return members;
     }
 
     public void deleteUserLogin(String login, int chatId) {
@@ -77,14 +115,15 @@ public class ChatService {
 
         boolean deleted = false;
 
-        if (userLogins.containsKey(chatId)) {
-            deleted = userLogins.get(chatId).remove(login);
+        if (ChatService.userLogins.containsKey(chatId)) {
+            deleted = ChatService.userLogins.get(chatId).remove(login);
         }
 
         if (!deleted) {
+            log.error("Failed deleting member with login '{}' from chat '{}'", login, chatId);
             throw new DeleteChatException(EXCEPTION_CHAT_MEMBER_DELETE);
         }
 
-        log.debug("Delete member with status '{}'", deleted);
+        log.debug("Member was deleted with login '{}' from chat '{}'", login, chatId);
     }
 }

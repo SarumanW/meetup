@@ -5,54 +5,76 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 @Injectable()
 export class ChatService {
 
-  constructor(private http: HttpClient) { }
+  currentUser;
+  prePath: string;
+
+  constructor(private http: HttpClient) {}
+
+  initPrePath() {
+    this.currentUser = JSON.parse(localStorage.currentUser);
+    this.prePath = `api/users/${this.currentUser.id}`;
+  }
 
   addChat(eventId: any):Observable<any>{
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    this.initPrePath();
 
-    return this.http.post('api/chats/add', eventId, {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    return this.http.post(`${this.prePath}/chats`, eventId, {headers: headers});
   }
 
   getChatIds(eventId: any):Observable<any>{
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    this.initPrePath();
 
-    return this.http.get('api/chats/' + eventId, {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    return this.http.get(`${this.prePath}/chats/` + eventId, {headers: headers});
   }
 
   addMessage(message: any):Observable<any>{
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    this.initPrePath();
 
-    return this.http.post('api/chats/message', message, {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    return this.http.post(`${this.prePath}/chats/message`, message, {headers: headers});
   }
 
   getMessages(chatId: any): Observable<any>{
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    this.initPrePath();
 
-    return this.http.get('api/chats/messages/' + chatId, {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    return this.http.get(`${this.prePath}/chats/messages/` + chatId, {headers: headers});
   }
 
   getMembers(chatId: any): Observable<any> {
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    this.initPrePath();
 
-    return this.http.get('api/chats/'  + chatId + '/members/', {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    return this.http.get(`${this.prePath}/chats/${chatId}/members/`, {headers: headers});
   }
 
   addMember(login: any, chatId: any): Observable<any> {
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    this.initPrePath();
 
-    return this.http.post('api/chats/' + chatId + '/member', login, {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    return this.http.post(`${this.prePath}/chats/${chatId}/member`, login, {headers: headers});
   }
 
   deleteMember(login: any, chatId: any): Observable<any> {
-    let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+    this.initPrePath();
 
-    return this.http.delete('api/chats/' + chatId + '/member/' + login, {headers: headers});
+    let headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
+
+    return this.http.delete(`${this.prePath}/chats/${chatId}/member/` + login, {headers: headers});
   }
 }

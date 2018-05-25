@@ -148,7 +148,7 @@ public class ProfileController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<User>> searchUsers(@RequestParam String username, @RequestParam String typeOfRelationship) {
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String username, @RequestParam(name = "type") String typeOfRelationship) {
         log.debug("Trying to search users by username '{}'",
                 username);
 
