@@ -17,7 +17,6 @@ import javax.validation.Valid;
 
 @RestController
 @PropertySource("classpath:strings.properties")
-@RequestMapping("/api")
 public class AccountController {
 
     private static Logger log = LoggerFactory.getLogger(AccountController.class);
@@ -25,7 +24,7 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<UserAndTokenVM> login(@Valid @RequestBody LoginVM loginModel) throws Exception {
         log.debug("Trying to login user by credentials");
 
@@ -41,7 +40,7 @@ public class AccountController {
         return new ResponseEntity<>(userAndTokenVM, headers, HttpStatus.OK);
     }
 
-    @PostMapping("/register")
+    @PostMapping("/auth/register")
     public ResponseEntity registerAccount(@Valid @RequestBody User user) throws Exception {
         log.debug("Trying to register user");
 
@@ -52,7 +51,7 @@ public class AccountController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
-    @PostMapping("/confirmation")
+    @PostMapping("/auth/confirmation")
     public ResponseEntity confirmRegistration(@Valid @RequestBody RecoveryPasswordVM model) throws Exception {
         log.debug("Trying to confirm password for user by token '{}'", model.getToken());
 
@@ -63,7 +62,7 @@ public class AccountController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/recovery/{email}")
+    @GetMapping("/auth/recovery/{email}")
     public ResponseEntity mailRecoveryPassword(@PathVariable String email) throws Exception {
         log.debug("Trying to recovery password by email '{}'", email);
 
@@ -74,7 +73,7 @@ public class AccountController {
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/recovery")
+    @PostMapping("/auth/recovery")
     public ResponseEntity passwordRecovery(@Valid @RequestBody RecoveryPasswordVM model) throws Exception{
         log.debug("Trying to recovery password by token '{}'", model.getToken());
 
@@ -85,7 +84,7 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/check.password")
+    @PostMapping("/api/check/password")
     public ResponseEntity passwordCheck(@Valid @RequestBody RecoveryPasswordVM model) throws Exception{
         log.debug("Trying to check password by token '{}'", model.getToken());
 
@@ -96,7 +95,7 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/change.password")
+    @PostMapping("/api/change/password")
     public ResponseEntity passwordChange(@Valid @RequestBody RecoveryPasswordVM model) throws Exception{
         log.debug("Trying to change password by token '{}'", model.getToken());
 

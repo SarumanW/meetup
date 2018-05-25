@@ -1,5 +1,6 @@
 package com.meetup.meetup.security.jwt;
 
+import com.meetup.meetup.config.SecurityConfig;
 import com.meetup.meetup.entity.User;
 import jdk.nashorn.internal.parser.Token;
 import org.springframework.security.core.Authentication;
@@ -20,7 +21,7 @@ public class JwtAuthenticatedProfile implements Authentication {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singletonList(new SimpleGrantedAuthority(SecurityConfig.ROLE_USER));
     }
 
     @Override
