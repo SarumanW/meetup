@@ -5,7 +5,6 @@ import com.meetup.meetup.dao.rowMappers.MessageRowMapper;
 import com.meetup.meetup.entity.Message;
 import com.meetup.meetup.entity.Role;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
-import com.meetup.meetup.exception.runtime.DeleteException;
 import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import com.meetup.meetup.service.vm.ChatCheckEntity;
 import com.meetup.meetup.service.vm.ChatIdsVM;
@@ -19,7 +18,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
