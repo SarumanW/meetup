@@ -1,8 +1,6 @@
 package com.meetup.meetup.security.authorization;
 
-import com.meetup.meetup.dao.FolderDao;
 import com.meetup.meetup.dao.ItemCommentDao;
-import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.ItemComment;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.security.AuthenticationFacade;

@@ -60,15 +60,11 @@ public class ItemCommentDaoImpl extends AbstractDao<ItemComment> implements Item
         try {
             model.setCommentId(insertItem.executeAndReturnKey(itemCommentParameters).intValue());
         } catch (DataAccessException e) {
-            log.error("Query fails by insert item !!!'{}'", model);
+            log.error("Query fails by insert item '{}'", model);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        if (model.getItemId() != 0) {
-            log.debug("Item Comment was added with id '{}'", model.getItemId());
-        } else {
-            log.debug("Item Comment wasn't added item '{}'", model);
-        }
+        log.debug("Item Comment was added with id '{}'", model.getItemId());
         return model;
     }
 
@@ -100,11 +96,12 @@ public class ItemCommentDaoImpl extends AbstractDao<ItemComment> implements Item
         List<ItemComment> itemComment;
         try {
             itemComment = jdbcTemplate.query(env.getProperty(ITEM_COMMENT_FIND_COMMENTS_BY_ITEM_ID),
-                    new Object[]{itemId} , new ItemCommentRowMapper());
+                    new Object[]{itemId}, new ItemCommentRowMapper());
         } catch (DataAccessException e) {
             log.error("Query fails by find comments by item id: '{}'", itemId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
+        log.debug("Returning comments '{}' for item with id '{}'", itemId);
         return itemComment;
     }
 }

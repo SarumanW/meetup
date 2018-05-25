@@ -184,6 +184,10 @@ public class EventService {
 
         chatDao.deleteChatsByEventId(eventId);
 
+        log.debug("Try to unpin event with id : '{}', for all users", eventDao.unpinAllOnDelete(eventId));
+
+        log.debug("Try to unpin event with id : '{}', for all users", eventId);
+
         log.debug("Trying to delete eventId '{}' from database", eventId);
         return eventDao.delete(event);
     }

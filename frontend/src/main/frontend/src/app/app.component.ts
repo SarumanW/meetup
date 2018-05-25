@@ -12,16 +12,16 @@ import {ToastrService} from "ngx-toastr";
 export class AppComponent {
 
   showLogout : boolean = true;
-  profile : Profile;
-
 
   ngOnInit(){
-    this.router.events.subscribe(event => this.modifyHeader(event),
-      error => this.showError(error,"Error"));
-    this.profile = JSON.parse(localStorage.getItem('currentUser'));
+    console.log("app.component on init")
   }
 
-  constructor(private router : Router, private toastr: ToastrService,){}
+  constructor(private router : Router, private toastr: ToastrService,){
+    console.log("app.component constructor")
+    this.router.events.subscribe(event => this.modifyHeader(event),
+      error => this.showError(error,"Error"));
+  }
 
   logout(){
     localStorage.clear();
@@ -29,8 +29,10 @@ export class AppComponent {
   }
 
   modifyHeader(location) {
+    console.log(location.url)
     if (location.url === "/login" || location.url === "/register" || location.url === '/' || location.url === '/continueReg'
-    || location.url === "/recovery" || location.url === "/thankyou")
+    || location.url === "/recovery" || location.url === "/thankyou"
+      || (location.url && (location.url.toString().startsWith("/recovery")||location.url.toString().startsWith("/confirmation"))))
     {
       this.showLogout = false;
     } else {
@@ -41,7 +43,7 @@ export class AppComponent {
   goToProfile(){
 
     if(localStorage.currentUser){
-      this.router.navigate(['/' + this.profile.login + "/profile"]);
+      this.router.navigate(['/' + this.login() + "/profile"]);
     } else {
       this.router.navigate(['/login']);
     }
@@ -52,7 +54,12 @@ export class AppComponent {
     if(error.status === 418) {
       message = 'Please try again later';
       title = 'Server Error'
-    } else {
+    } if(error.status === 401){
+      message = 'Please login to the system again';
+      title = 'Authentication failed'
+      this.logout()
+    }
+    else {
       message = error.error;
     }
       this.toastr.error(message, title, {

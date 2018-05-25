@@ -8,6 +8,7 @@ import {AppComponent} from "../../app.component";
 import {ChatService} from "../../chat/chat.service";
 import {FriendService} from "../../account/friends/friend.service";
 import {FormControl} from "@angular/forms";
+import {AccountService} from "../../account/account.service";
 
 @Component({
   selector: 'app-event',
@@ -30,6 +31,7 @@ export class EventComponent implements OnInit {
   currentDate: string;
   datee: any;
   time: string;
+  ownerLogin: string;
   tempType: string;
   tempTypeShow: string;
   shouldShow: boolean;
@@ -41,7 +43,9 @@ export class EventComponent implements OnInit {
   addParticipantQueryField: FormControl = new FormControl();
   queryDeleteParticipants: string[] = [];
   queryUsers: string[] = [];
-  place:string
+  place:string;
+  ownerId:number;
+
 
   constructor(private eventService: EventService,
               private friendService: FriendService,
@@ -50,7 +54,8 @@ export class EventComponent implements OnInit {
               private spinner: NgxSpinnerService,
               private router: Router,
               private appComponent: AppComponent,
-              private chatService: ChatService) {
+              private chatService: ChatService,
+              private accountService: AccountService) {
   }
 
   ngOnInit() {
@@ -65,6 +70,7 @@ export class EventComponent implements OnInit {
       this.time = "00:00";
       this.shouldShow = false;
       this.datee = this.currentDate;
+
       this.isPinned = (this.eventId === JSON.parse(localStorage.getItem('currentUser')).pinedEventId)
     }, error => {
       this.appComponent.showError('Unsuccessful event loading', 'Loading error');
@@ -96,20 +102,28 @@ export class EventComponent implements OnInit {
       if (eventt.eventType === 'EVENT') {
         this.getChatIds(eventt);
       }
+      this.accountService.getLoginById(eventt.ownerId).subscribe(
+        login => {
+          this.ownerLogin = login;
+          this.spinner.hide();
+
       this.eventService.getPlace(eventt.place).subscribe(
         place => {
           this.place = place.results[0].formatted_address
           this.spinner.hide();
-        }, error1 => {
+        }, error => {
           this.spinner.hide();
           this.appComponent.showError('Unsuccessful event loading', 'Loading error');
-        }
-      )
+        })
+    }, error => {
+          this.ownerLogin = null;
+          this.spinner.hide();
+    })
     }, error => {
       this.spinner.hide();
       this.appComponent.showError('Unsuccessful event loading', 'Loading error');
     });
-  }
+  };
 
   isParticipantt() {
     if (this.eventt.participants !== null) {

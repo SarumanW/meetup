@@ -7,7 +7,7 @@
         <div class="panel panel-white post panel-shadow">
           <div class="post-heading">
             <div class="pull-left image">
-              <img *ngIf="!comment.imageFilepath" src="http://bootdey.com/img/Content/user_1.jpg" class="img-circle avatar" alt="user profile image">
+              <img *ngIf="!comment.imageFilepath" src="assets/avatar-default.jpg" class="img-circle avatar" alt="user profile image">
               <img *ngIf="comment.imageFilepath" [src]="comment.imageFilepath" class="img-circle avatar" alt="user profile image">
             </div>
             <div class="pull-left meta">

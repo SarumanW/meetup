@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -129,7 +128,6 @@ public class ProfileController {
 
     @GetMapping("/userRelations/{userId}")
     public ResponseEntity<String> userRelations(@PathVariable() int userId){
-
         log.debug("Trying to get relation between user with id '{}' and authenticated user", userId);
 
         String relation = profileService.userRelations(userId);
@@ -150,11 +148,11 @@ public class ProfileController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<User>> searchUsers(@RequestParam String username, @RequestParam String type) {
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String username, @RequestParam String typeOfRelationship) {
         log.debug("Trying to search users by username '{}'",
                 username);
 
-        List<User> users = profileService.getUnknownUsers(username, type);
+        List<User> users = profileService.getUsersByRelationshipType(username, typeOfRelationship);
 
         log.debug("Found users '{}'", users.toString());
 

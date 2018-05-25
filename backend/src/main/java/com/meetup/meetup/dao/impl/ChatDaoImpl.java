@@ -55,8 +55,7 @@ public class ChatDaoImpl implements ChatDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        log.debug("Message '{}' was insert" + (id != 0 ? "ed with id '{}'" : "ing failed"), message, id);
-
+        log.debug("Message '{}' was inserted with id '{}'", message, id);
         return message;
     }
 
@@ -100,8 +99,7 @@ public class ChatDaoImpl implements ChatDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        log.debug("Chat was insert" + (chatId == 0 ? "ed with id '{}'" : "ing failed"), chatId);
-
+        log.debug("Chat was inserted with id '{}'", chatId);
         return chatId;
     }
 
@@ -189,7 +187,7 @@ public class ChatDaoImpl implements ChatDao {
 
     @Override
     public List<Message> findMessagesByChatId(int chatId) {
-        List<Message> messages = new ArrayList<>();
+        List<Message> messages;
 
         log.debug("Try to find messages with chatId '{}'", chatId);
 
@@ -226,6 +224,7 @@ public class ChatDaoImpl implements ChatDao {
             log.error("Query fails by finding messages with chatId '{}' and userId '{}'", chatId, userId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
+        log.debug("User with id '{}' can join to chat with id '{}' : '{}'", userId, chatId, checkEntity);
         return checkEntity;
 
     }

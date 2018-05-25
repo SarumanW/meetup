@@ -124,11 +124,13 @@
               <li *ngIf="eventt.eventType !== 'NOTE'" class="list-group-item">Periodicity: {{eventt.periodicity}}</li>
               <li class="list-group-item">Place: {{place}}</li>
               <li *ngIf="eventt.isDraft === true" class="list-group-item">Draft</li>
-              <li *ngIf="eventt.description" class="list-group-item">Description: {{eventt.description}}</li>
-            </ul>
-          </div>
+              <li *ngIf="eventt.description" class="list-group-item">Description:   {{eventt.description}}</li>
+              <li *ngIf="eventt.ownerId !== 0" class="list-group-item"> Event owner:
+                <a href="#/{{ownerLogin}}/profile">{{ownerLogin}}</a></li>
+                   </ul>
 
-        </div>
+            </div>
+          </div>
 
         <br>
 

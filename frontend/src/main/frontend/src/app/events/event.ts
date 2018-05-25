@@ -5,6 +5,7 @@ export class Evento{
   eventDate : string;
   description : string;
   periodicityId : number;
+  ownerLogin: string;
   periodicity : string;
   place : string;
   eventTypeId : number;
@@ -35,6 +36,7 @@ export class Evento{
     itemClone.isPinned = this.isPinned;
     itemClone.imageFilepath = this.imageFilepath;
     itemClone.participants = this.participants;
+
     return itemClone;
   }
 }
