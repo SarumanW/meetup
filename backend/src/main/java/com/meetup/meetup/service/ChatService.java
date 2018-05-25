@@ -2,7 +2,7 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.ChatDao;
 import com.meetup.meetup.entity.Message;
-import com.meetup.meetup.exception.runtime.DeleteChatException;
+import com.meetup.meetup.exception.runtime.DeleteException;
 import com.meetup.meetup.service.vm.ChatIdsVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.meetup.meetup.keys.Key.EXCEPTION_CHAT_DELETE;
-import static com.meetup.meetup.keys.Key.EXCEPTION_CHAT_MEMBER_DELETE;
+import static com.meetup.meetup.keys.Key.EXCEPTION_DELETE;
+import static com.meetup.meetup.keys.Key.EXCEPTION_UPDATE;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -50,13 +50,7 @@ public class ChatService {
     }
 
     public void deleteChats(int eventId) {
-
-        boolean success = chatDao.deleteChatsByEventId(eventId);
-
-        if (!success) {
-            throw new DeleteChatException(EXCEPTION_CHAT_DELETE);
-        }
-
+        chatDao.deleteChatsByEventId(eventId);
     }
 
     public void addUserLogin(String login, int chatId) {
@@ -82,9 +76,9 @@ public class ChatService {
         }
 
         if (!deleted) {
-            throw new DeleteChatException(EXCEPTION_CHAT_MEMBER_DELETE);
+            throw new DeleteException(EXCEPTION_DELETE);
         }
 
-        log.debug("Delete member with status '{}'", deleted);
+        log.debug("Delete member with login '{}'", login);
     }
 }

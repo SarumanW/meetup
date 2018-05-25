@@ -214,8 +214,8 @@ public final class Key {
     public static final String EXCEPTION_NO_TOKEN = "no.token.exception";
     public static final String EXCEPTION_MAIL_SERVER = "mail.server.exception";
     public static final String EXCEPTION_PARSE_DATE = "parse.date.exception";
-    public static final String EXCEPTION_CHAT_DELETE= "chat.delete.exception";
-    public static final String EXCEPTION_CHAT_MEMBER_DELETE= "chat.member.delete.exception";
+    public static final String EXCEPTION_DELETE = "delete.exception";
+    public static final String EXCEPTION_UPDATE = "update.exception";
     public static final String EXCEPTION_ITEM_IS_IN_WISHLIST= "item.is.in.wishlist.exception";
     public static final String EXCEPTION_REQUEST_ALREADY_SENT= "request.already.sent.exception";
 

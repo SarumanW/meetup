@@ -1,7 +1,6 @@
 package com.meetup.meetup.dao;
 
 import com.meetup.meetup.entity.Event;
-import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.Role;
 import com.meetup.meetup.entity.User;
 
@@ -40,7 +39,7 @@ public interface EventDao extends Dao<Event> {
 
     Event deleteMembers(Event event);
 
-    int deleteParticipant(int ownerId, int eventId, int participantId);
+    void deleteParticipant(int ownerId, int eventId, int participantId);
 
     int unpinAllOnDelete(int eventId);
 }

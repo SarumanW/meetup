@@ -12,7 +12,7 @@ public interface UserDao extends Dao<User> {
 
     User update(User model);
 
-    boolean updatePassword(User user);
+    void updatePassword(User user);
 
     int confirmFriend(int userId, int friendId);
 

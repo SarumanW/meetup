@@ -5,6 +5,8 @@ import com.meetup.meetup.dao.rowMappers.MessageRowMapper;
 import com.meetup.meetup.entity.Message;
 import com.meetup.meetup.entity.Role;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import com.meetup.meetup.exception.runtime.DeleteException;
+import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import com.meetup.meetup.service.vm.ChatCheckEntity;
 import com.meetup.meetup.service.vm.ChatIdsVM;
 import org.slf4j.Logger;
@@ -106,8 +108,7 @@ public class ChatDaoImpl implements ChatDao {
     }
 
     @Override
-    @Transactional
-    public boolean deleteChatsByEventId(int eventId) {
+    public void deleteChatsByEventId(int eventId) {
         log.debug("Try to delete chats by event id '{}'", eventId);
 
         int result;
@@ -122,12 +123,10 @@ public class ChatDaoImpl implements ChatDao {
         }
 
         if (result < 2) {
-            log.debug("Chats deleting failed with eventId '{}'", eventId);
+            log.error("Chats deleting failed with eventId '{}'", eventId);
         } else {
             log.debug("Chats was deleted successfully by eventId '{}'", eventId);
         }
-
-        return result >= 2;
     }
 
     private void deleteMessagesByEventId(int eventId) {
@@ -165,7 +164,7 @@ public class ChatDaoImpl implements ChatDao {
     }
 
     private int findChatIdByEventIdAndChatTypeId(int eventId, int chatTypeId) {
-        int chatId = 0;
+        int chatId;
 
         log.debug("Try to find events with eventId '{}' and chatTypeId '{}'", eventId);
 
@@ -173,7 +172,7 @@ public class ChatDaoImpl implements ChatDao {
             List<Integer> chatIds = jdbcTemplate.query(env.getProperty(CHAT_FIND_CHAT_ID_BY_EVENT_ID_AND_CHAT_TYPE_ID),
                     new Object[]{eventId, chatTypeId}, (rs,rowNum)->rs.getInt(1));
             if(chatIds.isEmpty()){
-                return 0;
+                throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "Chat", "eventId", eventId));
             } else{
                 chatId = chatIds.get(0);
             }
@@ -189,7 +188,7 @@ public class ChatDaoImpl implements ChatDao {
 
     @Override
     public List<Message> findMessagesByChatId(int chatId) {
-        List<Message> messages = new ArrayList<>();
+        List<Message> messages;
 
         log.debug("Try to find messages with chatId '{}'", chatId);
 

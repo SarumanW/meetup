@@ -5,11 +5,13 @@ import com.meetup.meetup.dao.FolderDao;
 import com.meetup.meetup.dao.rowMappers.FolderRowMapper;
 import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import com.meetup.meetup.exception.runtime.DeleteException;
 import com.meetup.meetup.exception.runtime.EntityNotFoundException;
-import org.slf4j.Logger;
+import com.meetup.meetup.exception.runtime.UpdateException;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -44,6 +46,10 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
+        if (userFolders.isEmpty()) {
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "Folder", "userId", id));
+        }
+
         log.debug("Users folders for user with id '{}' were founded counted '{}' pcs", id, userFolders.size());
 
         return userFolders;
@@ -59,6 +65,9 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
                     env.getProperty(FOLDER_GET_BY_ID),
                     new Object[]{id}, new FolderRowMapper()
             );
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Folder was not found by  folderId '{}'", id);
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "Folder", "folderId", id));
         } catch (DataAccessException e) {
             log.error("Query fails by finding folder with id '{}'", id);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -70,29 +79,9 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
     }
 
     @Override
-    public Folder findByName(String name) {
-        log.debug("Try to find folder with name '{}'", name);
-        Folder folder;
-
-        try {
-            folder = jdbcTemplate.queryForObject(
-                    env.getProperty(FOLDER_GET_BY_NAME),
-                    new Object[]{name}, new FolderRowMapper()
-            );
-        } catch (DataAccessException e) {
-            log.error("Query fails by finding folder with name '{}'", name);
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
-
-        log.debug("Folder with name '{}' found", name);
-
-        return folder;
-    }
-
-    @Override
-    public boolean moveEventsToGeneral(int id) {
+    public void moveEventsToGeneral(int id) {
         log.debug("Try to move events to general with id '{}'", id);
-        int result = 0;
+        int result;
         try {
             result = jdbcTemplate.update(env.getProperty(FOLDER_REMOVE_EVENTS), id);
 
@@ -101,11 +90,8 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        boolean isSuccessful = result == 0;
+        log.debug("Moving events to general with id '{}' was successful", id);
 
-        log.debug("Moving events to general with id '{}' was {}", id, isSuccessful ? "successful" : "failed");
-
-        return isSuccessful;
     }
 
     @Override
@@ -118,6 +104,9 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
                     env.getProperty(FOLDER_GET_BY_ID),
                     new Object[]{id, userId}, new FolderRowMapper()
             );
+        }catch (EmptyResultDataAccessException e) {
+            log.error("Folder was not found by  folderId '{}'", id);
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "Folder", "folderId", id));
         } catch (DataAccessException e) {
             log.error("Query fails by finding folder with id '{}' for user with id '{}'", id, userId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -149,9 +138,7 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        if (model.getFolderId() != 0) {
-            log.debug("Inserting folder with name '{}' by user with id '{}' successful folder id '{}'", model.getName(), model.getUserId(), model.getFolderId());
-        }
+        log.debug("Inserting folder with name '{}' by user with id '{}' successful folder id '{}'", model.getName(), model.getUserId(), model.getFolderId());
 
         return model;
     }
@@ -159,7 +146,7 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
     @Override
     public Folder update(Folder model) {
         log.debug("Try to update folder with id '{}'", model.getFolderId());
-        int result = 0;
+        int result;
         try {
             result = jdbcTemplate.update(env.getProperty(FOLDER_UPDATE),
                     model.getName(), model.getFolderId());
@@ -168,7 +155,11 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        log.debug("Updating folder with id '{}' {}", model.getFolderId(), result == 0 ? "failed" : "successful");
+        if (result == 0) {
+            throw new UpdateException(env.getProperty(EXCEPTION_UPDATE));
+        }
+
+        log.debug("Updating folder with id '{} was successful", model.getFolderId());
 
         return model;
     }
@@ -176,7 +167,7 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
     @Override
     public Folder delete(Folder model) {
         log.debug("Try to delete folder with id '{}'", model.getFolderId());
-        int result = 0;
+        int result;
         try {
             result = jdbcTemplate.update(env.getProperty(FOLDER_DELETE), model.getFolderId());
         } catch (DataAccessException e) {
@@ -184,7 +175,11 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        log.debug("Deleting folder with id '{}' {}", model.getFolderId(), result == 0 ? "failed" : "successful");
+        if (result == 0) {
+            throw new DeleteException(EXCEPTION_DELETE);
+        }
+
+        log.debug("Deleting folder with id '{}' was successful", model.getFolderId());
 
         return model;
     }

@@ -5,9 +5,12 @@ import com.meetup.meetup.dao.ItemCommentDao;
 import com.meetup.meetup.dao.rowMappers.ItemCommentRowMapper;
 import com.meetup.meetup.entity.ItemComment;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import com.meetup.meetup.exception.runtime.DeleteException;
+import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -34,6 +37,9 @@ public class ItemCommentDaoImpl extends AbstractDao<ItemComment> implements Item
         ItemComment itemComment;
         try {
             itemComment = jdbcTemplate.queryForObject(env.getProperty(ITEM_COMMENT_FIND_BY_ID), new Object[]{id}, new ItemCommentRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Folder was not found by  folderId '{}'", id);
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "ItemComment", "id", id));
         } catch (DataAccessException e) {
             log.error("Query fails by find comment by comment id: '{}'", id);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
@@ -64,23 +70,18 @@ public class ItemCommentDaoImpl extends AbstractDao<ItemComment> implements Item
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        if (model.getItemId() != 0) {
-            log.debug("Item Comment was added with id '{}'", model.getItemId());
-        } else {
-            log.debug("Item Comment wasn't added item '{}'", model);
-        }
         return model;
     }
 
     @Override
     public ItemComment update(ItemComment model) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ItemComment delete(ItemComment model) {
         log.debug("Try to delete comment with id '{}'", model.getCommentId());
-        int result = 0;
+        int result;
         try {
             result = jdbcTemplate.update(env.getProperty(ITEM_COMMENT_DELETE), model.getCommentId());
         } catch (DataAccessException e) {
@@ -88,7 +89,11 @@ public class ItemCommentDaoImpl extends AbstractDao<ItemComment> implements Item
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        log.debug("Deleting comment with id '{}' {}", model.getCommentId(), result == 0 ? "failed" : "successful");
+        if (result == 0) {
+            throw new DeleteException(EXCEPTION_DELETE);
+        }
+
+        log.debug("Deleting comment with id '{}' was successful", model.getCommentId());
 
         return model;
     }

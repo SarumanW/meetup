@@ -9,17 +9,17 @@ import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.Role;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import com.meetup.meetup.exception.runtime.DeleteException;
 import com.meetup.meetup.exception.runtime.EntityNotFoundException;
+import com.meetup.meetup.exception.runtime.UpdateException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,9 +40,6 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
 
     @Autowired
     private UserDao userDao;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     private static final int OWNER_ID = 1;
     private static final int PARTICIPANT_ID = 2;
@@ -182,7 +179,8 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (result == 0) {
-            log.debug("Insert user event with user id '{}', event id '{}', role id '{}' not successful", userId, eventId, roleId);
+            log.error("Insert user event with user id '{}', event id '{}', role id '{}' not successful", userId, eventId, roleId);
+            throw new UpdateException(env.getProperty(EXCEPTION_UPDATE));
         } else {
             log.debug("Insert user event with user id '{}', event id '{}', role id '{}' successful", userId, eventId, roleId);
         }
@@ -200,7 +198,8 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
         }
 
         if (result == 0) {
-            log.debug("Insert user event with participant id '{}', event id '{}', owner id '{}' not successful", participantId, eventId, ownerId);
+            log.error("Insert user event with participant id '{}', event id '{}', owner id '{}' not successful", participantId, eventId, ownerId);
+            throw new UpdateException(env.getProperty(EXCEPTION_UPDATE));
         } else {
             log.debug("Insert user event with participant id '{}', event id '{}', owner id '{}' successful", participantId, eventId, ownerId);
         }
@@ -209,9 +208,10 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
     @Override
     public Event deleteParticipants(int ownerId, Event model) {
         log.debug("Try to delete event participants with eventId '{}'", model.getEventId());
+        int result;
 
         try {
-            jdbcTemplate.update(env.getProperty(EVENT_DELETE_PARTICIPANTS), model.getEventId(), ownerId);
+            result = jdbcTemplate.update(env.getProperty(EVENT_DELETE_PARTICIPANTS), model.getEventId(), ownerId);
             model.setParticipants(null);
         } catch (DataAccessException e) {
             log.error("Query fails by delete participants of event with id '{}'", model.getEventId());
@@ -226,14 +226,19 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
     @Override
     public Event deleteMembers(Event event) {
         log.debug("Try to delete event members with eventId '{}'", event.getEventId());
+        int result;
 
         try {
-            jdbcTemplate.update(env.getProperty(EVENT_DELETE_MEMBERS), event.getEventId());
+            result = jdbcTemplate.update(env.getProperty(EVENT_DELETE_MEMBERS), event.getEventId());
             event.setParticipants(null);
             event.setOwnerId(0);
         } catch (DataAccessException e) {
             log.error("Query fails by delete participants of event with id '{}'", event.getEventId());
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        }
+
+        if (result == 0) {
+            throw new DeleteException(EXCEPTION_DELETE);
         }
 
         log.debug("Members of event with id '{}' was deleted successfully", event.getEventId());
@@ -242,7 +247,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
     }
 
     @Override
-    public int deleteParticipant(int ownerId, int eventId, int participantId) {
+    public void deleteParticipant(int ownerId, int eventId, int participantId) {
         int result;
 
         log.debug("Try to delete event members with eventId '{}'", eventId);
@@ -254,9 +259,12 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
+        if (result == 0) {
+            throw new DeleteException(EXCEPTION_DELETE);
+        }
+
         log.debug("Members of event with id '{}' was deleted successfully", eventId);
 
-        return result;
     }
 
     @Override
@@ -342,6 +350,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
 
         if (result == 0) {
             log.debug("Update event with id '{}' not successful", model.getEventId());
+            throw new UpdateException(env.getProperty(EXCEPTION_UPDATE));
         } else {
             log.debug("Update event with id '{}' successful", model.getEventId());
         }
@@ -362,6 +371,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
 
         if (result == 0) {
             log.debug("Event with id '{}' was not deleted successful", model.getEventId());
+            throw new DeleteException(EXCEPTION_DELETE);
         } else {
             log.debug("Event with id '{}' was deleted successful", model.getEventId());
         }
@@ -457,6 +467,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
                 log.debug("Pin by event id: '{}', user id: '{}' was added", eventId, userId);
             } else {
                 log.debug("Pin by event id: '{}', user id: '{}' was not added", eventId, userId);
+                throw new UpdateException(env.getProperty(EXCEPTION_UPDATE));
             }
         } catch (DataAccessException e) {
             log.error("Query fails by pin event with id: '{}', user id: '{}'", eventId, userId);
@@ -477,6 +488,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
                 log.debug("Unpin by event name: '{}', user id: '{}' was removed", eventId, userId);
             } else {
                 log.debug("Unpin by event name: '{}', user id: '{}' was not removed", eventId, userId);
+                throw new DeleteException(EXCEPTION_DELETE);
             }
         } catch (DataAccessException e) {
             log.error("Query fails by pin event: '{}', user id: '{}'", eventId, userId);
@@ -496,7 +508,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             if (result != 0) {
                 log.debug("Unpin event with id : '{}', for all users", eventId);
             } else {
-                log.debug("Can not unpin event with id : '{}', for all users", eventId);
+                log.debug("No users for unpin event with id : '{}', for all users", eventId);
             }
         } catch (DataAccessException e) {
             log.error("Query fails by unpin event: '{}' for all users", eventId);

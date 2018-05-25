@@ -6,13 +6,16 @@ import com.meetup.meetup.dao.rowMappers.UserRowMapper;
 import com.meetup.meetup.entity.Folder;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.DatabaseWorkException;
+import com.meetup.meetup.exception.runtime.DeleteException;
 import com.meetup.meetup.exception.runtime.EntityNotFoundException;
+import com.meetup.meetup.exception.runtime.UpdateException;
 import com.meetup.meetup.exception.runtime.frontend.detailed.RequestAlreadySentException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -85,25 +88,24 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public User findByLogin(String login) {
         log.debug("Try to find User by login: '{}'", login);
-        List<User> users;
+        User user;
         try {
-            users = jdbcTemplate.query(
+            user = jdbcTemplate.queryForObject(
                     env.getProperty(USER_FIND_BY_LOGIN),
                     new Object[]{login}, new UserRowMapper() {
                     }
             );
+        } catch (EmptyResultDataAccessException e) {
+            log.error("User was not found by  login '{}'", login);
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "login", login));
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with login '{}'", login);
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "login", login));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
         log.debug("User with login '{}' was found", login);
 
-        if(users.isEmpty()){
-            return null;
-        }
-
-        return users.get(0);
+        return user;
     }
 
     @Override
@@ -117,9 +119,12 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                     new Object[]{email}, new UserRowMapper() {
                     }
             );
+        } catch (EmptyResultDataAccessException e) {
+            log.error("User was not found by  email '{}'", email);
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "email", email));
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with email '{}'", email);
-            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "email", email));
+            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
         log.debug("User with email '{}' was found", email);
@@ -131,7 +136,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         log.debug("Try to getFriends by userId '{}'", userId);
 
         List<User> friends = jdbcTemplate.query(env.getProperty(USER_GET_FRIENDS), new Object[]{userId, userId}, new UserRowMapper());
-        log.debug("Freinds found: '{}'", friends);
+        log.debug("Friends found: '{}'", friends);
 
         return friends;
     }
@@ -140,7 +145,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public boolean addFriend(int senderId, int receiverId) {
         log.debug("Try to addFriend from '{}' to '{}'", senderId, receiverId);
-        int result = 0;
+        int result;
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName(TABLE_FRIEND);
@@ -164,7 +169,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             log.debug("addFriend from '{}' to '{}' successful", senderId, receiverId);
             return true;
         } else {
-            log.debug("addFriend from '{}' to '{}' not successful", senderId, receiverId);
+            log.error("addFriend from '{}' to '{}' not successful", senderId, receiverId);
             return false;
         }
 
@@ -195,7 +200,10 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         }
         if (result != 0) {
             log.debug("Friendship confirm between '{}' and '{}'", userId, friendId);
-        } else log.debug("Friendship not confirm between '{}' and '{}'", userId, friendId);
+        } else {
+            log.error("Friendship not confirm between '{}' and '{}'", userId, friendId);
+            throw new UpdateException(env.getProperty(EXCEPTION_UPDATE));
+        }
         return userId;
     }
 
@@ -212,7 +220,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         if (result != 0) {
             log.debug("Friendship delete between '{}' and '{}'", userId, friendId);
         } else {
-            log.debug("Friendship not delete between '{}' and '{}'", userId, friendId);
+            log.error("Friendship not delete between '{}' and '{}'", userId, friendId);
+            throw new DeleteException(EXCEPTION_DELETE);
         }
         return userId;
     }
@@ -229,15 +238,16 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
                     }
             );
 
-        } catch (DataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
+            log.error("User with id '{}' not found", id);
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "User", "id", id));
+        }catch (DataAccessException e) {
             log.error("Query fails by finding user with id '{}'", id);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
-        if (user == null) {
-            log.debug("User with id '{}' not found", id);
-        } else {
-            log.debug("User with id '{}' was found", id);
-        }
+
+        log.debug("User with id '{}' was found", id);
+
         return user;
     }
 
@@ -274,12 +284,6 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        if (model.getId() != 0) {
-            log.debug("user was added with id '{}'", id);
-        } else {
-            log.debug("user wasn't added with login '{}'", model.getLogin());
-        }
-
         Folder folder = new Folder();
         folder.setName("general");
         folder.setUserId(id);
@@ -288,7 +292,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         int generalFolderId = folderDao.insert(folder).getFolderId();
 
-        log.debug("general folder was inserted with id '{}'", generalFolderId);
+        log.debug("General folder was inserted with id '{}'", generalFolderId);
 
         return model;
     }
@@ -308,13 +312,14 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         if (result != 0) {
             log.debug("user with id'{}' was updated", model.getId());
         } else {
-            log.debug("user with id'{}' was not updated", model.getId());
+            log.error("user with id'{}' was not updated", model.getId());
+            throw new UpdateException(env.getProperty(EXCEPTION_UPDATE));
         }
         return model;
     }
 
     @Override
-    public boolean updatePassword(User user) {
+    public void updatePassword(User user) {
         log.debug("Try to update password, user with id '{}'", user.getId());
 
         int result;
@@ -328,10 +333,9 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
         if (result != 0) {
             log.debug("user with id '{}' update password", user.getId());
-            return true;
         } else {
-            log.debug("user with id '{}' not update password", user.getId());
-            return false;
+            log.error("user with id '{}' not update password", user.getId());
+            throw new UpdateException(env.getProperty(EXCEPTION_UPDATE));
         }
     }
 
@@ -349,13 +353,16 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         if (result != 0) {
             log.debug("user with id '{}' was deleted", model.getId());
         } else {
-            log.debug("user with id '{}' was not deleted", model.getId());
+            log.error("user with id '{}' was not deleted", model.getId());
+            throw new DeleteException(EXCEPTION_DELETE);
         }
         return model;
     }
 
     @Override
     public List<User> getAllByUsernamePart(String userName) {
+
+        log.debug("Try to get user by parametrs by username '{}'", userName);
 
         List<Map<String, Object>> userParamsList;
 
@@ -373,6 +380,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public List<User> getFriendsByUsernamePart(int userId, String userName) {
 
+        log.debug("Try to get friends by user id '{}' and username '{}'", userId, userName);
         List<Map<String, Object>> userParamsList;
 
         try {
@@ -395,6 +403,8 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
      */
     @Override
     public List<User> getNotFriendsByUsernamePart(int userId, String userName) {
+
+        log.debug("Try to get not friends by user id '{}' and username '{}'", userId, userName);
 
         List<Map<String, Object>> userParamsList;
 
@@ -435,10 +445,14 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
              login = jdbcTemplate.queryForObject(
                     env.getProperty(USER_GET_LOGIN_BY_ID),
                     new Object[]{id}, String.class);
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Login with id '{}' not found", id);
+            throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "Login", "id", id));
         } catch (DataAccessException e) {
             log.error("Query fails by finding user with id '{}'", id);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
+
         return login;
     }
 }

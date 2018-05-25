@@ -219,14 +219,10 @@ public class EventService {
         return eventDao.deleteParticipants(ownerId, event);
     }
 
-    public int deleteParticipant(int ownerId, int eventId, int participantId) {
+    public void deleteParticipant(int ownerId, int eventId, int participantId) {
         log.debug("Trying to delete events from DB by ownerId '{}', eventId '{}' and participantId '{}'", ownerId, eventId, participantId);
 
-        int rowsAffected = eventDao.deleteParticipant(ownerId, eventId, participantId);
-
-        log.debug("Rows affected '{}'", rowsAffected);
-
-        return rowsAffected;
+        eventDao.deleteParticipant(ownerId, eventId, participantId);
     }
 
     public void sendEventPlan(MultipartFile file) {
