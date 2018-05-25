@@ -51,31 +51,11 @@ public class ProfileService {
         return userDao.findLoginById(id);
     }
 
-
-    // TODO for further improvements of user search
-    /*public List<User> searchUsers(String login, String name, String surname, Integer limit) {
-
-        log.debug("Trying to search users by features login '{}', name '{}', surname '{}' and limit '{}'",
-                login, name, surname, limit);
-
-        List<User> users = userDao.findByParams(login, name, surname, limit);
-
-        if (users == null) {
-            log.error("Cannot get user from database");
-            throw new DatabaseWorkException();
-        }
-
-        log.debug("Found users '{}'", users);
-
-        return users;
-    }*/
-
     public User updateUser(User newUser) {
         return userDao.update(newUser);
     }
 
     public List<User> getFriends(String login) {
-
         User user = userDao.findByLogin(login);
 
         log.debug("User for finding friends '{}'", user.toString());
@@ -123,12 +103,12 @@ public class ProfileService {
         }
     }
 
-    public List<User> getUnknownUsers(String userName, String type){
+    public List<User> getUsersByRelationshipType(String userName, String type){
         User user = authenticationFacade.getAuthentication();
 
         switch(type) {
             case "unknown":
-                return userDao.getNotFriendsByUsernamePart(user.getId(), userName);
+                return userDao.getPotentialFriendsByUsernamePart(user.getId(), userName);
             case "friends":
                 return userDao.getFriendsByUsernamePart(user.getId(), userName);
             default:

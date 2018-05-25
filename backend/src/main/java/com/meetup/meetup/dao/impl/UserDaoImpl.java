@@ -394,7 +394,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
      * @return List<User>
      */
     @Override
-    public List<User> getNotFriendsByUsernamePart(int userId, String userName) {
+    public List<User> getPotentialFriendsByUsernamePart(int userId, String userName) {
 
         List<Map<String, Object>> userParamsList;
 
