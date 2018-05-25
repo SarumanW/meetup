@@ -156,6 +156,7 @@ public final class Key {
     public static final String EVENT_DELETE_PARTICIPANT="event.deleteParticipant";
     public static final String EVENT_DELETE_PARTICIPANTS="event.deleteParticipants";
     public static final String EVENT_DELETE_MEMBERS="event.deleteMembers";
+    public static final String EVENT_UNPIN_ALL_ON_DELETE="event.unpinAllOnDelete";
     //RoleDao
     public static final String GET_ROLE="role.getRole";
     public static final String ROLE_NAME = "name";

@@ -41,4 +41,6 @@ public interface EventDao extends Dao<Event> {
     Event deleteMembers(Event event);
 
     int deleteParticipant(int ownerId, int eventId, int participantId);
+
+    int unpinAllOnDelete(int eventId);
 }

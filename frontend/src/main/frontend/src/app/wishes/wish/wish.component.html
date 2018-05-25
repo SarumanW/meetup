@@ -122,7 +122,7 @@
             <form (ngSubmit)="addComment()">
               <textarea [formControl]="commentControl"  placeholder="What do you think about that item?"
                         name="comment" maxlength="2000"></textarea>
-              <button [disabled]="commentControl.invalid | isSubmitting" type="submit" class="btn btn-success green"><i class="fa fa-share"></i> Share</button>
+              <button [disabled]="commentControl.invalid || isSubmitting" type="submit" class="btn btn-success green"><i class="fa fa-share"></i> Share</button>
             </form>
           </div>
         </div>
