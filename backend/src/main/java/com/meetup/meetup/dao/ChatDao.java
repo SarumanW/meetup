@@ -12,7 +12,7 @@ public interface ChatDao {
 
     ChatIdsVM createChatsByEventId(int eventId);
 
-    boolean deleteChatsByEventId(int eventId);
+    void deleteChatsByEventId(int eventId);
 
     ChatIdsVM findChatsIdsByEventId(int eventId);
 

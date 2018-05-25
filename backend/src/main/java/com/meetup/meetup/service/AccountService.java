@@ -185,7 +185,7 @@ public class AccountService {
         log.debug("Letter has been sent successfully");
     }
 
-    public User recoveryPassword(RecoveryPasswordVM model) throws Exception{
+    private User recoveryPassword(RecoveryPasswordVM model) throws Exception{
         log.debug("Trying to verify token '{}' for user", model.getToken());
 
         User user = jwtService.verifyForRecoveryPassword(model.getToken());
@@ -209,10 +209,7 @@ public class AccountService {
         log.debug("Hash for password was successfully create");
         log.debug("Trying to update user in database");
 
-        if (!userDao.updatePassword(user)) {
-            log.error("User was not updated");
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
+        userDao.updatePassword(user);
 
         log.debug("Password was successfully updated");
 
@@ -274,10 +271,7 @@ public class AccountService {
         log.debug("Hash for password was successfully create");
         log.debug("Trying to update user in database");
 
-        if (!userDao.updatePassword(user)) {
-            log.error("User was not updated");
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
-        }
+        userDao.updatePassword(user);
 
         log.debug("Password was successfully updated");
     }

@@ -133,18 +133,9 @@ public class EventController {
     public ResponseEntity<String> deleteParticipant(@PathVariable int userId, @PathVariable int eventId, @PathVariable int participantId) {
         log.debug("Trying to delete participant with id {} of eventId '{}'", participantId, eventId);
 
-        int result = eventService.deleteParticipant(userId, eventId, participantId);
-
-        HttpStatus httpStatus;
-        String message;
-
-        if (result == 0) {
-            httpStatus = HttpStatus.NOT_FOUND;
-            message = "\"Participant with this login does not exist\"";
-        } else {
-            httpStatus = HttpStatus.OK;
-            message = "\"Participant was deleted successfully\"";
-        }
+        eventService.deleteParticipant(userId, eventId, participantId);
+        String message = "\"Participant was deleted successfully\"";
+        HttpStatus httpStatus = HttpStatus.OK;
 
         log.debug("Send response body event '{}' and status {}", message, httpStatus);
 

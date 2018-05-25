@@ -2,8 +2,8 @@ package com.meetup.meetup.service;
 
 import com.meetup.meetup.dao.ChatDao;
 import com.meetup.meetup.entity.Message;
-import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.runtime.DeleteChatException;
+import com.meetup.meetup.exception.runtime.DeleteException;
+import com.meetup.meetup.exception.runtime.DeleteException;
 import com.meetup.meetup.service.vm.ChatIdsVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +13,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.meetup.meetup.keys.Key.EXCEPTION_CHAT_DELETE;
-import static com.meetup.meetup.keys.Key.EXCEPTION_CHAT_MEMBER_DELETE;
+import static com.meetup.meetup.keys.Key.EXCEPTION_DELETE;
+import static com.meetup.meetup.keys.Key.EXCEPTION_UPDATE;
 
 @Service
 @PropertySource("classpath:strings.properties")
@@ -58,14 +57,7 @@ public class ChatService {
     public void deleteChats(int eventId) {
         log.debug("Trying to delete chats for event with id '{}'", eventId);
 
-        boolean success = chatDao.deleteChatsByEventId(eventId);
-
-        if (!success) {
-            log.error("Failed deleting chats for event with id '{}'", eventId);
-            throw new DeleteChatException(EXCEPTION_CHAT_DELETE);
-        }
-
-        log.debug("Chats deleted successful for event with id '{}'", eventId);
+        chatDao.deleteChatsByEventId(eventId);
     }
 
     public Message addMessage(Message message){
@@ -121,7 +113,7 @@ public class ChatService {
 
         if (!deleted) {
             log.error("Failed deleting member with login '{}' from chat '{}'", login, chatId);
-            throw new DeleteChatException(EXCEPTION_CHAT_MEMBER_DELETE);
+            throw new DeleteException(EXCEPTION_DELETE);
         }
 
         log.debug("Member was deleted with login '{}' from chat '{}'", login, chatId);
