@@ -59,7 +59,7 @@ public class JwtService {
         return userDao.findByLogin(login);
     }
 
-    public User verifyForRecoveryPassword(String token) throws Exception {
+    public User verifyForRecoveryPassword(String token) {
         log.debug("Trying to get secret key form SecretKeyProvider");
 
         byte[] secretKey = secretKeyProvider.getKey();
@@ -74,7 +74,7 @@ public class JwtService {
         return userDao.findByEmail(email);
     }
 
-    public String tokenFor(User user) throws Exception {
+    public String tokenFor(User user) {
         log.debug("Trying to get secret key form SecretKeyProvider");
 
         byte[] secretKey = secretKeyProvider.getKey();
@@ -91,7 +91,7 @@ public class JwtService {
                 .compact();
     }
 
-    public String tokenForConfirmationRegistration(User user) throws Exception {
+    public String tokenForConfirmationRegistration(User user) {
         log.debug("Trying to get secret key form SecretKeyProvider");
 
         byte[] secretKey = secretKeyProvider.getKey();
@@ -108,7 +108,7 @@ public class JwtService {
                 .compact();
     }
 
-    public String tokenForRecoveryPassword(User user) throws Exception {
+    public String tokenForRecoveryPassword(User user) {
         log.debug("Trying to get secret key form SecretKeyProvider");
 
         byte[] secretKey = secretKeyProvider.getKey();

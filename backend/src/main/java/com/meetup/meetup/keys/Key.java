@@ -209,6 +209,7 @@ public final class Key {
     public static final String EXCEPTION_KEY_NOT_FOUND = "key.not.found.exception";
     public static final String EXCEPTION_FAILED_LOGIN = "failed.login.exception";
     public static final String EXCEPTION_JWT_AUTHENTICATION = "jwt.authentication.exception";
+    public static final String EXCEPTION_JWT_IS_NOT_CORRECT = "jwt.bad.token.exception";
     public static final String EXCEPTION_FILE_UPLOAD = "file.upload.exception";
     public static final String EXCEPTION_HASH_ALGORITHM = "hash.algorithm.exception";
     public static final String EXCEPTION_NO_TOKEN = "no.token.exception";
@@ -229,6 +230,10 @@ public final class Key {
     public static final String MAIL_EVERY_FRIDAY="FRIDAY";
     public static final String MAIL_EVERY_SATURDAY="SATURDAY";
     public static final String MAIL_DAILY="DAILY";
+
+    //Security url patterns
+    public static final String URL_AUTH_PATTERN="auth.all";
+    public static final String URL_API_PATTERN="api.all";
 
     private Key(){}
 
