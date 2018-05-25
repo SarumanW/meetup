@@ -188,7 +188,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         if (result != 0) {
             log.debug("Friendship confirm between '{}' and '{}'", userId, friendId);
         } else log.debug("Friendship not confirm between '{}' and '{}'", userId, friendId);
-        return userId;
+        return result;
     }
 
     @Override
@@ -206,7 +206,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         } else {
             log.debug("Friendship not delete between '{}' and '{}'", userId, friendId);
         }
-        return userId;
+        return result;
     }
 
     @Override

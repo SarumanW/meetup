@@ -60,14 +60,14 @@ export class AccountService {
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
     return this.http
-      .get('api/profile/withEvent/' + login, {headers: headers});
+      .get(`api/profile/${login}/event/pined`, {headers: headers});
   }
 
   update(account:any):Observable<any>{
     let headers = new HttpHeaders()
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
-    return this.http.put('/api/profile/', account, {headers: headers});
+    return this.http.put('api/profile/', account, {headers: headers});
   }
 
   checkPassword(account:any):Observable<any>{

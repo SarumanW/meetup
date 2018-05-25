@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,16 +56,15 @@ public class ProfileController {
     }
 
     @PutMapping
-    public ResponseEntity<User> updateProfile(@RequestBody User newUser) {
-        log.debug("Trying to update user '{}'", newUser.toString());
+    @PreAuthorize("@profileAuthorization.isUserCorrect(#user.id)")
+    public ResponseEntity<User> updateProfile(@RequestBody User user) {
+        log.debug("Trying to update user '{}'", user.toString());
 
-        User updatedUser = profileService.updateUser(newUser);
-        if (updatedUser != null) {
-            log.debug("Send response body user '{}' and status OK", updatedUser);
-            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-        }
-        log.debug("Updating user '{}' failed", newUser.toString());
-        return new ResponseEntity<>(newUser, HttpStatus.NOT_MODIFIED);
+        User updatedUser = profileService.updateUser(user);
+
+        log.debug("Send response body user '{}' and status OK", updatedUser);
+
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @GetMapping("/{login}/friends")
@@ -78,24 +78,28 @@ public class ProfileController {
         return new ResponseEntity<>(friends, HttpStatus.OK);
     }
 
-    @GetMapping("/friendsRequests")
-    public ResponseEntity<List<User>> getFriendsRequests() {
+    @GetMapping("/{userId}/friends/requests")
+    @PreAuthorize("@profileAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<User>> getFriendsRequests(@PathVariable int userId) {
         log.debug("Trying to get requests from friends of authenticated user");
 
-        List<User> friendRequests = profileService.getFriendsRequests();
+        List<User> friendRequests = profileService.getFriendsRequests(userId);
 
         log.debug("Send response body friends requests '{}' and status OK", friendRequests);
 
         return new ResponseEntity<>(friendRequests, HttpStatus.OK);
     }
 
-    @PostMapping("/addFriend")
-    public ResponseEntity<String> addFriend(@RequestBody String friendLogin) {
+    @PostMapping("/{userId}/friends")
+    @PreAuthorize("@profileAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<String> addFriend(@PathVariable int userId, @RequestBody String friendLogin) {
         log.debug("Trying to add friend for authenticated user by friendLogin '{}'", friendLogin);
 
-        if (profileService.addFriend(friendLogin)) {
+        if (profileService.addFriend(userId, friendLogin)) {
+
             log.debug("Friend successfully added");
             log.debug("Send response status OK");
+
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
@@ -104,33 +108,35 @@ public class ProfileController {
         return new ResponseEntity<>("User does not exist or you have already sent request", HttpStatus.EXPECTATION_FAILED);
     }
 
-    @PostMapping("/confirmFriend")
-    public ResponseEntity confirmFriend(@RequestBody int friendId) {
+    @PostMapping("{userId}/friends/confirm")
+    @PreAuthorize("@profileAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity confirmFriend(@PathVariable int userId, @RequestBody int friendId) {
         log.debug("Trying to confirm friend for authenticated user by friendId '{}'", friendId);
 
-        profileService.confirmFriend(friendId);
+        profileService.confirmFriend(userId, friendId);
 
         log.debug("Send response status CREATED");
 
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
-    @PostMapping("/deleteFriend")
-    public ResponseEntity deleteFriend(@RequestBody int friendId) {
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    @PreAuthorize("@profileAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity deleteFriend(@PathVariable int userId, @PathVariable int friendId) {
         log.debug("Trying to delete friend for authenticated user by friendId '{}'", friendId);
 
-        profileService.deleteFriend(friendId);
+        profileService.deleteFriend(userId, friendId);
 
         log.debug("Send response status OK");
 
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/userRelations/{userId}")
-    public ResponseEntity<String> userRelations(@PathVariable() int userId){
-        log.debug("Trying to get relation between user with id '{}' and authenticated user", userId);
+    @GetMapping("{userId}/relations/{otherUserId}")
+    public ResponseEntity<String> userRelations(@PathVariable int userId, @PathVariable int otherUserId){
+        log.debug("Trying to get relation between user with id '{}' and authenticated user '{}'", otherUserId, userId);
 
-        String relation = profileService.userRelations(userId);
+        String relation = profileService.userRelations(userId, otherUserId);
 
         log.debug("Send response body relation '{}' and status OK", relation);
 
@@ -144,41 +150,30 @@ public class ProfileController {
         User updatedUser = storageService.store(file);
 
         log.debug("Image successfully uploaded send response status OK");
+
         return new ResponseEntity<>(updatedUser.getImgPath(), HttpStatus.OK);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<User>> searchUsers(@RequestParam String username, @RequestParam(name = "type") String typeOfRelationship) {
-        log.debug("Trying to search users by username '{}'",
-                username);
+    @GetMapping("/{userId}/search")
+    @PreAuthorize("@profileAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<User>> searchUsers(@PathVariable int userId, @RequestParam String username, @RequestParam(name = "type") String typeOfRelationship) {
+        log.debug("Trying to search users by username '{}'", username);
 
-        List<User> users = profileService.getUsersByRelationshipType(username, typeOfRelationship);
+        List<User> users = profileService.getUsersByRelationshipType(userId, username, typeOfRelationship);
 
-        log.debug("Found users '{}'", users.toString());
+        log.debug("Found users '{}' and send response status OK", users.toString());
 
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/withEvent/{login}")
+    @GetMapping("/{login}/event/pined")
     public ResponseEntity<User> getProfileWithEvent(@PathVariable String login){
-        log.debug("Trying to get user by login '{}'", login);
+        log.debug("Trying to get user with event by login '{}'", login);
 
-        User user = profileService.getUserByLogin(login);
+        User user = profileService.getProfileWithEvent(login);
 
-        Event event = null;
-        log.debug("Trying to get event by id '{}'", user.getPinedEventId());
+        log.debug("Received user '{}' and send response status OK", user);
 
-        if(user.getPinedEventId() != 0) {
-            event= eventService.getEvent(user.getPinedEventId());
-        } else{
-            log.debug("There is no pined event");
-        }
-
-        log.debug("setting user and event info to response entity");
-        if(event!=null) {
-            user.setPinedEventDate(event.getEventDate());
-            user.setPinedEventName(event.getName());
-        }
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
