@@ -18,7 +18,6 @@ export class AppComponent {
   }
 
   constructor(private router : Router, private toastr: ToastrService,){
-    console.log("app.component constructor")
     this.router.events.subscribe(event => this.modifyHeader(event),
       error => this.showError(error,"Error"));
   }
@@ -29,10 +28,9 @@ export class AppComponent {
   }
 
   modifyHeader(location) {
-    console.log(location.url)
     if (location.url === "/login" || location.url === "/register" || location.url === '/' || location.url === '/continueReg'
     || location.url === "/recovery" || location.url === "/thankyou"
-      || (location.url && (location.url.toString().startsWith("/recovery")||location.url.toString().startsWith("/confirmation"))))
+      || (location.url && (location.url.toString().startsWith("/recovery") || location.url.toString().startsWith("/confirmation"))))
     {
       this.showLogout = false;
     } else {
