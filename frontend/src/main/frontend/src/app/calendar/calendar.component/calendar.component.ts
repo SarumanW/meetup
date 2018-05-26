@@ -12,7 +12,6 @@ import {AppComponent} from '../../app.component';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  // changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
@@ -22,6 +21,7 @@ export class CalendarComponent implements OnInit {
   viewDate: Date = new Date();
   realEvents: Evento[];
   events: CalendarEvent[] = [];
+  eventsFolders: any = new Map();
 
   activeDayIsOpen: boolean = true;
 
@@ -37,12 +37,13 @@ export class CalendarComponent implements OnInit {
 
   filterEvents(){
     for(let realEvent of this.realEvents){
-      let calendarEvent : any;
-      calendarEvent = {};
+      let calendarEvent : any = {};
 
       calendarEvent.id = realEvent.eventId;
       calendarEvent.title = realEvent.name;
       calendarEvent.start = new Date(realEvent.eventDate);
+
+      this.eventsFolders.set(realEvent.eventId, realEvent.folderId);
 
       switch(realEvent.eventTypeId){
         case 1:
@@ -70,6 +71,7 @@ export class CalendarComponent implements OnInit {
         this.filterEvents();
         this.spinner.hide();
       },error => {
+          this.spinner.hide();
           this.appComponent.showError(error, 'Error');
         }
       )
@@ -91,8 +93,9 @@ export class CalendarComponent implements OnInit {
 
   handleEvent(event: CalendarEvent): void {
     let login = JSON.parse(localStorage.currentUser).login;
+    let folderId = this.eventsFolders.get(event.id);
 
-    this.router.navigate(["/" + login + "/folders/18/public/" + event.id])
+    this.router.navigate(["/" + login + "/folders/" + folderId + "/public/" + event.id ])
   }
 
 }

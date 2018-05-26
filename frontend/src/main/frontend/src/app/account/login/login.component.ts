@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
 
   logIn() {
     this.spinner.show();
+
     this.accountService.login(this.account).subscribe(
       (profile) => {
         this.success = true;
@@ -37,7 +38,7 @@ export class LoginComponent implements OnInit {
           ['/' + profile.login + '/profile']);
       }, error => {
         this.appComponent.showError(error, 'Error');
-        this.processError(error)
+        this.processError(error);
         this.spinner.hide();
       }
     );

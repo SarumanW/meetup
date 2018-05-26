@@ -8,7 +8,6 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (!localStorage.getItem('currentUser')) {
-      console.log("there isn't any token");
       this.router.navigate(['/login']);
       return false;
     }
