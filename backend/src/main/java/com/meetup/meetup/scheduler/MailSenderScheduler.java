@@ -5,7 +5,7 @@ import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.service.MailService;
-import com.meetup.meetup.service.PdfCreatService;
+import com.meetup.meetup.service.PdfCreateService;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,15 +28,15 @@ public class MailSenderScheduler {
 
     private UserDao userDao;
     private EventDao eventDao;
-    private PdfCreatService pdfCreatService;
+    private PdfCreateService pdfCreateService;
     private MailService mailService;
 
     @Autowired
-    public MailSenderScheduler(UserDao userDao, EventDao eventDao, PdfCreatService pdfCreatService,
+    public MailSenderScheduler(UserDao userDao, EventDao eventDao, PdfCreateService pdfCreateService,
                                MailService mailService) {
         this.userDao = userDao;
         this.eventDao = eventDao;
-        this.pdfCreatService = pdfCreatService;
+        this.pdfCreateService = pdfCreateService;
         this.mailService = mailService;
     }
 
@@ -101,7 +101,7 @@ public class MailSenderScheduler {
         for (User user : users) {
             List<Event> events = eventDao.getPeriodEvents(user.getId(), startDate, endDate);
             if (events.size() > 0) {
-                pdfCreatService.createPDF(events);
+                pdfCreateService.createPDF(events);
                 mailService.sendMailWithEventPlan(user, new File("events.pdf"), currentDate);
             }
         }

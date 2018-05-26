@@ -64,8 +64,6 @@ export class EventEditComponent implements OnInit {
     this.fileRegexp = new RegExp('^.*\\.(jpg|JPG|gif|GIF|png|PNG)$');
 
     this.searchControl = new FormControl();
-    console.log(this.searchControl);
-    console.log(this.searchElementRef);
 
     this.setCurrentPosition();
 
@@ -104,7 +102,6 @@ export class EventEditComponent implements OnInit {
     this.eventService.getEvent(this.eventId).subscribe(eventt => {
       this.eventt = eventt;
       let coordinates = this.eventt.place.split(" ");
-      console.log(this.eventt.eventType);
       this.lat = +coordinates[0];
       this.lng = +coordinates[1];
       let loadDate =this.eventt.eventDate.split(" ");
@@ -176,11 +173,9 @@ export class EventEditComponent implements OnInit {
 
     this.currentFileUpload = this.selectedFiles.item(0);
     this.uploadService.pushFileToStorage(this.currentFileUpload, this.currentUserId).subscribe(event => {
-      console.log(event);
       this.imageLoaded = true;
       this.eventt.imageFilepath = event;
       this.updateEvent();
-      console.log(this.eventt.imageFilepath);
       this.spinner.hide();
     }, error => {
       this.appComponent.showError(error, 'Upload failed');
@@ -191,8 +186,6 @@ export class EventEditComponent implements OnInit {
   }
 
   placeMarker(event){
-    console.log(event.coords.lat);
-    console.log(event.coords.lng);
     this.lng = event.coords.lng;
     this.lat = event.coords.lat;
   }

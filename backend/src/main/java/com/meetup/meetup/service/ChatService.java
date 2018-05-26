@@ -3,7 +3,6 @@ package com.meetup.meetup.service;
 import com.meetup.meetup.dao.ChatDao;
 import com.meetup.meetup.entity.Message;
 import com.meetup.meetup.exception.runtime.DeleteException;
-import com.meetup.meetup.exception.runtime.DeleteException;
 import com.meetup.meetup.service.vm.ChatIdsVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

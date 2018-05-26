@@ -22,7 +22,7 @@ import {AppComponent} from "../../app.component";
 })
 export class ChatComponent implements OnInit, OnDestroy {
 
-  serverUrl = 'http://meetupnc.ga/socket';
+  serverUrl = 'http://localhost:8000/socket';
   stompClient;
   state: string = "folders";
   messageText: string;
@@ -82,8 +82,6 @@ export class ChatComponent implements OnInit, OnDestroy {
         for (let message of messages) {
           let messageElement;
           this.color = this.colors[ChatComponent.hashCode(message.senderId.toString()) % 8];
-          console.log(ChatComponent.hashCode(message.senderId) % 8);
-          console.log(this.color);
           let time = this.getTimeFromDate(message.messageDate);
 
           messageElement = `<li class="chat-message" style="padding-left: 68px;
@@ -155,10 +153,8 @@ export class ChatComponent implements OnInit, OnDestroy {
           if (message.sender === that.currentUserLogin) {
             that.disabled = false;
             that.chatService.addMember(that.currentUserLogin, that.chatId).subscribe(
-              member => {
-                console.log(member.toString());
-              }, error => {
-                console.error(error);
+              member => {}, error => {
+                this.appComponent.showError("Can not add chat member", "Error");
               }
             );
           }
@@ -185,15 +181,12 @@ export class ChatComponent implements OnInit, OnDestroy {
           that.chatMembers.splice(that.chatMembers.indexOf(message.sender), 1);
           that.stopTypingMember(message.sender);
         } else if (message.type === 'TYPING') {
-          console.log(that.typingMembers.indexOf(message.sender));
 
           const memberIndex = that.typingMembers.indexOf(message.sender);
 
           if (memberIndex === -1) {
             that.typingMembers.push(message.sender);
           }
-
-          console.log(that.typingMembers);
 
           that.typingsMembersNotification();
 
@@ -253,8 +246,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.chatService.addMessage(mess).subscribe(
       (message) => {
-        console.log(message);
         this.stompClient.send("/app-chat/send/message/" + this.chatId, {}, JSON.stringify(chatMessage));
+      }, error => {
+        this.appComponent.showError("Can not send message", "Error");
       }
     );
 
@@ -313,8 +307,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       } else {
         this.typingMemberText += 'are typing ...'
       }
-
-      console.log(this.typingMemberText);
     }
   }
 
@@ -337,9 +329,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
 
     this.chatService.deleteMember(this.currentUserLogin, this.chatId).subscribe( login => {
-      console.log(login);
     }, error => {
-      console.log(error);
+      this.appComponent.showError("Can not delete chat member", "Error");
     });
 
     if (this.stompClient !== undefined) {

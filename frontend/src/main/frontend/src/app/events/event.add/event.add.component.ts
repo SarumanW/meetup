@@ -51,7 +51,7 @@ export class EventAddComponent implements OnInit {
               private chatService: ChatService) { }
 
   ngOnInit() {
-    this.spinner.show()
+    this.spinner.show();
     this.eventt = new Evento;
     this.route.params.subscribe(params => {
       this.folderId = params['folderId'];
@@ -64,7 +64,6 @@ export class EventAddComponent implements OnInit {
     this.currentUserLogin = JSON.parse(localStorage.currentUser).login;
     this.currentUserId = JSON.parse(localStorage.currentUser).id;
     this.fileRegexp = new RegExp('^.*\\.(jpg|JPG|gif|GIF|png|PNG)$');
-    console.log(this.eventt);
 
     this.searchControl = new FormControl();
     this.setCurrentPosition();
@@ -115,9 +114,6 @@ export class EventAddComponent implements OnInit {
   }
 
   formatDate() {
-    console.log(this.datee);
-    console.log(this.time);
-    console.log(this.eventt.periodicity);
     this.eventt.eventDate = this.datee + " " + this.time + ":00";
   }
 
@@ -127,7 +123,6 @@ export class EventAddComponent implements OnInit {
     let month = date.getMonth() + 1;
     let day = date.getDate();
     this.currentDate =  year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
-    console.log(this.currentDate);
   }
 
   addDraft() {
@@ -187,14 +182,12 @@ export class EventAddComponent implements OnInit {
   }
 
   addEvent() {
-    console.log("addEvent");
     this.eventt.isDraft = false;
     if (this.selectedFiles) {
       this.upload();
     } else {
       this.addEntity();
     }
-    console.log(this.eventt);
   }
 
   selectFile(event) {
@@ -209,10 +202,8 @@ export class EventAddComponent implements OnInit {
 
     this.currentFileUpload = this.selectedFiles.item(0);
     this.uploadService.pushFileToStorage(this.currentFileUpload, this.currentUserId).subscribe(event => {
-      console.log(event);
         this.imageLoaded = true;
         this.eventt.imageFilepath = event;
-        console.log(this.eventt.imageFilepath);
         this.addEntity();
     }, error => {
       this.appComponent.showError(error, 'Upload failed');
@@ -223,8 +214,6 @@ export class EventAddComponent implements OnInit {
   }
 
   placeMarker(event){
-    console.log(event.coords.lat);
-    console.log(event.coords.lng);
     this.lng = event.coords.lng;
     this.lat = event.coords.lat;
   }

@@ -4,9 +4,7 @@ import com.meetup.meetup.dao.ChatDao;
 import com.meetup.meetup.dao.EventDao;
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.*;
-import com.meetup.meetup.exception.runtime.EntityNotFoundException;
 import com.meetup.meetup.exception.runtime.frontend.detailed.LoginNotFoundException;
-import com.meetup.meetup.keys.Key;
 import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +21,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static com.meetup.meetup.keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
 import static com.meetup.meetup.keys.Key.EXCEPTION_LOGIN_NOT_FOUND;
 
 @Service
@@ -35,7 +32,7 @@ public class EventService {
     @Autowired
     protected Environment env;
 
-    private final PdfCreatService pdfCreatService;
+    private final PdfCreateService pdfCreateService;
     private final ChatDao chatDao;
     private final EventDao eventDao;
     private final UserDao userDao;
@@ -43,13 +40,13 @@ public class EventService {
     private final MailService mailService;
 
     @Autowired
-    public EventService(EventDao eventDao, UserDao userDao, MailService mailService, AuthenticationFacade authenticationFacade, PdfCreatService pdfCreatService, ChatDao chatDao) {
+    public EventService(EventDao eventDao, UserDao userDao, MailService mailService, AuthenticationFacade authenticationFacade, PdfCreateService pdfCreateService, ChatDao chatDao) {
         this.chatDao = chatDao;
         this.eventDao = eventDao;
         this.userDao = userDao;
         this.mailService = mailService;
         this.authenticationFacade = authenticationFacade;
-        this.pdfCreatService = pdfCreatService;
+        this.pdfCreateService = pdfCreateService;
     }
 
     public Event getEvent(int eventId) {

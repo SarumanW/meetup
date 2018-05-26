@@ -14,11 +14,8 @@ public class EventAuthorization extends AbstractAuthorization {
     }
 
     public boolean isEventCorrect(int userId, Event event) {
-        if (event == null) {
-            return false;
-        }
+        return event != null && isUserCorrect(userId) && userId == event.getOwnerId();
 
-        return isUserCorrect(userId) && userId == event.getOwnerId();
     }
 
     public boolean isEventCorrect(int userId, int eventId, Event event) {

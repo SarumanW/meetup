@@ -5,7 +5,6 @@ import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.User;
 import com.meetup.meetup.exception.runtime.EntityNotFoundException;
-import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

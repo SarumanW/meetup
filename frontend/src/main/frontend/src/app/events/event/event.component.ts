@@ -94,7 +94,6 @@ export class EventComponent implements OnInit {
     this.eventService.getEvent(this.eventId).subscribe(eventt => {
       this.eventt = eventt;
       let coordinates = this.eventt.place.split(" ");
-      console.log(this.eventt.eventType);
       this.lat = +coordinates[0];
       this.lng = +coordinates[1];
       this.tempType = eventt.eventType;
@@ -109,7 +108,7 @@ export class EventComponent implements OnInit {
 
       this.eventService.getPlace(eventt.place).subscribe(
         place => {
-          this.place = place.results[0].formatted_address
+          this.place = place.results[0].formatted_address;
           this.spinner.hide();
         }, error => {
           this.spinner.hide();
@@ -143,8 +142,6 @@ export class EventComponent implements OnInit {
       chat=> {
         this.eventt.privateChatId = chat.privateChatId;
         this.eventt.publicChatId = chat.publicChatId;
-        console.log(this.eventt.privateChatId);
-        console.log(this.eventt.publicChatId);
       }, error => {
         this.showError('Problem with chats loading','Attention!');
       }
@@ -168,11 +165,9 @@ export class EventComponent implements OnInit {
   }
 
   pinEvent() {
-    console.log("pinning");
     this.spinner.show();
     this.eventService.pinEvent(this.currentUserId, this.eventId).subscribe(
       (event: Evento) => {
-        console.log('response');
         this.isPinned = !this.isPinned;
         let profile = JSON.parse(localStorage.currentUser);
         profile.pinedEventId = this.eventId;
@@ -181,7 +176,6 @@ export class EventComponent implements OnInit {
         this.spinner.hide();
       },
       error => {
-        console.log('error');
         this.appComponent.showError('Can not pin event', 'Attention!');
         this.spinner.hide();
       }
@@ -189,7 +183,6 @@ export class EventComponent implements OnInit {
   }
 
   unpinEvent() {
-    console.log("unpinning");
     this.spinner.show();
     this.eventService.unpinEvent(this.currentUserId, this.eventId).subscribe(
       (event: Evento) => {
@@ -243,9 +236,6 @@ export class EventComponent implements OnInit {
 
   formatDate() {
     if (this.shouldShow) {
-      console.log(this.datee);
-      console.log(this.time);
-      console.log(this.eventt.periodicity);
       this.eventt.eventDate = this.datee + " " + this.time + ":00";
     }
   }
@@ -256,7 +246,6 @@ export class EventComponent implements OnInit {
     let month = date.getMonth() + 1;
     let day = date.getDate();
     this.currentDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
-    console.log(this.currentDate);
   }
 
   updateEvent() {
@@ -429,8 +418,6 @@ export class EventComponent implements OnInit {
         if (input !== undefined && input !== '') {
           this.queryDeleteParticipants = [];
           for (let participant of this.eventt.participants) {
-            console.log(participant.login);
-            console.log(input);
             if(participant.login.includes(input)) {
               this.queryDeleteParticipants.push(participant.login);
             }

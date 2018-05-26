@@ -1,19 +1,12 @@
 package com.meetup.meetup.rest.controller;
 
 import com.meetup.meetup.entity.Event;
-import com.meetup.meetup.entity.Item;
 import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.runtime.frontend.detailed.FileUploadException;
-import com.meetup.meetup.exception.runtime.frontend.detailed.MailServerException;
 import com.meetup.meetup.service.EventImageService;
 import com.meetup.meetup.service.EventService;
-import com.meetup.meetup.service.PdfCreatService;
-import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,14 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.meetup.meetup.keys.Key.EXCEPTION_MAIL_SERVER;
 
 @RestController
 @RequestMapping(path = "/api/users/{userId}/events")

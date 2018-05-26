@@ -3,7 +3,6 @@ package com.meetup.meetup.security.authorization;
 import com.meetup.meetup.dao.ChatDao;
 import com.meetup.meetup.dao.EventDao;
 import com.meetup.meetup.entity.Role;
-import com.meetup.meetup.entity.User;
 import com.meetup.meetup.security.AuthenticationFacade;
 import com.meetup.meetup.service.vm.ChatCheckEntity;
 import org.slf4j.Logger;

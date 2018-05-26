@@ -4,7 +4,6 @@ package com.meetup.meetup.service;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;

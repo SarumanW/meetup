@@ -12,7 +12,7 @@ import java.io.FileOutputStream;
 import java.util.List;
 import java.util.stream.Stream;
 @Service
-public class PdfCreatService {
+public class PdfCreateService {
 
     public void createPDF(List<Event>events) {
 

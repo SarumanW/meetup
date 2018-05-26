@@ -152,6 +152,9 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
                     String.class);
 
             role = Role.valueOf(roleString);
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Role was not found by eventId '{}'", eventId);
+            role = Role.NULL;
         } catch (DataAccessException e) {
             log.error("Query fails by get role for user with id '{}' for event with id '{}'", userId, eventId);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));

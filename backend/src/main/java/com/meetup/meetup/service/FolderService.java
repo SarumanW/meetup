@@ -4,19 +4,12 @@ import com.meetup.meetup.dao.EventDao;
 import com.meetup.meetup.dao.FolderDao;
 import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.Folder;
-import com.meetup.meetup.entity.User;
-import com.meetup.meetup.exception.runtime.EntityNotFoundException;
-import com.meetup.meetup.security.AuthenticationFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static com.meetup.meetup.keys.Key.EXCEPTION_ENTITY_NOT_FOUND;
 
 @Service
 public class FolderService {
@@ -43,7 +36,7 @@ public class FolderService {
         return getFolder(userId, folderId, true);
     }
 
-    public Folder getFolder(int userId, int folderId, boolean withEvents) {
+    private Folder getFolder(int userId, int folderId, boolean withEvents) {
         log.debug("Trying to get folder for user with id '{}' by folderId '{}'", userId, folderId);
 
         Folder folder = folderDao.findById(folderId, userId);
