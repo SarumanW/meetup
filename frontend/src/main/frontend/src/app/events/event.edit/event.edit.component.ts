@@ -115,9 +115,6 @@ export class EventEditComponent implements OnInit {
   }
 
   formatDate() {
-      console.log(this.datee);
-      console.log(this.time);
-      console.log(this.eventt.periodicity);
       this.eventt.eventDate = this.datee + " " + this.time;
   }
 

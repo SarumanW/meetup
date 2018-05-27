@@ -47,7 +47,7 @@ export class ChatComponent implements OnInit, OnDestroy {
               private chatService: ChatService,
               private eventService: EventService,
               private spinner: NgxSpinnerService,
-              private appComponent:AppComponent,) {
+              private appComponent: AppComponent,) {
 
   }
 
@@ -125,12 +125,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.initializeWebSocketConnection();
 
     this.chatService.getMembers(this.chatId).subscribe(members => {
-      console.log(members);
       if (members !== null) {
         this.chatMembers = members;
       }
     }, error => {
-      console.log(error);
+      this.appComponent.showError('Unsuccessful members loading', 'Loading error');
     });
   }
 
@@ -153,7 +152,8 @@ export class ChatComponent implements OnInit, OnDestroy {
           if (message.sender === that.currentUserLogin) {
             that.disabled = false;
             that.chatService.addMember(that.currentUserLogin, that.chatId).subscribe(
-              member => {}, error => {
+              member => {
+              }, error => {
                 this.appComponent.showError("Can not add chat member", "Error");
               }
             );
@@ -259,8 +259,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   // USER TYPE TEXT EVENTS
 
   isUserTypingMessage() {
-    console.log(this.messageText);
-    console.log(this.typingMembers);
     if(this.messageText === '' && this.isTyping) {
       this.isTyping = false;
       this.sendIsTypingMember('NOT_TYPING');
@@ -351,7 +349,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     let min = date.getMinutes();
     let sec = date.getSeconds();
     let time = ChatComponent.formatDate(hour) + ":" + ChatComponent.formatDate(min) + ":" + ChatComponent.formatDate(sec);
-    console.log(year + "-" + ChatComponent.formatDate(month) + "-" + ChatComponent.formatDate(day) + " " + time);
     return year + "-" + ChatComponent.formatDate(month) + "-" + ChatComponent.formatDate(day) + " " + time;
   }
 
@@ -378,7 +375,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:beforeunload', [ '$event' ])
-  beforeUnloadHander(event) {
+  beforeUnloadHandler(event) {
     this.ngOnDestroy();
   }
 }

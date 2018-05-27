@@ -324,6 +324,7 @@ export class EventComponent implements OnInit {
   }
 
   deleteEvent() {
+    this.spinner.show();
     this.eventService.deleteEvent(this.eventt).subscribe(
       deleted => {
         this.showSuccess('Event removed successfully', 'Success!');

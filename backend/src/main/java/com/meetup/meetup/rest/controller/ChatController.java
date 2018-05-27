@@ -110,13 +110,13 @@ public class ChatController {
 
     @DeleteMapping("{chatId}/member/{login}")
     @PreAuthorize("@chatAuthorization.checkByChatId(#userId, #chatId)")
-    public ResponseEntity<String> deleteMember(@PathVariable String login, @PathVariable int userId, @PathVariable int chatId) {
+    public ResponseEntity<Integer> deleteMember(@PathVariable String login, @PathVariable int userId, @PathVariable int chatId) {
         log.debug("Trying to delete member of chat with chatId '{}'", chatId);
 
         chatService.deleteUserLogin(login, chatId);
 
         log.debug("Deleted member '{}' from cache by chatId '{}'", login, chatId);
 
-        return new ResponseEntity<>(login, HttpStatus.OK);
+        return new ResponseEntity<>(userId, HttpStatus.OK);
     }
 }
