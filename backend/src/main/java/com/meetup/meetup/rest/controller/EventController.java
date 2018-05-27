@@ -40,7 +40,6 @@ public class EventController {
         return new ResponseEntity<>(userEvents, HttpStatus.OK);
     }
 
-    // TODO: 21.05.2018 check permission if needed
     @GetMapping("/{eventId}")
     public ResponseEntity<Event> getEvent(@PathVariable int userId, @PathVariable int eventId) {
         log.debug("Trying to get event by id '{}'", eventId);
