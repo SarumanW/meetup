@@ -19,7 +19,7 @@ import java.util.List;
 @PropertySource("classpath:strings.properties")
 public class ChatController {
 
-    private static Logger log = LoggerFactory.getLogger(EventController.class);
+    private static Logger log = LoggerFactory.getLogger(ChatController.class);
 
     @Autowired
     private ChatService chatService;

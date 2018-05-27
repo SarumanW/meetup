@@ -12,9 +12,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.meetup.meetup.keys.Key.EXCEPTION_DELETE;
 import static com.meetup.meetup.keys.Key.EXCEPTION_UPDATE;
@@ -31,7 +31,7 @@ public class ChatService {
     @Autowired
     private ChatDao chatDao;
 
-    private static Map<Integer, List<String>> userLogins = new ConcurrentHashMap<>();
+    private Map<Integer, List<String>> userLogins = new HashMap<>();
 
     public ChatIdsVM addChats(int eventId) {
         log.debug("Trying to add chats for event with id '{}'", eventId);
@@ -82,11 +82,11 @@ public class ChatService {
     public void addUserLogin(String login, int chatId) {
         log.debug("Trying to add member of chat with chatId '{}' and login '{}'", chatId, login);
 
-        if (!ChatService.userLogins.containsKey(chatId)) {
-            ChatService.userLogins.put(chatId, new ArrayList<>());
+        if (!userLogins.containsKey(chatId)) {
+            userLogins.put(chatId, new ArrayList<>());
         }
 
-        ChatService.userLogins.get(chatId).add(login);
+        userLogins.get(chatId).add(login);
 
         log.debug("Member was added to chat");
     }
@@ -94,7 +94,7 @@ public class ChatService {
     public List<String> getUserLogins(int chatId) {
         log.debug("Trying to get members of chat '{}'", chatId);
 
-        List<String> members = ChatService.userLogins.get(chatId);
+        List<String> members = userLogins.get(chatId);
 
         log.debug("Received members '{}'", members);
 
@@ -106,8 +106,8 @@ public class ChatService {
 
         boolean deleted = false;
 
-        if (ChatService.userLogins.containsKey(chatId)) {
-            deleted = ChatService.userLogins.get(chatId).remove(login);
+        if (userLogins.containsKey(chatId)) {
+            deleted = userLogins.get(chatId).remove(login);
         }
 
         if (!deleted) {
