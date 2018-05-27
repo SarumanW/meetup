@@ -22,7 +22,7 @@ import {AppComponent} from "../../app.component";
 })
 export class ChatComponent implements OnInit, OnDestroy {
 
-  serverUrl = 'http://localhost:8000/socket';
+  serverUrl = 'http://meetupnc.ga/socket';
   stompClient;
   state: string = "folders";
   messageText: string;
@@ -311,7 +311,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   backToEvent() {
-    this.ngOnDestroy();
     this.router.navigate(["/" + this.currentUserLogin + "/folders/" + this.folderId + "/event/" + this.event.eventId]);
   }
 
@@ -370,7 +369,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   goToProfile(member: string) {
-    this.ngOnDestroy();
     this.router.navigate(["/" + member + "/profile"]);
   }
 
