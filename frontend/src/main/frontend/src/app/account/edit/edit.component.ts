@@ -57,7 +57,6 @@ export class EditComponent implements OnInit {
   }
 
   showPer(){
-    console.log(this.profile.periodicalEmail);
   }
 
   ngOnInit() {
@@ -131,8 +130,6 @@ export class EditComponent implements OnInit {
       if (event.type === HttpEventType.UploadProgress) {
         this.progress.percentage = Math.round(100 * event.loaded / event.total);
       } else if (event instanceof HttpResponse) {
-        console.log('File is completely uploaded!');
-        console.log(event.body);
         let profile = JSON.parse(localStorage.currentUser);
         profile.imgPath = event.body;
         localStorage.setItem('currentUser', JSON.stringify(profile));
@@ -165,7 +162,6 @@ export class EditComponent implements OnInit {
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
-    console.log(response);
     this.error = response.error;
   }
 }

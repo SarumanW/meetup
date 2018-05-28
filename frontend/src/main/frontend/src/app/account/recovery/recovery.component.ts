@@ -22,12 +22,9 @@ export class RecoveryComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('success: ' + this.success);
 
     this.success = false;
     this.recovery = new RecoveryProfile();
-
-    console.log('success: ' + this.success);
 
     this.route.params.subscribe(params => {
       this.recovery.token = params['token'];
@@ -36,7 +33,6 @@ export class RecoveryComponent implements OnInit {
       }
     );
 
-    console.log('success: ' + this.success);
   }
 
   recover() {
@@ -60,7 +56,6 @@ export class RecoveryComponent implements OnInit {
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
-    console.log(response);
     this.error = response.error;
   }
 }

@@ -83,7 +83,6 @@ export class ChangePasswordComponent implements OnInit {
 
   private processError(response: HttpErrorResponse) {
       this.success = null;
-      console.log(response);
       this.error = response.error;
     }
 }

@@ -280,7 +280,6 @@ export class EventComponent implements OnInit {
     this.tempType = this.eventt.eventType;
     this.updateEvent();
     this.shouldShow = false;
-    console.log(this.eventt);
   }
 
   convertToPrivate() {

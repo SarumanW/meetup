@@ -13,7 +13,6 @@ export class CommentService {
       .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
 
     return this.http.post<any>('api/comment/'+idItem, comment, {headers:headers}).map(comment => {
-      console.log(comment);
       return comment;
     });
   }

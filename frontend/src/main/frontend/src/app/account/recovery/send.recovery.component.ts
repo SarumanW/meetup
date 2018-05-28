@@ -30,7 +30,6 @@ export class SendRecoveryComponent implements OnInit {
   }
 
   sendRecovery() {
-    console.log(this.emailAddr);
     this.accountService.sendRecovery(this.emailAddr).subscribe(
       () => {
         this.success = true;
@@ -43,7 +42,6 @@ export class SendRecoveryComponent implements OnInit {
 
   processError(response: HttpErrorResponse) {
     this.success = null;
-    console.log(response);
     this.error = response.error;
   }
 }

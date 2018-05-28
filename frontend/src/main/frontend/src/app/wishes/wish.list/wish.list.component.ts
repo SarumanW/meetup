@@ -53,7 +53,6 @@ export class WishListComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("show");
     this.spinner.show();
     this.login = this.route.snapshot.params['login'];
     this.category = WishListComponent.OWN_CATEGORY;
@@ -103,13 +102,11 @@ export class WishListComponent implements OnInit {
 
     this.wishListService.getWishList(this.category, this.login, this.tags).subscribe(
       itemList => {
-        console.log(itemList);
         this.items = itemList;
           this.spinner.hide();
       }, error => {
         this.appComponent.showError(error, "Error")
          this.spinner.hide();
-        console.log("hide")
       });
   }
 
@@ -148,13 +145,10 @@ export class WishListComponent implements OnInit {
         this.items[index] = itemBooked;
       }
 
-      console.log(item);
-      console.log("hide")
       this.spinner.hide();
 
       this.showSuccess('Wish item was successfully booked', 'Attention!');
     }, error => {
-      console.log("hide")
       this.spinner.hide();
       this.appComponent.showError(error, "Error")
     });
@@ -169,10 +163,8 @@ export class WishListComponent implements OnInit {
       if (index !== -1) {
         this.items[index] = itemUnBooked;
       }
-      console.log("hide")
-      this.spinner.hide();
 
-      console.log(item);
+      this.spinner.hide();
 
       this.showSuccess('Wish item was successfully deleted', 'Attention!');
     }, error => {
@@ -186,8 +178,6 @@ export class WishListComponent implements OnInit {
   addWishItem(item: Item) {
     let newItem = Object.assign({}, item);
 
-    console.log(item);
-
     newItem.ownerId = this.profile.id;
     newItem.dueDate = this.dueDate + ' 00:00:00';
     newItem.priority = this.priority;
@@ -195,7 +185,6 @@ export class WishListComponent implements OnInit {
     this.spinner.show();
     this.wishService.addExistWishItem(newItem).subscribe(newItem => {
       this.spinner.hide();
-      console.log("hide")
       const index = this.items.indexOf(item);
       if (index !== -1) {
         this.items.splice(index, 1)
@@ -205,7 +194,6 @@ export class WishListComponent implements OnInit {
     }, error => {
       this.appComponent.showError(error, "Error")
       this.spinner.hide();
-      console.log("hide")
     });
   }
 
@@ -218,15 +206,12 @@ export class WishListComponent implements OnInit {
     this.minDueDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
     this.dueDate = this.minDueDate;
 
-    console.log(this.minDueDate);
-    console.log(this.dueDate);
   }
 
   deleteWishItem(item: Item) {
     this.spinner.show();
     this.wishService.deleteWishItem(item).subscribe(deletedItem => {
       this.spinner.hide();
-      console.log("hide")
       const index = this.items.indexOf(item);
       if (index !== -1) {
         this.items.splice(index, 1)
@@ -236,7 +221,6 @@ export class WishListComponent implements OnInit {
     }, error => {
       this.appComponent.showError(error, "Error")
       this.spinner.hide();
-      console.log("hide")
     });
   }
 
@@ -255,7 +239,6 @@ export class WishListComponent implements OnInit {
         }
       }, error => {
           this.spinner.hide();
-        console.log("hide")
         this.appComponent.showError(error, "Error")
       });
   }

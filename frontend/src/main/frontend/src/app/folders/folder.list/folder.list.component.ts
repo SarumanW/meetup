@@ -101,8 +101,6 @@ export class FolderListComponent implements OnInit {
         let doc = new jsPDF('p', 'pt');
         let docName = "events-plan-" + this.currentDate + ".pdf";
 
-        console.log(events);
-
         let builder: Builder = new Builder(events, this.checkboxes);
 
         let columns = builder.render().buildColumns();

@@ -64,7 +64,6 @@ export class RegisterComponent implements OnInit {
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
-    console.log(response);
     if (response.error === 'Login already used') {
       this.success = null
       this.error = null;

@@ -121,10 +121,8 @@ export class WishComponent implements OnInit {
   }
 
   getItem(id: number) {
-    console.log('login: ' + this.login);
     this.wishService.getWishItem(id, this.login).subscribe(item => {
       this.item = item;
-      console.log("owner id " + this.item.ownerId);
       this.accountService.getLoginById(this.item.ownerId).subscribe(
         login => {
           this.ownerLogin = login;
@@ -154,8 +152,6 @@ export class WishComponent implements OnInit {
 
   addToWishList() {
     let newItem = Object.assign({}, this.item);
-
-    console.log(this.item);
 
     newItem.ownerId = this.profile.id;
     newItem.dueDate = this.dueDate + ' 00:00:00';

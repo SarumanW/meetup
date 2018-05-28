@@ -55,8 +55,6 @@ export class WishAddComponent implements OnInit {
     this.minDueDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
     this.newItem.dueDate = this.minDueDate;
 
-    console.log(this.minDueDate);
-    console.log(this.newItem.dueDate);
   }
 
   selectFile(event) {
@@ -85,7 +83,6 @@ export class WishAddComponent implements OnInit {
 
   deleteTag(tag: string) {
     const index = this.newItem.tags.indexOf(tag);
-    console.log(index);
     if (index !== -1) {
       this.newItem.tags.splice(index, 1)
     }
@@ -139,8 +136,6 @@ export class WishAddComponent implements OnInit {
     this.uploadService.pushWishFileToStorage(this.selectedImage).subscribe(event => {
       if (event instanceof HttpResponse) {
         this.showSuccess('Successful image uploaded', 'Attention!');
-        console.log('File is completely uploaded!');
-        console.log(event.body);
 
         //todo Check working
         this.newItem.imageFilepath = event.body.toString();
@@ -155,11 +150,9 @@ export class WishAddComponent implements OnInit {
   }
 
   addWish() {
-    console.log('run "add wish" method');
     this.wishService.addWishItem(this.newItem).subscribe(item => {
       this.showSuccess('Wish item was successfully added', 'Attention!');
       this.spinner.hide();
-      console.log('/' + this.profile.login + '/wishes/' + item.id);
       this.router.navigate(['./' + this.profile.login + '/wishes/' + item.itemId]);
     }, error => {
       this.appComponent.showError(error, "Error");

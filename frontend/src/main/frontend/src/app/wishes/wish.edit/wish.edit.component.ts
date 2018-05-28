@@ -151,8 +151,6 @@ export class WishEditComponent implements OnInit {
     this.uploadService.pushWishFileToStorage(this.selectedImage).subscribe(event => {
       if (event instanceof HttpResponse) {
         this.showSuccess('Successful image uploaded', 'Attention!');
-        console.log('File is completely uploaded!');
-        console.log(event.body);
 
         //todo Check working
         this.editItem.imageFilepath = event.body.toString();
@@ -167,11 +165,9 @@ export class WishEditComponent implements OnInit {
   }
 
   addWish() {
-    console.log('run "add wish" method');
     this.wishService.editWishItem(this.editItem).subscribe(item => {
       this.showSuccess('Wish item was successfully edited', 'Attention!');
       this.spinner.hide();
-      console.log('./' + this.profile.login + '/wishes/' + item.itemId);
       this.router.navigate(['./' + this.profile.login + '/wishes/' + item.itemId]);
     }, error => {
       this.appComponent.showError(error, "Error");
