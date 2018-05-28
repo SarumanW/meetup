@@ -21,8 +21,7 @@ public class User {
     @Size(min = 4, max = 50)
     private String login;
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
+    @JsonIgnore
     private String password;
 
     @NotBlank
@@ -55,14 +54,4 @@ public class User {
     private String pinedEventDate;
 
     private String registerDate;
-
-    @JsonIgnore
-    public String getPassword() {
-        return password;
-    }
-
-    @JsonProperty
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

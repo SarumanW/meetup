@@ -7,17 +7,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.thymeleaf.TemplateEngine;
 
 import java.io.File;
-import java.io.InputStream;
 
 @Service
 @PropertySource("classpath:links.properties")
@@ -56,7 +53,7 @@ public class MailService {
     }
 
     @Async
-    public void sendMailConfirmationRegistration(User user, String token) throws MailException {
+    public void sendMailConfirmationRegistration(User user, String token) {
         log.debug("Trying to build message");
 
         MimeMessagePreparator messagePreparator = new MailBuilder(templateEngine)
@@ -77,7 +74,7 @@ public class MailService {
     }
 
     @Async
-    public void sendMailSuccessfulRegistration(User user) throws MailException {
+    public void sendMailSuccessfulRegistration(User user) {
         log.debug("Trying to build message");
 
         MimeMessagePreparator messagePreparator = new MailBuilder(templateEngine)
@@ -99,7 +96,7 @@ public class MailService {
     }
 
     @Async
-    public void sendMailRecoveryPassword(User user, String token) throws MailException {
+    public void sendMailRecoveryPassword(User user, String token) {
         log.debug("Trying to build message");
 
         MimeMessagePreparator messagePreparator = new MailBuilder(templateEngine)

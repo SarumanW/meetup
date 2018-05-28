@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
@@ -68,7 +68,7 @@ public class AccountService {
 
         if (user == null || !user.getPassword().equals(credentials.getPassword())) {
             log.error("User login or password is not correct");
-            throw new FailedToLoginException(String.format(env.getProperty(EXCEPTION_FAILED_LOGIN),credentials.getLogin()));
+            throw new FailedToLoginException(String.format(env.getProperty(EXCEPTION_FAILED_LOGIN), credentials.getLogin()));
         }
 
         log.debug("Login and password is correct for user '{}'", user.toString());
@@ -92,6 +92,7 @@ public class AccountService {
         return userAndToken;
     }
 
+    @Transactional
     public void register(User user) {
         log.debug("Trying to get user with login '{}' from database", user.getLogin());
 
@@ -109,6 +110,11 @@ public class AccountService {
         }
 
         log.debug("No user found with this email '{}' in database", user.getEmail());
+
+        log.debug("Trying to send mail for user");
+
+        mailService.sendMailConfirmationRegistration(user, jwtService.tokenForConfirmationRegistration(user));
+
         log.debug("Add register date to user entity");
 
         user.setRegisterDate(new Timestamp(System.currentTimeMillis()).toString());
@@ -120,20 +126,6 @@ public class AccountService {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        log.debug("User data is successfully saved to database");
-        log.debug("Trying to send mail for user");
-        
-        try {
-            mailService.sendMailConfirmationRegistration(user, jwtService.tokenForConfirmationRegistration(user));
-        } catch (MailException e) {
-            log.error("Letter can not be sent");
-            log.debug("Trying delete user from database");
-            
-            userDao.delete(user);
-
-            throw new MailServerException(env.getProperty(EXCEPTION_MAIL_SERVER));
-        }
-
         log.debug("User '{}' is successfully registered in the system", user.toString());
     }
 
@@ -142,19 +134,14 @@ public class AccountService {
 
         log.debug("Trying to send mail for user about successful registration");
 
-        try {
-            mailService.sendMailSuccessfulRegistration(user);
-        } catch (MailException e) {
-            log.error("Cannot send mail about successful registration");
-            throw new MailServerException(env.getProperty(EXCEPTION_MAIL_SERVER));
-        }
+        mailService.sendMailSuccessfulRegistration(user);
 
         log.debug("User '{}' is successfully registered in the system", user.toString());
     }
 
     public void recoveryPasswordMail(String email) {
         log.debug("Trying to search user by email '{}'", email);
-        
+
         User user = userDao.findByEmail(email);
         if (user == null) {
             log.error("User was not found by email '{}'", email);
@@ -174,12 +161,7 @@ public class AccountService {
         log.debug("Token successfully created for user");
         log.debug("Trying to send message for recovery password on email");
 
-        try {
-            mailService.sendMailRecoveryPassword(user, token);
-        } catch (MailException e) {
-            log.error("Letter can not be sent");
-            throw new MailServerException(env.getProperty(EXCEPTION_MAIL_SERVER));
-        }
+        mailService.sendMailRecoveryPassword(user, token);
 
         log.debug("Letter has been sent successfully");
     }
