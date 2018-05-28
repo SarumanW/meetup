@@ -18,7 +18,7 @@ import java.util.List;
 @PropertySource("classpath:strings.properties")
 public class ItemCommentService {
 
-    private static Logger log = LoggerFactory.getLogger(ItemComment.class);
+    private static Logger log = LoggerFactory.getLogger(ItemCommentService.class);
 
     private final ItemCommentDao itemCommentDao;
 

@@ -35,8 +35,6 @@ public class SecretKeyProvider {
             return secretKey;
         } catch (URISyntaxException | IOException e) {
             log.error("Secret key is not available");
-
-            e.printStackTrace();
             throw new SecretKeyNotFoundException(env.getProperty(EXCEPTION_KEY_NOT_FOUND));
         }
     }

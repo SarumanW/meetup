@@ -14,7 +14,7 @@ import java.io.IOException;
 @ControllerAdvice
 public class ErrorController {
 
-    private static Logger log = LoggerFactory.getLogger(AccountService.class);
+    private static Logger log = LoggerFactory.getLogger(ErrorController.class);
 
     @ExceptionHandler(FrontendDetailedException.class)
     public void sendExceptionInfoToFront(HttpServletResponse response, Exception e) {

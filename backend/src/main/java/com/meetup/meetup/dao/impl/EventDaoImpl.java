@@ -434,7 +434,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        log.debug("Events were found with type '{}' with wolderId '{}' counted '{}' pcs", eventType, folderId, events.size());
+        log.debug("Events were found with type '{}' with folderId '{}' counted '{}' pcs", eventType, folderId, events.size());
 
         return events;
     }

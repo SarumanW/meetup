@@ -48,7 +48,7 @@ public class AccountService {
         this.authenticationFacade = authenticationFacade;
     }
 
-    public UserAndTokenVM login(LoginVM credentials) throws Exception {
+    public UserAndTokenVM login(LoginVM credentials) {
         log.debug("Trying to get hash from password");
 
         try {
@@ -92,7 +92,7 @@ public class AccountService {
         return userAndToken;
     }
 
-    public void register(User user) throws Exception {
+    public void register(User user) {
         log.debug("Trying to get user with login '{}' from database", user.getLogin());
 
         if (!userDao.isLoginFree(user.getLogin())) {  //checking if user exist in system
@@ -137,7 +137,7 @@ public class AccountService {
         log.debug("User '{}' is successfully registered in the system", user.toString());
     }
 
-    public void confirmRegistration(RecoveryPasswordVM model) throws Exception{
+    public void confirmRegistration(RecoveryPasswordVM model) {
         User user = recoveryPassword(model);
 
         log.debug("Trying to send mail for user about successful registration");
@@ -145,14 +145,14 @@ public class AccountService {
         try {
             mailService.sendMailSuccessfulRegistration(user);
         } catch (MailException e) {
-            log.error("");
+            log.error("Cannot send mail about successful registration");
             throw new MailServerException(env.getProperty(EXCEPTION_MAIL_SERVER));
         }
 
         log.debug("User '{}' is successfully registered in the system", user.toString());
     }
 
-    public void recoveryPasswordMail(String email) throws Exception{
+    public void recoveryPasswordMail(String email) {
         log.debug("Trying to search user by email '{}'", email);
         
         User user = userDao.findByEmail(email);
@@ -178,14 +178,13 @@ public class AccountService {
             mailService.sendMailRecoveryPassword(user, token);
         } catch (MailException e) {
             log.error("Letter can not be sent");
-            e.printStackTrace();
             throw new MailServerException(env.getProperty(EXCEPTION_MAIL_SERVER));
         }
 
         log.debug("Letter has been sent successfully");
     }
 
-    private User recoveryPassword(RecoveryPasswordVM model) throws Exception{
+    private User recoveryPassword(RecoveryPasswordVM model) {
         log.debug("Trying to verify token '{}' for user", model.getToken());
 
         User user = jwtService.verifyForRecoveryPassword(model.getToken());
@@ -216,7 +215,7 @@ public class AccountService {
         return user;
     }
 
-    public void checkPassword(RecoveryPasswordVM model) throws Exception{
+    public void checkPassword(RecoveryPasswordVM model) {
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();
 
@@ -247,7 +246,7 @@ public class AccountService {
         log.debug("Password is correct for user '{}'", user.toString());
     }
 
-    public void changePassword(RecoveryPasswordVM model) throws Exception{
+    public void changePassword(RecoveryPasswordVM model) {
 
         log.debug("Trying to get authenticated user");
         User user = authenticationFacade.getAuthentication();

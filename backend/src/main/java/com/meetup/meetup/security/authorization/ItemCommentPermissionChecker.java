@@ -24,7 +24,7 @@ public class ItemCommentPermissionChecker {
 
         boolean permission = checkPermission(commentId);
 
-        log.info("Delete permission '{}'", permission);
+        log.info("Delete permission is '{}'", permission);
 
         return permission;
     }

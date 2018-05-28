@@ -236,7 +236,7 @@ public class EventService {
             Files.deleteIfExists(rootLocation.resolve(file.getOriginalFilename()));
             Files.copy(file.getInputStream(), rootLocation.resolve(file.getOriginalFilename()));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Input/output error for sending event plan");
         }
 
         log.debug("Try send mail with file");

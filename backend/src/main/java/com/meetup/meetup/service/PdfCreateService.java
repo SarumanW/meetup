@@ -5,17 +5,21 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.meetup.meetup.entity.Event;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.List;
 import java.util.stream.Stream;
+
 @Service
 public class PdfCreateService {
+    private static Logger log = LoggerFactory.getLogger(PdfCreateService.class);
 
-    public void createPDF(List<Event>events) {
-
+    public void createPDF(List<Event> events) {
+        log.debug("Try to create pdf file");
         Document doc = new Document();
         try {
             PdfWriter.getInstance(doc, new FileOutputStream("events.pdf"));
@@ -27,11 +31,10 @@ public class PdfCreateService {
             }
             doc.add(table);
             doc.close();
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (DocumentException | FileNotFoundException e) {
+            log.error("Cant create pdf file");
         }
+        log.debug("Creating pdf file successful");
     }
 
     private void addRows(PdfPTable table, Event event) {
