@@ -51,7 +51,7 @@ public class ChatDaoImpl implements ChatDao {
             id = simpleJdbcInsert.executeAndReturnKey(MessageRowMapper.paramsMapper(message)).intValue();
             message.setMessageId(id);
         } catch (DataAccessException e) {
-            log.error("Query fails by insert message '{}'", message);
+            log.error("Query fails by insert message '{}'", message, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -95,7 +95,7 @@ public class ChatDaoImpl implements ChatDao {
         try {
             chatId = simpleJdbcInsert.executeAndReturnKey(chat).intValue();
         } catch (DataAccessException e) {
-            log.error("Query fails by insert chat '{}'", chat);
+            log.error("Query fails by insert chat '{}'", chat, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -114,7 +114,7 @@ public class ChatDaoImpl implements ChatDao {
         try {
             result = jdbcTemplate.update(env.getProperty(CHAT_DELETE_BY_EVENT_ID), eventId);
         } catch (DataAccessException e) {
-            log.error("Query fails by delete event chats with eventId '{}'", eventId);
+            log.error("Query fails by delete event chats with eventId '{}'", eventId, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -133,7 +133,7 @@ public class ChatDaoImpl implements ChatDao {
         try {
             result = jdbcTemplate.update(env.getProperty(CHAT_DELETE_MESSAGES_BY_EVENT_ID), eventId);
         } catch (DataAccessException e) {
-            log.error("Query fails by delete event chats messages with eventId '{}'", eventId);
+            log.error("Query fails by delete event chats messages with eventId '{}'", eventId, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -173,7 +173,7 @@ public class ChatDaoImpl implements ChatDao {
                 chatId = chatIds.get(0);
             }
         } catch (DataAccessException e) {
-            log.error("Query fails by finding chats ids with eventId '{}' and chatTypeId '{}'", eventId);
+            log.error("Query fails by finding chats ids with eventId '{}' and chatTypeId '{}'", eventId, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -192,7 +192,7 @@ public class ChatDaoImpl implements ChatDao {
             messages = jdbcTemplate.query(env.getProperty(CHAT_FIND_MESSAGES_BY_CHAT_ID),
                     new Object[]{chatId, GET_MESSAGE_LIMIT}, new MessageRowMapper());
         } catch (DataAccessException e) {
-            log.error("Query fails by finding messages with chatId '{}'", chatId);
+            log.error("Query fails by finding messages with chatId '{}'", chatId, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -218,7 +218,7 @@ public class ChatDaoImpl implements ChatDao {
                         return checkEntity;
                     });
         } catch (DataAccessException e) {
-            log.error("Query fails by finding messages with chatId '{}' and userId '{}'", chatId, userId);
+            log.error("Query fails by finding messages with chatId '{}' and userId '{}'", chatId, userId, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         log.debug("User with id '{}' can join to chat with id '{}' : '{}'", userId, chatId, checkEntity);

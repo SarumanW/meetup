@@ -38,7 +38,7 @@ public class ItemCommentDaoImpl extends AbstractDao<ItemComment> implements Item
         try {
             itemComment = jdbcTemplate.queryForObject(env.getProperty(ITEM_COMMENT_FIND_BY_ID), new Object[]{id}, new ItemCommentRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            log.error("Folder was not found by  folderId '{}'", id);
+            log.error("Folder was not found by  folderId '{}'", id, e);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "ItemComment", "id", id));
         } catch (DataAccessException e) {
             log.error("Query fails by find comment by comment id: '{}'", id);

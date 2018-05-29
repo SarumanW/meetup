@@ -22,7 +22,6 @@ import java.util.List;
 
 import static com.meetup.meetup.keys.Key.*;
 
-// TODO: 5/11/2018 Extend abstract class 
 @Component
 public class MailSenderScheduler {
 

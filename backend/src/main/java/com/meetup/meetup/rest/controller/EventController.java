@@ -183,7 +183,6 @@ public class EventController {
 
     //Public
 
-    // TODO: 21.05.2018 check permission if needed
     @GetMapping("/public")
     public ResponseEntity<List<Event>> getPublicEvents(@PathVariable int userId, @RequestParam("name") String name) {
         log.debug("Trying to get user public events by userId '{}'", userId);

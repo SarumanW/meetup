@@ -115,7 +115,6 @@ public class ItemController {
         return new ResponseEntity<>(itemWithoutBooker, HttpStatus.OK);
     }
 
-    // TODO: 16.05.2018 IS NOT USED
     @DeleteMapping
     @PreAuthorize("@itemAuthorization.isCorrectItem(#userId, #item)")
     public ResponseEntity deleteItem(@PathVariable int userId, @Valid @RequestBody Item item) {

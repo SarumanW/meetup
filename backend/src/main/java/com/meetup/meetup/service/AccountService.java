@@ -55,7 +55,7 @@ public class AccountService {
             String md5Pass = HashMD5.hash(credentials.getPassword());
             credentials.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
-            log.error("Algorithm can not get hash for password");
+            log.error("Algorithm can not get hash for password", e);
             throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
         }
 
@@ -183,7 +183,7 @@ public class AccountService {
             String md5Pass = HashMD5.hash(model.getPassword());
             user.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
-            log.error("Algorithm can not create hash for password");
+            log.error("Algorithm can not create hash for password", e);
             throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
         }
 
@@ -213,7 +213,7 @@ public class AccountService {
             String md5Pass = HashMD5.hash(model.getPassword());
             model.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
-            log.error("Algorithm can not get hash for password");
+            log.error("Algorithm can not get hash for password", e);
             throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
         }
 
@@ -245,7 +245,7 @@ public class AccountService {
             String md5Pass = HashMD5.hash(model.getPassword());
             user.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
-            log.error("Algorithm can not create hash for password");
+            log.error("Algorithm can not create hash for password", e);
             throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
         }
 

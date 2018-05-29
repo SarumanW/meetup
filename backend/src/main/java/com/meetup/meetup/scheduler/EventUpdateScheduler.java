@@ -18,7 +18,6 @@ import java.util.List;
 
 import static com.meetup.meetup.keys.Key.EXCEPTION_PARSE_DATE;
 
-// TODO: 5/11/2018 Extend abstract class
 @Component
 public class EventUpdateScheduler {
 
@@ -54,6 +53,7 @@ public class EventUpdateScheduler {
             log.debug("Try to parse event date");
             eventDate = fullDateFormat.parse(event.getEventDate());
         } catch (ParseException e) {
+            log.error("Error with updating event",e);
             throw new ParseDateException(env.getProperty(EXCEPTION_PARSE_DATE));
         }
 

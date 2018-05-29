@@ -29,13 +29,13 @@ public class ErrorController {
 
     @ExceptionHandler(CustomRuntimeException.class)
     public void handleCustomException(HttpServletResponse response, Exception e) {
-        log.error("CustomException: ", e);
+        log.error("CustomException: {}", e.getMessage());
         sendTeapotException(response);
     }
 
     @ExceptionHandler(Exception.class)
     public void handleException(HttpServletResponse response, Exception e) {
-        log.error("Exception: ", e);
+        log.error("Exception: {}", e.getMessage());
         sendTeapotException(response);
     }
 

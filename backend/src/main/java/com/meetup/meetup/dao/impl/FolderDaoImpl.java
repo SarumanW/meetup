@@ -42,7 +42,7 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
             userFolders = jdbcTemplate.query(env.getProperty(FOLDER_GET_USER_FOLDERS),
                     new Object[]{id}, new FolderRowMapper());
         } catch (DataAccessException e) {
-            log.error("Query fails by getting folders for user with id '{}'", id);
+            log.error("Query fails by getting folders for user with id '{}'", id,e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -66,10 +66,10 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
                     new Object[]{id}, new FolderRowMapper()
             );
         } catch (EmptyResultDataAccessException e) {
-            log.error("Folder was not found by  folderId '{}'", id);
+            log.error("Folder was not found by  folderId '{}'", id,e);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "Folder", "folderId", id));
         } catch (DataAccessException e) {
-            log.error("Query fails by finding folder with id '{}'", id);
+            log.error("Query fails by finding folder with id '{}'", id,e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -86,7 +86,7 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
             result = jdbcTemplate.update(env.getProperty(FOLDER_REMOVE_EVENTS), id);
 
         } catch (DataAccessException e) {
-            log.error("Query fails by moving events to general with id '{}'", id);
+            log.error("Query fails by moving events to general with id '{}'", id,e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -105,10 +105,10 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
                     new Object[]{id, userId}, new FolderRowMapper()
             );
         }catch (EmptyResultDataAccessException e) {
-            log.error("Folder was not found by  folderId '{}'", id);
+            log.error("Folder was not found by  folderId '{}'", id,e);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "Folder", "folderId", id));
         } catch (DataAccessException e) {
-            log.error("Query fails by finding folder with id '{}' for user with id '{}'", id, userId);
+            log.error("Query fails by finding folder with id '{}' for user with id '{}'", id, userId,e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -134,7 +134,7 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
             model.setFolderId(id);
         } catch (DataAccessException e) {
-            log.error("Query fails by inserting folder with name '{}' by user with id '{}'", model.getName(), model.getUserId());
+            log.error("Query fails by inserting folder with name '{}' by user with id '{}'", model.getName(), model.getUserId(),e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -151,7 +151,7 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
             result = jdbcTemplate.update(env.getProperty(FOLDER_UPDATE),
                     model.getName(), model.getFolderId());
         } catch (DataAccessException e) {
-            log.error("Query fails by updating folder with id '{}'", model.getFolderId());
+            log.error("Query fails by updating folder with id '{}'", model.getFolderId(),e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -171,7 +171,7 @@ public class FolderDaoImpl extends AbstractDao<Folder> implements FolderDao {
         try {
             result = jdbcTemplate.update(env.getProperty(FOLDER_DELETE), model.getFolderId());
         } catch (DataAccessException e) {
-            log.error("Query fails by deleting folder with id '{}'", model.getFolderId());
+            log.error("Query fails by deleting folder with id '{}'", model.getFolderId(),e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 

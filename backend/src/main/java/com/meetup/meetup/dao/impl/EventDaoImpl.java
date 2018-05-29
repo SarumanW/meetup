@@ -53,7 +53,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             events = jdbcTemplate.query(env.getProperty(EVENT_FIND_BY_USER_ID),
                     new Object[]{userId}, new EventRowMapper());
         } catch (DataAccessException e) {
-            log.error("Query fails by finding event by user with id '{}'", userId);
+            log.error("Query fails by finding event by user with id '{}'", userId,e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -72,10 +72,10 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
                     new Object[]{id}, new EventRowMapper()
             );
         } catch (EmptyResultDataAccessException e) {
-            log.error("Event was not found by eventId '{}'", id);
+            log.error("Event was not found by eventId '{}'", id,e);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Event", "eventId", id));
         } catch (DataAccessException e) {
-            log.error("Query fails by finding event with id '{}'", id);
+            log.error("Query fails by finding event with id '{}'", id,e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -115,7 +115,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
             model.setEventId(id);
         } catch (DataAccessException e) {
-            log.error("Query fails by insert event with name '{}' by owner with id '{}'", model.getName(), model.getOwnerId());
+            log.error("Query fails by insert event with name '{}' by owner with id '{}'", model.getName(), model.getOwnerId(),e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
             log.debug("Event with name '{}' by owner with id '{}' was inserted with id '{}'", model.getName(), model.getOwnerId(), id);
@@ -153,10 +153,10 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
 
             role = Role.valueOf(roleString);
         } catch (EmptyResultDataAccessException e) {
-            log.error("Role was not found by eventId '{}'", eventId);
+            log.error("Role was not found by eventId '{}'", eventId,e);
             role = Role.NULL;
         } catch (DataAccessException e) {
-            log.error("Query fails by get role for user with id '{}' for event with id '{}'", userId, eventId);
+            log.error("Query fails by get role for user with id '{}' for event with id '{}'", userId, eventId,e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -178,7 +178,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
         try {
             result = simpleJdbcInsert.execute(parameters);
         } catch (DataAccessException e) {
-            log.error("Query fails by insert user event with user id '{}', event id '{}', role id '{}'", userId, eventId, roleId);
+            log.error("Query fails by insert user event with user id '{}', event id '{}', role id '{}'", userId, eventId, roleId,e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         if (result == 0) {
@@ -196,7 +196,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
         try {
             result = jdbcTemplate.update(env.getProperty(EVENT_ADD_PARTICIPANT), participantId, PARTICIPANT_ID, eventId, ownerId, OWNER_ID);
         } catch (DataAccessException e) {
-            log.error("Query fails by insert user event with participant id '{}', event id '{}', owner id '{}'", participantId, eventId, ownerId);
+            log.error("Query fails by insert user event with participant id '{}', event id '{}', owner id '{}'", participantId, eventId, ownerId,e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -217,7 +217,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             result = jdbcTemplate.update(env.getProperty(EVENT_DELETE_PARTICIPANTS), model.getEventId(), ownerId);
             model.setParticipants(null);
         } catch (DataAccessException e) {
-            log.error("Query fails by delete participants of event with id '{}'", model.getEventId());
+            log.error("Query fails by delete participants of event with id '{}'", model.getEventId(),e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -236,7 +236,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             event.setParticipants(null);
             event.setOwnerId(0);
         } catch (DataAccessException e) {
-            log.error("Query fails by delete participants of event with id '{}'", event.getEventId());
+            log.error("Query fails by delete participants of event with id '{}'", event.getEventId(),e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -258,7 +258,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
         try {
             result = jdbcTemplate.update(env.getProperty(EVENT_DELETE_PARTICIPANT), participantId, eventId, ownerId);
         } catch (DataAccessException e) {
-            log.error("Query fails by delete participants of event with id '{}'", eventId);
+            log.error("Query fails by delete participants of event with id '{}'", eventId,e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -279,10 +279,10 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             events = jdbcTemplate.query(env.getProperty(EVENT_GET_IN_PERIOD),
                     new Object[]{userId, startDate, endDate}, new EventRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            log.error("Events was not found by userId '{}'", userId);
+            log.error("Events was not found by userId '{}'", userId,e);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "userId", userId));
         } catch (DataAccessException e) {
-            log.error("Query fails by finding event by user with id '{}'", userId);
+            log.error("Query fails by finding event by user with id '{}'", userId,e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -301,10 +301,10 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             events = jdbcTemplate.query(env.getProperty(EVENT_GET_IN_PERIOD_ALL_USERS),
                     new Object[]{startDate, endDate}, new EventRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            log.error("Events was not found");
+            log.error("Events was not found",e);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "Events", "period", "one day"));
         } catch (DataAccessException e) {
-            log.error("Query fails by finding event");
+            log.error("Query fails by finding event",e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -324,10 +324,10 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             events = jdbcTemplate.query(env.getProperty(EVENT_GET_ALL_PUBLIC),
                     new Object[]{userId, qString}, new EventRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            log.error("Events were not found by userId '{}'", userId);
+            log.error("Events were not found by userId '{}'", userId,e);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND),"Events", "userId", userId));
         } catch (DataAccessException e) {
-            log.error("Query fails by finding public events by user with id '{}'", userId);
+            log.error("Query fails by finding public events by user with id '{}'", userId,e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -347,7 +347,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
                     model.getName(), model.getEventDate(), model.getDescription(), model.getPeriodicityId(),
                     model.getPlace(), model.getEventTypeId(), model.getIsDraft() ? 1 : 0, model.getFolderId(), model.getImageFilepath(), model.getEventId());
         } catch (DataAccessException e) {
-            log.error("Query fails by update event with id '{}'", model.getEventId());
+            log.error("Query fails by update event with id '{}'", model.getEventId(),e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -368,7 +368,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
         try {
             result = jdbcTemplate.update(env.getProperty(EVENT_DELETE), model.getEventId());
         } catch (DataAccessException e) {
-            log.error("Query fails by delete event with id '{}'", model.getEventId());
+            log.error("Query fails by delete event with id '{}'", model.getEventId(),e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -390,10 +390,10 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             events = jdbcTemplate.query(env.getProperty(EVENT_FIND_BY_FOLDER_ID),
                     new Object[]{folderId, userId}, new EventRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            log.error("Events was not found by  folderId '{}'", folderId);
+            log.error("Events was not found by  folderId '{}'", folderId,e);
             throw new EntityNotFoundException(String.format(env.getProperty(EXCEPTION_ENTITY_NOT_FOUND), "Events", "folderId", folderId));
         } catch (DataAccessException e) {
-            log.error("Query fails by find event by folder id '{}'", folderId);
+            log.error("Query fails by find event by folder id '{}'", folderId, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -411,7 +411,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             events = jdbcTemplate.query(env.getProperty(EVENT_GET_DRAFTS),
                     new Object[]{folderId, userId}, new EventRowMapper());
         } catch (DataAccessException e) {
-            log.error("Query fails by getting drafts with folder id '{}'", folderId);
+            log.error("Query fails by getting drafts with folder id '{}'", folderId, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -430,7 +430,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
                     new Object[]{eventType, folderId, userId}, new EventRowMapper());
 
         } catch (DataAccessException e) {
-            log.error("Query fails by finding events with type '{}' with folderId '{}'", eventType, folderId);
+            log.error("Query fails by finding events with type '{}' with folderId '{}'", eventType, folderId, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -448,7 +448,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
             participants = jdbcTemplate.query(env.getProperty(EVENT_GET_PARTICIPANTS),
                     new Object[]{event.getEventId()}, new UserRowMapper());
         } catch (DataAccessException e) {
-            log.error("Query fails by getting participants for event with id '{}'", event.getEventId());
+            log.error("Query fails by getting participants for event with id '{}'", event.getEventId(), e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
@@ -473,7 +473,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
                 throw new UpdateException(env.getProperty(EXCEPTION_UPDATE));
             }
         } catch (DataAccessException e) {
-            log.error("Query fails by pin event with id: '{}', user id: '{}'", eventId, userId);
+            log.error("Query fails by pin event with id: '{}', user id: '{}'", eventId, userId, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return findById(eventId);
@@ -494,7 +494,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
                 throw new DeleteException(EXCEPTION_DELETE);
             }
         } catch (DataAccessException e) {
-            log.error("Query fails by pin event: '{}', user id: '{}'", eventId, userId);
+            log.error("Query fails by pin event: '{}', user id: '{}'", eventId, userId, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
         return findById(eventId);
@@ -514,7 +514,7 @@ public class EventDaoImpl extends AbstractDao<Event> implements EventDao {
                 log.debug("No users for unpin event with id : '{}', for all users", eventId);
             }
         } catch (DataAccessException e) {
-            log.error("Query fails by unpin event: '{}' for all users", eventId);
+            log.error("Query fails by unpin event: '{}' for all users", eventId, e);
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 

@@ -152,7 +152,6 @@ export class WishEditComponent implements OnInit {
       if (event instanceof HttpResponse) {
         this.showSuccess('Successful image uploaded', 'Attention!');
 
-        //todo Check working
         this.editItem.imageFilepath = event.body.toString();
         this.addWish();
         this.selectedFile = 'assets/item-icon-default.svg';
