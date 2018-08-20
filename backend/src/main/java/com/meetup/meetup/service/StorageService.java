@@ -7,19 +7,15 @@ import java.nio.file.Paths;
 
 import com.meetup.meetup.dao.UserDao;
 import com.meetup.meetup.entity.User;
-
 import com.meetup.meetup.exception.runtime.frontend.detailed.FileUploadException;
 import com.meetup.meetup.security.AuthenticationFacade;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
-import static com.meetup.meetup.Keys.Key.EXCEPTION_FILE_UPLOAD;
+import static com.meetup.meetup.keys.Key.EXCEPTION_FILE_UPLOAD;
 
 
 @Service
@@ -36,30 +32,33 @@ public class StorageService {
     @Autowired
     private UserDao userDao;
 
-    private Logger log = LoggerFactory.getLogger(this.getClass().getName());
-
-    private Path rootLocation;
+    private Path rootLocation ;
 
     public User store(MultipartFile file) {
-        log.debug("Try to receive img");
         rootLocation = Paths.get(env.getProperty("profile.img.link"));
-        log.debug("Try to receive img to path: '{}'", rootLocation.getFileName());
         User user = authenticationFacade.getAuthentication();
-
         String inFileFormat = "." + file.getOriginalFilename().split("\\.")[1];
-        log.debug("File format is {}", inFileFormat);
         user.setImgPath(env.getProperty("remote.img.link") + user.getId() + inFileFormat);
-        log.debug("Update user's image path to '{}'", user.getImgPath());
         userDao.update(user);
-        log.debug("User's image path is updated");
         try {
-            log.debug("Copying file");
             Files.deleteIfExists(this.rootLocation.resolve(user.getId() + inFileFormat));
             Files.copy(file.getInputStream(), this.rootLocation.resolve(user.getId() + inFileFormat));
-            log.debug("Copying file finished");
             return user;
         } catch (Exception e) {
-            log.debug("Problems with file copying");
+            throw new FileUploadException(String.format(env.getProperty(EXCEPTION_FILE_UPLOAD), file.getOriginalFilename()));
+        }
+    }
+
+    public String wishItemImageStore(MultipartFile file) {
+        rootLocation = Paths.get(env.getProperty("wish.local.img.link"));
+        String inFileFormat = "." + file.getOriginalFilename().split("\\.")[1];
+        try {
+            long imageName = System.nanoTime();
+            String imagePath = env.getProperty("wish.remote.img.link") + imageName + inFileFormat;
+            Files.deleteIfExists(this.rootLocation.resolve(imageName + inFileFormat));
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(imageName + inFileFormat));
+            return imagePath;
+        } catch (Exception e) {
             throw new FileUploadException(String.format(env.getProperty(EXCEPTION_FILE_UPLOAD), file.getOriginalFilename()));
         }
     }

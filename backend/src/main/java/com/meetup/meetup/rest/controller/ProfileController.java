@@ -1,15 +1,16 @@
 package com.meetup.meetup.rest.controller;
 
+import com.meetup.meetup.entity.Event;
 import com.meetup.meetup.entity.User;
+import com.meetup.meetup.service.EventService;
 import com.meetup.meetup.service.ProfileService;
 import com.meetup.meetup.service.StorageService;
-import com.meetup.meetup.service.vm.UserAndTokenVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,11 +24,13 @@ public class ProfileController {
 
     private final ProfileService profileService;
     private final StorageService storageService;
+    private final EventService eventService;
 
     @Autowired
-    public ProfileController(ProfileService profileService, StorageService storageService) {
+    public ProfileController(ProfileService profileService, StorageService storageService, EventService eventService) {
         this.profileService = profileService;
         this.storageService = storageService;
+        this.eventService = eventService;
     }
 
     @GetMapping("/{login}")
@@ -41,18 +44,27 @@ public class ProfileController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @GetMapping("/login/{id}")
+    public ResponseEntity<Object> getLoginById(@PathVariable int id) {
+        log.debug("Trying to get user's login by id '{}'", id);
+
+        String login = profileService.getUserLoginById(id);
+
+        log.debug("Send response body login '{}' and status OK", login);
+
+        return new ResponseEntity<>(login, HttpStatus.OK);
+    }
+
     @PutMapping
-    public ResponseEntity<String> updateProfile(@RequestBody User newUser) {
-        log.debug("Trying to update user '{}'", newUser.toString());
+    @PreAuthorize("@profileAuthorization.isUserCorrect(#user.id)")
+    public ResponseEntity<User> updateProfile(@RequestBody User user) {
+        log.debug("Trying to update user '{}'", user.toString());
 
-        User updatedUser = profileService.updateUser(newUser);
+        User updatedUser = profileService.updateUser(user);
 
-        if (updatedUser != null) {
-            log.debug("Send response body user '{}' and status OK", updatedUser);
-            return new ResponseEntity<>("Successfully updated profile", HttpStatus.OK);
-        }
-        log.debug("Updating user '{}' failed", newUser.toString());
-        return new ResponseEntity<>("Updating failed", HttpStatus.NOT_MODIFIED);
+        log.debug("Send response body user '{}' and status OK", updatedUser);
+
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @GetMapping("/{login}/friends")
@@ -66,25 +78,29 @@ public class ProfileController {
         return new ResponseEntity<>(friends, HttpStatus.OK);
     }
 
-    @GetMapping("/friendsRequests")
-    public ResponseEntity<List<User>> getFriendsRequests() {
+    @GetMapping("/{userId}/friends/requests")
+    @PreAuthorize("@profileAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<User>> getFriendsRequests(@PathVariable int userId) {
         log.debug("Trying to get requests from friends of authenticated user");
 
-        List<User> friendRequests = profileService.getFriendsRequests();
+        List<User> friendRequests = profileService.getFriendsRequests(userId);
 
         log.debug("Send response body friends requests '{}' and status OK", friendRequests);
 
         return new ResponseEntity<>(friendRequests, HttpStatus.OK);
     }
 
-    @PostMapping("/addFriend")
-    public ResponseEntity<String> addFriend(@RequestBody String friendLogin) {
+    @PostMapping("/{userId}/friends")
+    @PreAuthorize("@profileAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<String> addFriend(@PathVariable int userId, @RequestBody String friendLogin) {
         log.debug("Trying to add friend for authenticated user by friendLogin '{}'", friendLogin);
 
-        if (profileService.addFriend(friendLogin)) {
+        if (profileService.addFriend(userId, friendLogin)) {
+
             log.debug("Friend successfully added");
             log.debug("Send response status OK");
-            return new ResponseEntity<>("Successfully send request to " + friendLogin, HttpStatus.OK);
+
+            return new ResponseEntity<>(HttpStatus.OK);
         }
 
         log.debug("Send response status EXPECTATION_FAILED");
@@ -92,26 +108,39 @@ public class ProfileController {
         return new ResponseEntity<>("User does not exist or you have already sent request", HttpStatus.EXPECTATION_FAILED);
     }
 
-    @PostMapping("/confirmFriend")
-    public ResponseEntity confirmFriend(@RequestBody int friendId) {
+    @PostMapping("{userId}/friends/confirm")
+    @PreAuthorize("@profileAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity confirmFriend(@PathVariable int userId, @RequestBody int friendId) {
         log.debug("Trying to confirm friend for authenticated user by friendId '{}'", friendId);
 
-        profileService.confirmFriend(friendId);
+        profileService.confirmFriend(userId, friendId);
 
         log.debug("Send response status CREATED");
 
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
-    @PostMapping("/deleteFriend")
-    public ResponseEntity deleteFriend(@RequestBody int friendId) {
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    @PreAuthorize("@profileAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity deleteFriend(@PathVariable int userId, @PathVariable int friendId) {
         log.debug("Trying to delete friend for authenticated user by friendId '{}'", friendId);
 
-        profileService.deleteFriend(friendId);
+        profileService.deleteFriend(userId, friendId);
 
         log.debug("Send response status OK");
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("{userId}/relations/{otherUserId}")
+    public ResponseEntity<String> userRelations(@PathVariable int userId, @PathVariable int otherUserId){
+        log.debug("Trying to get relation between user with id '{}' and authenticated user '{}'", otherUserId, userId);
+
+        String relation = profileService.userRelations(userId, otherUserId);
+
+        log.debug("Send response body relation '{}' and status OK", relation);
+
+        return new ResponseEntity<>(relation, HttpStatus.OK);
     }
 
     @PostMapping("/upload")
@@ -121,19 +150,30 @@ public class ProfileController {
         User updatedUser = storageService.store(file);
 
         log.debug("Image successfully uploaded send response status OK");
-        return new ResponseEntity<>(updatedUser.getImgPath(),HttpStatus.OK);
 
+        return new ResponseEntity<>(updatedUser.getImgPath(), HttpStatus.OK);
     }
 
-    @GetMapping("/search")
-    public List<User> searchUsers(@RequestParam String username) {
-        log.debug("Trying to search users by username '{}'",
-                username);
+    @GetMapping("/{userId}/search")
+    @PreAuthorize("@profileAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<User>> searchUsers(@PathVariable int userId, @RequestParam String username, @RequestParam(name = "type") String typeOfRelationship) {
+        log.debug("Trying to search users by username '{}'", username);
 
-        List<User> users = profileService.getUnknownUsers(username);
+        List<User> users = profileService.getUsersByRelationshipType(userId, username, typeOfRelationship);
 
-        log.debug("Found users '{}'", users.toString());
+        log.debug("Found users '{}' and send response status OK", users.toString());
 
-        return users;
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/{login}/event/pined")
+    public ResponseEntity<User> getProfileWithEvent(@PathVariable String login){
+        log.debug("Trying to get user with event by login '{}'", login);
+
+        User user = profileService.getProfileWithEvent(login);
+
+        log.debug("Received user '{}' and send response status OK", user);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

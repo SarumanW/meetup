@@ -5,15 +5,25 @@ import {Observable} from "rxjs/Observable";
 @Injectable()
 export class CalendarService {
 
+  currentUser;
+  prePath: string;
+
   constructor(private http: HttpClient) {
   }
 
+  initPrePath() {
+    this.currentUser = JSON.parse(localStorage.currentUser);
+    this.prePath = `api/users/${this.currentUser.id}`;
+  }
+
   getUserEvents(userId: number): Observable<any> {
+    this.initPrePath();
+
     let headers = new HttpHeaders()
-      .set("Authorization", `Bearer ${JSON.parse(localStorage.currentUser).token}`);
+      .set("Authorization", `Bearer ${this.currentUser.token}`);
 
     return this.http
-      .get<any>('api/events/user/' + userId, {headers: headers});
+      .get<any>(`${this.prePath}/events`, {headers: headers});
 
   }
 

@@ -50,36 +50,21 @@
 
         <div *ngIf="eventt.eventType !== 'NOTE'" class="form-group">
           <label class="form-control-label" for="eventDate">Choose the day of the event: </label>
-          <input type="date" min="{{currentDate}}" class="form"
+          <input type="date" min="{{currentDate}}" class="form-control"
                  id="eventDate" name="eventDate" #eventDate="ngModel" [(ngModel)]="datee"
                  placeholder="{{currentDate}}" required>
         </div>
 
         <div *ngIf="eventt.eventType !== 'NOTE'" class="form-group">
           <label class="form-control-label" for="eventDate">Choose the time of the event: </label>
-          <input type="time" class="form"
+          <input type="time" class="form-control"
                  id="eventTime" name="eventTime" #eventTime="ngModel" [(ngModel)]="time" required>
         </div>
 
         <div class="form-group">
-          <label for="description">Description:</label>
-          <input type="text" class="form-control" [(ngModel)]="eventt.description"
-                 id="description" name="description" #description="ngModel" placeholder="description"
-                 minlength="4" maxlength="250" pattern="^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$" required/>
-          <div *ngIf="description.dirty && description.invalid">
-            <small class="form-text text-danger" *ngIf="description.errors.required">
-              Description is required.
-            </small>
-            <small class="form-text text-danger" *ngIf="description.errors.minlength">
-              Description is required to be at least 4 character.
-            </small>
-            <small class="form-text text-danger" *ngIf="description.errors.maxlength">
-              Description can not be longer than 250 characters.
-            </small>
-            <small class="form-text text-danger" *ngIf="description.errors.pattern">
-              Description can only contain letters and digits.
-            </small>
-          </div>
+          <label class="form-control-label">Choose the place of the event: </label>
+          <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text"
+                 class="form-control" #search [formControl]="searchControl">
         </div>
 
         <div *ngIf="eventt.eventType !== 'NOTE'" class="form-group">
@@ -96,6 +81,21 @@
         </div>
 
         <div class="form-group">
+          <label for="description">Description:</label>
+          <textarea class="form-control" [(ngModel)]="eventt.description" style="min-height: 6em;"
+                    id="description" name="description" #description="ngModel" placeholder="description"
+                    maxlength="1023" pattern="^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$"></textarea>
+          <div *ngIf="description.dirty && description.invalid">
+            <small class="form-text text-danger" *ngIf="description.errors.maxlength">
+              Description can not be longer than 1023 characters.
+            </small>
+            <small class="form-text text-danger" *ngIf="description.errors.pattern">
+              Description can only contain letters and digits.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label>Add custom image to event:</label>
 
 
@@ -103,23 +103,20 @@
             <input type="file" (change)="selectFile($event)">
           </label>
 
-          <button class="btn btn-success" [disabled]="errorFileFormat || !selectedFiles" (click)="upload()">Upload
-          </button>
-
           <div>
-          <small class="form-text text-danger" *ngIf="errorFileFormat">
+            <small class="form-text text-danger" *ngIf="errorFileFormat">
             Incorrect file format. Only jpg, png, gif enabled.
           </small>
-          <small class="form-text text-success" *ngIf="imageLoaded">
+            <small class="form-text text-success" *ngIf="imageLoaded">
             Image successfully loaded
           </small>
           </div>
         </div>
 
-        <button type="button" [disabled]="addEventForm.form.invalid"  (click)="addEvent()" class="btn btn-primary">
+        <button type="button" [disabled]="addEventForm.form.invalid || errorFileFormat"  (click)="addEvent()" class="btn btn-primary">
           Add
         </button>
-        <button type="button" [disabled]="addEventForm.form.invalid" (click)="addDraft()" class="btn btn-primary">
+        <button type="button" [disabled]="addEventForm.form.invalid || errorFileFormat" (click)="addDraft()" class="btn btn-primary">
           Save as draft
         </button>
 

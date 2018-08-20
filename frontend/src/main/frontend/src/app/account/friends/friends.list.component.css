@@ -36,7 +36,7 @@ body {
   border: 1px solid #ccc;
   padding: 10px;
   font: 1.5em 'Arimo', sans-serif;
-  width: 50%;
+  width: 100%;
   outline: none;
   transition: border 0.5s ease-in-out
 }
@@ -93,7 +93,8 @@ body {
 }
 .filter-select-list:hover {
   background:  #C0C0C0;
-  color: #fff
+  color: #fff;
+  cursor: pointer;
 }
 .list-highlight,
 .list-highlight:hover {
@@ -128,4 +129,8 @@ body {
   #keyword-button {
     right: 3.5%
   }
+}
+
+.search-img{
+  height: 50px;
 }

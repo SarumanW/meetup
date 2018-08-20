@@ -1,0 +1,130 @@
+<div class="container-fluid" >
+  <ngx-spinner bdOpacity=0.9
+               bdColor="#333"
+               size="default"
+               color="#fff"
+               type="ball-beat"></ngx-spinner>
+  <div *ngIf="eventt" class="row">
+    <div class="col-2">
+      <home-comp [states]="state"></home-comp>
+    </div>
+
+    <div *ngIf="currentUserId !== eventt.ownerId">
+      <img src="assets/perm.jpg" class="center"/>
+    </div>
+
+    <div class="col-6">
+      <div class="container justify-content-center">
+
+        <form name="form" role="form" #editEventForm="ngForm">
+
+          <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
+            <h2>Edit event</h2>
+          </div>
+
+          <div  class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" [(ngModel)]="eventt.name"
+                   id="name" name="name" #name="ngModel" placeholder="name"
+                   minlength="4" maxlength="50" pattern="^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$" required/>
+            <div *ngIf="name.dirty && name.invalid">
+              <small class="form-text text-danger" *ngIf="name.errors.required">
+                Event name is required.
+              </small>
+              <small class="form-text text-danger" *ngIf="name.errors.minlength">
+                Event name is required to be at least 4 character.
+              </small>
+              <small class="form-text text-danger" *ngIf="name.errors.maxlength">
+                Event name cannot be longer than 50 characters.
+              </small>
+              <small class="form-text text-danger" *ngIf="name.errors.pattern">
+                Event name can only contain letters and digits.
+              </small>
+            </div>
+          </div>
+
+          <div *ngIf="eventt.eventType !== 'NOTE'" class="form-group">
+            <label class="form-control-label" for="eventDate">Choose the day of the event: </label>
+            <input type="date" min="{{currentDate}}" class="form-control"
+                   id="eventDate" name="eventDate" #eventDate="ngModel" [(ngModel)]="datee"
+                   placeholder="{{currentDate}}" required>
+          </div>
+
+          <div *ngIf="eventt.eventType !== 'NOTE'" class="form-group">
+            <label class="form-control-label" for="eventDate">Choose the time of the event: </label>
+            <input type="time" class="form-control"
+                   id="eventTime" name="eventTime" #eventTime="ngModel" [(ngModel)]="time" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-control-label">Choose the place of the event: </label>
+            <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text"
+                   class="form-control" #searchh [formControl]="searchControl">
+          </div>
+
+          <div *ngIf="eventt.eventType !== 'NOTE'" class="form-group">
+            <label for="periodicity">Periodicity:</label>
+            <select name="periodicity" id="periodicity" class="form-control" [(ngModel)]="eventt.periodicity"
+                    required>
+              <option value="ONCE">Once</option>
+              <option value="HOUR">Every hour</option>
+              <option value="DAY">Every day</option>
+              <option value="WEEK">Every week</option>
+              <option value="MONTH">Every month</option>
+              <option value="YEAR">Every year</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea class="form-control" [(ngModel)]="eventt.description" style="min-height: 6em;"
+                      id="description" name="description" #description="ngModel" placeholder="description"
+                      maxlength="1023" pattern="^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$"></textarea>
+            <div *ngIf="description.dirty && description.invalid">
+              <small class="form-text text-danger" *ngIf="description.errors.maxlength">
+                Description can not be longer than 1023 characters.
+              </small>
+              <small class="form-text text-danger" *ngIf="description.errors.pattern">
+                Description can only contain letters and digits.
+              </small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Add custom image to event:</label>
+
+
+            <label class="btn btn-default">
+              <input type="file" (change)="selectFile($event)">
+            </label>
+
+            <div>
+              <small class="form-text text-danger" *ngIf="errorFileFormat">
+                Incorrect file format. Only jpg, png, gif enabled.
+              </small>
+              <small class="form-text text-success" *ngIf="imageLoaded">
+                Image successfully loaded
+              </small>
+            </div>
+          </div>
+
+          <button type="button" [disabled]="errorFileFormat || editEventForm.form.invalid ||
+           currentUserId !== eventt.ownerId"  (click)="update()" class="btn btn-primary">
+            Save changes
+          </button>
+
+        </form>
+      </div>
+    </div>
+
+    <div class="col-4">
+      <div class="container justify-content-center">
+        <label>Choose event place:</label>
+        <agm-map [latitude]="lat" [longitude]="lng" (mapClick)="placeMarker($event)">
+          <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+        </agm-map>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -2,6 +2,8 @@ import {Component, OnInit} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
 import {HttpClient} from '@angular/common/http';
 import {FormBuilder, Validators} from "@angular/forms";
+import {AppComponent} from "../../app.component";
+import {AccountService} from "../account.service";
 
 @Component({
   selector: 'app-sendrecovery',
@@ -17,7 +19,9 @@ export class SendRecoveryComponent implements OnInit {
   });
 
   constructor(private http: HttpClient,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private appComponent: AppComponent,
+              private accountService: AccountService,) {
   }
 
   ngOnInit() {
@@ -26,18 +30,18 @@ export class SendRecoveryComponent implements OnInit {
   }
 
   sendRecovery() {
-    console.log(this.emailAddr);
-    this.http.get('api/recovery/'+this.emailAddr).subscribe(
+    this.accountService.sendRecovery(this.emailAddr).subscribe(
       () => {
         this.success = true;
-      },
-      response => this.processError(response)
+      }, error => {
+        this.appComponent.showError(error, 'Error');
+        this.processError(error)
+      }
     );
   }
 
   processError(response: HttpErrorResponse) {
     this.success = null;
-    console.log(response);
     this.error = response.error;
   }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 
-import static com.meetup.meetup.Keys.Key.*;
+import static com.meetup.meetup.keys.Key.*;
 
 @Component
 public class UserRowMapper implements RowMapper<User> {
@@ -35,7 +35,8 @@ public class UserRowMapper implements RowMapper<User> {
         user.setBirthDay(date == null ? null : date.toString());
         user.setTimeZone(resultSet.getInt(UUSER_TIMEZONE));
         user.setImgPath(resultSet.getString(UUSER_IMAGE_FILEPATH));
-
+        user.setPinedEventId(resultSet.getInt(UUSER_PINED_EVENT_ID));
+        user.setPeriodicalEmail(resultSet.getString(UUSER_PERIODICAL_EMAIL));
         return user;
     }
 

@@ -1,0 +1,163 @@
+<div class="container-fluid" style="margin-top:20px">
+  <ngx-spinner bdOpacity=0.9
+               bdColor="#333"
+               size="default"
+               color="#fff"
+               type="ball-beat"></ngx-spinner>
+  <div class="row">
+    <div class="col-2">
+      <home-comp [states]="state"></home-comp>
+    </div>
+
+    <div class="col-6">
+      <div class="container justify-content-center">
+
+        <form name="form" role="form" #addItemForm="ngForm" ngForm="addItemForm">
+          <div class="py-4 d-flex justify-content-between flex-wrap align-items-center">
+            <h2>Edit item</h2>
+          </div>
+
+          <!--Image-->
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-4">
+                <label>To add wish photo:</label>
+
+                <label class="btn btn-success btn-file">
+                  Browse <input type="file" style="display: none;" #imageFile (change)="selectFile($event)"
+                                accept="image/gif, image/jpg, image/jpeg, image/png">
+                </label>
+              </div>
+
+              <div class="col-md-4">
+                <div class="thumbnail">
+                  <img [src]="selectedFile" style="background: #aaaaaa" class="img-thumbnail" alt="Image"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--Name-->
+
+          <div class="form-group">
+            <label class="form-control-label" for="itemName">Name:</label>
+            <input type="text" class="form-control" [(ngModel)]="editItem.name" id="itemName" name="name"
+                   #name="ngModel" placeholder="Enter item name"
+                   minlength="3" maxlength="30" pattern="^[_.@A-Za-z0-9-\s]*$" required>
+            <div *ngIf="name.dirty && name.invalid">
+              <small class="form-text text-danger" *ngIf="name.errors.required">
+                Wish name is required.
+              </small>
+              <small class="form-text text-danger" *ngIf="name.errors.minlength">
+                Wish name is required to be at least 3 character.
+              </small>
+              <small class="form-text text-danger" *ngIf="name.errors.maxlength">
+                Wish name cannot be longer than 30 characters.
+              </small>
+              <small class="form-text text-danger" *ngIf="name.errors.pattern">
+                Wish name can only contain letters and digits.
+              </small>
+            </div>
+          </div>
+
+          <!--Priority-->
+
+          <div class="form-group">
+            <label for="priority">Priority:</label>
+            <select name="priority" id="priority" class="form-control" [(ngModel)]="editItem.priority" required>
+              <option value="URGENT">URGENT</option>
+              <option value="NORMAL">NORMAL</option>
+              <option value="LOW">LOW</option>
+            </select>
+          </div>
+
+          <!--Link-->
+
+          <div class="form-group">
+            <label class="form-control-label" for="itemLink">Link:</label>
+            <input type="url" class="form-control" [(ngModel)]="editItem.link" id="itemLink" name="link"
+                   #link="ngModel" placeholder="Enter item description"
+                   pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)">
+            <div *ngIf="link.dirty && link.invalid">
+              <small class="form-text text-danger" *ngIf="link.invalid">
+                Wish link is not correct.
+              </small>
+            </div>
+          </div>
+
+          <!--Due Date-->
+
+          <div class="form-group">
+            <label class="form-control-label" for="itemDate">Choose the due day of the wish:</label>
+            <input type="date" min="{{minDueDate}}" class="form-control"
+                   id="itemDate" name="eventDate" #itemDueDate="ngModel" [(ngModel)]="editItem.dueDate" required>
+            <div *ngIf="itemDueDate.dirty && itemDueDate.invalid">
+              <small class="form-text text-danger" *ngIf="itemDueDate.error.min">
+                Minimal due date must be {{minDueDate}}.
+              </small>
+            </div>
+          </div>
+
+          <!--Description-->
+
+          <div class="form-group">
+            <label class="form-control-label" for="itemDescription">Description:</label>
+            <textarea class="form-control" [(ngModel)]="editItem.description"
+                      id="itemDescription" name="description" style="min-height: 6em;"
+                      #description="ngModel" placeholder="Enter item description"
+                      maxlength="1023" pattern="^[_A-Za-z0-9-.?!,:;'\s]*$"></textarea>
+            <div *ngIf="description.dirty && description.invalid">
+              <small class="form-text text-danger" *ngIf="description.errors.required">
+                Wish description is required.
+              </small>
+              <small class="form-text text-danger" *ngIf="description.errors.maxlength">
+                Wish description cannot be longer than 1023 characters.
+              </small>
+              <small class="form-text text-danger" *ngIf="description.errors.pattern">
+                Wish description can only contain letters and digits.
+              </small>
+            </div>
+          </div>
+
+          <!--Tags-->
+
+          <div class="form-group">
+            <label class="form-control-label" for="itemTags">Tags:</label>
+            <input type="text" class="form-control" id="itemTags" name="itemTags"
+                   minlength="3" maxlength="30" placeholder="Enter tag name and push 'Enter'"
+                   #itemTag="ngModel" (keyup.enter)="addTag()"
+                   [(ngModel)]="tag" pattern="^[_A-Za-z0-9]*$">
+            <div *ngIf="itemTag.dirty && itemTag.invalid">
+              <small class="form-text text-danger" *ngIf="itemTag.errors.minlength">
+                Wish name must more than 2 chars.
+              </small>
+              <small class="form-text text-danger" *ngIf="itemTag.errors.maxlength">
+                Wish name must less than 31 chars.
+              </small>
+              <small class="form-text text-danger" *ngIf="itemTag.errors.pattern">
+                Wish name can only contain letters, digits and '_'.
+              </small>
+            </div>
+          </div>
+
+          <div class="container">
+            <div class="row">
+              <div *ngFor="let tag of editItem.tags">
+                <a style="margin-right: 5px; color: white;" class="badge badge-info">
+                  #{{tag}} <span class="tag-glyphicon tag-glyphicon-delete" (click)="deleteTag(tag)"></span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" [disabled]="addItemForm.form.invalid || link.invalid"
+                  (click)="onSubmit()" class="btn btn-primary">
+            Edit
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

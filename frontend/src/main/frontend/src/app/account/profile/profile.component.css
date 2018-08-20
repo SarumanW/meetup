@@ -5,7 +5,7 @@
 }
 
 .info2 {
-  width: 95%;
+  width: 94%;
   margin-top: 20px;
 }
 
@@ -28,6 +28,42 @@
 }
 
 .profile-logo {
-  width: 300px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
+.logo {
+  border: 1px solid;
+  width: 300px;
+  height: 300px;
+}
+
+.close-btn {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.message{
+  color: #1c7430;
+}
+
+.countdown{
+  width: 100%;
+  height: 70px;
+  background: #007bff;
+  color: white;
+}
+.countdown .two-dots {
+  display: none;
+}
+.countdown .measurements {
+  display: flex;
+  color: white;
+  margin-right: 5px;
+  padding: 10px;
+}
+.countdown .divider {
+  font-size: 20px;
+}

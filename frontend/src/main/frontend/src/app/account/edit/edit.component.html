@@ -33,9 +33,6 @@
           <label class="btn btn-default">
             <input type="file" (change)="selectFile($event)">
           </label>
-
-          <button class="btn btn-success" [disabled]="errorFileFormat || !selectedFiles" (click)="upload()">Upload
-          </button>
         </div>
 
         <div class="form-group">
@@ -46,7 +43,7 @@
           {{errorDateFormat}}
         </div>
 
-        <button type="button" class="btn " data-toggle="modal" data-target="#myModal" routerLink="/change.password">
+        <button type="button" class="btn " data-toggle="modal" data-target="#myModal" routerLink="/{{profile.login}}/check.password">
           Change password
         </button>
         <br/>
@@ -54,26 +51,12 @@
         <div class="form-group">
           <label class="form-control-label" for="lastName">Phone</label>
           <input type="text" class="form-control" [(ngModel)]="account.phone" id="phone" name="phone"
-                 #phone="ngModel" placeholder="{{account.phone}} +3 8 (___) ___-__-__"  [textMask]="{mask: mask}">
+                 #phone="ngModel" placeholder="{{account.phone}} +3 8 (___) ___-__-__"  [textMask]="{mask: mask}" [pattern]="phonePattern" (focusout)="checkPhone(account.phone)">
+          <small class="form-text text-danger" *ngIf="errorPhoneFormat">
+            Enter real phone number
+          </small>
         </div>
 
-        <div class="form-group">
-          <label class="form-control-label" for="login">Login</label>
-          <input type="text" class="form-control" [(ngModel)]="account.login" id="login" name="login"
-                 #login="ngModel" placeholder="{{account.login}}"
-                 minlength="4" maxlength="50" pattern="^[_.@A-Za-z0-9-]*$">
-          <div *ngIf="login.dirty && login.invalid">
-            <small class="form-text text-danger" *ngIf="login.errors.minlength">
-              Your username is required to be at least 4 character.
-            </small>
-            <small class="form-text text-danger" *ngIf="login.errors.maxlength">
-              Your username cannot be longer than 50 characters.
-            </small>
-            <small class="form-text text-danger" *ngIf="login.errors.pattern">
-              Your username can only contain letters and digits.
-            </small>
-          </div>
-        </div>
 
         <div class="form-group">
           <label class="form-control-label" for="name">Name</label>
@@ -117,7 +100,7 @@
           <input type="email" class="form-control" id="email" name="email" #email="ngModel"
                  placeholder="{{account.email}}"
                  [(ngModel)]="account.email" minlength=5 maxlength=100 email required [pattern]="emailPattern">
-          <div *ngIf="email.dirty && email.errors && !isValidFormSubmitted"  >
+          <div *ngIf="email.dirty && email.errors"  >
             <small class="form-text text-danger"  *ngIf="email.errors.pattern">
               Your email must be in format: mail@example.com
             </small>
@@ -135,10 +118,23 @@
           </div>
         </div>
 
-      <br/>
-        <br/>
+        <div class="form-group">
+          <label for="periodical">Send events plan:</label>
+          <select name="periodical" id="periodical" class="form-control" [(ngModel)]="this.account.periodicalEmail">
+            <option value="null">DISABLE</option>
+            <option value="DAILY">DAILY</option>
+            <option value="SUNDAY">EVERY SUNDAY</option>
+            <option value="MONDAY">EVERY MONDAY</option>
+            <option value="TUESDAY">EVERY TUESDAY</option>
+            <option value="WEDNESDAY">EVERY WEDNESDAY</option>
+            <option value="THURSDAY">EVERY THURSDAY</option>
+            <option value="FRIDAY">EVERY FRIDAY</option>
+            <option value="SATURDAY">EVERY SATURDAY</option>
+            <option value="MONTHLY">MONTHLY</option>
+          </select>
+        </div>
 
-        <button type="button" class="btn btn-primary"  [disabled]="editForm.form.invalid || email.errors?.pattern" data-toggle="modal" data-target="#myModal" (click)="clickButton()">
+        <button type="button" class="btn btn-primary"  [disabled]="editForm.form.invalid || email.errors?.pattern" data-toggle="modal" (click)="clickButton()">
           Save changes
         </button>
         <button type="button" class="btn btn-primary" routerLink="/{{profile.login}}/profile">
@@ -149,12 +145,16 @@
   </div>
 </div>
 
-<div>
-<popup> Are you really want to edit your profile?
-
-<button type="button" class="btn btn-primary" (click)="save()" >yes</button>
-<button id="close_button" class="btn btn-primary" aria-label="Close" (click)="close()">no</button>
-</popup>
-
-</div>
-
+<app-modal-window #modal class="sure-window">
+  <div class="modal-header d-flex justify-content-between align-items-center">
+    <h4 class="modal-title">Edit profile</h4>
+    <img class="close-btn" src="assets/close.svg" (click)="modal.hide()" alt="">
+  </div>
+  <div class="app-modal-body">
+    <p>Are you really want to edit your profile?</p>
+  </div>
+  <div class="app-modal-footer">
+    <button class="btn btn-primary" (click)="modal.hide(); save()" >Yes</button>
+    <button class="btn btn-default" (click)="modal.hide();">Cancel</button>
+  </div>
+</app-modal-window>

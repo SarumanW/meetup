@@ -1,20 +1,22 @@
 <div class="list-group py-4" role="tablist">
-  <div >
-    <img *ngIf="!profile.imgPath" src="http://tuzikgreet.ru/i/files/stati/9-veshhey-kotorye-hochet-skazat-vam-vasha-sobaka-1.jpg"
+  <div>
+    <img *ngIf="!profile.imgPath"
+         src="../../../assets/avatar-default.jpg"
          class="profile-logo">
-    <img *ngIf="profile.imgPath" [src]="profile.imgPath" class="profile-logo">
+    <img *ngIf="profile.imgPath" [src]="profile.imgPath" onError="this.src='assets/avatar-default.jpg'"
+         class="profile-logo">
   </div>
 
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'profile'}"
      href="#/{{profile.login}}/profile">Profile</a>
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'friends'}"
-     href="#/{{profile.login}}/friends/">Friends</a>
+     href="#/{{profile.login}}/friends/">Friends<span *ngIf="friendRequests>0" class="badge badge-pill badge-info">{{friendRequests}}</span></a>
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'folders'}"
      href="#/{{profile.login}}/folders/">Folders</a>
   <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'calendar'}"
      href="#/{{profile.login}}/calendar/">Calendar</a>
-  <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'wishlist'}"
-     >Wish List</a>
-  <a class="list-group-item list-group-item-action"  (click)="logout()"
+  <a class="list-group-item list-group-item-action" [ngClass]="{'active': states === 'wishes'}"
+     href="#/{{profile.login}}/wishes/">Wish List</a>
+  <a class="list-group-item list-group-item-action" (click)="logout()"
      routerLink="/login"> Log Out</a>
 </div>

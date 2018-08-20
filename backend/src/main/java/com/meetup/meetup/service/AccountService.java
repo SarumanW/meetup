@@ -7,6 +7,7 @@ import com.meetup.meetup.exception.runtime.DatabaseWorkException;
 import com.meetup.meetup.exception.runtime.HashAlgorithmException;
 import com.meetup.meetup.exception.runtime.NoTokenException;
 import com.meetup.meetup.exception.runtime.frontend.detailed.*;
+import com.meetup.meetup.security.AuthenticationFacade;
 import com.meetup.meetup.security.utils.HashMD5;
 import com.meetup.meetup.service.vm.LoginVM;
 import com.meetup.meetup.service.vm.RecoveryPasswordVM;
@@ -16,12 +17,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.MailException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 
-import static com.meetup.meetup.Keys.Key.*;
+import static com.meetup.meetup.keys.Key.*;
 
 @Component
 @PropertySource("classpath:strings.properties")
@@ -32,26 +34,28 @@ public class AccountService {
     private final JwtService jwtService;
     private final UserDao userDao;
     private final MailService mailService;
+    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
     private Environment env;
 
     @Autowired
-    public AccountService(JwtService jwtService, UserDao userDao, MailService mailService) {
+    public AccountService(JwtService jwtService, UserDao userDao, MailService mailService, AuthenticationFacade authenticationFacade) {
         log.info("Initializing AccountService");
         this.jwtService = jwtService;
         this.userDao = userDao;
         this.mailService = mailService;
+        this.authenticationFacade = authenticationFacade;
     }
 
-    public UserAndTokenVM login(LoginVM credentials) throws Exception {
+    public UserAndTokenVM login(LoginVM credentials) {
         log.debug("Trying to get hash from password");
 
         try {
             String md5Pass = HashMD5.hash(credentials.getPassword());
             credentials.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
-            log.error("Algorithm can not get hash for password");
+            log.error("Algorithm can not get hash for password", e);
             throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
         }
 
@@ -64,7 +68,7 @@ public class AccountService {
 
         if (user == null || !user.getPassword().equals(credentials.getPassword())) {
             log.error("User login or password is not correct");
-            throw new FailedToLoginException(String.format(env.getProperty(EXCEPTION_FAILED_LOGIN),credentials.getLogin()));
+            throw new FailedToLoginException(String.format(env.getProperty(EXCEPTION_FAILED_LOGIN), credentials.getLogin()));
         }
 
         log.debug("Login and password is correct for user '{}'", user.toString());
@@ -88,7 +92,8 @@ public class AccountService {
         return userAndToken;
     }
 
-    public void register(User user) throws Exception {
+    @Transactional
+    public void register(User user) {
         log.debug("Trying to get user with login '{}' from database", user.getLogin());
 
         if (!userDao.isLoginFree(user.getLogin())) {  //checking if user exist in system
@@ -105,17 +110,15 @@ public class AccountService {
         }
 
         log.debug("No user found with this email '{}' in database", user.getEmail());
-        log.debug("Trying to hash user password");
 
-        try {
-            String md5Pass = HashMD5.hash(user.getPassword());
-            user.setPassword(md5Pass);
-        } catch (NoSuchAlgorithmException e) {
-            log.error("Algorithm can not create hash for password");
-            throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
-        }
+        log.debug("Trying to send mail for user");
 
-        log.debug("Has been given a hashed password to the user");
+        mailService.sendMailConfirmationRegistration(user, jwtService.tokenForConfirmationRegistration(user));
+
+        log.debug("Add register date to user entity");
+
+        user.setRegisterDate(new Timestamp(System.currentTimeMillis()).toString());
+
         log.debug("Trying to insert data about user '{}' in database", user.toString());
 
         if (userDao.insert(user).getId() == 0) { //checking adding to DB
@@ -123,26 +126,22 @@ public class AccountService {
             throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
         }
 
-        log.debug("User data is successfully saved to database");
-        log.debug("Trying to send mail for user");
-        
-        try {
-            mailService.sendMailRegistration(user);
-        } catch (MailException e) {
-            log.error("Letter can not be sent");
-            log.debug("Trying delete user from database");
-            
-            userDao.delete(user);
+        log.debug("User '{}' is successfully registered in the system", user.toString());
+    }
 
-            throw new MailServerException(env.getProperty(EXCEPTION_MAIL_SERVER));
-        }
+    public void confirmRegistration(RecoveryPasswordVM model) {
+        User user = recoveryPassword(model);
+
+        log.debug("Trying to send mail for user about successful registration");
+
+        mailService.sendMailSuccessfulRegistration(user);
 
         log.debug("User '{}' is successfully registered in the system", user.toString());
     }
 
-    public void recoveryPasswordMail(String email) throws Exception{
+    public void recoveryPasswordMail(String email) {
         log.debug("Trying to search user by email '{}'", email);
-        
+
         User user = userDao.findByEmail(email);
         if (user == null) {
             log.error("User was not found by email '{}'", email);
@@ -162,18 +161,12 @@ public class AccountService {
         log.debug("Token successfully created for user");
         log.debug("Trying to send message for recovery password on email");
 
-        try {
-            mailService.sendMailRecoveryPassword(user, token);
-        } catch (MailException e) {
-            log.error("Letter can not be sent");
-            e.printStackTrace();
-            throw new MailServerException(env.getProperty(EXCEPTION_MAIL_SERVER));
-        }
+        mailService.sendMailRecoveryPassword(user, token);
 
         log.debug("Letter has been sent successfully");
     }
 
-    public void recoveryPassword(RecoveryPasswordVM model) throws Exception{
+    private User recoveryPassword(RecoveryPasswordVM model) {
         log.debug("Trying to verify token '{}' for user", model.getToken());
 
         User user = jwtService.verifyForRecoveryPassword(model.getToken());
@@ -190,18 +183,78 @@ public class AccountService {
             String md5Pass = HashMD5.hash(model.getPassword());
             user.setPassword(md5Pass);
         } catch (NoSuchAlgorithmException e) {
-            log.error("Algorithm can not create hash for password");
+            log.error("Algorithm can not create hash for password", e);
             throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
         }
 
         log.debug("Hash for password was successfully create");
         log.debug("Trying to update user in database");
 
-        if (!userDao.updatePassword(user)) {
-            log.error("User was not updated");
-            throw new DatabaseWorkException(env.getProperty(EXCEPTION_DATABASE_WORK));
+        userDao.updatePassword(user);
+
+        log.debug("Password was successfully updated");
+
+        return user;
+    }
+
+    public void checkPassword(RecoveryPasswordVM model) {
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+
+        if (user == null) {
+            log.error("Bad token was given at request");
+            throw new BadTokenException(env.getProperty(EXCEPTION_BAD_TOKEN));
         }
+
+        log.debug("User '{}' was successfully found by token '{}'", user.toString(), model.getToken());
+        log.debug("Trying to get hash from password");
+
+        try {
+            String md5Pass = HashMD5.hash(model.getPassword());
+            model.setPassword(md5Pass);
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Algorithm can not get hash for password", e);
+            throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
+        }
+
+        log.debug("Hash for password was successfully get");
+        log.debug("Check if user with current password exists at database");
+
+        if (!user.getPassword().equals(model.getPassword())) {
+            log.error("User password is not correct");
+            throw new FailedToLoginException(env.getProperty(EXCEPTION_FAILED_LOGIN));
+        }
+
+        log.debug("Password is correct for user '{}'", user.toString());
+    }
+
+    public void changePassword(RecoveryPasswordVM model) {
+
+        log.debug("Trying to get authenticated user");
+        User user = authenticationFacade.getAuthentication();
+
+        if (user == null) {
+            log.error("Bad token was given at request");
+            throw new BadTokenException(env.getProperty(EXCEPTION_BAD_TOKEN));
+        }
+
+        log.debug("User '{}' was successfully found by token '{}'", user.toString(), model.getToken());
+        log.debug("Trying to create hash from password");
+
+        try {
+            String md5Pass = HashMD5.hash(model.getPassword());
+            user.setPassword(md5Pass);
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Algorithm can not create hash for password", e);
+            throw new HashAlgorithmException(env.getProperty(EXCEPTION_HASH_ALGORITHM));
+        }
+
+        log.debug("Hash for password was successfully create");
+        log.debug("Trying to update user in database");
+
+        userDao.updatePassword(user);
 
         log.debug("Password was successfully updated");
     }
+
 }

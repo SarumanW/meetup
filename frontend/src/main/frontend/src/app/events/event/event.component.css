@@ -1,6 +1,9 @@
 body{
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
+.pinned {
+  cursor: pointer;
+}
 
 header img {
   max-width:100%;
@@ -28,15 +31,7 @@ header{
 
 /**/
 
-.participant .card{
-  overflow: hidden;
-  width: calc(25% - 15px);
-  margin-right: 20px;
-}
-.participant .card:nth-child(4n){
-  margin-right: 0;
-}
-.participant .card .head{
+.participant .head{
   height: 150px;
   background-color: #007bff;
   display: flex;
@@ -44,15 +39,14 @@ header{
   position: relative;
 }
 
-.participant .card .head .folder-icon{
-  height: 74px;
-  width: auto;
-}
-
-.participant .card .head .close-btn{
+.participant .head .close-btn{
   position: absolute;
   right: 16px;
   top: 16px;
+}
+
+.button {
+  color: #007bff;
 }
 
 .close-btn{
@@ -67,7 +61,36 @@ agm-map {
 
 .event-logo{
   width: 350px;
-  height: 350px;
+  height: 330px;
 }
 
+.l-g{
+  max-height: 265px;
+  overflow:scroll;
+  overflow-x: hidden;
+}
+.scrollspy {
+  position: relative;
+  height: 200px;
+  margin-top: .5rem;
+  overflow: auto;
+}
 
+.countdown{
+  width: 730px;
+  height: 70px;
+  background: #007bff;
+  color: white;
+}
+.countdown .two-dots {
+  display: none;
+}
+.countdown .measurements {
+  display: flex;
+  color: white;
+  margin-right: 5px;
+  padding: 10px;
+}
+.countdown .divider {
+  font-size: 20px;
+}

@@ -21,19 +21,19 @@ public class User {
     @Size(min = 4, max = 50)
     private String login;
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    @Pattern(regexp = "^[_.@A-Za-z0-9-]*$")
-    @Size(min = 6, max = 50)
+    @JsonIgnore
     private String password;
 
+    @NotBlank
     @Email
     @Size(min = 5, max = 100)
     private String email;
 
+    @NotBlank
     @Size(min = 4, max = 254)
     private String name;
 
+    @NotBlank
     @Size(min = 4, max = 254)
     private String lastname;
 
@@ -44,16 +44,14 @@ public class User {
     @JsonIgnore
     private int timeZone;
 
-//    @JsonIgnore
     private String imgPath;
 
-    @JsonIgnore
-    public String getPassword() {
-        return password;
-    }
+    private int pinedEventId;
 
-    @JsonProperty
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    private String periodicalEmail;
+
+    private String pinedEventName;
+    private String pinedEventDate;
+
+    private String registerDate;
 }

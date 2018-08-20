@@ -5,6 +5,7 @@ import {AccountService} from "../account.service";
 import {Router} from "@angular/router"
 import {FormBuilder, Validators} from "@angular/forms";
 import {NgxSpinnerService} from "ngx-spinner";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-register',
@@ -12,7 +13,6 @@ import {NgxSpinnerService} from "ngx-spinner";
 })
 
 export class RegisterComponent implements OnInit {
-  confirmPassword: string;
   doNotMatch: string;
   error: string;
   errorEmailExists: string;
@@ -27,7 +27,8 @@ export class RegisterComponent implements OnInit {
   constructor(private accountService: AccountService,
               private fb: FormBuilder,
               private router: Router,
-              private spinner: NgxSpinnerService) {
+              private spinner: NgxSpinnerService,
+              private appComponent: AppComponent) {
   }
 
   ngOnInit() {
@@ -39,26 +40,22 @@ export class RegisterComponent implements OnInit {
   register() {
     this.spinner.show();
 
-    if (this.account.password !== this.confirmPassword) {
-      this.doNotMatch = 'ERROR';
-    }
+    this.doNotMatch = null;
 
-    else {
-      this.doNotMatch = null;
-      console.log(this.account);
+    this.accountService.save(this.account).subscribe(
+      () => {
+        this.success = true;
+        this.error = null;
+        this.errorEmailExists = null;
+        this.errorLoginExists = null;
+        this.spinner.hide();
+      }, error => {
+        this.appComponent.showError(error, 'Error');
+        this.processError(error);
+        this.spinner.hide();
+      }
+    );
 
-      this.accountService.save(this.account).subscribe(
-        () => {
-          this.success = true;
-          this.spinner.hide();
-          this.router.navigate(['/thankyou']);
-        },
-        response => {
-          this.processError(response);
-          this.spinner.hide();
-        }
-      );
-    }
   }
 
   get email() {
@@ -67,12 +64,20 @@ export class RegisterComponent implements OnInit {
 
   private processError(response: HttpErrorResponse) {
     this.success = null;
-    console.log(response);
     if (response.error === 'Login already used') {
+      this.success = null
+      this.error = null;
+      this.errorEmailExists = null;
       this.errorLoginExists = 'ERROR';
     } else if (response.error === 'Email already used') {
+      this.success = null
+      this.error = null;
+      this.errorLoginExists = null;
       this.errorEmailExists = 'ERROR';
     } else {
+      this.success = null
+      this.errorEmailExists = null;
+      this.errorLoginExists = null;
       this.error = 'ERROR';
     }
 

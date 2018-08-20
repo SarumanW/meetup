@@ -21,6 +21,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-tomcat -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -110,7 +115,11 @@
 			<version>1.4</version>
 		</dependency>
 
-
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.1</version> <!-- makesure correct version here -->
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
 		<dependency>
@@ -140,6 +149,14 @@
 			<version>2.1</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.5.13</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
@@ -167,10 +184,10 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.1</version>
 				<configuration>
-					<url>http://35.196.1.189/manager/text</url>
+					<url>http://ip.address/manager/text</url>
 					<path>/</path>
-					<username>meetup</username>
-					<password>odGbZ93WlkeRM7sQ6v</password>
+					<username></username>
+					<password></password>
 				</configuration>
 			</plugin>
 		</plugins>

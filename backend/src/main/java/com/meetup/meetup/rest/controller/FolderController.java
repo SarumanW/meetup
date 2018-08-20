@@ -5,17 +5,16 @@ import com.meetup.meetup.service.FolderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@PropertySource("classpath:strings.properties")
-@RequestMapping("/api/folders")
+@RequestMapping("/api/users/{userId}/folders")
 public class FolderController {
 
     private static Logger log = LoggerFactory.getLogger(FolderController.class);
@@ -24,10 +23,11 @@ public class FolderController {
     private FolderService folderService;
 
     @GetMapping
-    public ResponseEntity<List<Folder>> getAllFolders(){
+    @PreAuthorize("@folderAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<List<Folder>> getAllFolders(@PathVariable Integer userId) {
         log.debug("Trying to get all user folders");
 
-        List<Folder> folders = folderService.getUserFolders();
+        List<Folder> folders = folderService.getUserFolders(userId);
 
         log.debug("Send response body folders '{}' and status OK", folders.toString());
 
@@ -35,18 +35,20 @@ public class FolderController {
     }
 
     @GetMapping("/{folderId}")
-    public ResponseEntity<Folder> getFolderById(@PathVariable int folderId){
+    @PreAuthorize("@folderAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<Folder> getFolderById(@PathVariable Integer userId, @PathVariable int folderId) {
         log.debug("Trying to get folder by folderId {}", folderId);
 
-        Folder folder = folderService.getFolder(folderId);
+        Folder folder = folderService.getFolder(userId, folderId);
 
         log.debug("Send response body folder '{}' and status OK", folder.toString());
 
         return new ResponseEntity<>(folder, HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Folder> addFolder(@Valid @RequestBody Folder folder) {
+    @PostMapping
+    @PreAuthorize("@folderAuthorization.isFolderCorrect(#userId, #folder)")
+    public ResponseEntity<Folder> addFolder(@PathVariable Integer userId, @Valid @RequestBody Folder folder) {
         log.debug("Trying to save folder {}", folder.toString());
 
         Folder addedFolder = folderService.addFolder(folder);
@@ -56,8 +58,9 @@ public class FolderController {
         return new ResponseEntity<>(addedFolder, HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<Folder> updateEvent(@Valid @RequestBody Folder folder) {
+    @PutMapping("/{folderId}")
+    @PreAuthorize("@folderAuthorization.isFolderCorrect(#userId, #folderId, #folder)")
+    public ResponseEntity<Folder> updateFolder(@PathVariable Integer userId, @PathVariable Integer folderId, @Valid @RequestBody Folder folder) {
         log.debug("Trying to update folder {}", folder.toString());
 
         Folder updatedFolder = folderService.updateFolder(folder);
@@ -67,12 +70,12 @@ public class FolderController {
         return new ResponseEntity<>(updatedFolder, HttpStatus.OK);
     }
 
-    // TODO: 5/2/2018 Convert to DeleteMapping
-    @PostMapping ("/delete")
-    public ResponseEntity<Folder> deleteFolder(@Valid @RequestBody Folder folder) {
-        log.debug("Trying to delete folder {}", folder.toString());
+    @DeleteMapping("/{folderId}")
+    @PreAuthorize("@folderAuthorization.isUserCorrect(#userId)")
+    public ResponseEntity<Folder> deleteFolder(@PathVariable Integer userId, @PathVariable Integer folderId) {
+        log.debug("Trying to delete folder by id '{}'", folderId);
 
-        Folder deletedFolder = folderService.deleteFolder(folder);
+        Folder deletedFolder = folderService.deleteFolder(userId, folderId);
 
         log.debug("Send response body deleted folder '{}' and status OK", deletedFolder.toString());
 

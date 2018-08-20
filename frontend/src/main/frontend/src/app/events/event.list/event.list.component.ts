@@ -3,10 +3,11 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Evento} from "../event";
 import {Profile} from "../../account/profile";
 import {NgxSpinnerService} from "ngx-spinner";
-import {FolderService} from "../../folders/folder.service";
 import {EventService} from "../event.service";
 import {EVENT_COLUMNS} from "./config/event.columns";
 import {NOTE_COLUMNS} from "./config/note.columns";
+import {FormControl} from "@angular/forms";
+import {AppComponent} from "../../app.component";
 
 
 @Component({
@@ -20,6 +21,8 @@ export class EventListComponent implements OnInit {
   eventType: string;
   state: string = "folders";
   profile: Profile;
+  publicEvents: Evento[] = [];
+  queryField: FormControl = new FormControl();
 
   page: number = 1;
   itemsPerPage: number = 10;
@@ -37,33 +40,44 @@ export class EventListComponent implements OnInit {
     className: ['table-striped', 'table-bordered']
   };
 
-  constructor(private folderService: FolderService,
-              private eventService: EventService,
+  constructor(private eventService: EventService,
               private route: ActivatedRoute,
               private router: Router,
-              private spinner: NgxSpinnerService) {
-
-  }
+              private spinner: NgxSpinnerService,
+              private appComponent: AppComponent) { }
 
   ngOnInit() {
-
-    this.spinner.show();
 
     this.route.params.subscribe(params => {
       this.folderId = params['folderId'];
       this.eventType = params['type'];
+    }, error => {
+      this.appComponent.showError(error, 'Error');
     });
 
     this.profile = JSON.parse(localStorage.getItem('currentUser'));
 
     this.getEventsByType();
 
-    this.spinner.hide();
-
     this.onChangeTable(this.config);
+
+    this.queryField.valueChanges
+      .debounceTime(1000)
+      .distinctUntilChanged()
+      .subscribe(queryField => {
+        this.eventService.getPublicEvents(this.profile.id, queryField)
+          .subscribe((events) => {
+            this.publicEvents = events;
+          }, error => {
+            this.appComponent.showError(error, 'Error');
+          })
+      }, error => {
+        this.appComponent.showError(error, 'Error');
+      });
   }
 
   getEventsByType() {
+    this.spinner.show();
     let type: string;
 
     switch (this.eventType) {
@@ -96,6 +110,9 @@ export class EventListComponent implements OnInit {
           this.events = events;
           this.length = this.events.length;
           this.onChangeTable(this.config);
+          this.spinner.hide();
+        }, error => {
+          this.appComponent.showError(error, 'Error');
         })
     } else {
       this.eventService.getDrafts(this.folderId)
@@ -103,6 +120,9 @@ export class EventListComponent implements OnInit {
           this.events = events;
           this.length = this.events.length;
           this.onChangeTable(this.config);
+          this.spinner.hide();
+        }, error => {
+          this.appComponent.showError(error, 'Error');
         })
     }
   }
@@ -128,7 +148,7 @@ export class EventListComponent implements OnInit {
     let sort: string = void 0;
 
     for (let i = 0; i < columns.length; i++) {
-      if (columns[i].sort !== '' && columns[i].sort !== false) {
+      if (columns[i].sort !== '' && columns[i].sort !== false && columns[i].sort !== null) {
         columnName = columns[i].name;
         sort = columns[i].sort;
       }
@@ -205,6 +225,10 @@ export class EventListComponent implements OnInit {
 
   onCellClick(data: any): any {
     this.openEvent(data.row);
+  }
+
+  openPublicEvent(eventId : any){
+
   }
 
 }

@@ -1,0 +1,69 @@
+<div class="container-fluid">
+  <ngx-spinner bdOpacity = 0.9
+               bdColor = "#333"
+               size = "default"
+               color = "#fff"
+               type = "ball-beat"></ngx-spinner>
+  <div class="row">
+    <div class="col-2">
+      <home-comp [states]="state"></home-comp>
+    </div>
+
+    <div class="col-10 py-4">
+      <div class="container justify-content-center">
+
+        <div id="chat-page">
+
+          <div class="chat-info py-4 d-flex justify-content-between flex-wrap align-items-center">
+            <h2 *ngIf="event">{{event.name}}</h2>
+            <div class="row">
+              <button class="btn btn-primary" (click)="backToEvent()">Back to event</button>
+              <button class="btn btn-primary" (click)="modal.show()">Chat members</button>
+            </div>
+          </div>
+
+          <div class="chat-container">
+            <div class="chat-header">
+              <h2>Chat room</h2>
+            </div>
+
+            <ul id="messageArea">
+
+            </ul>
+            <div class="typing-message">
+              <a class="typing-message-text">{{ typingMemberText }}</a>
+            </div>
+            <form id="messageForm" name="messageForm">
+              <div class="form-group">
+                <div class="input-group clearfix">
+                  <input type="text" id="message" placeholder="Type a message..."
+                         [(ngModel)]="messageText" (ngModelChange)="isUserTypingMessage()" name="inputMessage"
+                         autocomplete="off" class="form-control"/>
+                  <button (click)="sendMessage()" class="btn btn-primary" [disabled]="disabled">Send</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="view-members">
+        <app-modal-window #modal>
+          <div class="modal-header d-flex justify-content-between align-items-right">
+            <h4 class="modal-title">Chat members</h4>
+            <img class="close-btn" src="assets/close.svg" (click)="modal.hide()" alt="">
+          </div>
+          <div class="app-modal-body">
+            <ul class="list-group" *ngFor="let member of chatMembers">
+              <li class="list-group-item" (click)="goToProfile(member)" style="cursor: pointer;">{{member}}</li>
+            </ul>
+          </div>
+          <div class="app-modal-footer">
+            <button class="btn btn-primary" (click)="modal.hide()">Close</button>
+          </div>
+        </app-modal-window>
+      </div>
+    </div>
+  </div>
+</div>

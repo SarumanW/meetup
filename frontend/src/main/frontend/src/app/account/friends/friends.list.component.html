@@ -30,8 +30,13 @@
           <input [formControl]="queryField" type="text" id="keyword" placeholder="Search for users..." autofocus/>
         </div>
         <ul>
+          <li *ngIf="queryField.value && unknownUsers.length===0"><p>There is no user with such login</p></li>
           <li *ngFor="let result of unknownUsers" class="filter-select-list">
-            <p (click)="addFriend(result.login)">{{result.login}}</p>
+            <div (click)="addFriend(result.login)">
+              <img *ngIf="result.imgPath" class="search-img" [src]="result.imgPath">
+              <img *ngIf="!result.imgPath" class="search-img" src="../../../assets/avatar-default.jpg">
+              {{result.login}} ({{result.name}} {{result.lastname}})
+            </div>
           </li>
         </ul>
         <div class="message mx-4">

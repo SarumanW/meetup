@@ -1,0 +1,29 @@
+
+<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card-comment">
+        <div class="panel panel-white post panel-shadow">
+          <div class="post-heading">
+            <div class="pull-left image">
+              <img *ngIf="!comment.imageFilepath" src="assets/avatar-default.jpg" class="img-circle avatar" alt="user profile image">
+              <img *ngIf="comment.imageFilepath" [src]="comment.imageFilepath" class="img-circle avatar" alt="user profile image">
+            </div>
+            <div class="pull-left meta">
+              <div class="title h5">
+                <a href="#/{{comment.login}}/profile">{{comment.login}}</a>
+              </div>
+              <h6 class="text-muted time">{{comment.postTime | date:'medium'}} </h6>
+            </div>
+          </div>
+          <div class="post-description">
+            <p>{{comment.bodyText}}</p>
+          </div>
+          <button *ngIf="comment.authorId==userId" class="btn btn-danger" (click)="deleteClicked()">Delete</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

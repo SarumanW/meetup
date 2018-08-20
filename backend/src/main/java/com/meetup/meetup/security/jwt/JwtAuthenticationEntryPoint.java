@@ -25,13 +25,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest httpServletRequest,
                          HttpServletResponse httpServletResponse,
-                         AuthenticationException e) throws IOException, ServletException {
+                         AuthenticationException e) throws IOException {
         log.error("User is not authenticated");
 
         httpServletResponse.setStatus(SC_FORBIDDEN);
         httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         String message;
+
         if(e.getCause() != null) {
             message = e.getCause().getMessage();
         } else {

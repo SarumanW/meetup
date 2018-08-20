@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_AUTHENTICATION;
+import static com.meetup.meetup.keys.Key.EXCEPTION_AUTHENTICATION;
 
 /**
  * Used for get authenticated {@link User}.

@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static com.meetup.meetup.Keys.Key.EXCEPTION_KEY_NOT_FOUND;
+import static com.meetup.meetup.keys.Key.EXCEPTION_KEY_NOT_FOUND;
 
 @Component
 @PropertySource("classpath:strings.properties")
@@ -34,9 +34,7 @@ public class SecretKeyProvider {
 
             return secretKey;
         } catch (URISyntaxException | IOException e) {
-            log.error("Secret key is not available");
-
-            e.printStackTrace();
+            log.error("Secret key is not available", e);
             throw new SecretKeyNotFoundException(env.getProperty(EXCEPTION_KEY_NOT_FOUND));
         }
     }
